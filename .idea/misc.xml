@@ -4,8 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/activity_main.xml" value="0.36614583333333334" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_gallery.xml" value="0.2046875" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/list_item_solaroid_photo.xml" value="0.2" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_gallery.xml" value="0.22" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_photo_create.xml" value="0.2" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/list_item_solaroid_photo.xml" value="0.33" />
       </map>
     </option>
   </component>

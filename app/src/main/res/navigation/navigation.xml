@@ -7,9 +7,23 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_gallery"
-        android:name="com.example.solaroid.SolaroidGallery.SolaroidGalleryFragment"
+        android:name="com.example.solaroid.solaroidgallery.SolaroidGalleryFragment"
         android:label="SolaroidGalleryFragment"
         tools:layout="@layout/fragment_solaroid_gallery">
+        <action
+            android:id="@+id/action_galleryFragment_to_createFragment"
+            app:destination="@+id/fragment_solaroid_create"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_solaroid_create"
+        android:name="com.example.solaroid.solaroidcreate.SolaroidPhotoCreateFragment"
+        android:label="SolaroidPhotoCreateFragment"
+        tools:layout="@layout/fragment_solaroid_photo_create">
+
+        <action
+            android:id="@+id/action_createFragment_to_galleryFragment"
+            app:destination="@+id/fragment_solaroid_gallery" />
 
     </fragment>
 
