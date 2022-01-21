@@ -20,6 +20,7 @@
 
         <ImageView
             android:id="@+id/image"
+            android:src="@drawable/tmp_photo_image"
             android:layout_width="97.5dp"
             android:layout_height="135dp"
             android:layout_marginTop="140dp"

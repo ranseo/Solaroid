@@ -14,6 +14,5 @@ fun convertTodayToFormatted(currentTimeMilli : Long, res: Resources): String {
 }
 
 fun convertPhotoTicketToToastString(photoTicket: PhotoTicket, res:Resources) : String {
-
     return "${photoTicket.photo}\n${photoTicket.date}\n${photoTicket.frontText}\n${photoTicket.backText}"
 }

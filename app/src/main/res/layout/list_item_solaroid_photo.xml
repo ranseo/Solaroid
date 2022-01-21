@@ -4,15 +4,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="photoTicket"
+            type="com.example.solaroid.database.PhotoTicket" />
 
     </data>
 
+<!--    android:layout_width="130dp"-->
+<!--    android:layout_height="180dp"-->
+<!--    width를 match로 해놔야 이게 딲딱맞네 포스팅해두자-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="130dp"
-        android:layout_height="180dp">
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@drawable/photo_ticket_border_line">
 
         <ImageView
             android:id="@+id/solaroid_photo"
+            android:src="@drawable/tmp_photo_image"
             android:layout_width="97.5dp"
             android:layout_height="135dp"
             android:layout_marginTop="12dp"
@@ -21,13 +29,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:src="@tools:sample/avatars"
             android:scaleType="centerCrop"
-            android:padding="2dp"
             android:adjustViewBounds="true"
 
             />
 
         <TextView
             android:id="@+id/solaroid_text_date"
+            android:text="@{photoTicket.date}"
             android:layout_width="97.5dp"
             android:layout_height="0dp"
             android:layout_marginTop="6dp"

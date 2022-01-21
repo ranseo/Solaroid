@@ -23,7 +23,9 @@
 
         <action
             android:id="@+id/action_createFragment_to_galleryFragment"
-            app:destination="@+id/fragment_solaroid_gallery" />
+            app:destination="@+id/fragment_solaroid_gallery"
+            app:popUpTo="@+id/fragment_solaroid_gallery"
+            app:popUpToInclusive="true"/>
 
     </fragment>
 

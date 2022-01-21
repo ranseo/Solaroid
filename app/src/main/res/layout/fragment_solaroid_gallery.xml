@@ -31,7 +31,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/photoTicket_rec"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="24dp"
             app:layout_constraintTop_toBottomOf="@+id/create_photoTicket_btn"
@@ -41,7 +41,8 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3"
             tools:listitem="@layout/list_item_solaroid_photo"
-            tools:itemCount="16"/>
+            tools:itemCount="16"
+            submitList="@{viewModel.photoTickets}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

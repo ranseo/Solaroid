@@ -8,6 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+
 <!--    솔라로이드 기본 컬러-->
     <color name="pink">#E08CF8</color>
+    <color name="border_color">#BAE8E6E6</color>
 </resources>

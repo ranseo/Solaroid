@@ -33,6 +33,9 @@ class SolaroidGalleryFragment :Fragment() {
         viewModelFactory = SolaroidGalleryViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidGalleryViewModel::class.java]
 
+        val adapter = PhotoTicketAdapter()
+        binding.photoTicketRec.adapter = adapter
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
