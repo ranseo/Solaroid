@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidPhotoBinding
 
-class PhotoTicketAdapter :
+class PhotoTicketAdapter(val clickListener: OnClickListener) :
     ListAdapter<PhotoTicket, PhotoTicketAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
 
 
@@ -20,7 +20,7 @@ class PhotoTicketAdapter :
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, clickListener)
         //holder.binding.executePendingBindings()
     }
 
@@ -28,8 +28,9 @@ class PhotoTicketAdapter :
 
     class PhotoViewHolder(val binding: ListItemSolaroidPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket) {
+        fun bind(item: PhotoTicket, clickListener: OnClickListener) {
             this.binding.photoTicket = item
+            this.binding.clickListener = clickListener
         }
 
         companion object {
@@ -41,6 +42,12 @@ class PhotoTicketAdapter :
         }
     }
 
+}
+
+class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
+    fun onClick(photoTicket: PhotoTicket) {
+        clickListener(photoTicket.id)
+    }
 }
 
 class PhotoTicketDiffCallback : DiffUtil.ItemCallback<PhotoTicket>() {

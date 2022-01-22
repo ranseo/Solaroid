@@ -8,6 +8,10 @@
             name="photoTicket"
             type="com.example.solaroid.database.PhotoTicket" />
 
+        <variable
+            name="clickListener"
+            type="com.example.solaroid.solaroidgallery.OnClickListener" />
+
     </data>
 
 <!--    android:layout_width="130dp"-->
@@ -16,7 +20,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:background="@drawable/photo_ticket_border_line">
+        android:background="@drawable/photo_ticket_border_line"
+        android:onClick="@{()->clickListener.onClick(photoTicket)}">
 
         <ImageView
             android:id="@+id/solaroid_photo"

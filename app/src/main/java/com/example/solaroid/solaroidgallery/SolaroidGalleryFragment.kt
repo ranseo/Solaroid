@@ -33,7 +33,10 @@ class SolaroidGalleryFragment :Fragment() {
         viewModelFactory = SolaroidGalleryViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidGalleryViewModel::class.java]
 
-        val adapter = PhotoTicketAdapter()
+        val adapter = PhotoTicketAdapter(OnClickListener { photoTicketKey ->
+            viewModel.naviToDetail(photoTicketKey)
+        })
+
         binding.photoTicketRec.adapter = adapter
 
         binding.viewModel = viewModel
@@ -53,8 +56,15 @@ class SolaroidGalleryFragment :Fragment() {
                 Toast.makeText(context, convertPhotoTicketToToastString(it,this.resources), Toast.LENGTH_LONG).show()
                 viewModel.doneToToast()
             }
+        })
 
-
+        viewModel.navigateToDetailFrag.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                findNavController().navigate(
+                    SolaroidGalleryFragmentDirections.actionGalleryFragmentToDetailFragment(it)
+                )
+                viewModel.doneNaviToDetailFrag()
+            }
         })
 
 

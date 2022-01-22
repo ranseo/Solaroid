@@ -13,6 +13,10 @@
         <action
             android:id="@+id/action_galleryFragment_to_createFragment"
             app:destination="@+id/fragment_solaroid_create"/>
+
+        <action
+            android:id="@+id/action_galleryFragment_to_detailFragment"
+            app:destination="@+id/fragment_solaroid_detail"/>
     </fragment>
 
     <fragment
@@ -27,6 +31,22 @@
             app:popUpTo="@+id/fragment_solaroid_gallery"
             app:popUpToInclusive="true"/>
 
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_solaroid_detail"
+        android:name="com.example.solaroid.solaroiddetail.SolaroidDetailFragment"
+        android:label="SolaroidPhotoDetailFragment"
+        tools:layout="@layout/fragment_solaroid_detail">
+        <argument
+            android:name="photo_tickey_key"
+            app:argType="long"/>
+
+        <action
+            android:id="@+id/action_detailFragment_to_galleryFragment"
+            app:destination="@+id/fragment_solaroid_gallery"
+            app:popUpTo="@+id/fragment_solaroid_gallery"
+            app:popUpToInclusive="true"/>
     </fragment>
 
 </navigation>
