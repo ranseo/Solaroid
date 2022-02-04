@@ -49,4 +49,12 @@
             app:popUpToInclusive="true"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/fragment_solaroid_frame"
+        android:name="com.example.solaroid.solaroidframe.SolaroidFrameFragment"
+        android:label="SolaroidFrameFragment"
+        tools:layout="@layout/fragment_solaroid_frame">
+
+    </fragment>
+
 </navigation>
