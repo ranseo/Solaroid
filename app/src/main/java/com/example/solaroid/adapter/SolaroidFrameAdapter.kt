@@ -1,5 +1,4 @@
-package com.example.solaroid.solaroidgallery
-
+package com.example.solaroid.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,10 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.database.PhotoTicket
-import com.example.solaroid.databinding.ListItemSolaroidPhotoBinding
+import com.example.solaroid.databinding.ListItemSolaroidFrameBinding
 
-class PhotoTicketAdapter(val clickListener: OnClickListener) :
-    ListAdapter<PhotoTicket, PhotoTicketAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
+
+class SolaroidFrameAdapter() :
+    ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -20,23 +20,22 @@ class PhotoTicketAdapter(val clickListener: OnClickListener) :
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, clickListener)
+        holder.bind(item)
         //holder.binding.executePendingBindings()
     }
 
 
 
-    class PhotoViewHolder(val binding: ListItemSolaroidPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
+    class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket, clickListener: OnClickListener) {
+        fun bind(item: PhotoTicket) {
             this.binding.photoTicket = item
-            this.binding.clickListener = clickListener
         }
 
         companion object {
             fun from(parent: ViewGroup): PhotoViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemSolaroidPhotoBinding.inflate(layoutInflater, parent, false)
+                val binding = ListItemSolaroidFrameBinding.inflate(layoutInflater, parent, false)
                 return PhotoViewHolder(binding)
             }
         }
@@ -44,11 +43,11 @@ class PhotoTicketAdapter(val clickListener: OnClickListener) :
 
 }
 
-class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
-    fun onClick(photoTicket: PhotoTicket) {
-        clickListener(photoTicket.id)
-    }
-}
+//class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
+//    fun onClick(photoTicket: PhotoTicket) {
+//        clickListener(photoTicket.id)
+//    }
+//}
 
 class PhotoTicketDiffCallback : DiffUtil.ItemCallback<PhotoTicket>() {
     override fun areItemsTheSame(oldItem: PhotoTicket, newItem: PhotoTicket): Boolean {

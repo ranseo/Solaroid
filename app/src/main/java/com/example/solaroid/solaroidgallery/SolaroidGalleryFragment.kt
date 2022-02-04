@@ -33,7 +33,7 @@ class SolaroidGalleryFragment :Fragment() {
         viewModelFactory = SolaroidGalleryViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidGalleryViewModel::class.java]
 
-        val adapter = PhotoTicketAdapter(OnClickListener { photoTicketKey ->
+        val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicketKey ->
             viewModel.naviToDetail(photoTicketKey)
         })
 
