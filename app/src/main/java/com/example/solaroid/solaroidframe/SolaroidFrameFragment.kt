@@ -22,7 +22,7 @@ class SolaroidFrameFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate< FragmentSolaroidFrameBinding>(inflater, R.layout.fragment_solaroid_detail, container, false)
+        val binding = DataBindingUtil.inflate<FragmentSolaroidFrameBinding>(inflater, R.layout.fragment_solaroid_frame, container, false)
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)

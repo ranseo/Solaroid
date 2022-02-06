@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_gallery"
+        android:id="@+id/fragment_solaroid_gallery"
         android:icon="@drawable/gallery"
         android:enabled="true"
         android:title="갤러리"/>
 
     <item
-        android:id="@+id/menu_frame"
+        android:id="@+id/fragment_solaroid_frame"
         android:icon="@drawable/frame"
         android:enabled="true"
         android:title="액자식"/>

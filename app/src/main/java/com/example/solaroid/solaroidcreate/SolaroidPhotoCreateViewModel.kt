@@ -14,7 +14,6 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     ViewModel() {
 
     val database = dataSource
-    val application = application
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>

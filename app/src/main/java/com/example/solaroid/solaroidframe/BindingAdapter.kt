@@ -6,7 +6,10 @@ import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.database.PhotoTicket
 
 @BindingAdapter("submitList")
-fun bindViewPager(viewPager : ViewPager2, photoTickets:List<PhotoTicket>) {
+fun bindViewPager(viewPager : ViewPager2, photoTickets:List<PhotoTicket>?) {
     val adapter = viewPager.adapter as SolaroidFrameAdapter
-    adapter.submitList(photoTickets)
+    photoTickets?.let{
+        adapter.submitList(photoTickets)
+    }
+
 }
