@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
+import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameBinding
@@ -33,9 +36,22 @@ class SolaroidFrameFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = SolaroidFrameAdapter()
+        val adapter = SolaroidFrameAdapter(OnClickListener { photoTicketKey ->
+            viewModel.naviToDetail(photoTicketKey)
+        })
+
+        viewModel.navigateToDetailFrag.observe(viewLifecycleOwner, Observer{
+            it?.let {
+                findNavController().navigate(
+                    SolaroidFrameFragmentDirections.actionFrameFragmentToDetailFragment(it)
+                )
+                viewModel.doneNaviToDetailFrag()
+            }
+        })
 
         binding.viewpager.adapter = adapter
+
+
 
         return binding.root
     }

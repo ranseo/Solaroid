@@ -12,8 +12,20 @@ import kotlinx.coroutines.launch
 class SolaroidFrameViewModel(dataSource:PhotoTicketDao, application:Application): ViewModel() {
 
     val database = dataSource
-
-
     val photoTickets = database.getAllPhotoTicket()
+
+    private val _navigateToDetailFrag = MutableLiveData<Long?> ()
+    val navigateToDetailFrag : LiveData<Long?>
+        get() = _navigateToDetailFrag
+
+
+    fun naviToDetail(photoTicketKey:Long) {
+        _navigateToDetailFrag.value = photoTicketKey
+    }
+
+    fun doneNaviToDetailFrag() {
+        _navigateToDetailFrag.value = null
+    }
+
 
 }

@@ -8,6 +8,10 @@
             name="photoTicket"
             type="com.example.solaroid.database.PhotoTicket" />
 
+        <variable
+            name="clickListener"
+            type="com.example.solaroid.adapter.OnClickListener" />
+
     </data>
 
     <FrameLayout
@@ -45,7 +49,8 @@
             android:layout_height="325dp"
             android:layout_gravity="center"
             android:background="@drawable/photo_ticket_border_line"
-            app:layout_constraintVertical_bias="0.412">
+            app:layout_constraintVertical_bias="0.412"
+            android:onClick="@{()->clickListener.onClick(photoTicket)}">
 
 
             <ImageView

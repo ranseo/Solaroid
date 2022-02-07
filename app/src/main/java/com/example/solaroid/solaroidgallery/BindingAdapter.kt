@@ -2,6 +2,7 @@ package com.example.solaroid.solaroidgallery
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.database.PhotoTicket
 
 

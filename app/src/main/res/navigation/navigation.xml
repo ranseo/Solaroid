@@ -17,6 +17,11 @@
         <action
             android:id="@+id/action_galleryFragment_to_detailFragment"
             app:destination="@+id/fragment_solaroid_detail"/>
+
+        <argument
+            android:name="ShowAppBar"
+            android:defaultValue="true"/>
+
     </fragment>
 
     <fragment
@@ -41,12 +46,7 @@
         <argument
             android:name="photo_tickey_key"
             app:argType="long"/>
-
-        <action
-            android:id="@+id/action_detailFragment_to_galleryFragment"
-            app:destination="@+id/fragment_solaroid_gallery"
-            app:popUpTo="@+id/fragment_solaroid_gallery"
-            app:popUpToInclusive="true"/>
+        
     </fragment>
 
     <fragment
@@ -54,6 +54,15 @@
         android:name="com.example.solaroid.solaroidframe.SolaroidFrameFragment"
         android:label="SolaroidFrameFragment"
         tools:layout="@layout/fragment_solaroid_frame">
+
+
+        <action
+            android:id="@+id/action_frameFragment_to_detailFragment"
+            app:destination="@+id/fragment_solaroid_detail" />
+
+        <argument
+            android:name="ShowAppBar"
+            android:defaultValue="true"/>
 
     </fragment>
 

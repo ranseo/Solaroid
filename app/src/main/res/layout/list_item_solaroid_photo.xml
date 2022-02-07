@@ -10,7 +10,7 @@
 
         <variable
             name="clickListener"
-            type="com.example.solaroid.solaroidgallery.OnClickListener" />
+            type="com.example.solaroid.adapter.OnClickListener" />
 
     </data>
 

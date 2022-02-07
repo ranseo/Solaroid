@@ -1,9 +1,8 @@
-package com.example.solaroid.solaroidgallery
+package com.example.solaroid.adapter
 
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.database.PhotoTicket
@@ -44,18 +43,4 @@ class SolaroidGalleryAdapter(val clickListener: OnClickListener) :
 
 }
 
-class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
-    fun onClick(photoTicket: PhotoTicket) {
-        clickListener(photoTicket.id)
-    }
-}
 
-class PhotoTicketDiffCallback : DiffUtil.ItemCallback<PhotoTicket>() {
-    override fun areItemsTheSame(oldItem: PhotoTicket, newItem: PhotoTicket): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: PhotoTicket, newItem: PhotoTicket): Boolean {
-        return oldItem == newItem
-    }
-}

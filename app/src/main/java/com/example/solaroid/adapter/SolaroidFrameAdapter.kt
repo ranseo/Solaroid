@@ -2,14 +2,12 @@ package com.example.solaroid.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidFrameBinding
 
-
-class SolaroidFrameAdapter() :
+class SolaroidFrameAdapter(val clickListener: OnClickListener) :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
 
 
@@ -20,7 +18,7 @@ class SolaroidFrameAdapter() :
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, clickListener)
         //holder.binding.executePendingBindings()
     }
 
@@ -28,8 +26,9 @@ class SolaroidFrameAdapter() :
 
     class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket) {
+        fun bind(item: PhotoTicket, clickListener: OnClickListener) {
             this.binding.photoTicket = item
+            this.binding.clickListener = clickListener
         }
 
         companion object {
@@ -43,18 +42,3 @@ class SolaroidFrameAdapter() :
 
 }
 
-//class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
-//    fun onClick(photoTicket: PhotoTicket) {
-//        clickListener(photoTicket.id)
-//    }
-//}
-
-class PhotoTicketDiffCallback : DiffUtil.ItemCallback<PhotoTicket>() {
-    override fun areItemsTheSame(oldItem: PhotoTicket, newItem: PhotoTicket): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: PhotoTicket, newItem: PhotoTicket): Boolean {
-        return oldItem == newItem
-    }
-}

@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
+import com.example.solaroid.adapter.OnClickListener
+import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.convertPhotoTicketToToastString
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidGalleryBinding
