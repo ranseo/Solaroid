@@ -1,86 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".solaroidcreate.SolaroidPhotoCreateFragment">
 
     <data>
+
         <variable
             name="viewmodel"
             type="com.example.solaroid.solaroidcreate.SolaroidPhotoCreateViewModel" />
 
+        <import type="android.view.View"/>
+
 
     </data>
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".solaroidcreate.SolaroidPhotoCreateFragment">
+        android:layout_height="match_parent">
 
-        <!-- TODO: Update blank fragment layout -->
+<!--        Image Capture를 위한 Preview와 버튼 -->
 
-        <ImageView
-            android:id="@+id/image"
-            android:src="@drawable/tmp_photo_image"
-            android:layout_width="97.5dp"
-            android:layout_height="135dp"
-            android:layout_marginTop="140dp"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars"/>
+        <FrameLayout
+            android:id="@+id/layout_capture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{viewmodel.isLayoutCaptureVisible ? View.VISIBLE : View.GONE}"
 
-
-        <TextView
-            android:id="@+id/today_date"
-            android:text="@{viewmodel.today}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/image"
-            tools:text="2022.01.21" />
-
-        <EditText
-            android:id="@+id/front_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/today_date"
-            app:layout_constraintVertical_bias="0.104"
-            android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedFront(s)}"
-            tools:text="사진에 대한 짧은 정보를 적어주세요" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/back_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/front_text"
-            app:layout_constraintVertical_bias="0.075"
-            android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedBack(s)}"
-            tools:text="사진에 담긴 추억을 적어주세요" />
+            <androidx.camera.view.PreviewView
+                android:id="@+id/view_finder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="120dp" />
 
-        <Button
-            android:id="@+id/finish"
-            android:onClick="@{()->viewmodel.onClick()}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/back_text"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            <ImageButton
+                android:id="@+id/image_capture"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="24dp"
+                android:backgroundTint="@color/image_capture_btn_background"
+                android:onClick="@{()->viewmodel.onImageCapture()}"
+                android:scaleType="fitCenter"
+                android:src="@drawable/image_capture"
+                />
+
+        </FrameLayout>
+
+
+<!--        Image Capture 이후 포토티켓을 저장하는 레이아웃-->
+
+        <FrameLayout
+            android:id="@+id/layout_create"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{viewmodel.isLayoutCreateVisible ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="완료"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_front"
+                android:layout_width="204dp"
+                android:layout_height="345dp"
+                android:layout_gravity="left|center"
+                android:background="@drawable/photo_ticket_border_line">
+
+                <ImageView
+                    android:id="@+id/captured_image"
+                    setImage="@{viewmodel.capturedImageUri}"
+                    android:layout_width="173dp"
+                    android:layout_height="234dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="24dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/tmp_photo_image"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
+
+
+                <TextView
+                    android:id="@+id/today_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewmodel.today}"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/captured_image"
+                    tools:text="2022.01.21" />
+
+                <EditText
+                    android:id="@+id/front_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedFront(s)}"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/today_date"
+                    app:layout_constraintVertical_bias="0.104"
+                    tools:text="사진에 대한 짧은 정보를 적어주세요" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_back"
+                android:layout_width="204dp"
+                android:layout_height="345dp"
+                android:layout_gravity="center|right"
+                android:background="@drawable/photo_ticket_border_line">
+
+                <EditText
+                    android:id="@+id/back_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedBack(s)}"
+
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="사진에 담긴 추억을\n적어주세요" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageButton
+                android:id="@+id/image_save"
+                android:onClick="@{()->viewmodel.onImageSave()}"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="24dp"
+                android:backgroundTint="@color/image_capture_btn_background"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_photo_save" />
+
+        </FrameLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

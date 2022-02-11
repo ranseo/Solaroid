@@ -1,7 +1,11 @@
 package com.example.solaroid.solaroidgallery
 
+import android.net.Uri
+import android.widget.ImageView
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.database.PhotoTicket
 
@@ -11,5 +15,17 @@ fun bindRec(recyclerView: RecyclerView, photoTickets:List<PhotoTicket>?) {
     val adapter = recyclerView.adapter as SolaroidGalleryAdapter
     photoTickets?.let{
         adapter.submitList(it)
+    }
+}
+
+
+@BindingAdapter("setImage")
+fun bindImage (imageView: ImageView, imgUri: String?) {
+    imgUri?.let {
+
+        val uri = imgUri.toUri()
+        Glide.with(imageView.context)
+            .load(uri)
+            .into(imageView)
     }
 }

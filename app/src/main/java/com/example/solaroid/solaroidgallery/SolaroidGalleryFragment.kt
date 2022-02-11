@@ -44,15 +44,17 @@ class SolaroidGalleryFragment :Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.navigateToCreateFrag.observe(viewLifecycleOwner, Observer {
-            if(it) {
-                findNavController().navigate(
-                    SolaroidGalleryFragmentDirections.actionGalleryFragmentToCreateFragment()
-                )
-                viewModel.doneNaviToCreateFrag()
-            }
-        })
+//        viewModel.navigateToCreateFrag.observe(viewLifecycleOwner, Observer {
+//            if(it) {
+//                findNavController().navigate(
+//                    SolaroidGalleryFragmentDirections.actionGalleryFragmentToCreateFragment()
+//                )
+//                viewModel.doneNaviToCreateFrag()
+//            }
+//        })
 
+
+        //제대로 사진이 생성됐는지 확인하기 위해 PhotoTicket이 만들어질 때 Toast 를 생성.
         viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
             it?.let{
                 Toast.makeText(context, convertPhotoTicketToToastString(it,this.resources), Toast.LENGTH_LONG).show()

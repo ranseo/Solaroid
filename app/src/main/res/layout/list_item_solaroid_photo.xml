@@ -25,7 +25,7 @@
 
         <ImageView
             android:id="@+id/solaroid_photo"
-            android:src="@drawable/tmp_photo_image"
+            setImage="@{photoTicket.photo}"
             android:layout_width="97.5dp"
             android:layout_height="135dp"
             android:layout_marginTop="12dp"

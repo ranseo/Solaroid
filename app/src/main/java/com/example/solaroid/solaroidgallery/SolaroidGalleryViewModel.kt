@@ -13,9 +13,9 @@ class SolaroidGalleryViewModel(dataSource : PhotoTicketDao, val application: App
 
     private val database =  dataSource
 
-    private val _navigateToCreateFrag = MutableLiveData<Boolean> ()
-    val navigateToCreateFrag : LiveData<Boolean>
-        get() = _navigateToCreateFrag
+//    private val _navigateToCreateFrag = MutableLiveData<Boolean> ()
+//    val navigateToCreateFrag : LiveData<Boolean>
+//        get() = _navigateToCreateFrag
 
     private val _navigateToDetailFrag = MutableLiveData<Long?> ()
     val navigateToDetailFrag : LiveData<Long?>
@@ -46,13 +46,13 @@ class SolaroidGalleryViewModel(dataSource : PhotoTicketDao, val application: App
 
 
 
-    fun onClick() {
-        _navigateToCreateFrag.value = true
-    }
-
-    fun doneNaviToCreateFrag() {
-        _navigateToCreateFrag.value = false
-    }
+//    fun onClick() {
+//        _navigateToCreateFrag.value = true
+//    }
+//
+//    fun doneNaviToCreateFrag() {
+//        _navigateToCreateFrag.value = false
+//    }
 
     fun doneToToast() {
         _photoTicket.value =null

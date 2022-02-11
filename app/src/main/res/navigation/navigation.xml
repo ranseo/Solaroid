@@ -10,9 +10,6 @@
         android:name="com.example.solaroid.solaroidgallery.SolaroidGalleryFragment"
         android:label="SolaroidGalleryFragment"
         tools:layout="@layout/fragment_solaroid_gallery">
-        <action
-            android:id="@+id/action_galleryFragment_to_createFragment"
-            app:destination="@+id/fragment_solaroid_create"/>
 
         <action
             android:id="@+id/action_galleryFragment_to_detailFragment"
@@ -35,6 +32,7 @@
             app:destination="@+id/fragment_solaroid_gallery"
             app:popUpTo="@+id/fragment_solaroid_gallery"
             app:popUpToInclusive="true"/>
+
 
     </fragment>
 

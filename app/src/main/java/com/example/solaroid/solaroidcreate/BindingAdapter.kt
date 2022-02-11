@@ -1,7 +1,11 @@
 package com.example.solaroid.solaroidcreate
 
+import android.net.Uri
 import android.widget.EditText
+import android.widget.ImageView
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 import com.example.solaroid.R
 
 
@@ -19,3 +23,14 @@ import com.example.solaroid.R
 //    }
 //}
 //
+
+
+@BindingAdapter("setImage")
+fun bindImage (imageView: ImageView, imgUri: Uri?) {
+    imgUri?.let {
+
+        Glide.with(imageView.context)
+            .load(imgUri)
+            .into(imageView)
+    }
+}

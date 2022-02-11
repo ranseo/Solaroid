@@ -1,5 +1,6 @@
 package com.example.solaroid.database
 
+import android.net.Uri
 import android.widget.ImageView
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,7 +9,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "photo_ticket_table")
 data class PhotoTicket(
     @PrimaryKey(autoGenerate = true) var id : Long =0L,
-    var photo: Boolean,
+    var photo: String,
     var frontText : String,
     var backText: String,
     var date : String,

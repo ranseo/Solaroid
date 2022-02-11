@@ -55,6 +55,7 @@
 
             <ImageView
                 android:id="@+id/solaroid_photo"
+                setImage="@{photoTicket.photo}"
                 android:layout_width="173dp"
                 android:layout_height="234dp"
                 android:layout_marginLeft="24dp"
@@ -62,7 +63,7 @@
                 android:layout_marginRight="24dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/tmp_photo_image"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.489"
                 app:layout_constraintStart_toStartOf="parent"

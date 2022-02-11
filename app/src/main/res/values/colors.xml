@@ -12,4 +12,7 @@
 <!--    솔라로이드 기본 컬러-->
     <color name="pink">#E08CF8</color>
     <color name="border_color">#BAE8E6E6</color>
+
+<!--    솔라로이드 포토 크리에이트 레이아웃-->
+    <color name="image_capture_btn_background">#000F0F0F</color>
 </resources>

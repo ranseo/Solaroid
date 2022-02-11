@@ -1,10 +1,8 @@
 package com.example.solaroid.solaroidcreate
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.net.Uri
+import androidx.lifecycle.*
 import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.PhotoTicketDao
@@ -19,11 +17,32 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     val photoTicket: LiveData<PhotoTicket?>
         get() = _photoTicket
 
+    private val _startImageCapture = MutableLiveData<Boolean>()
+    val startImageCapture : LiveData<Boolean>
+        get() = _startImageCapture
+
+
+    //Image를 capture에 성공하면 해당 프로퍼티에 uri를 설정.
+    private val _capturedImageUri = MutableLiveData<Uri?>(null)
+    val capturedImageUri : LiveData<Uri?>
+        get() = _capturedImageUri
+
+    //이미지 캡처 성공 시, view visibility 전환.
+
+    val isLayoutCaptureVisible = Transformations.map(_capturedImageUri) {
+        it == null
+    }
+
+    val isLayoutCreateVisible = Transformations.map(_capturedImageUri) {
+        it != null
+    }
+
     private var frontText: String = ""
     private var backText: String = ""
 
 
     val today = convertTodayToFormatted(System.currentTimeMillis(), application.resources)
+
 
     private suspend fun insert(photoTicket: PhotoTicket) {
         database.insert(photoTicket)
@@ -49,18 +68,47 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
         backText= s.toString()
     }
 
-    fun onClick() {
+/*    fun onClick() {
         viewModelScope.launch {
             val newPhotoTicket =
                 PhotoTicket(photo = true, date = today, frontText = frontText, backText = backText)
             insert(newPhotoTicket)
             _photoTicket.value = getLatestPhotoTicket()
         }
+    }*/
+
+    fun setCapturedImageUri(savedUri : Uri) {
+        _capturedImageUri.value = savedUri
+    }
+
+
+    fun onImageCapture() {
+        _startImageCapture.value = true
+    }
+
+    fun stopImageCapture() {
+        _startImageCapture.value = false
+    }
+
+    fun onImageSave() {
+        viewModelScope.launch {
+            val newPhotoTicket =
+                PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText)
+            insert(newPhotoTicket)
+            _photoTicket.value = getLatestPhotoTicket()
+
+            forReadyNewImage()
+        }
+    }
+
+    fun forReadyNewImage() {
+        _capturedImageUri.value = null
     }
 
     fun doneNavigateToGalleryFragment() {
         _photoTicket.value = null
     }
+
 
 
 }
