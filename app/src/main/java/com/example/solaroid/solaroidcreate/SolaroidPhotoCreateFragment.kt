@@ -63,7 +63,10 @@ class SolaroidPhotoCreateFragment : Fragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        startCamera()
+        viewModel.cameraConverter.observe(viewLifecycleOwner, Observer{
+            startCamera(it)
+        })
+
 
         viewModel.startImageCapture.observe(viewLifecycleOwner, Observer {
             if (it) {
@@ -76,7 +79,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
         return binding.root
     }
 
-    private fun startCamera() {
+    private fun startCamera(cameraConverter:Boolean) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(application)
 
         cameraProviderFuture.addListener({
@@ -88,7 +91,12 @@ class SolaroidPhotoCreateFragment : Fragment() {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
 
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val cameraSelector = if(!cameraConverter) {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            } else {
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            }
+
 
             imageCapture = ImageCapture.Builder().build()
 

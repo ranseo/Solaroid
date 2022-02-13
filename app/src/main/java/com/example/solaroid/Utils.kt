@@ -3,14 +3,11 @@ package com.example.solaroid
 
 import android.content.res.Resources
 import com.example.solaroid.database.PhotoTicket
-import com.example.solaroid.database.PhotoTicketDao
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
-fun convertTodayToFormatted(currentTimeMilli : Long, res: Resources): String {
-    val weekdayString = SimpleDateFormat("yyyy.MM.DD.(E)", Locale.getDefault()).format(currentTimeMilli)
-    return weekdayString
+fun convertTodayToFormatted(currentTimeMilli: Long, res: Resources): String {
+    return SimpleDateFormat("yyyy.MM.dd.(E)", Locale.getDefault()).format(currentTimeMilli)
 }
 
 fun convertPhotoTicketToToastString(photoTicket: PhotoTicket, res:Resources) : String {

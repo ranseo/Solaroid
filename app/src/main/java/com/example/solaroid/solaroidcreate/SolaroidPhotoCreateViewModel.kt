@@ -27,6 +27,13 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     val capturedImageUri : LiveData<Uri?>
         get() = _capturedImageUri
 
+
+    //버튼클릭 시 카메라 셀렉터 전환. (BACK <-> FRONT) , false->BACK, true->FRONT
+    private val _cameraConverter = MutableLiveData<Boolean>(false)
+    val cameraConverter : LiveData<Boolean>
+        get() = _cameraConverter
+
+
     //이미지 캡처 성공 시, view visibility 전환.
 
     val isLayoutCaptureVisible = Transformations.map(_capturedImageUri) {
@@ -107,6 +114,11 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
 
     fun doneNavigateToGalleryFragment() {
         _photoTicket.value = null
+    }
+
+    fun convertCameraSelector() {
+        val toggle = cameraConverter.value!!
+        _cameraConverter.value = !toggle
     }
 
 
