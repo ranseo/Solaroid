@@ -22,7 +22,11 @@ class SolaroidFrameAdapter(val clickListener: OnClickListener) :
         //holder.binding.executePendingBindings()
     }
 
+    fun getPhotoTicket(position: Int) : PhotoTicket = getItem(position)
 
+    override fun getItem(position: Int): PhotoTicket {
+        return super.getItem(position)
+    }
 
     class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) : RecyclerView.ViewHolder(binding.root) {
 

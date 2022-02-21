@@ -1,18 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+  <color name="primaryColor">#FAB4BE</color>
+  <color name="primaryLightColor">#ffffff</color>
+  <color name="primaryDarkColor">#FDE0E4</color>
+  <color name="secondaryColor">#fce4ec</color>
+  <color name="secondaryLightColor">#ffffff</color>
+  <color name="secondaryDarkColor">#c9b2ba</color>
+  <color name="primaryTextColor">#000000</color>
+  <color name="secondaryTextColor">#000000</color>
 
-
-<!--    솔라로이드 기본 컬러-->
-    <color name="pink">#E08CF8</color>
-    <color name="border_color">#BAE8E6E6</color>
-
-<!--    솔라로이드 포토 크리에이트 레이아웃-->
-    <color name="image_capture_btn_background">#000F0F0F</color>
+  <color name="image_capture_btn_background">#00ffffff</color>
+  <color name="black">#000000</color>
+  <color name="border_color">#454545</color>
+  <color name="white">#ffffff</color>
+  <color name="bot_navi_color">#B5FFFFFF</color>
 </resources>
