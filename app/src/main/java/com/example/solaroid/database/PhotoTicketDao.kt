@@ -18,6 +18,10 @@ interface PhotoTicketDao {
     @Query("SELECT * FROM photo_ticket_table ORDER BY id DESC")
     fun getAllPhotoTicket() : LiveData<List<PhotoTicket>>
 
+    //즐겨찾기 표시된 포토티켓만 정렬
+    @Query("SELECT * FROM photo_ticket_table WHERE favorite == :favorite ORDER BY id DESC")
+    fun getFavoritePhotoTicket(favorite:Boolean) : LiveData<List<PhotoTicket>>
+
     //제일 최근에 만든 포토티켓
     @Query("SELECT * FROM photo_ticket_table ORDER BY id DESC LIMIT 1")
     suspend fun getLatestTicket() : PhotoTicket?
@@ -29,5 +33,6 @@ interface PhotoTicketDao {
     //유저가 원하는 포토티켓
     @Query("SELECT * FROM photo_ticket_table WHERE :key == id")
     suspend fun getPhotoTicket(key:Long) : PhotoTicket
+
 
 }

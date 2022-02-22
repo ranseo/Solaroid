@@ -3,6 +3,8 @@ package com.example.solaroid.solaroidframe
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
@@ -18,7 +20,7 @@ import com.example.solaroid.databinding.FragmentSolaroidFrameBinding
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 
-class SolaroidFrameFragment : Fragment() {
+class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener{
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
     private lateinit var viewModel: SolaroidFrameViewModel
@@ -56,17 +58,34 @@ class SolaroidFrameFragment : Fragment() {
             }
         })
 
+        //
+        viewModel.tmp.observe(viewLifecycleOwner, Observer{
+            it.value?.let { it1 -> viewModel.tmpFunction(it1) }
+        })
+
+        //현재 페이지의 포토티켓 즐겨찾기 여부를 확인.
         viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
             it?.let {
                 Log.d("FrameFragment", "viewModel.photoTicket.observe  : ${it.id}")
-                viewModel.setCurrentFavorite(it.favorites)
+                viewModel.setCurrentFavorite(it.favorite)
             }
 
         })
 
+        //popUp Menu
+        viewModel.popUpMenu.observe(viewLifecycleOwner, Observer{
+            if(it) {
+                popupShow(binding.popupMenuFilter)
+                viewModel.doneFilterPopupMenu()
+            }
+        })
+
+
+        //얘도정리
         viewModel.favorite.observe(viewLifecycleOwner, Observer { favor ->
             favor?.let {
                 Log.d("FrameFragment", "viewModel.favorite.observe  : ${favor}")
+                //getItem은 오류 findItem이랑 다른듯.!
                 val menuItem: MenuItem = binding.fragmentFrameBottomNavi.menu.findItem(R.id.favorite)
                 menuItem.setIcon(if (!it) R.drawable.ic_favorite_false else R.drawable.ic_favorite_true)
                 Log.d("FrameFragment", "Success")
@@ -100,4 +119,30 @@ class SolaroidFrameFragment : Fragment() {
 
         return binding.root
     }
+
+    fun popupShow(view:View) {
+        val popUp = PopupMenu(this.activity,view)
+        popUp.setOnMenuItemClickListener(this@SolaroidFrameFragment)
+        popUp.menuInflater.inflate(R.menu.fragment_frame_popup_menu, popUp.menu)
+        popUp.show()
+    }
+
+    override fun onMenuItemClick(p0: MenuItem?): Boolean {
+        return when(p0?.itemId) {
+            R.id.filter_lately -> {
+                viewModel.sortByFilter(PhotoTicketFilter.LATELY)
+                Toast.makeText(this.activity, "최신순", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.filter_favorite -> {
+                viewModel.sortByFilter(PhotoTicketFilter.FAVORITE)
+                Toast.makeText(this.activity, "즐겨찾기", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> false
+        }
+    }
+
+
+
 }

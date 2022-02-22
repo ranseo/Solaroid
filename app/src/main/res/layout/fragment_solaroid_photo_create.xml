@@ -47,7 +47,7 @@
                 android:layout_height="72dp"
                 android:layout_gravity="bottom|center"
                 android:layout_marginBottom="24dp"
-                android:backgroundTint="@color/image_capture_btn_background"
+                android:backgroundTint="@color/image_btn_background"
                 android:onClick="@{()->viewmodel.onImageCapture()}"
                 android:scaleType="fitCenter"
                 android:src="@drawable/image_capture"
@@ -167,7 +167,7 @@
                     android:layout_height="72dp"
                     android:layout_gravity="bottom|center"
                     android:layout_marginBottom="24dp"
-                    android:backgroundTint="@color/image_capture_btn_background"
+                    android:backgroundTint="@color/image_btn_background"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_photo_save" />
 
@@ -180,7 +180,7 @@
                     android:layout_marginBottom="24dp"
                     android:layout_marginEnd="64dp"
                     android:scaleType="fitCenter"
-                    android:backgroundTint="@color/image_capture_btn_background"
+                    android:backgroundTint="@color/image_btn_background"
                     android:src="@drawable/baseline_change_circle_black_24" />
 
 

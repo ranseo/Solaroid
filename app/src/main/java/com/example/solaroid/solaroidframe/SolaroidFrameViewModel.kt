@@ -10,10 +10,24 @@ import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.PhotoTicketDao
 import kotlinx.coroutines.launch
 
+enum class PhotoTicketFilter {
+    LATELY,
+    FAVORITE
+}
+
 class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Application) : ViewModel() {
 
     val database = dataSource
-    val photoTickets = database.getAllPhotoTicket()
+
+
+    private val _tmp = MutableLiveData(database.getAllPhotoTicket())
+    val tmp : LiveData<LiveData<List<PhotoTicket>>>
+        get() = _tmp
+    //adapter에 item으로 전달될 LiveData
+    private val _photoTickets = MutableLiveData<List<PhotoTicket>>()
+    val photoTickets : LiveData<List<PhotoTicket>>
+        get() = _photoTickets
+
 
     //포토티켓의 favorite을 할당하는 변ㅅ수
     private val _favorite = MutableLiveData<Boolean?>()
@@ -24,6 +38,20 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
         get() = _photoTicket
+
+    //버튼 클릭 시, popup Menu
+    private val _popUpMenu = MutableLiveData<Boolean>(false)
+    val popUpMenu: LiveData<Boolean>
+        get() = _popUpMenu
+
+
+    init {
+        sortByFilter(PhotoTicketFilter.LATELY)
+    }
+
+
+    //popup menu 정렬 클릭 시, 최신순 정렬
+
 
     private val _navigateToDetailFrag = MutableLiveData<Long?>()
     val navigateToDetailFrag: LiveData<Long?>
@@ -50,15 +78,38 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     }
 
 
-
     //favorite(즐겨찾기) 값에 따라서 photoTicket를 업데이트하고, 현재 photoTicket값 갱신
     fun togglePhotoTicketFavorite(favorite: Boolean) {
         viewModelScope.launch {
             _photoTicket.value?.let {
-                it.favorites = favorite
+                it.favorite = favorite
                 update(it)
                 _photoTicket.value = getPhotoTicket(it.id)
                 Log.d("FrameViewModel", "togglePhotoTicket ${photoTicket.value?.id} : ${favorite}")
+            }
+        }
+    }
+
+    fun onFilterPopupMenu() {
+        _popUpMenu.value = true
+    }
+
+    fun doneFilterPopupMenu() {
+        _popUpMenu.value = false
+    }
+
+    fun sortByFilter(filter: PhotoTicketFilter) {
+        viewModelScope.launch {
+            when (filter) {
+
+                PhotoTicketFilter.LATELY -> {
+                    _tmp.value = database.getAllPhotoTicket()
+                    Log.d("sortByFilter", "LATELY")
+                }
+                PhotoTicketFilter.FAVORITE -> {
+                    _tmp.value =  database.getFavoritePhotoTicket(true)
+                    Log.d("sortByFilter", "FAVORITE")
+                }
             }
         }
     }
@@ -68,7 +119,12 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         database.update(photoTicket)
     }
 
-    suspend fun getPhotoTicket(key:Long) : PhotoTicket = database.getPhotoTicket(key)
+    suspend fun getPhotoTicket(key: Long): PhotoTicket = database.getPhotoTicket(key)
+
+
+    fun tmpFunction(photoTicketList:List<PhotoTicket>) {
+        _photoTickets.value = photoTicketList
+    }
 
 
 }

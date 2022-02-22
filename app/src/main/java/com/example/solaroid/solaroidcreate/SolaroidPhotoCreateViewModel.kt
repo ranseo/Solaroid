@@ -100,7 +100,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     fun onImageSave() {
         viewModelScope.launch {
             val newPhotoTicket =
-                PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText, favorites = false)
+                PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText, favorite = false)
             insert(newPhotoTicket)
             _photoTicket.value = getLatestPhotoTicket()
 

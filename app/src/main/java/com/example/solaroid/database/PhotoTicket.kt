@@ -13,7 +13,7 @@ data class PhotoTicket(
     var frontText : String,
     var backText: String,
     var date : String,
-    var favorites : Boolean = false
+    var favorite : Boolean = false
 ) {
 
 }
