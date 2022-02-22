@@ -58,10 +58,6 @@ class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener{
             }
         })
 
-        //
-        viewModel.tmp.observe(viewLifecycleOwner, Observer{
-            it.value?.let { it1 -> viewModel.tmpFunction(it1) }
-        })
 
         //현재 페이지의 포토티켓 즐겨찾기 여부를 확인.
         viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
@@ -130,12 +126,12 @@ class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener{
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
         return when(p0?.itemId) {
             R.id.filter_lately -> {
-                viewModel.sortByFilter(PhotoTicketFilter.LATELY)
+                viewModel.setPhotoTicketFilter(PhotoTicketFilter.LATELY)
                 Toast.makeText(this.activity, "최신순", Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.filter_favorite -> {
-                viewModel.sortByFilter(PhotoTicketFilter.FAVORITE)
+                viewModel.setPhotoTicketFilter(PhotoTicketFilter.FAVORITE)
                 Toast.makeText(this.activity, "즐겨찾기", Toast.LENGTH_SHORT).show()
                 true
             }

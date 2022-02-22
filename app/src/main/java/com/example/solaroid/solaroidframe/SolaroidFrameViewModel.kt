@@ -2,10 +2,7 @@ package com.example.solaroid.solaroidframe
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.PhotoTicketDao
 import kotlinx.coroutines.launch
@@ -20,17 +17,19 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val database = dataSource
 
 
-    private val _tmp = MutableLiveData(database.getAllPhotoTicket())
-    val tmp : LiveData<LiveData<List<PhotoTicket>>>
-        get() = _tmp
+    private val _photoTicketFilter = MutableLiveData<PhotoTicketFilter>()
+    val photoTicketFilter: LiveData<PhotoTicketFilter>
+        get() = _photoTicketFilter
+
+
     //adapter에 item으로 전달될 LiveData
-    private val _photoTickets = MutableLiveData<List<PhotoTicket>>()
-    val photoTickets : LiveData<List<PhotoTicket>>
-        get() = _photoTickets
+    private val _photoTickets = database.getAllPhotoTicket()
+    val photoTickets = Transformations.switchMap(_photoTickets) {
+        sortByFilter(it)
+    }
 
 
-    //포토티켓의 favorite을 할당하는 변ㅅ수
-    private val _favorite = MutableLiveData<Boolean?>()
+    val _favorite = MutableLiveData<Boolean?>()
     val favorite: LiveData<Boolean?>
         get() = _favorite
 
@@ -43,11 +42,6 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     private val _popUpMenu = MutableLiveData<Boolean>(false)
     val popUpMenu: LiveData<Boolean>
         get() = _popUpMenu
-
-
-    init {
-        sortByFilter(PhotoTicketFilter.LATELY)
-    }
 
 
     //popup menu 정렬 클릭 시, 최신순 정렬
@@ -98,33 +92,37 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         _popUpMenu.value = false
     }
 
-    fun sortByFilter(filter: PhotoTicketFilter) {
-        viewModelScope.launch {
-            when (filter) {
 
-                PhotoTicketFilter.LATELY -> {
-                    _tmp.value = database.getAllPhotoTicket()
-                    Log.d("sortByFilter", "LATELY")
+    private fun sortByFilter(photoTickets: List<PhotoTicket>): LiveData<List<PhotoTicket>> {
+        Log.d("SortByFilter", "함수에 진입.")
+        val liveData: MutableLiveData<List<PhotoTicket>> = MutableLiveData()
+        when (photoTicketFilter.value) {
+            PhotoTicketFilter.FAVORITE -> {
+                liveData.run {
+                    value = photoTickets.filter { it.favorite }
                 }
-                PhotoTicketFilter.FAVORITE -> {
-                    _tmp.value =  database.getFavoritePhotoTicket(true)
-                    Log.d("sortByFilter", "FAVORITE")
+                Log.d("SortByFilter", "즐겨찾기에 진입.")
+            }
+            else -> {
+                liveData.run {
+                    value = photoTickets
                 }
+                Log.d("SortByFilter", "else 에 진입.")
             }
         }
+        return liveData
     }
 
+
+    fun setPhotoTicketFilter(filter: PhotoTicketFilter) {
+        _photoTicketFilter.value = filter
+    }
 
     suspend fun update(photoTicket: PhotoTicket) {
         database.update(photoTicket)
     }
 
     suspend fun getPhotoTicket(key: Long): PhotoTicket = database.getPhotoTicket(key)
-
-
-    fun tmpFunction(photoTicketList:List<PhotoTicket>) {
-        _photoTickets.value = photoTicketList
-    }
 
 
 }
