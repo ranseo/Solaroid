@@ -28,6 +28,8 @@ class SolaroidFrameAdapter(val clickListener: OnClickListener) :
         return super.getItem(position)
     }
 
+
+
     class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PhotoTicket, clickListener: OnClickListener) {

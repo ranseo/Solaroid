@@ -17,19 +17,14 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val database = dataSource
 
 
-    private val _photoTicketFilter = MutableLiveData<PhotoTicketFilter>()
-    val photoTicketFilter: LiveData<PhotoTicketFilter>
-        get() = _photoTicketFilter
+
+    private var photoTicketFilter = PhotoTicketFilter.LATELY
 
 
     //adapter에 item으로 전달될 LiveData
-    private val _photoTickets = database.getAllPhotoTicket()
-    val photoTickets = Transformations.switchMap(_photoTickets) {
-        sortByFilter(it)
-    }
+    var photoTickets = database.getAllPhotoTicket()
 
-
-    val _favorite = MutableLiveData<Boolean?>()
+    private val _favorite = MutableLiveData<Boolean?>()
     val favorite: LiveData<Boolean?>
         get() = _favorite
 
@@ -44,21 +39,26 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         get() = _popUpMenu
 
 
-    //popup menu 정렬 클릭 시, 최신순 정렬
-
 
     private val _navigateToDetailFrag = MutableLiveData<Long?>()
     val navigateToDetailFrag: LiveData<Long?>
         get() = _navigateToDetailFrag
 
+    //즐겨찾기 또는 최신순 정렬을 위한 Toggle 설정. -> 해당 toggle이 변화하면 submit
+    private val _navigateToFrameFrag = MutableLiveData<Boolean>(false)
+    val navigateToFrameFrag : LiveData<Boolean>
+        get() = _navigateToFrameFrag
 
-    fun naviToDetail(photoTicketKey: Long) {
-        _navigateToDetailFrag.value = photoTicketKey
+
+    init {
     }
 
-    fun doneNaviToDetailFrag() {
-        _navigateToDetailFrag.value = null
+    private fun initPhotoTickets(filter:PhotoTicketFilter) {
+        sortByFilter(filter)
     }
+
+
+
 
     fun setCurrentPhotoTicket(curr: PhotoTicket) {
         Log.d("FrameViewModel", "setCurrentPhotoTicket ${curr.id}")
@@ -84,6 +84,21 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         }
     }
 
+
+     fun sortByFilter(filter:PhotoTicketFilter){
+            photoTickets = when(filter) {
+                PhotoTicketFilter.LATELY -> {
+                    Log.d("sortByFilter", "LATELY SUCCESS")
+                    database.getAllPhotoTicket()
+                }
+                PhotoTicketFilter.FAVORITE -> {
+                    Log.d("sortByFilter", "FAVORITE SUCCESS")
+                    database.getFavoritePhotoTicket(true)
+                }
+            }
+    }
+
+    //
     fun onFilterPopupMenu() {
         _popUpMenu.value = true
     }
@@ -93,30 +108,37 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     }
 
 
-    private fun sortByFilter(photoTickets: List<PhotoTicket>): LiveData<List<PhotoTicket>> {
-        Log.d("SortByFilter", "함수에 진입.")
-        val liveData: MutableLiveData<List<PhotoTicket>> = MutableLiveData()
-        when (photoTicketFilter.value) {
-            PhotoTicketFilter.FAVORITE -> {
-                liveData.run {
-                    value = photoTickets.filter { it.favorite }
-                }
-                Log.d("SortByFilter", "즐겨찾기에 진입.")
-            }
-            else -> {
-                liveData.run {
-                    value = photoTickets
-                }
-                Log.d("SortByFilter", "else 에 진입.")
-            }
-        }
-        return liveData
-    }
 
 
+    //포토티켓 필터 set
     fun setPhotoTicketFilter(filter: PhotoTicketFilter) {
-        _photoTicketFilter.value = filter
+        photoTicketFilter = filter
+        Log.d("setPhotoTicketFilter", "${photoTicketFilter}")
     }
+
+
+//    네비게이션 함수.
+
+    fun naviToDetail(photoTicketKey: Long) {
+        _navigateToDetailFrag.value = photoTicketKey
+    }
+
+    fun doneNaviToDetailFrag() {
+        _navigateToDetailFrag.value = null
+    }
+
+    fun naviToFrame(navi: Boolean) {
+        _navigateToFrameFrag.value = navi
+    }
+
+    fun doneNaviToFrameFrag() {
+        _navigateToFrameFrag.value = false
+    }
+
+    /////////////////////////////////////////////////////////////////
+
+
+
 
     suspend fun update(photoTicket: PhotoTicket) {
         database.update(photoTicket)
