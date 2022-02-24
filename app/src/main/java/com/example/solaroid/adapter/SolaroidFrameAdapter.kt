@@ -1,5 +1,6 @@
 package com.example.solaroid.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -22,17 +23,18 @@ class SolaroidFrameAdapter(val clickListener: OnClickListener) :
         //holder.binding.executePendingBindings()
     }
 
-    fun getPhotoTicket(position: Int) : PhotoTicket = getItem(position)
-
-    override fun getItem(position: Int): PhotoTicket {
-        return super.getItem(position)
+    fun getPhotoTicket(position: Int): PhotoTicket? {
+        if(itemCount==0) return null
+        val photoTicket = getItem(position)
+        Log.d("favoriteFrame", "getPhotoTicket: ${photoTicket?.id}")
+        return photoTicket
     }
 
 
+    class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(item: PhotoTicket, clickListener: OnClickListener) {
+        fun bind(item: PhotoTicket?, clickListener: OnClickListener) {
             this.binding.photoTicket = item
             this.binding.clickListener = clickListener
         }

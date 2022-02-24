@@ -16,11 +16,11 @@ interface PhotoTicketDao {
 
     //최신순 정렬
     @Query("SELECT * FROM photo_ticket_table ORDER BY id DESC")
-    fun getAllPhotoTicket() : LiveData<List<PhotoTicket>>
+    fun getAllPhotoTicket() : LiveData<List<PhotoTicket>?>
 
     //즐겨찾기 표시된 포토티켓만 정렬
     @Query("SELECT * FROM photo_ticket_table WHERE favorite == :favorite ORDER BY id DESC")
-    fun getFavoritePhotoTicket(favorite:Boolean) : LiveData<List<PhotoTicket>>
+    fun getFavoritePhotoTicket(favorite:Boolean) : LiveData<List<PhotoTicket>?>
 
     //제일 최근에 만든 포토티켓
     @Query("SELECT * FROM photo_ticket_table ORDER BY id DESC LIMIT 1")

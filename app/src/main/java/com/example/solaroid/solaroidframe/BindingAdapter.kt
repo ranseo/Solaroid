@@ -12,9 +12,8 @@ import com.example.solaroid.database.PhotoTicket
 fun bindViewPager(viewPager : ViewPager2, photoTickets:List<PhotoTicket>?) {
     val adapter = viewPager.adapter as SolaroidFrameAdapter
     photoTickets?.let{
-        adapter.submitList(photoTickets)
+        adapter.submitList(it)
     }
-
 }
 
 

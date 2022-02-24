@@ -18,8 +18,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidFrameAdapter
+import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 
 open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
@@ -60,11 +64,12 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
         //adapter click event 설정
         navigateToDetailFragment(viewModel)
 
-        viewModel.navigateToFrameFrag.observe(viewLifecycleOwner, Observer{
+        viewModel.navigateToFrameFrag.observe(viewLifecycleOwner, Observer {
             if(it) {
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameFragmentToFrameFavoriteFragment()
                 )
+                Log.d("Frame","NavigateToFrameFrag : Success")
                 viewModel.doneNaviToFrameFrag()
             }
         })
@@ -73,10 +78,10 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
         observePhotoTicket(viewModel)
 
         //popUp Menu 호출
-        observePopupMenu(viewModel,binding)
+        observePopupMenu(viewModel, binding)
 
         //얘도정리
-        observeFavorite(viewModel,binding)
+        observeFavorite(viewModel, binding)
 
 
         //02.21 얘도정리.
@@ -89,24 +94,6 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
         return binding.root
     }
 
-    /**
-     * bottomNavigation의 item Selection별 기능 구현 함수.
-     * 1.선택한 item이 favorite 일 때, viewModel의 favorite 값의 !favorite 값을 viewModel의 togglePhotoTicketFavorite() 호출하여 인자로 넘겨줌.
-     * */
-    open fun setOnItemSelectedListener(viewModel: SolaroidFrameViewModel,binding: FragmentSolaroidFrameBinding) {
-        binding.fragmentFrameBottomNavi.setOnItemSelectedListener {
-            if (it.itemId == R.id.favorite) {
-                val favorite = viewModel.favorite.value
-                if (favorite != null) {
-                    if (favorite) viewModel.togglePhotoTicketFavorite(false) else viewModel.togglePhotoTicketFavorite(
-                        true
-                    )
-                }
-
-            }
-            false
-        }
-    }
 
     /**
      * binding된 viewPager의 selected page의 PhotoTicket 객체를 추출. -> viewModel의 setCurrentPhotoTicket() 호출하여 인자로 넘겨줌.
@@ -118,10 +105,68 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
     ) {
         binding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                Log.d("FrameFragment", "onPageSelected, position: ${position}")
                 super.onPageSelected(position)
                 val photoTicket = adapter.getPhotoTicket(position)
-                Log.d("FrameFragment", "onPageSelected, photoTicket id : ${photoTicket.id}")
-                viewModel.setCurrentPhotoTicket(photoTicket)
+                Log.d("FrameFragment", "onPageSelected, photoTicket id : ${photoTicket?.id}")
+                photoTicket?.let {
+                    viewModel.setCurrentPhotoTicket(photoTicket)
+                }
+            }
+        })
+    }
+
+
+    /**
+     * viewModel의 popUpMenu 프로퍼티를 관찰.
+     * 현재 기능 : popUpMenu 값이 True로 바뀌었을 시, popupShow() 호출 뒤, viewModel의 doneFilterPopupMenu() 호출
+     * */
+    protected open fun observePopupMenu(
+        viewModel: SolaroidFrameViewModel,
+        binding: FragmentSolaroidFrameBinding
+    ) {
+        viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                popupShow(binding.popupMenuFilter)
+                viewModel.doneFilterPopupMenu()
+            }
+        })
+    }
+
+
+    /**
+     * bottomNavigation의 item Selection별 기능 구현 함수.
+     * 1.선택한 item이 favorite 일 때, viewModel의 favorite 값의 !favorite 값을 viewModel의 togglePhotoTicketFavorite() 호출하여 인자로 넘겨줌.
+     * */
+    open fun setOnItemSelectedListener(
+        viewModel: SolaroidFrameViewModel,
+        binding: FragmentSolaroidFrameBinding
+    ) {
+        binding.fragmentFrameBottomNavi.setOnItemSelectedListener {
+            if (it.itemId == R.id.favorite) {
+                val favorite = viewModel.favorite.value
+                if (favorite != null) {
+                    if (favorite) {
+                        viewModel.togglePhotoTicketFavorite(false)
+                    } else viewModel.togglePhotoTicketFavorite(
+                        true
+                    )
+                }
+
+            }
+            false
+        }
+    }
+
+    /**
+     * viewModel의 photoTicket 프로퍼티를 관찰.
+     * 현재 기능 : photoTicket 데이터 변경 시, viewModel의 setCurrentFavorite 함수 호출 후, 현재 photoTicket의 favorite 값 인자로 넘겨줌.
+     */
+    protected open fun observePhotoTicket(viewModel: SolaroidFrameViewModel) {
+        viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                Log.d("FrameFragment", "viewModel.photoTicket.observe  : ${it.id}")
+                viewModel.setCurrentFavorite(it.favorite)
             }
         })
     }
@@ -130,7 +175,10 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
      * viewModel의 favorite 프로퍼티 관찰.
      * 1.현재 viewPager's page 내 photoTicket의 favorite 값에 따라 bottomNavi의 menuItem "즐겨찾기" 의 Icon을 변경.
      * */
-    protected open fun observeFavorite(viewModel:SolaroidFrameViewModel ,binding: FragmentSolaroidFrameBinding) {
+    protected open fun observeFavorite(
+        viewModel: SolaroidFrameViewModel,
+        binding: FragmentSolaroidFrameBinding
+    ) {
         viewModel.favorite.observe(viewLifecycleOwner, Observer { favor ->
             favor?.let {
                 Log.d("FrameFragment", "viewModel.favorite.observe  : ${favor}")
@@ -143,38 +191,11 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
         })
     }
 
-    /**
-     * viewModel의 popUpMenu 프로퍼티를 관찰.
-     * 현재 기능 : popUpMenu 값이 True로 바뀌었을 시, popupShow() 호출 뒤, viewModel의 doneFilterPopupMenu() 호출
-     * */
-    protected open fun observePopupMenu(viewModel:SolaroidFrameViewModel, binding: FragmentSolaroidFrameBinding) {
-        viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                popupShow(binding.popupMenuFilter)
-                viewModel.doneFilterPopupMenu()
-            }
-        })
-    }
-
-    /**
-     * viewModel의 photoTicket 프로퍼티를 관찰.
-     * 현재 기능 : photoTicket 데이터 변경 시, viewModel의 setCurrentFavorite 함수 호출 후, 현재 photoTicket의 favorite 값 인자로 넘겨줌.
-     */
-    protected open fun observePhotoTicket(viewModel:SolaroidFrameViewModel) {
-        viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                Log.d("FrameFragment", "viewModel.photoTicket.observe  : ${it.id}")
-                viewModel.setCurrentFavorite(it.favorite)
-            }
-
-        })
-    }
-
 
     /**
      * adapter viewHolder 의 itemList 를 click 시, SolaroidDetailFragment 탐색.
      */
-    protected open fun navigateToDetailFragment(viewModel:SolaroidFrameViewModel) {
+    protected open fun navigateToDetailFragment(viewModel: SolaroidFrameViewModel) {
         viewModel.navigateToDetailFrag.observe(viewLifecycleOwner, Observer {
             it?.let {
                 findNavController().navigate(
@@ -200,7 +221,8 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
                 viewModel.naviToFrame(true)
                 true
             }
-            else -> false
+            else -> true
+
         }
     }
 
@@ -232,7 +254,8 @@ class SolaroidFrameFavoriteFragment : SolaroidFrameFragment(), PopupMenu.OnMenuI
         val dataSource = SolaroidDatabase.getInstance(application)
 
 
-        favoriteViewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
+        favoriteViewModelFactory =
+            SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         favoriteViewModel = ViewModelProvider(
             this.requireActivity(),
             favoriteViewModelFactory
@@ -247,41 +270,88 @@ class SolaroidFrameFavoriteFragment : SolaroidFrameFragment(), PopupMenu.OnMenuI
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewpager.adapter = adapter
 
-        favoriteViewModel .navigateToFrameFrag.observe(viewLifecycleOwner, Observer{
-            if(it) {
+        favoriteViewModel.navigateToFrameFrag.observe(viewLifecycleOwner, Observer {
+            if (it) {
                 findNavController().navigate(
                     SolaroidFrameFavoriteFragmentDirections.actionFrameFavoriteFragmentToFrameFragment()
                 )
-                favoriteViewModel .doneNaviToFrameFrag()
+                Log.d("FavoriteFrame","NavigateToFrameFrag : Success")
+                favoriteViewModel.doneNaviToFrameFrag()
+            }
+        })
+
+        favoriteViewModel.currentPosition.observe(viewLifecycleOwner, Observer { it ->
+            if (it >= 0 && it < adapter.itemCount) {
+                Log.d("FavoriteFrame", "currentePosition : ${it}")
+                val photoTicket = adapter.getPhotoTicket(it)
+                photoTicket?.let { it2 ->
+                    Log.d("FavoriteFrame", "photoTicketID : ${it2.id}")
+                    favoriteViewModel.setCurrentPhotoTicket(it2)
+                }
+            } else {
+                favoriteViewModel.setCurrentFavorite(false)
             }
         })
 
 
         //adapter click event 설정
-        navigateToDetailFragment(favoriteViewModel )
+        navigateToDetailFragment(favoriteViewModel)
 
         //현재 페이지의 포토티켓 즐겨찾기 여부를 확인.
-        observePhotoTicket(favoriteViewModel )
+        observePhotoTicket(favoriteViewModel)
 
         //popUp Menu 호출
-        observePopupMenu(favoriteViewModel ,binding)
+        observePopupMenu(favoriteViewModel, binding)
 
         //얘도정리
-        observeFavorite(favoriteViewModel ,binding)
+        observeFavorite(favoriteViewModel, binding)
 
 
         //02.21 얘도정리.
-        registerOnPageChangeCallback(favoriteViewModel,binding, adapter)
+        registerOnPageChangeCallback(favoriteViewModel, binding, adapter)
 
 
         //02.21 이거정리.
-        setOnItemSelectedListener(favoriteViewModel,binding)
+        setOnItemSelectedListener(favoriteViewModel, binding)
 
 
         return binding.root
     }
 
 
+    override fun navigateToDetailFragment(viewModel: SolaroidFrameViewModel) {
+        viewModel.navigateToDetailFrag.observe(viewLifecycleOwner, Observer{
+            it?.let{
+                SolaroidFrameFavoriteFragmentDirections.actionFrameFavoriteFragmentToDetailFragment(it)
+                viewModel.doneNaviToDetailFrag()
+            }
+
+        })
+    }
+
+    /**
+     * FavoriteFrame에서 즐겨찾기는 반드시 활성화 상태일 수 밖에 없다.
+     * 따라서 bottomNavigation 메뉴 item 을 클릭할 시 즐겨찾기가 해제된다.
+     * 이에 따라, 즐겨찾기를 해재한 뒤 해당 포토티켓을 업데이트 하고, 해당 위치를 기록해놓는다. (기록
+     * 위치를 기록하는 이유는 viewPager.onPageSelected가 해결하지 못하는 부분을 해결하기 위함이다.
+     *
+     * */
+    override fun setOnItemSelectedListener(
+        viewModel: SolaroidFrameViewModel,
+        binding: FragmentSolaroidFrameBinding
+    ) {
+        binding.fragmentFrameBottomNavi.setOnItemSelectedListener {
+            if (it.itemId == R.id.favorite) {
+
+                viewModel.offPhotoTicketFavorite(false)
+                val position = binding.viewpager.currentItem + 1
+                viewModel.setCurrentPositionAfterFavoriteOff(position)
+
+
+            }
+            false
+        }
+    }
 
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
         return when (p0?.itemId) {
@@ -289,9 +359,10 @@ class SolaroidFrameFavoriteFragment : SolaroidFrameFragment(), PopupMenu.OnMenuI
                 favoriteViewModel.sortByFilter(PhotoTicketFilter.LATELY)
                 //Toast.makeText(this.activity, "즐겨찾기", Toast.LENGTH_SHORT).show()
                 favoriteViewModel.naviToFrame(true)
+                Log.d("FavoriteFrame","OnMenuItemClick : ${favoriteViewModel.navigateToFrameFrag.value}")
                 true
             }
-            else -> false
+            else -> true
         }
     }
 }

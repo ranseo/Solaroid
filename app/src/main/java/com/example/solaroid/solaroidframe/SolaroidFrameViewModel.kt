@@ -49,8 +49,14 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val navigateToFrameFrag : LiveData<Boolean>
         get() = _navigateToFrameFrag
 
+    //즐겨찾기 해재 시, 해당 viewPager의 position을 기록 -> 이는 viewPager의 onPageSelected의 문제점을 해결하기 위한 변수
+    private val _currentPosition = MutableLiveData<Int>()
+    val currentPosition : LiveData<Int>
+        get() = _currentPosition
+
 
     init {
+        Log.d("FrameViewModel","Init")
     }
 
     private fun initPhotoTickets(filter:PhotoTicketFilter) {
@@ -79,7 +85,17 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
                 it.favorite = favorite
                 update(it)
                 _photoTicket.value = getPhotoTicket(it.id)
-                Log.d("FrameViewModel", "togglePhotoTicket ${photoTicket.value?.id} : ${favorite}")
+                Log.d("FrameFragment", "togglePhotoTicket ${photoTicket.value?.id} : ${favorite}")
+            }
+        }
+    }
+
+    fun offPhotoTicketFavorite(favorite: Boolean) {
+        viewModelScope.launch {
+            _photoTicket.value?.let {
+                it.favorite = favorite
+                update(it)
+                Log.d("FavoriteFrame", "togglePhotoTicket ${photoTicket.value?.id} : ${favorite}")
             }
         }
     }
@@ -139,6 +155,11 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
 
 
+    fun setCurrentPositionAfterFavoriteOff(position:Int) {
+            _currentPosition.value = position
+
+
+    }
 
     suspend fun update(photoTicket: PhotoTicket) {
         database.update(photoTicket)

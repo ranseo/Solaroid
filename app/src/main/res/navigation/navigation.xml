@@ -88,6 +88,12 @@
             app:popUpTo="@+id/fragment_solaroid_frame_favorite"
             app:popUpToInclusive="true"/>
 
+        <action
+            android:id="@+id/action_frameFavoriteFragment_to_detailFragment"
+            app:destination="@+id/fragment_solaroid_detail"
+            />
+
+
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>
