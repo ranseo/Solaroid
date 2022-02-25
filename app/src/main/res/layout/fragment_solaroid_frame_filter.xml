@@ -17,7 +17,6 @@
         android:layout_height="match_parent"
         >
 
-
         <!--            submitList="@{viewModel.photoTickets}"-->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"

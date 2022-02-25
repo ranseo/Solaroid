@@ -2,32 +2,38 @@ package com.example.solaroid.solaroidframe
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
-import com.example.solaroid.databinding.FragmentSolaroidFrameBinding
+import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 
 class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener{
 
+    companion object {
+        const val TAG_L = "LATELY"
+        const val TAG_F = "FAVORITE"
+
+    }
+
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
     private lateinit var viewModel : SolaroidFrameViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentSolaroidFrameBinding>(inflater, R.layout.fragment_solaroid_frame, container, false)
+        val binding = DataBindingUtil.inflate<FragmentSolaroidFrameContainerBinding>(inflater, R.layout.fragment_solaroid_frame_container, container, false)
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
@@ -37,6 +43,8 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        viewModel.navigateToLately(true)
 
 
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
@@ -48,12 +56,32 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
 
         viewModel.naviToLately.observe(viewLifecycleOwner, Observer {
            if(it) {
+               val lately = childFragmentManager.findFragmentByTag(TAG_L)
+               if(lately==null) {
+                   childFragmentManager.commitNow {
+                       add<SolaroidFrameLately>(R.id.fragment_frame_container_view, TAG_L)
+                   }
+
+                   childFragmentManager.commit {
+                       replace<SolaroidFrameLately>(R.id.fragment_frame_container_view)
+                   }
+               }
                viewModel.doneNavigateToLately()
            }
         })
 
         viewModel.naviToFavorite.observe(viewLifecycleOwner, Observer {
             if(it) {
+                val favorite = childFragmentManager.findFragmentByTag(TAG_F)
+                if(favorite==null) {
+                    childFragmentManager.commitNow {
+                        add<SolaroidFrameFavorite>(R.id.fragment_frame_container_view, TAG_F)
+                    }
+
+                    childFragmentManager.commit {
+                        replace<SolaroidFrameFavorite>(R.id.fragment_frame_container_view)
+                    }
+                }
                 viewModel.doneNavigateToFavorite()
             }
         })
@@ -61,7 +89,7 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
         viewModel.naviToDetailFrag.observe(viewLifecycleOwner,Observer{
            it?.let{
                findNavController().navigate(
-                   SolaroidFrameFragmentContainerDirections.actionFrameContainerToDetailFragment(it)
+                   SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToDetailFragment(it)
                )
                viewModel.doneNavigateToDetail()
            }
@@ -76,9 +104,6 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
         popUp.menuInflater.inflate(R.menu.fragment_frame_popup_menu, popUp.menu)
         popUp.show()
     }
-
-
-
 
 
     override fun onMenuItemClick(p0: MenuItem?): Boolean {

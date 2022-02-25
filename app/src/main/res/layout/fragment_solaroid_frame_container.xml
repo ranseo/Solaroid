@@ -16,24 +16,25 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent">
 
-          <ImageButton
-              android:id="@+id/popup_menu_filter"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:src="@drawable/ic_filter"
-              android:layout_gravity="top|end"
-              android:layout_marginEnd="32dp"
-              android:layout_marginTop="32dp"
-              android:backgroundTint="@color/image_btn_background"
-              android:onClick="@{()->viewModel.onFilterPopupMenu()}"
-              />
-
-
           <androidx.fragment.app.FragmentContainerView
               android:id="@+id/fragment_frame_container_view"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:layout_gravity="center"
               tools:layout="@layout/fragment_solaroid_frame_filter"/>
+
+
+          <ImageButton
+              android:id="@+id/popup_menu_filter"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="top|end"
+              android:layout_marginTop="32dp"
+              android:layout_marginEnd="32dp"
+              android:backgroundTint="@color/image_btn_background"
+              android:minHeight="48dp"
+              android:onClick="@{()->viewModel.onFilterPopupMenu()}"
+              android:src="@drawable/ic_filter" />
 
       </FrameLayout>
 

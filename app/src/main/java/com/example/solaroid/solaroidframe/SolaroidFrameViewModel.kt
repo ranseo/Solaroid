@@ -65,12 +65,6 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         Log.d("FrameViewModel","Init")
     }
 
-    private fun initPhotoTickets(filter:PhotoTicketFilter) {
-        sortByFilter(filter)
-    }
-
-
-
 
     fun setCurrentPhotoTicket(curr: PhotoTicket) {
         _photoTicket.value = curr
@@ -168,7 +162,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
 
 
-    fun setCurrentPositionAfterFavoriteOff(position:Int) {
+    fun setCurrentPosition(position:Int) {
             _currentPosition.value = position
 
 

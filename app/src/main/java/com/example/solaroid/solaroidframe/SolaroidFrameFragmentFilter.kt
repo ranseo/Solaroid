@@ -1,15 +1,14 @@
 package com.example.solaroid.solaroidframe
 
+import android.app.Application
 import android.util.Log
 import android.view.MenuItem
-import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.ui.NavigationUI
 import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
-import com.example.solaroid.databinding.FragmentSolaroidFrameBinding
+import com.example.solaroid.database.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 abstract class SolaroidFrameFragmentFilter : Fragment() {
@@ -75,5 +74,12 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
         viewModel: SolaroidFrameViewModel,
         botNavi: BottomNavigationView
     ) {}
+
+    protected open fun setOnItemSelectedListener(
+        viewModel: SolaroidFrameViewModel,
+        botNavi: BottomNavigationView,
+        viewPager: ViewPager2
+    ) {}
+
 
 }
