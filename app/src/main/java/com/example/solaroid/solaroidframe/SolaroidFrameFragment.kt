@@ -21,6 +21,7 @@ import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -64,21 +65,10 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
         //adapter click event 설정
         navigateToDetailFragment(viewModel)
 
-        viewModel.navigateToFrameFrag.observe(viewLifecycleOwner, Observer {
-            if(it) {
-                findNavController().navigate(
-                    SolaroidFrameFragmentDirections.actionFrameFragmentToFrameFavoriteFragment()
-                )
-                Log.d("Frame","NavigateToFrameFrag : Success")
-                viewModel.doneNaviToFrameFrag()
-            }
-        })
 
         //현재 페이지의 포토티켓 즐겨찾기 여부를 확인.
         observePhotoTicket(viewModel)
 
-        //popUp Menu 호출
-        observePopupMenu(viewModel, binding)
 
         //얘도정리
         observeFavorite(viewModel, binding)
@@ -87,9 +77,6 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
         //02.21 얘도정리.
         registerOnPageChangeCallback(viewModel, binding, adapter)
 
-
-        //02.21 이거정리.
-        setOnItemSelectedListener(viewModel, binding)
 
         return binding.root
     }
@@ -152,6 +139,7 @@ open class SolaroidFrameFragment : Fragment(), PopupMenu.OnMenuItemClickListener
                         true
                     )
                 }
+
 
             }
             false
@@ -275,7 +263,7 @@ class SolaroidFrameFavoriteFragment : SolaroidFrameFragment(), PopupMenu.OnMenuI
                 findNavController().navigate(
                     SolaroidFrameFavoriteFragmentDirections.actionFrameFavoriteFragmentToFrameFragment()
                 )
-                Log.d("FavoriteFrame","NavigateToFrameFrag : Success")
+                Log.d("FavoriteFrame", "NavigateToFrameFrag : Success")
                 favoriteViewModel.doneNaviToFrameFrag()
             }
         })
@@ -320,9 +308,11 @@ class SolaroidFrameFavoriteFragment : SolaroidFrameFragment(), PopupMenu.OnMenuI
 
 
     override fun navigateToDetailFragment(viewModel: SolaroidFrameViewModel) {
-        viewModel.navigateToDetailFrag.observe(viewLifecycleOwner, Observer{
-            it?.let{
-                SolaroidFrameFavoriteFragmentDirections.actionFrameFavoriteFragmentToDetailFragment(it)
+        viewModel.navigateToDetailFrag.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                SolaroidFrameFavoriteFragmentDirections.actionFrameFavoriteFragmentToDetailFragment(
+                    it
+                )
                 viewModel.doneNaviToDetailFrag()
             }
 
@@ -359,10 +349,52 @@ class SolaroidFrameFavoriteFragment : SolaroidFrameFragment(), PopupMenu.OnMenuI
                 favoriteViewModel.sortByFilter(PhotoTicketFilter.LATELY)
                 //Toast.makeText(this.activity, "즐겨찾기", Toast.LENGTH_SHORT).show()
                 favoriteViewModel.naviToFrame(true)
-                Log.d("FavoriteFrame","OnMenuItemClick : ${favoriteViewModel.navigateToFrameFrag.value}")
+                Log.d(
+                    "FavoriteFrame",
+                    "OnMenuItemClick : ${favoriteViewModel.navigateToFrameFrag.value}"
+                )
                 true
             }
             else -> true
         }
     }
+}
+
+
+class SolaroidFrameLately : SolaroidFrameFragmentFilter() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
+
+
+    }
+
+    override fun setOnItemSelectedListener(
+        viewModel: SolaroidFrameViewModel,
+        botNavi: BottomNavigationView
+    ) {
+        botNavi.setOnItemSelectedListener {
+            if (it.itemId == R.id.favorite) {
+                val favorite = viewModel.favorite.value
+                if (favorite != null) {
+                    if (favorite) {
+                        viewModel.togglePhotoTicketFavorite(false)
+                    } else viewModel.togglePhotoTicketFavorite(
+                        true
+                    )
+                }
+            }
+            false
+        }
+    }
+}
+
+
+
+class SolaroidFrameFavorite : SolaroidFrameFragmentFilter() {
+
 }

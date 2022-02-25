@@ -12,48 +12,29 @@
     </data>
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+      <FrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
+
+          <ImageButton
+              android:id="@+id/popup_menu_filter"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:src="@drawable/ic_filter"
+              android:layout_gravity="top|end"
+              android:layout_marginEnd="32dp"
+              android:layout_marginTop="32dp"
+              android:backgroundTint="@color/image_btn_background"
+              android:onClick="@{()->viewModel.onFilterPopupMenu()}"
+              />
 
 
-<!--            submitList="@{viewModel.photoTickets}"-->
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewpager"
-                submitList="@{viewModel.photoTickets}"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_frame_bottom_navi"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+          <androidx.fragment.app.FragmentContainerView
+              android:id="@+id/fragment_frame_container_view"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:layout="@layout/fragment_solaroid_frame_filter"/>
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/fragment_frame_bottom_navi"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/bot_navi_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:menu="@menu/fragment_frame_bot_navi" />
-
-
-            <ImageButton
-                android:id="@+id/popup_menu_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_filter"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="32dp"
-                android:layout_marginTop="32dp"
-                android:backgroundTint="@color/image_btn_background"
-                android:onClick="@{()->viewModel.onFilterPopupMenu()}"
-                />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+      </FrameLayout>
 
 </layout>

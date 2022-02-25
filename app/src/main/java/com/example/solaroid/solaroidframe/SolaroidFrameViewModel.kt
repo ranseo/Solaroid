@@ -40,14 +40,20 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
 
 
-    private val _navigateToDetailFrag = MutableLiveData<Long?>()
-    val navigateToDetailFrag: LiveData<Long?>
-        get() = _navigateToDetailFrag
+    private val _naviToDetailFrag = MutableLiveData<Long?>()
+    val naviToDetailFrag: LiveData<Long?>
+        get() = _naviToDetailFrag
 
-    //즐겨찾기 또는 최신순 정렬을 위한 Toggle 설정. -> 해당 toggle이 변화하면 submit
-    private val _navigateToFrameFrag = MutableLiveData<Boolean>(false)
-    val navigateToFrameFrag : LiveData<Boolean>
-        get() = _navigateToFrameFrag
+    //최신순 프래그먼트로 이동.
+    private val _naviToLately = MutableLiveData<Boolean>(false)
+    val naviToLately : LiveData<Boolean>
+        get() = _naviToLately
+
+
+    //즐겨찾기 프래그먼트로 이동.
+    private val _naviToFavorite = MutableLiveData<Boolean>(false)
+    val naviToFavorite : LiveData<Boolean>
+        get() = _naviToFavorite
 
     //즐겨찾기 해재 시, 해당 viewPager의 position을 기록 -> 이는 viewPager의 onPageSelected의 문제점을 해결하기 위한 변수
     private val _currentPosition = MutableLiveData<Int>()
@@ -67,9 +73,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
 
     fun setCurrentPhotoTicket(curr: PhotoTicket) {
-        Log.d("FrameViewModel", "setCurrentPhotoTicket ${curr.id}")
         _photoTicket.value = curr
-        Log.d("FrameViewModel", "setCurrentPhotoTicket ${photoTicket.value?.id}")
     }
 
 
@@ -135,21 +139,30 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
 //    네비게이션 함수.
 
-    fun naviToDetail(photoTicketKey: Long) {
-        _navigateToDetailFrag.value = photoTicketKey
+    fun navigateToDetail(photoTicketKey: Long) {
+        _naviToDetailFrag.value = photoTicketKey
     }
 
-    fun doneNaviToDetailFrag() {
-        _navigateToDetailFrag.value = null
+    fun doneNavigateToDetail() {
+        _naviToDetailFrag.value = null
     }
 
-    fun naviToFrame(navi: Boolean) {
-        _navigateToFrameFrag.value = navi
+    fun navigateToLately(navi: Boolean) {
+        _naviToLately.value = navi
     }
 
-    fun doneNaviToFrameFrag() {
-        _navigateToFrameFrag.value = false
+    fun doneNavigateToLately() {
+        _naviToLately.value = false
     }
+
+    fun navigateToFavorite(navi: Boolean) {
+        _naviToFavorite.value = navi
+    }
+
+    fun doneNavigateToFavorite() {
+        _naviToFavorite.value = false
+    }
+
 
     /////////////////////////////////////////////////////////////////
 

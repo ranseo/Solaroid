@@ -36,6 +36,7 @@
 
     </fragment>
 
+
     <fragment
         android:id="@+id/fragment_solaroid_detail"
         android:name="com.example.solaroid.solaroiddetail.SolaroidDetailFragment"
@@ -45,6 +46,21 @@
             android:name="photo_tickey_key"
             app:argType="long"/>
         
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_solaroid_frame_container"
+        android:name="com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer"
+        android:label="SolaroidFrameFragmentContainer">
+
+        <argument
+            android:name="ShowAppBar"
+            android:defaultValue="true"/>
+
+        <action
+            android:id="@+id/action_frameContainer_to_detailFragment"
+            app:destination="@+id/fragment_solaroid_detail"/>
+
     </fragment>
 
     <fragment
