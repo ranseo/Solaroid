@@ -33,6 +33,10 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     val cameraConverter : LiveData<Boolean>
         get() = _cameraConverter
 
+    private val _editTextClear = MutableLiveData<String?>()
+    val editTextClear : LiveData<String?>
+        get() = _editTextClear
+
 
     //이미지 캡처 성공 시, view visibility 전환.
 
@@ -110,6 +114,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
 
     fun forReadyNewImage() {
         _capturedImageUri.value = null
+        _editTextClear.value = null
     }
 
     fun doneNavigateToGalleryFragment() {
