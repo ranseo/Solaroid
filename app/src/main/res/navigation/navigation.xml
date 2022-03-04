@@ -61,10 +61,27 @@
             android:id="@+id/action_frameFragmentContainer_to_detailFragment"
             app:destination="@+id/fragment_solaroid_detail" />
 
+        <action
+            android:id="@+id/action_frameFragmentContainer_to_createFragment"
+            app:destination="@+id/fragment_solaroid_create"
+            />
+
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>
 
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_solaroid_edit"
+        android:name="com.example.solaroid.solaroidedit.SolaroidEditFragment"
+        android:label="SolaroidEditFragment"
+        tools:layout="@layout/fragment_solaroid_edit">
+
+        <argument
+            android:name="photo_ticket_key"
+            app:argType="long"/>
 
     </fragment>
 

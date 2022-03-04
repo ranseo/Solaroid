@@ -16,7 +16,7 @@ import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 
-class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener{
+class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener {
 
     companion object {
         const val TAG_L = "LATELY"
@@ -25,7 +25,7 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
     }
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
-    private lateinit var viewModel : SolaroidFrameViewModel
+    private lateinit var viewModel: SolaroidFrameViewModel
 
 
     override fun onCreateView(
@@ -33,7 +33,12 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentSolaroidFrameContainerBinding>(inflater, R.layout.fragment_solaroid_frame_container, container, false)
+        val binding = DataBindingUtil.inflate<FragmentSolaroidFrameContainerBinding>(
+            inflater,
+            R.layout.fragment_solaroid_frame_container,
+            container,
+            false
+        )
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
@@ -56,25 +61,25 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
         })
 
         viewModel.naviToLately.observe(viewLifecycleOwner, Observer {
-           if(it) {
-               val lately = childFragmentManager.findFragmentByTag(TAG_L)
-               if(lately==null) {
-                   childFragmentManager.commitNow {
-                       add<SolaroidFrameLately>(R.id.fragment_frame_container_view, TAG_L)
-                   }
+            if (it) {
+                val lately = childFragmentManager.findFragmentByTag(TAG_L)
+                if (lately == null) {
+                    childFragmentManager.commitNow {
+                        add<SolaroidFrameLately>(R.id.fragment_frame_container_view, TAG_L)
+                    }
 
-                   childFragmentManager.commit {
-                       replace<SolaroidFrameLately>(R.id.fragment_frame_container_view)
-                   }
-               }
-               viewModel.doneNavigateToLately()
-           }
+                    childFragmentManager.commit {
+                        replace<SolaroidFrameLately>(R.id.fragment_frame_container_view)
+                    }
+                }
+                viewModel.doneNavigateToLately()
+            }
         })
 
         viewModel.naviToFavorite.observe(viewLifecycleOwner, Observer {
-            if(it) {
+            if (it) {
                 val favorite = childFragmentManager.findFragmentByTag(TAG_F)
-                if(favorite==null) {
+                if (favorite == null) {
                     childFragmentManager.commitNow {
                         add<SolaroidFrameFavorite>(R.id.fragment_frame_container_view, TAG_F)
                     }
@@ -87,21 +92,36 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
             }
         })
 
-        viewModel.naviToDetailFrag.observe(viewLifecycleOwner,Observer{
-           it?.let{
-               findNavController().navigate(
-                   SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToDetailFragment(it)
-               )
-               viewModel.doneNavigateToDetail()
-           }
+        viewModel.naviToDetailFrag.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                findNavController().navigate(
+                    SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToDetailFragment(
+                        it
+                    )
+                )
+                viewModel.doneNavigateToDetail()
+            }
         })
+
+
+        viewModel.naviToCreateFrag.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                findNavController().navigate(
+                    SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToCreateFragment()
+                )
+                viewModel.doneNavigateToCreate()
+            }
+
+        })
+
+
 
         return binding.root
     }
 
     private fun popupShow(view: View) {
         val popUp = PopupMenu(this.activity, view)
-            popUp.setOnMenuItemClickListener(this@SolaroidFrameFragmentContainer)
+        popUp.setOnMenuItemClickListener(this@SolaroidFrameFragmentContainer)
         popUp.menuInflater.inflate(R.menu.fragment_frame_popup_menu, popUp.menu)
         popUp.show()
     }

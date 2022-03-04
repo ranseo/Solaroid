@@ -44,6 +44,11 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val naviToDetailFrag: LiveData<Long?>
         get() = _naviToDetailFrag
 
+    //SolaroidCreateFragment로 이동
+    private val _naviToCreateFrag = MutableLiveData<Boolean>(false)
+    val naviToCreateFrag : LiveData<Boolean>
+        get() = _naviToCreateFrag
+
     //최신순 프래그먼트로 이동.
     private val _naviToLately = MutableLiveData<Boolean>(false)
     val naviToLately : LiveData<Boolean>
@@ -155,6 +160,14 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     fun doneNavigateToFavorite() {
         _naviToFavorite.value = false
+    }
+
+    fun navigateToCreate() {
+        _naviToCreateFrag.value = true
+    }
+
+    fun doneNavigateToCreate() {
+        _naviToCreateFrag.value = false
     }
 
 

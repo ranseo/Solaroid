@@ -41,14 +41,15 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
         observePhotoTicket(viewModel)
         observeFavorite(viewModel, binding.fragmentFrameBottomNavi)
 
-        setOnItemSelectedListener(viewModel,binding.fragmentFrameBottomNavi)
+        setOnItemSelectedListener(viewModel,binding.fragmentFrameBottomNavi,binding.viewpager)
 
         return binding.root
     }
 
     override fun setOnItemSelectedListener(
         viewModel: SolaroidFrameViewModel,
-        botNavi: BottomNavigationView
+        botNavi: BottomNavigationView,
+        viewPager: ViewPager2
     ) {
         botNavi.setOnItemSelectedListener {
             if (it.itemId == R.id.favorite) {
@@ -96,6 +97,8 @@ class SolaroidFrameFavorite() : SolaroidFrameFragmentFilter() {
         observeCurrentPosition(viewModel, adapter)
 
         setOnItemSelectedListener(viewModel, binding.fragmentFrameBottomNavi, binding.viewpager)
+
+
 
         return binding.root
     }

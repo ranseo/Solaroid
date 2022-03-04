@@ -37,6 +37,11 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     val editTextClear : LiveData<String?>
         get() = _editTextClear
 
+    //image_spin 버튼 클릭 시, toggle
+    private val _imageSpin = MutableLiveData<Boolean>(false)
+    val imageSpin : LiveData<Boolean>
+        get() = _imageSpin
+
 
     //이미지 캡처 성공 시, view visibility 전환.
 
@@ -48,8 +53,16 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
         it != null
     }
 
+
+
     private var frontText: String = ""
-    private var backText: String = ""
+    private val _backText = MutableLiveData<String>("")
+    val backText : LiveData<String>
+        get() = _backText
+
+    val currBackTextLen = Transformations.map(backText){
+        "${it.length}/100"
+    }
 
 
     val today = convertTodayToFormatted(System.currentTimeMillis(), application.resources)
@@ -76,7 +89,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     }
 
     fun onTextChangedBack(s:CharSequence) {
-        backText= s.toString()
+        _backText.value= s.toString()
     }
 
 /*    fun onClick() {
@@ -104,7 +117,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     fun onImageSave() {
         viewModelScope.launch {
             val newPhotoTicket =
-                PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText, favorite = false)
+                PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText.value!!, favorite = false)
             insert(newPhotoTicket)
             _photoTicket.value = getLatestPhotoTicket()
 
@@ -124,6 +137,11 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     fun convertCameraSelector() {
         val toggle = cameraConverter.value!!
         _cameraConverter.value = !toggle
+    }
+
+    fun onImageSpin() {
+        val toggle = _imageSpin.value!!
+        _imageSpin.value = !toggle
     }
 
 

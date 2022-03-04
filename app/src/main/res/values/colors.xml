@@ -14,4 +14,6 @@
   <color name="border_color">#454545</color>
   <color name="white">#ffffff</color>
   <color name="bot_navi_color">#B5FFFFFF</color>
+
+  <color name="grey">#A1A1A1</color>
 </resources>

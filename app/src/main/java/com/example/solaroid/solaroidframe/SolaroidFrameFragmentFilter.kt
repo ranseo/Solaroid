@@ -74,16 +74,19 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
      * bottomNavigation의 item Selection별 기능 구현 함수.
      * 1.선택한 item이 favorite 일 때, viewModel의 favorite 값의 !favorite 값을 viewModel의 togglePhotoTicketFavorite() 호출하여 인자로 넘겨줌.
      * */
-    protected open fun setOnItemSelectedListener(
-        viewModel: SolaroidFrameViewModel,
-        botNavi: BottomNavigationView
-    ) {}
 
     protected open fun setOnItemSelectedListener(
         viewModel: SolaroidFrameViewModel,
         botNavi: BottomNavigationView,
         viewPager: ViewPager2
-    ) {}
+    ) {
+        botNavi.setOnItemSelectedListener {
+            if(it.itemId == R.id.edit) {
+
+            }
+            false
+        }
+    }
 
 
 }
