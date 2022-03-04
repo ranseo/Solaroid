@@ -45,10 +45,11 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/front_layout"
-            android:layout_width="204dp"
-            android:layout_height="325dp"
+            android:layout_width="@dimen/polaroid_film_large_width"
+            android:layout_height="@dimen/polaroid_film_large_height"
             android:layout_gravity="center"
-            android:background="@drawable/photo_ticket_border_line"
+            android:elevation="12dp"
+            android:background="@color/white"
             app:layout_constraintVertical_bias="0.412"
             android:onClick="@{()->clickListener.onClick(photoTicket)}">
 
@@ -56,8 +57,8 @@
             <ImageView
                 android:id="@+id/solaroid_photo"
                 setImage="@{photoTicket.photo}"
-                android:layout_width="173dp"
-                android:layout_height="234dp"
+                android:layout_width="@dimen/polaroid_image_large_width"
+                android:layout_height="@dimen/polaroid_image_large_height"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginRight="24dp"

@@ -128,6 +128,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/today_date"
                     app:layout_constraintVertical_bias="0.104"
+                    android:maxLength="20"
                     android:hint="@string/photo_create_front_hint" />
 
 

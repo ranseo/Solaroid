@@ -45,6 +45,10 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
         })
     }
 
+
+
+
+
     /**
      * viewModel의 favorite 프로퍼티 관찰.
      * 1.현재 viewPager's page 내 photoTicket의 favorite 값에 따라 bottomNavi의 menuItem "즐겨찾기" 의 Icon을 변경.

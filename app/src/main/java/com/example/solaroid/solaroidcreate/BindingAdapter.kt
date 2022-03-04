@@ -30,7 +30,7 @@ fun bindImage (imageView: ImageView, imgUri: Uri?) {
     imgUri?.let {
 
         Glide.with(imageView.context)
-            .load(imgUri)
+            .load(it)
             .into(imageView)
     }
 }

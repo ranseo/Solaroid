@@ -47,6 +47,7 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
         viewModel.navigateToLately(true)
 
 
+
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             if (it) {
                 popupShow(binding.popupMenuFilter)

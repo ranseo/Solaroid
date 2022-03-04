@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="polaroid_film_width">204dp</dimen>
+    <dimen name="polaroid_film_height">325dp</dimen>
+    <dimen name="polaroid_image_width">173dp</dimen>
+    <dimen name="polaroid_image_height">234dp</dimen>
+
+    <dimen name="polaroid_film_large_width">234dp</dimen>
+    <dimen name="polaroid_film_large_height">373dp</dimen>
+    <dimen name="polaroid_image_large_width">203dp</dimen>
+    <dimen name="polaroid_image_large_height">275dp</dimen>
+</resources>
