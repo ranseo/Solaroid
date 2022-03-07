@@ -10,13 +10,15 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.databinding.ActivityMainBinding
+import com.example.solaroid.solaroidedit.EditSaveDialogFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),EditSaveDialogFragment.EditSaveDialogListener {
     var isCameraAvailable : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +95,8 @@ class MainActivity : AppCompatActivity() {
         )== PackageManager.PERMISSION_GRANTED
     }
 
+
+
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
@@ -103,5 +107,13 @@ class MainActivity : AppCompatActivity() {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        TODO("Not yet implemented")
     }
 }

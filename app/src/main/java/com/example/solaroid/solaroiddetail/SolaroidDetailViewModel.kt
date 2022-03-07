@@ -1,6 +1,7 @@
 package com.example.solaroid.solaroiddetail
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,6 +26,7 @@ class SolaroidDetailViewModel(photoTicketKey:Long ,dataSource: PhotoTicketDao) :
     init {
         initGetPhotoTicekt(photoTicketKey)
         initSpinBackSide()
+        Log.d("디테일", "작동")
     }
 
     private fun initSpinBackSide() {

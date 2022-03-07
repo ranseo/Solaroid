@@ -2,6 +2,7 @@ package com.example.solaroid.solaroidframe
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -12,11 +13,13 @@ import androidx.fragment.app.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener {
+open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener {
 
     companion object {
         const val TAG_L = "LATELY"
@@ -114,6 +117,20 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
 
         })
 
+        viewModel.naviToEditFrag.observe(viewLifecycleOwner, Observer {
+            it?.let{
+                val photoTicketId = viewModel.photoTicket.value?.id
+                Log.d("프레임컨테이너" , "PhotoTicketId : ${it}")
+                if (photoTicketId != null) {
+                    findNavController().navigate(
+                        SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToEditFragment(it)
+                    )
+                }
+                viewModel.doneNavigateToEdit()
+            }
+        })
+
+
 
 
         return binding.root
@@ -145,4 +162,6 @@ class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickList
 
         }
     }
+
+
 }

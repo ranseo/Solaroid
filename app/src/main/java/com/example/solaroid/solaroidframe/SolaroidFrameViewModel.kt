@@ -49,6 +49,13 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val naviToCreateFrag : LiveData<Boolean>
         get() = _naviToCreateFrag
 
+
+    //SolaroidEditFragment로 이동
+    private val _naviToEditFrag = MutableLiveData<Long?>()
+    val naviToEditFrag : LiveData<Long?>
+        get() = _naviToEditFrag
+
+
     //최신순 프래그먼트로 이동.
     private val _naviToLately = MutableLiveData<Boolean>(false)
     val naviToLately : LiveData<Boolean>
@@ -71,7 +78,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     }
 
 
-    fun setCurrentPhotoTicket(curr: PhotoTicket) {
+    fun setCurrentPhotoTicket(curr: PhotoTicket?) {
         _photoTicket.value = curr
     }
 
@@ -170,6 +177,17 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         _naviToCreateFrag.value = false
     }
 
+    fun navigateToEdit(photoTicketKey:Long?) {
+        photoTicketKey?.let {
+            _naviToEditFrag.value = photoTicketKey
+        }
+
+    }
+
+    fun doneNavigateToEdit() {
+        _naviToEditFrag.value = null
+    }
+
 
     /////////////////////////////////////////////////////////////////
 
@@ -177,9 +195,8 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     fun setCurrentPosition(position:Int) {
             _currentPosition.value = position
-
-
     }
+
 
     suspend fun update(photoTicket: PhotoTicket) {
         database.update(photoTicket)

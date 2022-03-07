@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
@@ -47,8 +48,6 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
 
 
 
-
-
     /**
      * viewModel의 favorite 프로퍼티 관찰.
      * 1.현재 viewPager's page 내 photoTicket의 favorite 값에 따라 bottomNavi의 menuItem "즐겨찾기" 의 Icon을 변경.
@@ -70,6 +69,7 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
     }
 
 
+
     /**
      * bottomNavigation의 item Selection별 기능 구현 함수.
      * 1.선택한 item이 favorite 일 때, viewModel의 favorite 값의 !favorite 값을 viewModel의 togglePhotoTicketFavorite() 호출하여 인자로 넘겨줌.
@@ -80,12 +80,6 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
         botNavi: BottomNavigationView,
         viewPager: ViewPager2
     ) {
-        botNavi.setOnItemSelectedListener {
-            if(it.itemId == R.id.edit) {
-
-            }
-            false
-        }
     }
 
 

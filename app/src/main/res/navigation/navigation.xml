@@ -66,6 +66,10 @@
             app:destination="@+id/fragment_solaroid_create"
             />
 
+        <action
+            android:id="@+id/action_frameFragmentContainer_to_editFragment"
+            app:destination="@+id/fragment_solaroid_edit"/>
+
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>

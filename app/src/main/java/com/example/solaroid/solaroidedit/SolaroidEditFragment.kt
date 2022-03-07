@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidEditBinding
 
-class SolaroidEditFragment : Fragment() {
+class SolaroidEditFragment : Fragment(), EditSaveDialogFragment.EditSaveDialogListener {
 
     private lateinit var viewModel : SolaroidEditFragmentViewModel
-    private lateinit var viewModedlFactory: SolaroidEditFragmentViewModelFactory
+    private lateinit var viewModelFactory: SolaroidEditFragmentViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,10 +29,29 @@ class SolaroidEditFragment : Fragment() {
 
         val key = SolaroidEditFragmentArgs.fromBundle(requireArguments()).photoTicketKey
 
-        viewModedlFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao)
-        viewModel = ViewModelProvider(requireActivity(), viewModedlFactory)[SolaroidEditFragmentViewModel::class.java]
+        viewModelFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao)
+        viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidEditFragmentViewModel::class.java]
 
+        binding.viewmodel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.saveBtn.setOnClickListener {
+            showDialog()
+        }
 
         return binding.root
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        viewModel.onUpdatePhotoTicket()
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        dialog.dismiss()
+    }
+
+    fun showDialog() {
+        val editSaveDialog = EditSaveDialogFragment(this)
+        editSaveDialog.show(parentFragmentManager, "editSave")
     }
 }
