@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidEditBinding
@@ -39,12 +41,24 @@ class SolaroidEditFragment : Fragment(), EditSaveDialogFragment.EditSaveDialogLi
             showDialog()
         }
 
+        viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer {
+            if(it) {
+                findNavController().navigate(
+                    SolaroidEditFragmentDirections.actionEditFragmentToFrameFragmentContainer()
+                )
+                viewModel.doneNavigateToFrame()
+            }
+
+        })
+
         return binding.root
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         viewModel.onUpdatePhotoTicket()
+        viewModel.navigateToFrame()
     }
+
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
         dialog.dismiss()

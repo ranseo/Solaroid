@@ -83,6 +83,10 @@
         android:label="SolaroidEditFragment"
         tools:layout="@layout/fragment_solaroid_edit">
 
+        <action
+            android:id="@+id/action_editFragment_to_frameFragmentContainer"
+            app:destination="@id/fragment_solaroid_frame_container"/>
+
         <argument
             android:name="photo_ticket_key"
             app:argType="long"/>

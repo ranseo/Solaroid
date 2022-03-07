@@ -24,6 +24,11 @@ import com.google.android.material.navigation.NavigationBarView
 
 class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("프레임", "레이틀리 onCreate()")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -88,6 +93,12 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
 
 
 class SolaroidFrameFavorite() : SolaroidFrameFragmentFilter() {
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("프레임", "페이보릿 onCreate()")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

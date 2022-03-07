@@ -57,7 +57,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
 
     //최신순 프래그먼트로 이동.
-    private val _naviToLately = MutableLiveData<Boolean>(false)
+    private val _naviToLately = MutableLiveData<Boolean>(true)
     val naviToLately : LiveData<Boolean>
         get() = _naviToLately
 

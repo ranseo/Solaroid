@@ -22,6 +22,7 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
         viewPager: ViewPager2,
         adapter: SolaroidFrameAdapter
     ) {
+
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -30,6 +31,7 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
                     viewModel.setCurrentPhotoTicket(photoTicket)
                 }
             }
+
         })
     }
 

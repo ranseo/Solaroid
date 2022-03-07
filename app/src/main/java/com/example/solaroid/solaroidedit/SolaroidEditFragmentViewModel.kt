@@ -29,6 +29,11 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource:PhotoTicketD
         "${it.length}/100"
     }
 
+    //navi
+    private val _naviToFrameFrag = MutableLiveData<Boolean>(false)
+    val naviToFrameFrag : LiveData<Boolean>
+        get() = _naviToFrameFrag
+
 
     init {
         viewModelScope.launch {
@@ -71,6 +76,15 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource:PhotoTicketD
     //데이터베이스 관련 함수
     suspend fun getPhotoTicket(key:Long) : PhotoTicket {
         return database.getPhotoTicket(key)
+    }
+
+    //네비게이션
+    fun navigateToFrame() {
+        _naviToFrameFrag.value = true
+    }
+
+    fun doneNavigateToFrame() {
+        _naviToFrameFrag.value = false
     }
 
     suspend fun update(photoTicket:PhotoTicket) = withContext(Dispatchers.IO) { database.update(photoTicket)}

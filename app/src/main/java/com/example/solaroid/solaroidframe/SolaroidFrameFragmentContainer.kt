@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.*
 import androidx.lifecycle.Observer
@@ -31,6 +32,9 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     private lateinit var viewModel: SolaroidFrameViewModel
 
 
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,9 +56,6 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.navigateToLately(true)
-
-
 
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             if (it) {
@@ -67,12 +68,13 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             if (it) {
                 val lately = childFragmentManager.findFragmentByTag(TAG_L)
                 if (lately == null) {
-                    childFragmentManager.commitNow {
-                        add<SolaroidFrameLately>(R.id.fragment_frame_container_view, TAG_L)
-                    }
+//                    childFragmentManager.commitNow {
+//                        add<SolaroidFrameLately>(R.id.fragment_frame_container_view, TAG_L)
+//                    }
 
                     childFragmentManager.commit {
-                        replace<SolaroidFrameLately>(R.id.fragment_frame_container_view)
+                        val lately = SolaroidFrameLately()
+                        replace(R.id.fragment_frame_container_view, lately,TAG_L)
                     }
                 }
                 viewModel.doneNavigateToLately()
@@ -83,12 +85,13 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             if (it) {
                 val favorite = childFragmentManager.findFragmentByTag(TAG_F)
                 if (favorite == null) {
-                    childFragmentManager.commitNow {
-                        add<SolaroidFrameFavorite>(R.id.fragment_frame_container_view, TAG_F)
-                    }
+//                    childFragmentManager.commitNow {
+//                        add<SolaroidFrameFavorite>(R.id.fragment_frame_container_view, TAG_F)
+//                    }
 
                     childFragmentManager.commit {
-                        replace<SolaroidFrameFavorite>(R.id.fragment_frame_container_view)
+                        val favorite = SolaroidFrameFavorite()
+                        replace(R.id.fragment_frame_container_view,favorite, TAG_F)
                     }
                 }
                 viewModel.doneNavigateToFavorite()
