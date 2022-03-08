@@ -56,7 +56,7 @@ class SolaroidEditFragment : Fragment(), EditSaveDialogFragment.EditSaveDialogLi
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         viewModel.onUpdatePhotoTicket()
-        viewModel.navigateToFrame()
+        this.requireActivity().onBackPressed()
     }
 
 
