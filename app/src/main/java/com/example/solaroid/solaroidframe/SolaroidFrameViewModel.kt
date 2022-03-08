@@ -38,6 +38,11 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val popUpMenu: LiveData<Boolean>
         get() = _popUpMenu
 
+    //spin_image
+    private val _imageSpin = MutableLiveData(false)
+    val imageSpin : LiveData<Boolean>
+        get() = _imageSpin
+
 
 
     private val _naviToDetailFrag = MutableLiveData<Long?>()
@@ -204,5 +209,17 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     suspend fun getPhotoTicket(key: Long): PhotoTicket = database.getPhotoTicket(key)
 
+    //이미지 회전
+    fun spinImage() {
+        val toggle = _imageSpin.value!!
+        _imageSpin.value = !toggle
+    }
+
+
+    //onClick
+
+    fun onListItemClick() {
+        spinImage()
+    }
 
 }

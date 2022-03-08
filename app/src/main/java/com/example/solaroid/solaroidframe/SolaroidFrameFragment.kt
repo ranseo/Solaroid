@@ -4,23 +4,17 @@ import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isEmpty
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
-import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.database.SolaroidDatabase
-import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 import com.example.solaroid.databinding.FragmentSolaroidFrameFilterBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.internal.NavigationMenuItemView
-import com.google.android.material.navigation.NavigationBarView
 
 class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
 
@@ -47,9 +41,7 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
             requireParentFragment(),
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
-        val adapter = SolaroidFrameAdapter(OnClickListener {
-            viewModel.navigateToDetail(it)
-        })
+        val adapter = SolaroidFrameAdapter()
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -120,9 +112,7 @@ class SolaroidFrameFavorite() : SolaroidFrameFragmentFilter() {
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
 
-        val adapter = SolaroidFrameAdapter(OnClickListener {
-            viewModel.navigateToDetail(it)
-        })
+        val adapter = SolaroidFrameAdapter()
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

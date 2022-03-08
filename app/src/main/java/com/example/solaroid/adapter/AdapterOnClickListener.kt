@@ -7,3 +7,4 @@ class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
         clickListener(photoTicket.id)
     }
 }
+

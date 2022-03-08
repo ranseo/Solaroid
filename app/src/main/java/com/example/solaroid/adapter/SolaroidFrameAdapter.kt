@@ -3,12 +3,13 @@ package com.example.solaroid.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidFrameBinding
 
-class SolaroidFrameAdapter(val clickListener: OnClickListener) :
+class SolaroidFrameAdapter() :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
 
 
@@ -19,12 +20,12 @@ class SolaroidFrameAdapter(val clickListener: OnClickListener) :
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, clickListener)
+        holder.bind(item)
         //holder.binding.executePendingBindings()
     }
 
     fun getPhotoTicket(position: Int): PhotoTicket? {
-        if(itemCount==0) return null
+        if (itemCount == 0) return null
         val photoTicket = getItem(position)
         Log.d("favoriteFrame", "getPhotoTicket: ${photoTicket?.id}")
         return photoTicket
@@ -34,9 +35,19 @@ class SolaroidFrameAdapter(val clickListener: OnClickListener) :
     class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket?, clickListener: OnClickListener) {
+        fun bind(item: PhotoTicket?) {
             this.binding.photoTicket = item
-            this.binding.clickListener = clickListener
+
+
+            binding.frontLayout.setOnClickListener {
+                val toggle = binding.imageSpin
+                binding.imageSpin = !toggle
+            }
+
+            binding.backLayout.setOnClickListener {
+                val toggle = binding.imageSpin
+                binding.imageSpin = !toggle
+            }
         }
 
         companion object {

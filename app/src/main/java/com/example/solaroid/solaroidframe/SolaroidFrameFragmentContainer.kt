@@ -73,8 +73,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 //                    }
 
                     childFragmentManager.commit {
-                        val lately = SolaroidFrameLately()
-                        replace(R.id.fragment_frame_container_view, lately,TAG_L)
+                        val lat = SolaroidFrameLately()
+                        replace(R.id.fragment_frame_container_view, lat,TAG_L)
                     }
                 }
                 viewModel.doneNavigateToLately()
@@ -90,8 +90,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 //                    }
 
                     childFragmentManager.commit {
-                        val favorite = SolaroidFrameFavorite()
-                        replace(R.id.fragment_frame_container_view,favorite, TAG_F)
+                        val favor = SolaroidFrameFavorite()
+                        replace(R.id.fragment_frame_container_view,favor, TAG_F)
                     }
                 }
                 viewModel.doneNavigateToFavorite()
