@@ -65,7 +65,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     }
 
 
-    val today = convertTodayToFormatted(System.currentTimeMillis(), application.resources)
+    val today = convertTodayToFormatted(System.currentTimeMillis())
 
 
     private suspend fun insert(photoTicket: PhotoTicket) {

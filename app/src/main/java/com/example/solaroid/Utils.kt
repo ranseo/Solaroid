@@ -6,7 +6,7 @@ import com.example.solaroid.database.PhotoTicket
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun convertTodayToFormatted(currentTimeMilli: Long, res: Resources): String {
+fun convertTodayToFormatted(currentTimeMilli: Long): String {
     return SimpleDateFormat("yyyy.MM.dd.(E)", Locale.getDefault()).format(currentTimeMilli)
 }
 
