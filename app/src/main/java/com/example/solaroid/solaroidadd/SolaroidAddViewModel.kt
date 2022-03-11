@@ -1,32 +1,55 @@
 package com.example.solaroid.solaroidadd
 
+import android.app.Application
+import android.content.ContentUris
+import android.provider.MediaStore
 import androidx.lifecycle.*
 import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.PhotoTicketDao
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
+import java.util.concurrent.TimeUnit
 
-class SolaroidAddViewModel(dataSource:PhotoTicketDao) : ViewModel() {
+class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application) : AndroidViewModel(application) {
 
     val database = dataSource
 
+    private val _images = MutableLiveData<List<MediaStoreData>>()
+    val images: LiveData<List<MediaStoreData>>
+        get() = _images
+
     //image_spin 버튼 클릭 시, toggle
     private val _imageSpin = MutableLiveData<Boolean>(false)
-    val imageSpin : LiveData<Boolean>
+    val imageSpin: LiveData<Boolean>
         get() = _imageSpin
 
     private var frontText = ""
     private val _backText = MutableLiveData<String>("")
-    val backText : LiveData<String>
+    val backText: LiveData<String>
         get() = _backText
 
     val currBackTextLen = Transformations.map(backText) {
         "${it.length}/100"
     }
 
+    //addChoice 설정하기.
+    private val _naviToAddChoice = MutableLiveData<Boolean>(false)
+    val naviToAddChoice: LiveData<Boolean>
+        get() = _naviToAddChoice
+
+
+    //addChoiceFrag가 FragmentContainerView에 Visible 되었을 때, back press버튼을 눌렀을 때 처리하기 위한 변수.
+    private val _backPressed = MutableLiveData<Boolean>(false)
+    val backPressed : LiveData<Boolean>
+        get() = _backPressed
+
+
     //navi
     private val _naviToFrameFrag = MutableLiveData<Boolean>(false)
-    val naviToFrameFrag : LiveData<Boolean>
+    val naviToFrameFrag: LiveData<Boolean>
         get() = _naviToFrameFrag
 
     val date = convertTodayToFormatted(System.currentTimeMillis())
@@ -37,11 +60,11 @@ class SolaroidAddViewModel(dataSource:PhotoTicketDao) : ViewModel() {
         }
     }
 
-    fun onTextChangedFront(s:CharSequence) {
+    fun onTextChangedFront(s: CharSequence) {
         frontText = s.toString()
     }
 
-    fun onTextChangedBack(s:CharSequence) {
+    fun onTextChangedBack(s: CharSequence) {
         _backText.value = s.toString()
     }
 
@@ -54,13 +77,17 @@ class SolaroidAddViewModel(dataSource:PhotoTicketDao) : ViewModel() {
     fun onInsertPhotoTicket() {
         viewModelScope.launch {
             val newPhotoTicket =
-                PhotoTicket(photo = "Asd", date = date, frontText = frontText, backText = backText.value!!, favorite = false)
+                PhotoTicket(
+                    photo = "Asd",
+                    date = date,
+                    frontText = frontText,
+                    backText = backText.value!!,
+                    favorite = false
+                )
             insert(newPhotoTicket)
         }
 
     }
-
-
 
     //네비게이션
     fun navigateToFrame() {
@@ -71,7 +98,73 @@ class SolaroidAddViewModel(dataSource:PhotoTicketDao) : ViewModel() {
         _naviToFrameFrag.value = false
     }
 
-    suspend fun insert(photoTicket:PhotoTicket) {
+    fun navigateToAddChoice() {
+        _naviToAddChoice.value = true
+    }
+
+    fun doneNavigateToAddChoice() {
+        _naviToAddChoice.value = false
+    }
+
+    private suspend fun insert(photoTicket: PhotoTicket) {
         database.insert(photoTicket)
+    }
+
+    //backPress 버튼 처리
+    fun onBackPressedInChoice() {
+        val toggle = _backPressed.value!!
+        _backPressed.value = !toggle
+    }
+
+    //MediaStore API
+
+    fun loadImage() {
+        viewModelScope.launch {
+            val result = queryMediaStoreData()
+            _images.postValue(result)
+        }
+
+    }
+
+    private suspend fun queryMediaStoreData(): List<MediaStoreData> {
+        val images = mutableListOf<MediaStoreData>()
+
+        withContext(Dispatchers.IO) {
+            val projection = arrayOf(
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.DATE_ADDED,
+            )
+
+            val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
+
+            val query = getApplication<Application>().contentResolver.query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                projection,
+                null,
+                null,
+                sortOrder
+            )
+
+            query?.use{ cursor->
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                val displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+                val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
+
+                while(cursor.moveToNext()) {
+                    val id = cursor.getLong(idColumn)
+                    val name = cursor.getString(displayNameColumn)
+                    val date = convertTodayToFormatted(TimeUnit.SECONDS.toMillis(cursor.getLong(dateColumn)))
+
+                    val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+
+                    val image = MediaStoreData(id, name, date,contentUri)
+                    images += image
+                }
+            }
+        }
+
+        return images
+
     }
 }

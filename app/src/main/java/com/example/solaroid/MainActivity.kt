@@ -5,20 +5,18 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.databinding.ActivityMainBinding
-import com.example.solaroid.solaroidedit.EditSaveDialogFragment
+import com.example.solaroid.dialog.SaveDialogFragment
 
-class MainActivity : AppCompatActivity(),EditSaveDialogFragment.EditSaveDialogListener {
+class MainActivity : AppCompatActivity() {
     var isCameraAvailable : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,7 +99,8 @@ class MainActivity : AppCompatActivity(),EditSaveDialogFragment.EditSaveDialogLi
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
-                Manifest.permission.CAMERA
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE
             ).apply {
                 if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -109,11 +108,5 @@ class MainActivity : AppCompatActivity(),EditSaveDialogFragment.EditSaveDialogLi
             }.toTypedArray()
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        TODO("Not yet implemented")
-    }
 
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
-        TODO("Not yet implemented")
-    }
 }

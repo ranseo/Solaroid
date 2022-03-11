@@ -8,3 +8,5 @@ class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
     }
 }
 
+class OnChoiceClickListener()
+

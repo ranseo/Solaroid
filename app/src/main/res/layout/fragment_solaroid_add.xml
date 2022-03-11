@@ -59,7 +59,6 @@
             <ImageView
 
                 android:id="@+id/captured_image"
-                setImage="@{viewmodel.capturedImageUri}"
                 android:layout_width="@dimen/polaroid_image_large_width"
                 android:layout_height="@dimen/polaroid_image_large_height"
                 android:visibility="invisible"
@@ -162,7 +161,16 @@
             android:src="@drawable/ic_baseline_autorenew_24"
             android:layout_gravity="bottom|center" />
 
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_add_container_view"
+            android:visibility="@{viewmodel.naviToAddChoice ? View.VISIBLE : View.GONE}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 
 </layout>

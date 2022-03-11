@@ -1,17 +1,13 @@
-package com.example.solaroid.solaroidedit
+package com.example.solaroid.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import java.lang.ClassCastException
-import java.lang.Exception
 import java.lang.IllegalStateException
 
-class EditSaveDialogFragment(_listener: EditSaveDialogListener) : DialogFragment() {
+class SaveDialogFragment(_listener: EditSaveDialogListener) : DialogFragment() {
     internal var listener: EditSaveDialogListener = _listener
 
     interface EditSaveDialogListener {

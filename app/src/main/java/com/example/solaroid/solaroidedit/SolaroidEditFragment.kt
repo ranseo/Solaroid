@@ -13,8 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidEditBinding
+import com.example.solaroid.dialog.SaveDialogFragment
 
-class SolaroidEditFragment : Fragment(), EditSaveDialogFragment.EditSaveDialogListener {
+class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListener {
 
     private lateinit var viewModel : SolaroidEditFragmentViewModel
     private lateinit var viewModelFactory: SolaroidEditFragmentViewModelFactory
@@ -65,7 +66,7 @@ class SolaroidEditFragment : Fragment(), EditSaveDialogFragment.EditSaveDialogLi
     }
 
     fun showDialog() {
-        val editSaveDialog = EditSaveDialogFragment(this)
+        val editSaveDialog = SaveDialogFragment(this)
         editSaveDialog.show(parentFragmentManager, "editSave")
     }
 }
