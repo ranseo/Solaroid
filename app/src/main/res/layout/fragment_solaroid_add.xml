@@ -29,11 +29,14 @@
 
 
             <FrameLayout
+                android:id="@+id/add_image"
                 android:layout_width="@dimen/polaroid_image_large_width"
                 android:layout_height="@dimen/polaroid_image_large_height"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginRight="24dp"
+                android:onClick="@{()->viewmodel.navigateToAddChoice()}"
+                android:visibility="@{viewmodel.isImageUriSet() ? View.GONE : View.VISIBLE}"
                 android:background="@drawable/solaroid_add_photo"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -56,22 +59,38 @@
             </FrameLayout>
 
 
-            <ImageView
-
-                android:id="@+id/captured_image"
+            <FrameLayout
+                android:id="@+id/choice_image"
                 android:layout_width="@dimen/polaroid_image_large_width"
                 android:layout_height="@dimen/polaroid_image_large_height"
-                android:visibility="invisible"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginRight="24dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/tmp_photo_image"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="@{viewmodel.isImageUriSet() ? View.VISIBLE : View.GONE}"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/tmp_photo_image"
+                    android:layout_gravity="center"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_cancel_24"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="top|right"/>
+
+            </FrameLayout>
+
 
 
             <TextView
@@ -82,7 +101,7 @@
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/captured_image"
+                app:layout_constraintTop_toBottomOf="@+id/choice_image"
                 tools:text="2022.01.21" />
 
             <EditText
@@ -112,7 +131,7 @@
             android:layout_marginStart="3dp"
             android:background="@color/white"
             android:elevation="12dp"
-            android:visibility="gone"
+            android:visibility="@{viewmodel.imageSpin ? View.VISIBLE : View.GONE}"
             android:layout_gravity="center">
 
 
@@ -136,7 +155,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/back_text" />
 
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/save_btn"
@@ -161,13 +183,15 @@
             android:src="@drawable/ic_baseline_autorenew_24"
             android:layout_gravity="bottom|center" />
 
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_add_container_view"
             android:visibility="@{viewmodel.naviToAddChoice ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             />
+
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

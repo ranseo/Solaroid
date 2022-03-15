@@ -60,6 +60,13 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val naviToEditFrag : LiveData<Long?>
         get() = _naviToEditFrag
 
+    /**
+     * trigger for navigate to SolaroidAddFragment
+     * */
+    private val _naviToAddFrag = MutableLiveData<Boolean>()
+    val naviToAddFrag : LiveData<Boolean>
+        get() = _naviToAddFrag
+
 
     //최신순 프래그먼트로 이동.
     private val _naviToLately = MutableLiveData<Boolean>(true)
@@ -186,11 +193,18 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         photoTicketKey?.let {
             _naviToEditFrag.value = photoTicketKey
         }
-
     }
 
     fun doneNavigateToEdit() {
         _naviToEditFrag.value = null
+    }
+
+    fun navigateToAdd() {
+        _naviToAddFrag.value = true
+    }
+
+    fun doneNavigateToAdd() {
+        _naviToAddFrag.value = false
     }
 
 

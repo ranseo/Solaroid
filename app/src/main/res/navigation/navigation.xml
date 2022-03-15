@@ -70,6 +70,10 @@
             android:id="@+id/action_frameFragmentContainer_to_editFragment"
             app:destination="@+id/fragment_solaroid_edit"/>
 
+        <action
+            android:id="@+id/action_frameFragmentContainer_to_addFragment"
+            app:destination="@+id/fragment_solaroid_add"/>
+
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>
@@ -90,6 +94,15 @@
         <argument
             android:name="photo_ticket_key"
             app:argType="long"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_solaroid_add"
+        android:name="com.example.solaroid.solaroidadd.SolaroidAddFragment"
+        android:label="SolaroidAddFragment"
+        tools:layout="@layout/fragment_solaroid_add">
+
 
     </fragment>
 

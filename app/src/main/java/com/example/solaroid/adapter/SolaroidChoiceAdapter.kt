@@ -8,9 +8,11 @@ import com.example.solaroid.R
 import com.example.solaroid.databinding.ListItemSolaroidAddChoiceBinding
 import com.example.solaroid.solaroidadd.MediaStoreData
 
-class SolaroidChoiceAdapter : ListAdapter<MediaStoreData, SolaroidChoiceAdapter.ViewHolder>(MediaStoreData.itemCallback()) {
+class SolaroidChoiceAdapter(val onClickListener: OnChoiceClickListener) :
+    ListAdapter<MediaStoreData, SolaroidChoiceAdapter.ViewHolder>(MediaStoreData.itemCallback()) {
 
-    class ViewHolder(val binding:ListItemSolaroidAddChoiceBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ListItemSolaroidAddChoiceBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
     }
 
@@ -21,8 +23,9 @@ class SolaroidChoiceAdapter : ListAdapter<MediaStoreData, SolaroidChoiceAdapter.
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-       val item = getItem(position)
-       holder.binding.item = item
+        val item = getItem(position)
+        holder.binding.item = item
+        holder.binding.clickListener = onClickListener
     }
 
 }

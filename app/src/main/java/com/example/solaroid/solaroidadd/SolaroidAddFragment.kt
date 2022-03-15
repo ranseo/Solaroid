@@ -42,7 +42,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao)
+        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
 
         binding.viewmodel = viewModel
@@ -54,7 +54,6 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
                 childFragmentManager.commit {
                     add<SolaroidAddChoiceFragment>(R.id.fragment_add_container_view, TAG_ADD_CHOICE)
                 }
-                viewModel.doneNavigateToAddChoice()
             }
         })
 
@@ -66,7 +65,20 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
                         remove(addChoiceFragment)
                     }
                 }
+                viewModel.doneNavigateToAddChoice()
                 viewModel.onBackPressedInChoice()
+            }
+        })
+
+        viewModel.image.observe(viewLifecycleOwner, Observer {
+            it?.let{
+                val addChoiceFragment = childFragmentManager.findFragmentByTag(TAG_ADD_CHOICE)
+                childFragmentManager.commit {
+                    if (addChoiceFragment != null) {
+                        remove(addChoiceFragment)
+                    }
+                }
+                viewModel.doneNavigateToAddChoice()
             }
         })
 

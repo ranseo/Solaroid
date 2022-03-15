@@ -117,8 +117,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
                 )
                 viewModel.doneNavigateToCreate()
             }
-
         })
+
 
         viewModel.naviToEditFrag.observe(viewLifecycleOwner, Observer {
             it?.let{
@@ -130,6 +130,15 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
                     )
                 }
                 viewModel.doneNavigateToEdit()
+            }
+        })
+
+        viewModel.naviToAddFrag.observe(viewLifecycleOwner, Observer{
+            if(it){
+                findNavController().navigate(
+                    SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToAddFragment()
+                )
+                viewModel.doneNavigateToAdd()
             }
         })
 

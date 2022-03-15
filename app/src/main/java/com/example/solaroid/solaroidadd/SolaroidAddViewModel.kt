@@ -2,6 +2,7 @@ package com.example.solaroid.solaroidadd
 
 import android.app.Application
 import android.content.ContentUris
+import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.*
 import com.example.solaroid.convertTodayToFormatted
@@ -17,6 +18,7 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
 
     val database = dataSource
 
+    //addChoice & add
     private val _images = MutableLiveData<List<MediaStoreData>>()
     val images: LiveData<List<MediaStoreData>>
         get() = _images
@@ -35,25 +37,43 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         "${it.length}/100"
     }
 
+    //addChoice & add
+
     //addChoice 설정하기.
     private val _naviToAddChoice = MutableLiveData<Boolean>(false)
     val naviToAddChoice: LiveData<Boolean>
         get() = _naviToAddChoice
-
 
     //addChoiceFrag가 FragmentContainerView에 Visible 되었을 때, back press버튼을 눌렀을 때 처리하기 위한 변수.
     private val _backPressed = MutableLiveData<Boolean>(false)
     val backPressed : LiveData<Boolean>
         get() = _backPressed
 
+    //uri값 설정
+    /**
+     * we observe "uri" value in SolaroidAddFragment
+     * to remove SolaroidAddChoiceFragment
+     * */
+    private val _image = MutableLiveData<String?>()
+    val image : LiveData<String?>
+        get() = _image
+
+    val isImageUriSet = Transformations.map(image){
+        !it.isNullOrEmpty()
+    }
+
+    private val _uri = MutableLiveData<Uri?>()
+    val uri : LiveData<Uri?>
+        get() = _uri
 
     //navi
     private val _naviToFrameFrag = MutableLiveData<Boolean>(false)
     val naviToFrameFrag: LiveData<Boolean>
         get() = _naviToFrameFrag
 
-    val date = convertTodayToFormatted(System.currentTimeMillis())
 
+
+    val date = convertTodayToFormatted(System.currentTimeMillis())
 
     init {
         viewModelScope.launch {
@@ -68,6 +88,30 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         _backText.value = s.toString()
     }
 
+    /**
+     * set _image.value, and showDialog
+     */
+    fun setImageValue(uri: String) {
+        _image.value = uri
+    }
+
+    /**
+     * set _image.value NULL, and done ShowDialog()
+     */
+    fun setImageNull() {
+        _image.value = null
+    }
+
+    fun setUri(uri: Uri) {
+        _uri.value = uri
+    }
+
+    fun setUriNull() {
+        _uri.value = null
+    }
+
+
+
     //버튼 및 뷰 클릭 관련 함수
     fun onImageSpin() {
         val toggle = _imageSpin.value!!
@@ -78,7 +122,7 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         viewModelScope.launch {
             val newPhotoTicket =
                 PhotoTicket(
-                    photo = "Asd",
+                    photo = image.value!!,
                     date = date,
                     frontText = frontText,
                     backText = backText.value!!,

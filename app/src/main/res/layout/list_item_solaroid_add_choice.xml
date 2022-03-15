@@ -8,11 +8,16 @@
             name="item"
             type="com.example.solaroid.solaroidadd.MediaStoreData" />
 
+        <variable
+            name="clickListener"
+            type="com.example.solaroid.adapter.OnChoiceClickListener" />
+
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{()->clickListener.onClick(item)}"
         >
 
         <ImageView
@@ -21,14 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/choice_circle"
-            android:layout_marginStart="53dp"
-            android:layout_marginTop="3dp"
-            android:layout_gravity="center|top"/>
 
     </FrameLayout>
 </layout>
