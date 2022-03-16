@@ -19,13 +19,3 @@ fun bindRec(recyclerView: RecyclerView, photoTickets:List<PhotoTicket>?) {
 }
 
 
-@BindingAdapter("setImage")
-fun bindImage (imageView: ImageView, imgUri: String?) {
-    imgUri?.let {
-
-        val uri = imgUri.toUri()
-        Glide.with(imageView.context)
-            .load(uri)
-            .into(imageView)
-    }
-}

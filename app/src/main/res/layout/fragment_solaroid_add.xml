@@ -17,6 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_front"
             android:layout_width="@dimen/polaroid_film_large_width"
@@ -74,14 +76,17 @@
 
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="@{viewmodel.isImageUriSet() ? View.VISIBLE : View.GONE}"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/tmp_photo_image"
+                    app:setImage="@{viewmodel.image}"
+                    android:visibility="@{viewmodel.isImageUriSet() ? View.VISIBLE : View.GONE}"
                     android:layout_gravity="center"
                     tools:src="@tools:sample/avatars" />
 
                 <ImageView
+                    android:id="@+id/reselect_image"
+                    android:visibility="@{viewmodel.isImageUriSet() ? View.VISIBLE : View.GONE}"
+                    android:onClick="@{()->viewmodel.onReselectImage()}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_baseline_cancel_24"
@@ -90,6 +95,7 @@
                     android:layout_gravity="top|right"/>
 
             </FrameLayout>
+
 
 
 
@@ -160,6 +166,8 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/save_btn"
             android:layout_width="wrap_content"
@@ -183,14 +191,25 @@
             android:src="@drawable/ic_baseline_autorenew_24"
             android:layout_gravity="bottom|center" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_add_container_view"
-            android:visibility="@{viewmodel.naviToAddChoice ? View.VISIBLE : View.GONE}"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            />
+            android:background="@color/white"
+            android:visibility="@{viewmodel.naviToAddChoice ? View.VISIBLE : View.GONE}"
+            android:elevation="34dp">
 
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_add_container_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                tools:layout="@layout/fragment_solaroid_add_choice"
+                android:elevation="50dp"
+                />
+
+
+
+        </FrameLayout>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -51,6 +51,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
         viewModel.naviToAddChoice.observe(viewLifecycleOwner, Observer {
             if (it) {
+                viewModel.setUriNull()
                 childFragmentManager.commit {
                     add<SolaroidAddChoiceFragment>(R.id.fragment_add_container_view, TAG_ADD_CHOICE)
                 }

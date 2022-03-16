@@ -33,10 +33,10 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        val navHostFragment = binding.navHostFragment.getFragment<NavHostFragment>()
-        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.findNavController()
-        binding.botNaivMenu.setupWithNavController(navController)
+//        val navHostFragment = binding.navHostFragment.getFragment<NavHostFragment>()
+//        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val navController = navHostFragment.findNavController()
+//        binding.botNaivMenu.setupWithNavController(navController)
 
 //        navController.addOnDestinationChangedListener{_,destination,_ ->
 //            if(destination.id == R.id.fragment_solaroid_create || destination.id == R.id.fragment_solaroid_detail) {
@@ -46,23 +46,23 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
-        navController.addOnDestinationChangedListener{_, _, argument ->
-            binding.botNaivMenu.isVisible = argument?.getBoolean("ShowAppBar",false) == true
-        }
-
-
-        navController.addOnDestinationChangedListener{_, destination, _ ->
-            if(destination.id == R.id.fragment_solaroid_create) {
-                if(!isCameraAvailable) {
-                    Toast.makeText(
-                        this,
-                        "해당 기능을 사용하기 위해서는 카메라 허용 승인이 필수적 입니다.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    onBackPressed()
-                }
-            }
-        }
+//        navController.addOnDestinationChangedListener{_, _, argument ->
+//            binding.botNaivMenu.isVisible = argument?.getBoolean("ShowAppBar",false) == true
+//        }
+//
+//
+//        navController.addOnDestinationChangedListener{_, destination, _ ->
+//            if(destination.id == R.id.fragment_solaroid_create) {
+//                if(!isCameraAvailable) {
+//                    Toast.makeText(
+//                        this,
+//                        "해당 기능을 사용하기 위해서는 카메라 허용 승인이 필수적 입니다.",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                    onBackPressed()
+//                }
+//            }
+//        }
 
 
     }

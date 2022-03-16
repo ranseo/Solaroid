@@ -19,20 +19,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/bot_naiv_menu"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/navigation" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bot_naiv_menu"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:labelVisibilityMode="unlabeled"
-            app:menu="@menu/activity_main_bot_navi"
-            />
+<!--        <com.google.android.material.bottomnavigation.BottomNavigationView-->
+<!--            android:id="@+id/bot_naiv_menu"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:labelVisibilityMode="unlabeled"-->
+<!--            app:menu="@menu/activity_main_bot_navi"-->
+<!--            />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -36,24 +36,45 @@
               android:onClick="@{()->viewModel.onFilterPopupMenu()}"
               android:src="@drawable/ic_filter" />
 
-          <com.google.android.material.floatingactionbutton.FloatingActionButton
-              android:id="@+id/create_photoTicket"
-              android:onClick="@{()->viewModel.navigateToCreate()}"
-              android:src="@drawable/ic_photo_create"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="bottom|end"
-              android:layout_margin="16dp"/>
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+              android:layout_width="match_parent"
+              android:layout_height="100dp"
+              android:layout_gravity="bottom"
+              android:layout_marginBottom="50dp"
+              android:background="@color/image_btn_background">
 
 
-          <com.google.android.material.floatingactionbutton.FloatingActionButton
-              android:onClick="@{()->viewModel.navigateToAdd()}"
-              android:src="@drawable/ic_baseline_add_24"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="bottom|end"
-              android:layout_marginBottom="16dp"
-              android:layout_marginEnd="90dp"/>
+              <com.google.android.material.floatingactionbutton.FloatingActionButton
+                  android:id="@+id/add_photoTicket"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginStart="228dp"
+                  android:onClick="@{()->viewModel.navigateToAdd()}"
+                  android:src="@drawable/ic_baseline_add_24"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintEnd_toStartOf="@+id/create_photoTicket"
+                  android:layout_marginEnd="20dp"
+                  />
+
+              <com.google.android.material.floatingactionbutton.FloatingActionButton
+                  android:id="@+id/create_photoTicket"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:onClick="@{()->viewModel.navigateToCreate()}"
+                  android:src="@drawable/ic_photo_create"
+                  android:layout_marginEnd="40dp"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toEndOf="@+id/add_photoTicket"
+                  app:layout_constraintTop_toTopOf="parent" />
+
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 
       </androidx.coordinatorlayout.widget.CoordinatorLayout>

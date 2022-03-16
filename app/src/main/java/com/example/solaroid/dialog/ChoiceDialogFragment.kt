@@ -19,7 +19,7 @@ class ChoiceDialogFragment(_listener: ChoiceDialogListener) : DialogFragment() {
         return requireParentFragment().let {
             val builder = AlertDialog.Builder(it.context)
             builder?.setMessage("해당 사진을 선택 하시겠습니까?")
-                .setPositiveButton("저장", DialogInterface.OnClickListener { dialogInterface, i ->
+                .setPositiveButton("선택", DialogInterface.OnClickListener { dialogInterface, i ->
                     listener.onDialogPositiveClick(this)
                 })
                 .setNegativeButton("취소", DialogInterface.OnClickListener { dialogInterface, i ->

@@ -3,6 +3,7 @@ package com.example.solaroid.solaroidadd
 import SolaroidAddViewModelFactory
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,16 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
     private lateinit var viewModelFactory: SolaroidAddViewModelFactory
 
     private lateinit var backPressCallback :OnBackPressedCallback
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("애드초이스프래그먼트","onCreate()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("애드초이스프래그먼트", "onDestroy()")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,6 +69,8 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
 
         binding.recyclerView.adapter = adapter
 
+
+
         viewModel.images.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
@@ -72,6 +85,8 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
 
         return binding.root
     }
+
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

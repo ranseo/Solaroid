@@ -75,9 +75,9 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
 
     val date = convertTodayToFormatted(System.currentTimeMillis())
 
+
     init {
-        viewModelScope.launch {
-        }
+        loadImage()
     }
 
     fun onTextChangedFront(s: CharSequence) {
@@ -118,6 +118,13 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         _imageSpin.value = !toggle
     }
 
+    /**
+     * addFragment의 choice_image의 image가 set된 이후에, 다시 addChoiceFragment로 돌아가기 위해 해당 사진을 취소하는 경우. reselect_image를 클릭하면 image값이 null 로변경
+     */
+    fun onReselectImage(){
+        setImageNull()
+    }
+
     fun onInsertPhotoTicket() {
         viewModelScope.launch {
             val newPhotoTicket =
@@ -133,14 +140,6 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
 
     }
 
-    //네비게이션
-    fun navigateToFrame() {
-        _naviToFrameFrag.value = true
-    }
-
-    fun doneNavigateToFrame() {
-        _naviToFrameFrag.value = false
-    }
 
     fun navigateToAddChoice() {
         _naviToAddChoice.value = true
@@ -209,6 +208,5 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         }
 
         return images
-
     }
 }
