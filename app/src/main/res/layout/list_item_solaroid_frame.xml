@@ -12,6 +12,10 @@
             name="imageSpin"
             type="boolean"/>
 
+        <variable
+            name="onLongClickListener"
+            type="com.example.solaroid.adapter.OnFrameLongClickListener" />
+
         <import type="android.view.View"/>
 
     </data>
@@ -48,6 +52,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/front_layout"
             android:visibility="@{imageSpin ? View.GONE : View.VISIBLE}"
+            android:onLongClickListener="@{()->onLongClickListener.onClick(photoTicket)}"
             android:layout_width="@dimen/polaroid_film_large_width"
             android:layout_height="@dimen/polaroid_film_large_height"
             android:layout_gravity="center"

@@ -85,6 +85,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         get() = _currentPosition
 
 
+
     init {
         Log.d("FrameViewModel","Init")
     }
@@ -217,9 +218,6 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     }
 
 
-    suspend fun update(photoTicket: PhotoTicket) {
-        database.update(photoTicket)
-    }
 
     suspend fun getPhotoTicket(key: Long): PhotoTicket = database.getPhotoTicket(key)
 
@@ -234,6 +232,39 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     fun onListItemClick() {
         spinImage()
+    }
+
+
+    fun deletePhotoTicket(key:Long) {
+        viewModelScope.launch {
+            delete(key)
+        }
+    }
+
+    //dialog 관련
+
+    /**
+     * ListDialongFrament를 생성하고 show()하는 showListDialog() 함수를 호출하게 만드는
+     * 변수
+     * */
+//    private val _listDialog = MutableLiveData<Boolean>(false)
+//    val listDialog : LiveData<Boolean>
+//        get() = _listDialog
+//
+//    fun toggleListDialog() {
+//        val toggle = listDialog.value!!
+//        _listDialog.value = !toggle
+//    }
+
+
+    //Database
+
+    private suspend fun update(photoTicket: PhotoTicket) {
+        database.update(photoTicket)
+    }
+
+    private suspend fun delete(key:Long) {
+        database.delete(key)
     }
 
 }

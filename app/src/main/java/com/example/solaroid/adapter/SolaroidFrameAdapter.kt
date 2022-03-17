@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidFrameBinding
 
-class SolaroidFrameAdapter() :
+class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListener) :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
 
 
@@ -20,7 +20,7 @@ class SolaroidFrameAdapter() :
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, onFrameLongClickListener)
         //holder.binding.executePendingBindings()
     }
 
@@ -35,8 +35,9 @@ class SolaroidFrameAdapter() :
     class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket?) {
+        fun bind(item: PhotoTicket?, onLongClickListener:OnFrameLongClickListener) {
             this.binding.photoTicket = item
+            this.binding.onLongClickListener = onLongClickListener
 
 
             binding.frontLayout.setOnClickListener {

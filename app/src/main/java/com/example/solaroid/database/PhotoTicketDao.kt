@@ -1,10 +1,7 @@
 package com.example.solaroid.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 
 @Dao
 interface PhotoTicketDao {
@@ -13,6 +10,9 @@ interface PhotoTicketDao {
 
     @Update
     suspend fun update(photoTicket: PhotoTicket)
+
+    @Query("DELETE FROM photo_ticket_table WHERE id == :key")
+    suspend fun delete(key:Long)
 
     //최신순 정렬
     @Query("SELECT * FROM photo_ticket_table ORDER BY id DESC")

@@ -3,6 +3,7 @@ package com.example.solaroid.solaroidframe
 import android.app.Application
 import android.util.Log
 import android.view.MenuItem
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -10,9 +11,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.dialog.ListSetDialogFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-abstract class SolaroidFrameFragmentFilter : Fragment() {
+abstract class SolaroidFrameFragmentFilter() : Fragment(), ListSetDialogFragment.ListSetDialogListener {
+
 
     /**
      * binding된 viewPager의 selected page의 PhotoTicket 객체를 추출. -> viewModel의 setCurrentPhotoTicket() 호출하여 인자로 넘겨줌.
@@ -83,6 +86,57 @@ abstract class SolaroidFrameFragmentFilter : Fragment() {
         viewPager: ViewPager2
     ) {
     }
+
+
+    /**
+     * 포토티켓을 LongClick했을 때 AlertDialog가 표시.
+     * dialog의 항목들에 대해 각각 코드 구현.
+     * */
+    override fun onDialogListItem(
+        dialog: DialogFragment,
+        position: Int,
+        viewModel: SolaroidFrameViewModel
+    ) {
+        val key = viewModel.photoTicket.value!!.id
+        when(position){
+            //delete
+            0 -> {
+                viewModel.deletePhotoTicket(key)
+                dialog.dismiss()
+            }
+            //수정
+            1 -> {
+                viewModel.navigateToEdit(key)
+                dialog.dismiss()
+            }
+            //상세정보
+            2 ->{
+                viewModel.navigateToDetail(key)
+                dialog.dismiss()
+            }
+        }
+    }
+
+
+
+    protected open fun showListDialog(viewModel:SolaroidFrameViewModel) {
+        val newDialogFragment = ListSetDialogFragment(this,viewModel)
+        newDialogFragment.show(parentFragmentManager, "ListDialog")
+
+    }
+
+//    protected open fun observeListDialog(
+//        viewModel: SolaroidFrameViewModel
+//    ) {
+//        viewModel.listDialog.observe(viewLifecycleOwner, Observer{
+//            if(it) {
+//                showListDialog(viewModel)
+//            }
+//        })
+//
+//    }
+
+
 
 
 }

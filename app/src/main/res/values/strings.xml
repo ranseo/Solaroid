@@ -4,4 +4,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="photo_create_front_hint">사진에 대한 짧은 정보를 적어주세요</string>
     <string name="photo_create_back_hint">사진에 담긴 추억을\n적어주세요</string>
+
+    <string-array name="list_set_dialog_items">
+        <item>삭제</item>
+        <item>편집</item>
+        <item>상세보기</item>
+    </string-array>
 </resources>

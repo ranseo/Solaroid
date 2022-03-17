@@ -7,16 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
+import com.example.solaroid.adapter.OnFrameLongClickListener
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameFilterBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
+
+    private lateinit var viewModel: SolaroidFrameViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +41,13 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
         val application: Application = requireNotNull(this.activity).application
         val dataSource: SolaroidDatabase = SolaroidDatabase.getInstance(application)
 
-        val viewModel = ViewModelProvider(
+        viewModel = ViewModelProvider(
             requireParentFragment(),
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
-        val adapter = SolaroidFrameAdapter()
+        val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
+                showListDialog(viewModel)
+        })
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -57,6 +63,8 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
 
         return binding.root
     }
+
+
 
     override fun setOnItemSelectedListener(
         viewModel: SolaroidFrameViewModel,
@@ -86,6 +94,7 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
 
 class SolaroidFrameFavorite() : SolaroidFrameFragmentFilter() {
 
+    private lateinit var viewModel: SolaroidFrameViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,12 +116,14 @@ class SolaroidFrameFavorite() : SolaroidFrameFragmentFilter() {
         val dataSource: SolaroidDatabase = SolaroidDatabase.getInstance(application)
 
 
-        val viewModel = ViewModelProvider(
+        viewModel = ViewModelProvider(
             requireParentFragment(),
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
 
-        val adapter = SolaroidFrameAdapter()
+        val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
+            showListDialog(viewModel)
+        })
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
