@@ -17,21 +17,29 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val database = dataSource
 
 
-
     private var photoTicketFilter = PhotoTicketFilter.LATELY
 
 
     //adapter에 item으로 전달될 LiveData
     var photoTickets = database.getAllPhotoTicket()
 
+    var preSize = 0
+    var photoTicketsSize = Transformations.map(photoTickets) {
+        it?.let {
+            it.size
+        }
+    }
+
     private val _favorite = MutableLiveData<Boolean?>()
     val favorite: LiveData<Boolean?>
         get() = _favorite
 
     //viewPager2의 각 page 위치에 배치된 item (=PhotoTicket)을 할당.
-    private val _photoTicket = MutableLiveData<PhotoTicket?>()
-    val photoTicket: LiveData<PhotoTicket?>
-        get() = _photoTicket
+//    private val _photoTicket = MutableLiveData<PhotoTicket?>()
+//    val photoTicket: LiveData<PhotoTicket?>
+//        get() = _photoTicket
+//
+    val photoTicket : LiveData<PhotoTicket?>
 
     //버튼 클릭 시, popup Menu
     private val _popUpMenu = MutableLiveData<Boolean>(false)
@@ -40,9 +48,8 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     //spin_image
     private val _imageSpin = MutableLiveData(false)
-    val imageSpin : LiveData<Boolean>
+    val imageSpin: LiveData<Boolean>
         get() = _imageSpin
-
 
 
     private val _naviToDetailFrag = MutableLiveData<Long?>()
@@ -51,49 +58,57 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     //SolaroidCreateFragment로 이동
     private val _naviToCreateFrag = MutableLiveData<Boolean>(false)
-    val naviToCreateFrag : LiveData<Boolean>
+    val naviToCreateFrag: LiveData<Boolean>
         get() = _naviToCreateFrag
 
 
     //SolaroidEditFragment로 이동
     private val _naviToEditFrag = MutableLiveData<Long?>()
-    val naviToEditFrag : LiveData<Long?>
+    val naviToEditFrag: LiveData<Long?>
         get() = _naviToEditFrag
 
     /**
      * trigger for navigate to SolaroidAddFragment
      * */
     private val _naviToAddFrag = MutableLiveData<Boolean>()
-    val naviToAddFrag : LiveData<Boolean>
+    val naviToAddFrag: LiveData<Boolean>
         get() = _naviToAddFrag
 
 
     //최신순 프래그먼트로 이동.
     private val _naviToLately = MutableLiveData<Boolean>(true)
-    val naviToLately : LiveData<Boolean>
+    val naviToLately: LiveData<Boolean>
         get() = _naviToLately
 
 
     //즐겨찾기 프래그먼트로 이동.
     private val _naviToFavorite = MutableLiveData<Boolean>(false)
-    val naviToFavorite : LiveData<Boolean>
+    val naviToFavorite: LiveData<Boolean>
         get() = _naviToFavorite
 
     //즐겨찾기 해재 시, 해당 viewPager의 position을 기록 -> 이는 viewPager의 onPageSelected의 문제점을 해결하기 위한 변수
-    private val _currentPosition = MutableLiveData<Int>()
-    val currentPosition : LiveData<Int>
+    private val _currentPosition = MutableLiveData<Int>(0)
+    val currentPosition: LiveData<Int>
         get() = _currentPosition
 
 
-
     init {
-        Log.d("FrameViewModel","Init")
+        Log.d("FrameViewModel", "Init")
+        photoTicket= Transformations.map(currentPosition) { position ->
+            if(position>=0) {
+                val list = photoTickets.value
+                if(list!=null) {
+                    list[position]
+                } else null
+            } else null
+        }
+
     }
 
 
-    fun setCurrentPhotoTicket(curr: PhotoTicket?) {
-        _photoTicket.value = curr
-    }
+//    fun setCurrentPhotoTicket(curr: PhotoTicket?) {
+//        _photoTicket.value = curr
+//    }
 
 
     fun setCurrentFavorite(favorite: Boolean) {
@@ -104,37 +119,44 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     //favorite(즐겨찾기) 값에 따라서 photoTicket를 업데이트하고, 현재 photoTicket값 갱신
     fun togglePhotoTicketFavorite(favorite: Boolean) {
         viewModelScope.launch {
-            _photoTicket.value?.let {
+            photoTicket.value?.let {
                 it.favorite = favorite
                 update(it)
-                _photoTicket.value = getPhotoTicket(it.id)
-                Log.d("FrameFragment", "togglePhotoTicket ${photoTicket.value?.id} : ${favorite}")
+                Log.d(
+                    "FrameFragment",
+                    "togglePhotoTicketFavorite photoTicket Id ${it.id} : ${favorite}"
+                )
             }
         }
     }
 
-    fun offPhotoTicketFavorite(favorite: Boolean) {
-        viewModelScope.launch {
-            _photoTicket.value?.let {
-                it.favorite = favorite
-                update(it)
-                Log.d("FavoriteFrame", "togglePhotoTicket ${photoTicket.value?.id} : ${favorite}")
+//    fun offPhotoTicketFavorite(favorite: Boolean) {
+//        viewModelScope.launch {
+//            _photoTicket.value?.let {
+//                it.favorite = favorite
+//                update(it)
+//                Log.d("프레임프래그먼트", "togglePhotoTicket ${photoTicket.value?.id} : ${favorite}")
+//            }
+//        }
+//    }
+
+
+    fun sortByFilter(filter: PhotoTicketFilter) {
+        photoTickets = when (filter) {
+            PhotoTicketFilter.LATELY -> {
+                Log.d("sortByFilter", "LATELY SUCCESS")
+                database.getAllPhotoTicket()
+            }
+            PhotoTicketFilter.FAVORITE -> {
+                Log.d("sortByFilter", "FAVORITE SUCCESS")
+                database.getFavoritePhotoTicket(true)
             }
         }
-    }
-
-
-     fun sortByFilter(filter:PhotoTicketFilter){
-            photoTickets = when(filter) {
-                PhotoTicketFilter.LATELY -> {
-                    Log.d("sortByFilter", "LATELY SUCCESS")
-                    database.getAllPhotoTicket()
-                }
-                PhotoTicketFilter.FAVORITE -> {
-                    Log.d("sortByFilter", "FAVORITE SUCCESS")
-                    database.getFavoritePhotoTicket(true)
-                }
+        photoTicketsSize = Transformations.map(photoTickets) {
+            it?.let {
+                it.size
             }
+        }
     }
 
     //
@@ -145,8 +167,6 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     fun doneFilterPopupMenu() {
         _popUpMenu.value = false
     }
-
-
 
 
     //포토티켓 필터 set
@@ -190,7 +210,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         _naviToCreateFrag.value = false
     }
 
-    fun navigateToEdit(photoTicketKey:Long?) {
+    fun navigateToEdit(photoTicketKey: Long?) {
         photoTicketKey?.let {
             _naviToEditFrag.value = photoTicketKey
         }
@@ -212,10 +232,11 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     /////////////////////////////////////////////////////////////////
 
 
-
-    fun setCurrentPosition(position:Int) {
-            _currentPosition.value = position
+    fun setCurrentPosition(position: Int) {
+        _currentPosition.value = position
     }
+
+
 
 
 
@@ -235,7 +256,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     }
 
 
-    fun deletePhotoTicket(key:Long) {
+    fun deletePhotoTicket(key: Long) {
         viewModelScope.launch {
             delete(key)
         }
@@ -263,7 +284,7 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         database.update(photoTicket)
     }
 
-    private suspend fun delete(key:Long) {
+    private suspend fun delete(key: Long) {
         database.delete(key)
     }
 
