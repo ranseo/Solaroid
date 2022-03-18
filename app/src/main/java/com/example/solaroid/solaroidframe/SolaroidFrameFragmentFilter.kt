@@ -31,7 +31,12 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Log.d("FrameFragment", "onPageSelected")
-                viewModel.setCurrentPosition(position)
+                if(adapter.itemCount > 0) {
+                    viewModel.setCurrentPosition(position)
+                } else {
+                    viewModel.setCurrentPosition(-1)
+                }
+
 
             }
         })
