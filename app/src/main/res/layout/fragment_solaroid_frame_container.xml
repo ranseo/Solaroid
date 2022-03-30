@@ -12,71 +12,109 @@
     </data>
 
 
-      <androidx.coordinatorlayout.widget.CoordinatorLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent">
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
-          <androidx.fragment.app.FragmentContainerView
-              android:id="@+id/fragment_frame_container_view"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_gravity="center"
-              tools:layout="@layout/fragment_solaroid_frame_filter"/>
-
-
-          <ImageButton
-              android:id="@+id/popup_menu_filter"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="top|end"
-              android:layout_marginTop="32dp"
-              android:layout_marginEnd="32dp"
-              android:backgroundTint="@color/image_btn_background"
-              android:minHeight="48dp"
-              android:onClick="@{()->viewModel.onFilterPopupMenu()}"
-              android:src="@drawable/ic_filter" />
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
 
-          <androidx.constraintlayout.widget.ConstraintLayout
-              android:layout_width="match_parent"
-              android:layout_height="100dp"
-              android:layout_gravity="bottom"
-              android:layout_marginBottom="50dp"
-              android:background="@color/image_btn_background">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/frame_cotainer_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:layout_constraintTop_toTopOf="parent"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
 
-              <com.google.android.material.floatingactionbutton.FloatingActionButton
-                  android:id="@+id/add_photoTicket"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginStart="228dp"
-                  android:onClick="@{()->viewModel.navigateToAdd()}"
-                  android:src="@drawable/ic_baseline_add_24"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toTopOf="parent"
-                  app:layout_constraintEnd_toStartOf="@+id/create_photoTicket"
-                  android:layout_marginEnd="20dp"
-                  />
-
-              <com.google.android.material.floatingactionbutton.FloatingActionButton
-                  android:id="@+id/create_photoTicket"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:onClick="@{()->viewModel.navigateToCreate()}"
-                  android:src="@drawable/ic_photo_create"
-                  android:layout_marginEnd="40dp"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintStart_toEndOf="@+id/add_photoTicket"
-                  app:layout_constraintTop_toTopOf="parent" />
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_frame_container_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="56dp"
+                tools:layout="@layout/fragment_solaroid_frame_filter" />
 
 
-          </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/popup_menu_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="88dp"
+                android:layout_marginEnd="32dp"
+                android:backgroundTint="@color/image_btn_background"
+                android:minHeight="48dp"
+                android:onClick="@{()->viewModel.onFilterPopupMenu()}"
+                android:src="@drawable/ic_filter" />
+
+            <!--          <ImageButton-->
+            <!--              android:id="@+id/logout"-->
+            <!--              android:layout_width="wrap_content"-->
+            <!--              android:layout_height="wrap_content"-->
+            <!--              android:layout_gravity="top|start"-->
+            <!--              android:layout_marginTop="32dp"-->
+            <!--              android:layout_marginEnd="32dp"-->
+            <!--              android:backgroundTint="@color/image_btn_background"-->
+
+            <!--              android:onClick="@{()->viewModel.logout()}"-->
+            <!--              android:src="@drawable/ic_filter" />-->
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/fab_line"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="50dp"
+                android:background="@color/image_btn_background">
 
 
-      </androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_photoTicket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="228dp"
+                    android:layout_marginEnd="20dp"
+                    android:onClick="@{()->viewModel.navigateToAdd()}"
+                    android:src="@drawable/ic_baseline_add_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/create_photoTicket"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/create_photoTicket"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="40dp"
+                    android:onClick="@{()->viewModel.navigateToCreate()}"
+                    android:src="@drawable/ic_photo_create"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/add_photoTicket"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/activity_main_app_bar_menu"/>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

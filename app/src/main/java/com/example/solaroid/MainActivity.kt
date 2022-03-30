@@ -1,6 +1,7 @@
 package com.example.solaroid
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -10,14 +11,27 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.databinding.ActivityMainBinding
 import com.example.solaroid.dialog.SaveDialogFragment
+import com.example.solaroid.login.LoginActivity
+import com.example.solaroid.login.SolaroidLoginViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     var isCameraAvailable : Boolean = false
+
+
+    //Firebase
+    private lateinit var auth: FirebaseAuth
+    private lateinit var viewModel : SolaroidLoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +46,20 @@ class MainActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+        auth = Firebase.auth
+        viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
+
+
+
+        viewModel.authenticationState.observe(this, Observer { state ->
+            when(state) {
+                SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                    logout()
+                    finish()
+                }
+                else -> {}
+            }
+        })
 
 //        val navHostFragment = binding.navHostFragment.getFragment<NavHostFragment>()
 //        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -65,6 +93,18 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        logout()
+    }
+
+    private fun logout() {
+        if(auth.currentUser == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
     }
 
     override fun onRequestPermissionsResult(

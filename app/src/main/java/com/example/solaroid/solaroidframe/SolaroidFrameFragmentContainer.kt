@@ -14,11 +14,14 @@ import androidx.fragment.app.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener {
 
@@ -31,16 +34,27 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
     private lateinit var viewModel: SolaroidFrameViewModel
 
+    private lateinit var binding : FragmentSolaroidFrameContainerBinding
+
+    //firebase
+    private lateinit var auth: FirebaseAuth
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
+
+        binding.frameCotainerToolbar.setupWithNavController(navController, appBarConfiguration)
 
 
-
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentSolaroidFrameContainerBinding>(
+        binding = DataBindingUtil.inflate<FragmentSolaroidFrameContainerBinding>(
             inflater,
             R.layout.fragment_solaroid_frame_container,
             container,
@@ -49,6 +63,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
+
+        auth = FirebaseAuth.getInstance()
 
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidFrameViewModel::class.java]
@@ -173,6 +189,13 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             else -> true
 
         }
+    }
+
+    private fun refreshLoginInfo() {
+        val menuItem = binding.navView.menu.findItem(R.id.login_info)
+        val user = auth.currentUser!!
+        val view = menuItem.actionView
+
     }
 
 

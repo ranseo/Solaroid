@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1080768750285",
+    "project_id": "solaroid-fca9c",
+    "storage_bucket": "solaroid-fca9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080768750285:android:629c9e829e99c924df7f84",
+        "android_client_info": {
+          "package_name": "com.example.solaroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080768750285-fdofganvtvao8o5le62fr99qngp012vo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.solaroid",
+            "certificate_hash": "f38d5a1f20567a93fe8c91d9e8f109615f464bb3"
+          }
+        },
+        {
+          "client_id": "1080768750285-84iidhdrhsdvn7u4omd364dhefug6611.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOfVzm5LbOLInQCvPuItJ1Odx64UVt0Ug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080768750285-84iidhdrhsdvn7u4omd364dhefug6611.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

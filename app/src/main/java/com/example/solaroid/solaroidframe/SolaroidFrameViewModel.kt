@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.PhotoTicketDao
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 enum class PhotoTicketFilter {
@@ -12,7 +15,7 @@ enum class PhotoTicketFilter {
     FAVORITE
 }
 
-class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Application) : ViewModel() {
+class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Application) : AndroidViewModel(application) {
 
     val database = dataSource
 
@@ -276,6 +279,12 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 //        val toggle = listDialog.value!!
 //        _listDialog.value = !toggle
 //    }
+
+    //Firebase
+    fun logout() {
+        AuthUI.getInstance()
+            .signOut(getApplication())
+    }
 
 
     //Database
