@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/login_info"
-        android:title="로그인"
-        android:actionLayout="@layout/menu_item_login_info"
-        android:icon="@drawable/baseline_account_circle_black_24"/>
+        android:title="로그아웃"
+        android:icon="@drawable/baseline_logout_black_24"/>
 
 </menu>

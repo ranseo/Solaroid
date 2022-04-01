@@ -3,12 +3,10 @@ package com.example.solaroid.solaroidframe
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupMenu
 import androidx.core.os.bundleOf
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.*
 import androidx.lifecycle.Observer
@@ -21,11 +19,17 @@ import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
-open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener {
+open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener,
+    NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
+        const val TAG = "FrameContainer"
         const val TAG_L = "LATELY"
         const val TAG_F = "FAVORITE"
 
@@ -34,10 +38,11 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
     private lateinit var viewModel: SolaroidFrameViewModel
 
-    private lateinit var binding : FragmentSolaroidFrameContainerBinding
+    private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
     //firebase
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,8 +50,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         val appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
 
         binding.frameCotainerToolbar.setupWithNavController(navController, appBarConfiguration)
-
-
+        setNavigationViewListener()
     }
 
     override fun onCreateView(
@@ -65,6 +69,11 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         val dataSource = SolaroidDatabase.getInstance(application)
 
         auth = FirebaseAuth.getInstance()
+        database = Firebase.database.reference
+
+
+
+
 
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidFrameViewModel::class.java]
@@ -72,6 +81,15 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+
+        database.child("phototicket").setValue(viewModel.photoTickets.value).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송.")
+            } else {
+                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
+
+            }
+        }
 
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             if (it) {
@@ -90,7 +108,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
                     childFragmentManager.commit {
                         val lat = SolaroidFrameLately()
-                        replace(R.id.fragment_frame_container_view, lat,TAG_L)
+                        replace(R.id.fragment_frame_container_view, lat, TAG_L)
                     }
                 }
                 viewModel.doneNavigateToLately()
@@ -107,7 +125,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
                     childFragmentManager.commit {
                         val favor = SolaroidFrameFavorite()
-                        replace(R.id.fragment_frame_container_view,favor, TAG_F)
+                        replace(R.id.fragment_frame_container_view, favor, TAG_F)
                     }
                 }
                 viewModel.doneNavigateToFavorite()
@@ -137,24 +155,35 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
 
         viewModel.naviToEditFrag.observe(viewLifecycleOwner, Observer {
-            it?.let{
+            it?.let {
                 val photoTicketId = viewModel.photoTicket.value?.id
-                Log.d("프레임컨테이너" , "PhotoTicketId : ${it}")
+                Log.d("프레임컨테이너", "PhotoTicketId : ${it}")
                 if (photoTicketId != null) {
                     findNavController().navigate(
-                        SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToEditFragment(it)
+                        SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToEditFragment(
+                            it
+                        )
                     )
                 }
                 viewModel.doneNavigateToEdit()
             }
         })
 
-        viewModel.naviToAddFrag.observe(viewLifecycleOwner, Observer{
-            if(it){
+        viewModel.naviToAddFrag.observe(viewLifecycleOwner, Observer {
+            if (it) {
                 findNavController().navigate(
                     SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToAddFragment()
                 )
                 viewModel.doneNavigateToAdd()
+            }
+        })
+
+        viewModel.naviToGallery.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                findNavController().navigate(
+                    SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToGalleryFragment()
+                )
+                viewModel.doneNavigateToGallery()
             }
         })
 
@@ -186,16 +215,37 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
                 viewModel.navigateToFavorite(true)
                 true
             }
+            R.id.login_info -> {
+                Log.i("프레임컨테이너", "login_info")
+                viewModel.logout()
+                true
+            }
             else -> true
 
         }
     }
+
 
     private fun refreshLoginInfo() {
         val menuItem = binding.navView.menu.findItem(R.id.login_info)
         val user = auth.currentUser!!
         val view = menuItem.actionView
 
+    }
+
+    private fun setNavigationViewListener() {
+        binding.navView.setNavigationItemSelectedListener(this)
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.login_info -> {
+                Log.i("프레임컨테이너", "login_info")
+                viewModel.logout()
+            }
+        }
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 
 

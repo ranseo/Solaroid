@@ -8,12 +8,18 @@
     <fragment
         android:id="@+id/fragment_solaroid_gallery"
         android:name="com.example.solaroid.solaroidgallery.SolaroidGalleryFragment"
-        android:label="SolaroidGalleryFragment"
+        android:label="갤러리"
         tools:layout="@layout/fragment_solaroid_gallery">
 
         <action
             android:id="@+id/action_galleryFragment_to_detailFragment"
             app:destination="@+id/fragment_solaroid_detail"/>
+
+        <action
+            android:id="@+id/action_galleryFragment_to_frameFragment"
+            app:destination="@+id/fragment_solaroid_frame_container"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/fragment_solaroid_frame_container"/>
 
         <argument
             android:name="ShowAppBar"
@@ -32,6 +38,8 @@
             app:destination="@+id/fragment_solaroid_gallery"
             app:popUpTo="@+id/fragment_solaroid_gallery"
             app:popUpToInclusive="true"/>
+
+
 
 
     </fragment>
@@ -73,6 +81,13 @@
         <action
             android:id="@+id/action_frameFragmentContainer_to_addFragment"
             app:destination="@+id/fragment_solaroid_add"/>
+
+        <action
+            android:id="@+id/action_frameFragmentContainer_to_galleryFragment"
+            app:destination="@+id/fragment_solaroid_gallery"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/fragment_solaroid_gallery"/>
+
 
         <argument
             android:name="ShowAppBar"

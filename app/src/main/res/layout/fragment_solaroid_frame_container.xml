@@ -27,7 +27,7 @@
                 android:id="@+id/frame_cotainer_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
+                android:background="@color/primaryDarkColor"
                 android:elevation="4dp"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:layout_constraintTop_toTopOf="parent"
@@ -43,6 +43,19 @@
                 tools:layout="@layout/fragment_solaroid_frame_filter" />
 
 
+            <TextView
+                android:text="@{viewModel.currFilterText}"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:layout_gravity="top|start"
+                android:layout_marginTop="98dp"
+                android:paddingStart="36dp"
+                android:textColor="@color/grey"
+                tools:text="최신순"
+                android:textSize="20sp"
+                />
+
+
             <ImageButton
                 android:id="@+id/popup_menu_filter"
                 android:layout_width="wrap_content"
@@ -55,17 +68,17 @@
                 android:onClick="@{()->viewModel.onFilterPopupMenu()}"
                 android:src="@drawable/ic_filter" />
 
-            <!--          <ImageButton-->
-            <!--              android:id="@+id/logout"-->
-            <!--              android:layout_width="wrap_content"-->
-            <!--              android:layout_height="wrap_content"-->
-            <!--              android:layout_gravity="top|start"-->
-            <!--              android:layout_marginTop="32dp"-->
-            <!--              android:layout_marginEnd="32dp"-->
-            <!--              android:backgroundTint="@color/image_btn_background"-->
-
-            <!--              android:onClick="@{()->viewModel.logout()}"-->
-            <!--              android:src="@drawable/ic_filter" />-->
+            <ImageButton
+                android:id="@+id/convert_to_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="88dp"
+                android:layout_marginEnd="88dp"
+                android:backgroundTint="@color/image_btn_background"
+                android:minHeight="48dp"
+                android:onClick="@{()->viewModel.navigateToGallery()}"
+                android:src="@drawable/ic_gallery" />
 
 
             <androidx.constraintlayout.widget.ConstraintLayout

@@ -22,6 +22,7 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable-xxxhdpi/edit_text_shadow.xml" value="0.2255" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_change_circle_20.xml" value="0.196" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_change_circle_24.xml" value="0.196" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_edit_24.xml" value="0.1875" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_logout_24.xml" value="0.1735" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_add_circle_outline_24.xml" value="0.252" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_autorenew_24.xml" value="0.252" />
@@ -34,6 +35,7 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/solaroid_add_clicked.xml" value="0.252" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/solaroid_add_photo.xml" value="0.252" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/solaroid_add_unclicked.xml" value="0.1005" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/font/maruburi.xml" value="0.1" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_add.xml" value="0.25" />
@@ -41,9 +43,9 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_detail.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_edit.xml" value="0.36614583333333334" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_frame.xml" value="0.2" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_frame_container.xml" value="0.14444444444444443" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_frame_filter.xml" value="0.33" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_gallery.xml" value="0.22" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_frame_container.xml" value="0.33" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_frame_filter.xml" value="0.22" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_gallery.xml" value="0.5" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_login.xml" value="0.33" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/fragment_solaroid_photo_create.xml" value="0.2" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layout/list_item_solaroid_add_choice.xml" value="0.1" />

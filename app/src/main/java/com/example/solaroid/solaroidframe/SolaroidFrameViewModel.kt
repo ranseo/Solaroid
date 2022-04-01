@@ -33,6 +33,10 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
         }
     }
 
+    private val _currFilterText = MutableLiveData<String>("최신순")
+    val currFilterText : LiveData<String>
+        get() = _currFilterText
+
     private val _favorite = MutableLiveData<Boolean?>()
     val favorite: LiveData<Boolean?>
         get() = _favorite
@@ -88,6 +92,12 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     private val _naviToFavorite = MutableLiveData<Boolean>(false)
     val naviToFavorite: LiveData<Boolean>
         get() = _naviToFavorite
+
+    //갤러리 프래그먼트로 이동
+    private val _naviToGallery = MutableLiveData<Boolean>(false)
+    val naviToGallery: LiveData<Boolean>
+        get() = _naviToGallery
+
 
     //즐겨찾기 해재 시, 해당 viewPager의 position을 기록 -> 이는 viewPager의 onPageSelected의 문제점을 해결하기 위한 변수
     private val _currentPosition = MutableLiveData<Int>(0)
@@ -147,10 +157,12 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     fun sortByFilter(filter: PhotoTicketFilter) {
         photoTickets = when (filter) {
             PhotoTicketFilter.LATELY -> {
+                _currFilterText.value = "최신순"
                 Log.d("sortByFilter", "LATELY SUCCESS")
                 database.getAllPhotoTicket()
             }
             PhotoTicketFilter.FAVORITE -> {
+                _currFilterText.value = "즐겨찾기"
                 Log.d("sortByFilter", "FAVORITE SUCCESS")
                 database.getFavoritePhotoTicket(true)
             }
@@ -229,6 +241,14 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     fun doneNavigateToAdd() {
         _naviToAddFrag.value = false
+    }
+
+    fun navigateToGallery() {
+        _naviToGallery.value = true
+    }
+
+    fun doneNavigateToGallery() {
+        _naviToGallery.value = false
     }
 
 
