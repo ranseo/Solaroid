@@ -12,11 +12,13 @@ import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.dialog.ListSetDialogFragment
+import com.example.solaroid.firebase.PhotoTicketModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.ktx.Firebase
 
 abstract class SolaroidFrameFragmentFilter() : Fragment(),
     ListSetDialogFragment.ListSetDialogListener {
-
 
     /**
      * binding된 viewPager의 selected page의 PhotoTicket 객체를 추출. -> viewModel의 setCurrentPhotoTicket() 호출하여 인자로 넘겨줌.

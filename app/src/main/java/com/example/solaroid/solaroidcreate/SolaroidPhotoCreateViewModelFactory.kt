@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.database.PhotoTicketDao
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.ktx.Firebase
 import java.lang.IllegalArgumentException
 
 class SolaroidPhotoCreateViewModelFactory(private val dataSource: PhotoTicketDao, val application: Application) : ViewModelProvider.Factory {

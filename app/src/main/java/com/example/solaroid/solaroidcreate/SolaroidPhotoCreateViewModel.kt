@@ -2,10 +2,16 @@ package com.example.solaroid.solaroidcreate
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.PhotoTicketDao
+import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTicketDao) :
@@ -119,11 +125,14 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
             val newPhotoTicket =
                 PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText.value!!, favorite = false)
             insert(newPhotoTicket)
-            _photoTicket.value = getLatestPhotoTicket()
-
             forReadyNewImage()
+            delay(5000)
+            _photoTicket.value = getLatestPhotoTicket()
+            Log.i("생성","phototicketValue : ${photoTicket.value}")
         }
     }
+
+
 
     fun forReadyNewImage() {
         _capturedImageUri.value = null

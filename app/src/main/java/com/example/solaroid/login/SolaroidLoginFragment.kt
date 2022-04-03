@@ -63,6 +63,7 @@ class SolaroidLoginFragment : Fragment() {
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
+                    Log.i(TAG,"메인 화면으로 이동")
                     navigateToMainActivity()
                     requireActivity().finish()
                 }

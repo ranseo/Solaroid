@@ -24,6 +24,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,6 +40,9 @@ class SolaroidPhotoCreateFragment : Fragment() {
     private lateinit var application: Application
 
     private lateinit var binding: FragmentSolaroidPhotoCreateBinding
+
+    private lateinit var firebaseDB : DatabaseReference
+    private lateinit var firebaseAuth : FirebaseAuth
 
     private var imageCapture: ImageCapture? = null
 
@@ -52,6 +60,9 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
         application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
+
+        firebaseDB= Firebase.database.reference
+        firebaseAuth = FirebaseAuth.getInstance()
 
         viewModelFactory =
             SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application)
@@ -72,6 +83,26 @@ class SolaroidPhotoCreateFragment : Fragment() {
             if (it) {
                 captureImage()
                 viewModel.stopImageCapture()
+            }
+        })
+
+        viewModel.photoTicket.observe(viewLifecycleOwner,Observer{
+            it?.let{ photo ->
+                val user = firebaseAuth.currentUser!!
+                Log.i(TAG,"phototicketValue : ${photo}, auth userid : ${user.uid}")
+                try {
+                    firebaseDB.child("phototicket").child(user.uid).setValue(photo).addOnCompleteListener { task->
+                        if(task.isSuccessful) {
+                            Log.i(TAG, "firebase 실시간 데이터베이스 phototicket 전송 성공")
+                        } else {
+                            Log.i(TAG, "firebase 실시간 데이터베이스 phototicket 전송 실패", task.exception)
+                        }
+                    }
+                } catch (e:Exception) {
+                    Log.d(TAG, "firebaseDB ERROR : ${e.message}")
+                }
+
+
             }
         })
 
@@ -156,7 +187,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
     }
 
     companion object {
-        private const val TAG = "CameraXApp"
+        private const val TAG = "생성"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 }

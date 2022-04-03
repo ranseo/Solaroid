@@ -7,12 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.solaroid.MainActivity
 import com.example.solaroid.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
     }
 
     override fun onStart() {
@@ -23,3 +28,5 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
+
+

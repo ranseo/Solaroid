@@ -16,13 +16,17 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
+import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
+import com.example.solaroid.firebase.PhotoTicketModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.BuildConfig
 import com.google.firebase.ktx.Firebase
 
 open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener,
@@ -65,11 +69,12 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             false
         )
 
+
+
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
         auth = FirebaseAuth.getInstance()
-        database = Firebase.database.reference
 
 
 
@@ -82,14 +87,16 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        database.child("phototicket").setValue(viewModel.photoTickets.value).addOnCompleteListener {
-            if (it.isSuccessful) {
-                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송.")
-            } else {
-                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
+//        database.child(auth.currentUser!!.uid).child("photoTicket").setValue(PhotoTicket(0L,"","","","")).addOnCompleteListener {
+//            if (it.isSuccessful) {
+//                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송.")
+//            } else {
+//                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
+//            }
+//        }
 
-            }
-        }
+
+
 
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             if (it) {
@@ -186,6 +193,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
                 viewModel.doneNavigateToGallery()
             }
         })
+
 
 
 
