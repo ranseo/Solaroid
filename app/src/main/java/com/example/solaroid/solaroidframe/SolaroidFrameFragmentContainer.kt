@@ -25,6 +25,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.BuildConfig
 import com.google.firebase.ktx.Firebase
@@ -46,7 +47,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
     //firebase
     private lateinit var auth: FirebaseAuth
-    private lateinit var database: DatabaseReference
+    private lateinit var database: FirebaseDatabase
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -75,7 +76,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         val dataSource = SolaroidDatabase.getInstance(application)
 
         auth = FirebaseAuth.getInstance()
-
+        database = Firebase.database
 
 
 
@@ -87,13 +88,23 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-//        database.child(auth.currentUser!!.uid).child("photoTicket").setValue(PhotoTicket(0L,"","","","")).addOnCompleteListener {
-//            if (it.isSuccessful) {
-//                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송.")
-//            } else {
-//                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
-//            }
-//        }
+        database.reference.child("photoTicket").setValue(PhotoTicket(0L,"","","","")).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송. firebase Database : ${database}")
+            } else {
+                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
+            }
+        }
+
+        database.reference.child("photoTicket").child(auth.currentUser!!.uid).setValue(PhotoTicket(0L,"","","","")).addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송. firebase Database : ${database}")
+            } else {
+                Log.i(TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
+            }
+        }
+
+
 
 
 
@@ -201,6 +212,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         return binding.root
     }
 
+
+
     private fun popupShow(view: View) {
         val popUp = PopupMenu(this.activity, view)
         popUp.setOnMenuItemClickListener(this@SolaroidFrameFragmentContainer)
@@ -256,5 +269,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         return true
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        database.goOffline()
+    }
 }

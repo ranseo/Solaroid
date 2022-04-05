@@ -22,8 +22,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
+import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
+import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -41,7 +43,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
     private lateinit var binding: FragmentSolaroidPhotoCreateBinding
 
-    private lateinit var firebaseDB : DatabaseReference
+    private lateinit var firebaseDB : FirebaseDatabase
     private lateinit var firebaseAuth : FirebaseAuth
 
     private var imageCapture: ImageCapture? = null
@@ -61,7 +63,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
         application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        firebaseDB= Firebase.database.reference
+        firebaseDB= Firebase.database
         firebaseAuth = FirebaseAuth.getInstance()
 
         viewModelFactory =
@@ -90,16 +92,13 @@ class SolaroidPhotoCreateFragment : Fragment() {
             it?.let{ photo ->
                 val user = firebaseAuth.currentUser!!
                 Log.i(TAG,"phototicketValue : ${photo}, auth userid : ${user.uid}")
-                try {
-                    firebaseDB.child("phototicket").child(user.uid).setValue(photo).addOnCompleteListener { task->
-                        if(task.isSuccessful) {
-                            Log.i(TAG, "firebase 실시간 데이터베이스 phototicket 전송 성공")
-                        } else {
-                            Log.i(TAG, "firebase 실시간 데이터베이스 phototicket 전송 실패", task.exception)
-                        }
+                Log.i(TAG, "firebase Database ${firebaseDB}")
+                firebaseDB.reference.child("photoTicket").setValue(PhotoTicket(0L,"","","","")).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i(SolaroidFrameFragmentContainer.TAG, "firebase 실시간 데이터베이스로 데이터 전송. firebase Database : ${firebaseDB}")
+                    } else {
+                        Log.i(SolaroidFrameFragmentContainer.TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
                     }
-                } catch (e:Exception) {
-                    Log.d(TAG, "firebaseDB ERROR : ${e.message}")
                 }
 
 
