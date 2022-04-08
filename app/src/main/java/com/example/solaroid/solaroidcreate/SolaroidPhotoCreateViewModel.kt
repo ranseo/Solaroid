@@ -126,7 +126,6 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
                 PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText.value!!, favorite = false)
             insert(newPhotoTicket)
             forReadyNewImage()
-            delay(5000)
             _photoTicket.value = getLatestPhotoTicket()
             Log.i("생성","phototicketValue : ${photoTicket.value}")
         }

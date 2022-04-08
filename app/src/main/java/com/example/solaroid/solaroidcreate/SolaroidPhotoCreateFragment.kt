@@ -25,6 +25,7 @@ import com.example.solaroid.R
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
+import com.example.solaroid.firebase.RealTimeDatabaseViewModel
 import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -38,13 +39,14 @@ import java.util.*
 class SolaroidPhotoCreateFragment : Fragment() {
     private lateinit var viewModelFactory: SolaroidPhotoCreateViewModelFactory
     private lateinit var viewModel: SolaroidPhotoCreateViewModel
+    private lateinit var firebaseDBViewModel: RealTimeDatabaseViewModel
 
     private lateinit var application: Application
 
     private lateinit var binding: FragmentSolaroidPhotoCreateBinding
 
-    private lateinit var firebaseDB : FirebaseDatabase
-    private lateinit var firebaseAuth : FirebaseAuth
+    private lateinit var firebaseDB: FirebaseDatabase
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private var imageCapture: ImageCapture? = null
 
@@ -63,20 +65,22 @@ class SolaroidPhotoCreateFragment : Fragment() {
         application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        firebaseDB= Firebase.database
+        firebaseDB = Firebase.database
         firebaseAuth = FirebaseAuth.getInstance()
 
         viewModelFactory =
             SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[SolaroidPhotoCreateViewModel::class.java]
-
-
+        firebaseDBViewModel =
+            ViewModelProvider(requireActivity())[RealTimeDatabaseViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.cameraConverter.observe(viewLifecycleOwner, Observer{
+
+
+        viewModel.cameraConverter.observe(viewLifecycleOwner, Observer {
             startCamera(it)
         })
 
@@ -88,19 +92,10 @@ class SolaroidPhotoCreateFragment : Fragment() {
             }
         })
 
-        viewModel.photoTicket.observe(viewLifecycleOwner,Observer{
-            it?.let{ photo ->
+        viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
+            it?.let { photo ->
                 val user = firebaseAuth.currentUser!!
-                Log.i(TAG,"phototicketValue : ${photo}, auth userid : ${user.uid}")
-                Log.i(TAG, "firebase Database ${firebaseDB}")
-                firebaseDB.reference.child("photoTicket").setValue(PhotoTicket(0L,"","","","")).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.i(SolaroidFrameFragmentContainer.TAG, "firebase 실시간 데이터베이스로 데이터 전송. firebase Database : ${firebaseDB}")
-                    } else {
-                        Log.i(SolaroidFrameFragmentContainer.TAG, "firebase 실시간 데이터베이스로 데이터 전송 실패.", it.exception)
-                    }
-                }
-
+                firebaseDBViewModel.setValueInPhotoTicket(photo, user)
 
             }
         })
@@ -109,7 +104,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
         return binding.root
     }
 
-    private fun startCamera(cameraConverter:Boolean) {
+    private fun startCamera(cameraConverter: Boolean) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(application)
 
         cameraProviderFuture.addListener({
@@ -121,7 +116,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
 
-            val cameraSelector = if(!cameraConverter) {
+            val cameraSelector = if (!cameraConverter) {
                 CameraSelector.DEFAULT_BACK_CAMERA
             } else {
                 CameraSelector.DEFAULT_FRONT_CAMERA
