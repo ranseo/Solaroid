@@ -10,24 +10,26 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class RealTimeDatabaseViewModel : ViewModel() {
-    val db = Firebase.database
-    val ref = db.reference
+    private val db = Firebase.database
+    private val ref = db.reference
 
     fun setValueInPhotoTicket(photoTicket: PhotoTicket, user:FirebaseUser) {
         ref.child("photoTicket").child(user.uid).push().setValue(photoTicket).addOnCompleteListener {
             if (it.isSuccessful) {
                 Log.i(
-                    SolaroidFrameFragmentContainer.TAG,
+                    TAG,
                     "firebase 실시간 데이터베이스로 데이터 전송. firebase Database : ${db}"
                 )
             } else {
-                Log.i(
-                    SolaroidFrameFragmentContainer.TAG,
+                Log.i(TAG,
                     "firebase 실시간 데이터베이스로 데이터 전송 실패.",
                     it.exception
                 )
             }
         }
+    }
+    companion object{
+        const val TAG = "리얼타임데이터베이스"
     }
 
 }

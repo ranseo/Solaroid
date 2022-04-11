@@ -35,4 +35,6 @@ interface PhotoTicketDao {
     suspend fun getPhotoTicket(key:Long) : PhotoTicket
 
 
+
+
 }

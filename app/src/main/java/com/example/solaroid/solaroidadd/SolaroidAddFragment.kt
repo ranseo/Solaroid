@@ -16,7 +16,9 @@ import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidAddBinding
 import com.example.solaroid.dialog.SaveDialogFragment
+import com.example.solaroid.firebase.RealTimeDatabaseViewModel
 import com.example.solaroid.solaroidadd.SolaroidAddViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
 /**
@@ -26,6 +28,9 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
     private lateinit var viewModel: SolaroidAddViewModel
     private lateinit var viewModelFactory: SolaroidAddViewModelFactory
+    private lateinit var firebaseDBViewModel: RealTimeDatabaseViewModel
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,12 +47,24 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
+        auth = FirebaseAuth.getInstance()
+
         viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
+
+        firebaseDBViewModel = ViewModelProvider(requireActivity())[RealTimeDatabaseViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+
+
+        viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
+            it?.let{ photo ->
+                firebaseDBViewModel.setValueInPhotoTicket(photo,auth.currentUser!!)
+                requireActivity().onBackPressed()
+            }
+        })
 
         viewModel.naviToAddChoice.observe(viewLifecycleOwner, Observer {
             if (it) {
@@ -98,7 +115,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         viewModel.onInsertPhotoTicket()
-        requireActivity().onBackPressed()
+
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {

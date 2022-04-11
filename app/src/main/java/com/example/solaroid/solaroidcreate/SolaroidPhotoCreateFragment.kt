@@ -96,8 +96,9 @@ class SolaroidPhotoCreateFragment : Fragment() {
             it?.let { photo ->
                 val user = firebaseAuth.currentUser!!
                 firebaseDBViewModel.setValueInPhotoTicket(photo, user)
-
             }
+
+
         })
 
 

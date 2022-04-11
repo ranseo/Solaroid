@@ -9,6 +9,7 @@ import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.PhotoTicketDao
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -17,6 +18,11 @@ import java.util.concurrent.TimeUnit
 class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application) : AndroidViewModel(application) {
 
     val database = dataSource
+
+    //
+    private val _photoTicket = MutableLiveData<PhotoTicket?>()
+    val photoTicket : LiveData<PhotoTicket?>
+        get() = _photoTicket
 
     //addChoice & add
     private val _images = MutableLiveData<List<MediaStoreData>>()
@@ -135,7 +141,13 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
                     backText = backText.value!!,
                     favorite = false
                 )
-            insert(newPhotoTicket)
+            val ins = async {
+                insert(newPhotoTicket)
+            }
+
+            if(ins.await() == Unit) {
+                _photoTicket.value = database.getLatestTicket()
+            }
         }
 
     }

@@ -11,6 +11,7 @@ import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -20,8 +21,11 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
     val database = dataSource
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
-    val photoTicket: LiveData<PhotoTicket?>
+    val photoTicket : LiveData<PhotoTicket?>
         get() = _photoTicket
+
+//    val photoTickets = database.getLatestTicketLiveData()
+//    lateinit var photoTicket : LiveData<PhotoTicket>
 
     private val _startImageCapture = MutableLiveData<Boolean>()
     val startImageCapture : LiveData<Boolean>
@@ -124,10 +128,12 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
         viewModelScope.launch {
             val newPhotoTicket =
                 PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText.value!!, favorite = false)
-            insert(newPhotoTicket)
+            val ins = async { insert(newPhotoTicket) }
+            if(ins.await()==Unit) {
+                _photoTicket.value = getLatestPhotoTicket()
+            }
+
             forReadyNewImage()
-            _photoTicket.value = getLatestPhotoTicket()
-            Log.i("생성","phototicketValue : ${photoTicket.value}")
         }
     }
 
@@ -138,9 +144,6 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
         _editTextClear.value = null
     }
 
-    fun doneNavigateToGalleryFragment() {
-        _photoTicket.value = null
-    }
 
     fun convertCameraSelector() {
         val toggle = cameraConverter.value!!

@@ -54,7 +54,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(navController.graph, binding.drawerLayout)
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.fragment_solaroid_frame_container,R.id.fragment_solaroid_gallery), binding.drawerLayout)
 
         binding.frameCotainerToolbar.setupWithNavController(navController, appBarConfiguration)
         setNavigationViewListener()

@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
 
 
     //Firebase
-    private lateinit var auth: FirebaseAuth
     private lateinit var viewModel : SolaroidLoginViewModel
 
 
@@ -50,18 +49,17 @@ class MainActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
-        auth = Firebase.auth
         viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
 
 
 
         viewModel.authenticationState.observe(this, Observer { state ->
             when(state) {
-                SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED-> {}
+                else -> {
                     logout()
                     finish()
                 }
-                else -> {}
             }
         })
 
@@ -99,16 +97,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        logout()
-    }
 
     private fun logout() {
-        if(auth.currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
-        }
     }
 
     override fun onRequestPermissionsResult(
