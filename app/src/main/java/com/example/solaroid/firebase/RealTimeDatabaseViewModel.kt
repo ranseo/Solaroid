@@ -11,7 +11,7 @@ import com.google.firebase.ktx.Firebase
 
 class RealTimeDatabaseViewModel : ViewModel() {
     private val db = Firebase.database
-    private val ref = db.reference
+    private val ref = db.reference.add
 
     fun setValueInPhotoTicket(photoTicket: PhotoTicket, user:FirebaseUser) {
         ref.child("photoTicket").child(user.uid).push().setValue(photoTicket).addOnCompleteListener {
@@ -28,6 +28,8 @@ class RealTimeDatabaseViewModel : ViewModel() {
             }
         }
     }
+
+
     companion object{
         const val TAG = "리얼타임데이터베이스"
     }

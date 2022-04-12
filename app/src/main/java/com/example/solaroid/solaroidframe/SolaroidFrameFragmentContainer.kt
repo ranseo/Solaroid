@@ -3,32 +3,33 @@ package com.example.solaroid.solaroidframe
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
-import com.example.solaroid.firebase.PhotoTicketModel
 import com.example.solaroid.firebase.RealTimeDatabaseViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.BuildConfig
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener,
@@ -89,6 +90,18 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         binding.lifecycleOwner = viewLifecycleOwner
 
 
+
+        //ValueEventListener {}
+        val photoTicketListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val photoTicket = snapshot.getValue<List<PhotoTicket>>()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        }
 
 
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
