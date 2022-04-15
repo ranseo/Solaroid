@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel : SolaroidLoginViewModel
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+
         viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
 
 

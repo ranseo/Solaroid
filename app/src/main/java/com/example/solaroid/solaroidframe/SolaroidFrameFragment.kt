@@ -57,6 +57,7 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
         registerOnPageChangeCallback(viewModel, binding.viewpager, adapter)
         observePhotoTicket(viewModel)
         observeFavorite(viewModel, binding.fragmentFrameBottomNavi)
+        observeFirebasePhototicket(viewModel,adapter)
         refreshCurrentPosition(viewModel, binding.viewpager)
         observeCurrentPosition(viewModel, adapter)
 
@@ -112,6 +113,7 @@ class SolaroidFrameFavorite() : SolaroidFrameFragmentFilter() {
         observePhotoTicket(viewModel)
         observeFavorite(viewModel, binding.fragmentFrameBottomNavi)
         observeCurrentPosition(viewModel, adapter)
+        observeFirebasePhototicket(viewModel,adapter)
         refreshCurrentPosition(viewModel, binding.viewpager)
 
         setOnItemSelectedListener(viewModel, binding.fragmentFrameBottomNavi, binding.viewpager)

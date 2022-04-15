@@ -26,6 +26,7 @@ import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
 import com.example.solaroid.firebase.RealTimeDatabaseViewModel
+import com.example.solaroid.firebase.RealTimeDatabaseViewModelFactory
 import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -72,8 +73,9 @@ class SolaroidPhotoCreateFragment : Fragment() {
             SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[SolaroidPhotoCreateViewModel::class.java]
+
         firebaseDBViewModel =
-            ViewModelProvider(requireActivity())[RealTimeDatabaseViewModel::class.java]
+            ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(firebaseAuth.currentUser!!))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -94,8 +96,8 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
         viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
             it?.let { photo ->
-                val user = firebaseAuth.currentUser!!
-                firebaseDBViewModel.setValueInPhotoTicket(photo, user)
+
+                firebaseDBViewModel.setValueInPhotoTicket(photo)
             }
 
 

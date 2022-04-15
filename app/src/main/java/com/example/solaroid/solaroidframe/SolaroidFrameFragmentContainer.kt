@@ -22,6 +22,7 @@ import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 import com.example.solaroid.firebase.RealTimeDatabaseViewModel
+import com.example.solaroid.firebase.RealTimeDatabaseViewModelFactory
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -81,54 +82,18 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidFrameViewModel::class.java]
 
-        firebaseDBViewModel = ViewModelProvider(requireActivity())[RealTimeDatabaseViewModel::class.java]
+        firebaseDBViewModel = ViewModelProvider(requireActivity(),RealTimeDatabaseViewModelFactory(auth.currentUser))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
 
 
-        //ValueEventListener {}
-        val photoTicketListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val photoTicket = snapshot.getValue<List<PhotoTicket>>()
+        firebaseDBViewModel.photoTickets.observe(viewLifecycleOwner, Observer {
+            it?.let{
+                viewModel.setPhotoTicketsByFirebase(it)
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        }
-
-
-        val photoTicketRef = firebaseDBViewModel.ref.child("photoTicket")
-
-        photoTicketRef.addChildEventListener(object: ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                for(s in snapshot.children) {
-                    Log.i(TAG, "$s")
-                }
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
         })
-
-
 
 
 

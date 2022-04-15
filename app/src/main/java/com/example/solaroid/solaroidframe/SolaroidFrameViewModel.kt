@@ -26,6 +26,16 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     //adapter에 item으로 전달될 LiveData
     var photoTickets = database.getAllPhotoTicket()
 
+    private val _photoTicketsByFirebase = MutableLiveData<List<PhotoTicket>>()
+    val photoTicketsByFirebase : LiveData<List<PhotoTicket>>
+        get() = _photoTicketsByFirebase
+
+    //테스트
+    fun setPhotoTicketsByFirebase(list: List<PhotoTicket>) {
+        _photoTicketsByFirebase.value = list
+    }
+
+
     var preSize = 0
     var photoTicketsSize = Transformations.map(photoTickets) {
         it?.let {

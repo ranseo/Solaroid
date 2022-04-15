@@ -17,6 +17,7 @@ import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidAddBinding
 import com.example.solaroid.dialog.SaveDialogFragment
 import com.example.solaroid.firebase.RealTimeDatabaseViewModel
+import com.example.solaroid.firebase.RealTimeDatabaseViewModelFactory
 import com.example.solaroid.solaroidadd.SolaroidAddViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -52,7 +53,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
 
-        firebaseDBViewModel = ViewModelProvider(requireActivity())[RealTimeDatabaseViewModel::class.java]
+        firebaseDBViewModel = ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(auth.currentUser!!))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -61,7 +62,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
         viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
             it?.let{ photo ->
-                firebaseDBViewModel.setValueInPhotoTicket(photo,auth.currentUser!!)
+                firebaseDBViewModel.setValueInPhotoTicket(photo)
                 requireActivity().onBackPressed()
             }
         })

@@ -21,6 +21,16 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
     ListSetDialogFragment.ListSetDialogListener {
 
     /**
+     * viewModel내 firebase로부터 data list를 받는 변수를 관찰하여 해당 데이터를 adapter에 적용
+     * */
+    protected open fun observeFirebasePhototicket(viewModel:SolaroidFrameViewModel, adapter:SolaroidFrameAdapter) {
+        viewModel.photoTicketsByFirebase.observe(viewLifecycleOwner,Observer{
+            adapter.submitList(it)
+        })
+    }
+
+
+    /**
      * binding된 viewPager의 selected page의 PhotoTicket 객체를 추출. -> viewModel의 setCurrentPhotoTicket() 호출하여 인자로 넘겨줌.
      * */
     protected open fun registerOnPageChangeCallback(

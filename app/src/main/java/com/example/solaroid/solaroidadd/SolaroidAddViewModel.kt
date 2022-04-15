@@ -132,6 +132,7 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
     }
 
     fun onInsertPhotoTicket() {
+        if(image.value == null) return
         viewModelScope.launch {
             val newPhotoTicket =
                 PhotoTicket(
