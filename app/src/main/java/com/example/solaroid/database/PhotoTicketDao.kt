@@ -8,6 +8,9 @@ interface PhotoTicketDao {
     @Insert
     suspend fun insert(photoTicket:PhotoTicket)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(photoTickets: List<PhotoTicket>)
+
     @Update
     suspend fun update(photoTicket: PhotoTicket)
 

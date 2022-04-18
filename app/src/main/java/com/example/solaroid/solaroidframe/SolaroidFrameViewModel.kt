@@ -32,7 +32,9 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     //테스트
     fun setPhotoTicketsByFirebase(list: List<PhotoTicket>) {
-        _photoTicketsByFirebase.value = list
+        viewModelScope.launch {
+            insertAll(list)
+        }
     }
 
 
@@ -326,5 +328,10 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     private suspend fun delete(key: Long) {
         database.delete(key)
     }
+
+    private suspend fun insertAll(list: List<PhotoTicket>) {
+        database.insert(list)
+    }
+
 
 }

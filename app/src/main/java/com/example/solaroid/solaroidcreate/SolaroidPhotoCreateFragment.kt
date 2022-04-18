@@ -75,7 +75,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
             ViewModelProvider(this, viewModelFactory)[SolaroidPhotoCreateViewModel::class.java]
 
         firebaseDBViewModel =
-            ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(firebaseAuth.currentUser!!))[RealTimeDatabaseViewModel::class.java]
+            ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(firebaseAuth.currentUser!!, application))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -96,11 +96,9 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
         viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
             it?.let { photo ->
-
+                Log.i(TAG, "firebaseDBViewModel.setValueInPhotoTicket(photo)")
                 firebaseDBViewModel.setValueInPhotoTicket(photo)
             }
-
-
         })
 
 
@@ -170,6 +168,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val savedUri = outputFileResults.savedUri!!
                     val msg = "Photo Capture Succeeded : $savedUri"
+                    Log.i(TAG, "msg : $msg")
                     Toast.makeText(application, "사진이 성공적으로 찍혔습니다.", Toast.LENGTH_SHORT).show()
                     viewModel.setCapturedImageUri(savedUri)
                 }
@@ -184,7 +183,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
     }
 
     companion object {
-        private const val TAG = "생성"
+        private const val TAG = "생성프래그먼트"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 }

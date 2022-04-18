@@ -53,7 +53,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
 
-        firebaseDBViewModel = ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(auth.currentUser!!))[RealTimeDatabaseViewModel::class.java]
+        firebaseDBViewModel = ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(auth.currentUser!!,application))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

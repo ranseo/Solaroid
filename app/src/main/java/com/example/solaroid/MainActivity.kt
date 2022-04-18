@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class MainActivity : AppCompatActivity() {
     var isCameraAvailable : Boolean = false
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         Firebase.auth.useEmulator("10.0.2.2", 9099)
         Firebase.database.useEmulator("10.0.2.2", 9000)
+        Firebase.storage.useEmulator("10.0.2.2", 9199)
 
         // Request camera permissions
         if (allPermissionsGranted()) {

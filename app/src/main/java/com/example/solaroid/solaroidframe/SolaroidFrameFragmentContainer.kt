@@ -82,7 +82,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidFrameViewModel::class.java]
 
-        firebaseDBViewModel = ViewModelProvider(requireActivity(),RealTimeDatabaseViewModelFactory(auth.currentUser))[RealTimeDatabaseViewModel::class.java]
+        firebaseDBViewModel = ViewModelProvider(requireActivity(),RealTimeDatabaseViewModelFactory(auth.currentUser,application))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
