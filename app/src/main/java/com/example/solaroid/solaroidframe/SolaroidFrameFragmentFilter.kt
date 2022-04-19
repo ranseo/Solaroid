@@ -16,6 +16,7 @@ import com.example.solaroid.firebase.PhotoTicketModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 abstract class SolaroidFrameFragmentFilter() : Fragment(),
     ListSetDialogFragment.ListSetDialogListener {
@@ -172,7 +173,12 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
         when (position) {
             //delete
             0 -> {
+                Log.i(TAG,"url : ${viewModel.photoTicket.value!!.photo}")
+                val storageRef = Firebase.storage.getReference("photoTicket")
+                val ref = Firebase.storage.getReferenceFromUrl(viewModel.photoTicket.value!!.photo)
+                Log.i(TAG, "ref : ${ref}")
                 viewModel.deletePhotoTicket(key)
+
                 dialog.dismiss()
             }
             //수정

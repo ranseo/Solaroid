@@ -50,7 +50,11 @@ class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) :
                 .getReference(firebaseUser!!.uid)
                 .child(key!!)
                 .child(photoTicket.photo.toUri().lastPathSegment!!)
-            Log.i(TAG, "photoTicket.photo.toUri().lastPathSegment : ${photoTicket.photo.toUri().lastPathSegment!!}")
+
+            val mimeType : String? = photoTicket.photo.toUri()?.let{
+                getApplication<Application>().contentResolver.getType(it)
+            }
+            Log.i(TAG, "photoTicket.photo : ${photoTicket.photo}\ntoUri() : ${photoTicket.photo.toUri()}\nlastPathSegment : ${photoTicket.photo.toUri().lastPathSegment!!}")
 
             putImageInStorage(storageReference, photoTicket.photo.toUri(), key, photoTicket)
         })

@@ -73,6 +73,7 @@ class SolaroidLoginFragment : Fragment() {
                 SolaroidLoginViewModel.AuthenticationState.INVALID_AUTHENTICATION -> {
                     Toast.makeText(requireActivity(), VERIFY, Toast.LENGTH_LONG).show()
                     sendEmailVerifyAccount(auth.currentUser!!)
+                    auth.signOut()
                 }
                 else ->{}
             }
