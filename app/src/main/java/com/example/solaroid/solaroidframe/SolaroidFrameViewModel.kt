@@ -17,6 +17,10 @@ enum class PhotoTicketFilter {
 
 class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Application) : AndroidViewModel(application) {
 
+    companion object {
+        const val TAG = "프레임뷰모델"
+    }
+
     val database = dataSource
 
 
@@ -116,9 +120,12 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     val currentPosition: LiveData<Int>
         get() = _currentPosition
 
+    fun setCurrentPosition(position: Int) {
+        _currentPosition.value = position
+    }
 
     init {
-        Log.d("FrameViewModel", "Init")
+        Log.d(TAG, "Init")
         photoTicket= Transformations.map(currentPosition) { position ->
             if(position>=0) {
                 val list = photoTickets.value
@@ -127,7 +134,6 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
                 } else null
             } else null
         }
-
     }
 
 
@@ -139,6 +145,8 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
     fun setCurrentFavorite(favorite: Boolean) {
         _favorite.value = favorite
     }
+
+
 
 
     //favorite(즐겨찾기) 값에 따라서 photoTicket를 업데이트하고, 현재 photoTicket값 갱신
@@ -266,10 +274,6 @@ class SolaroidFrameViewModel(dataSource: PhotoTicketDao, application: Applicatio
 
     /////////////////////////////////////////////////////////////////
 
-
-    fun setCurrentPosition(position: Int) {
-        _currentPosition.value = position
-    }
 
 
 

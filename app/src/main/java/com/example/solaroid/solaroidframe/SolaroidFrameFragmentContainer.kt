@@ -34,7 +34,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
-        const val TAG = "FrameContainer"
+        const val TAG = "프레임 컨테이너"
         const val TAG_L = "LATELY"
         const val TAG_F = "FAVORITE"
 
@@ -91,6 +91,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
         firebaseDBViewModel.photoTickets.observe(viewLifecycleOwner, Observer {
             it?.let{
+                Log.i(TAG, "firebaseDBViewModel : ${it}")
                 viewModel.setPhotoTicketsByFirebase(it)
             }
         })

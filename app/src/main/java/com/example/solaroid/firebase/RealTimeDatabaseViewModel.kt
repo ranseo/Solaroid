@@ -33,6 +33,7 @@ class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) :
 
 
     init {
+        Log.i(TAG, "TAG Init")
         if(firebaseUser != null)
             setPhotoTicketList(ref.child("photoTicket").child("${firebaseUser.uid}"))
     }
@@ -107,10 +108,10 @@ class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) :
                                 val hashMap = list.value as HashMap<*, *>
 
                                 val phototicket = PhotoTicket(date = hashMap["date"]!! as String, photo = hashMap["photo"]!! as String, id = hashMap["id"]!! as Long, frontText = hashMap["frontText"]!! as String, backText = hashMap["backText"]!! as String, favorite = hashMap["favorite"]!! as Boolean)
-                                Log.i(TAG,"${phototicket}")
+
                                 photoTicketList.add(phototicket)
-
-
+                                _photoTickets.value = photoTicketList
+                                Log.i(TAG,"${phototicket}, photoTicketsValue = ${photoTickets.value}")
                             }
                         }
 
@@ -121,16 +122,8 @@ class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) :
                     reference.addListenerForSingleValueEvent(photoTicketListener)
                 }
             }
-            if (ins.await() == Unit) {
-
-                _photoTickets.value = photoTicketList
-                Log.i(TAG,"ins.aw${photoTickets.value}")
-            }
         }
-
-
     }
-
 
     companion object {
         const val TAG = "리얼타임데이터베이스"

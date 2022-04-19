@@ -20,6 +20,10 @@ import com.google.firebase.ktx.Firebase
 abstract class SolaroidFrameFragmentFilter() : Fragment(),
     ListSetDialogFragment.ListSetDialogListener {
 
+    companion object {
+        const val TAG = "프레임필터"
+    }
+
     /**
      * viewModel내 firebase로부터 data list를 받는 변수를 관찰하여 해당 데이터를 adapter에 적용
      * */
@@ -48,8 +52,6 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
                 } else {
                     viewModel.setCurrentPosition(-1)
                 }
-
-
             }
         })
     }
@@ -78,12 +80,12 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
     ) {
         viewModel.favorite.observe(viewLifecycleOwner, Observer { favor ->
             favor?.let {
-                Log.d("FrameFragment", "viewModel.favorite.observe  : ${favor}")
+                Log.d(TAG, "viewModel.favorite.observe  : ${favor}")
                 //getItem은 오류 findItem이랑 다른듯.!
                 val menuItem: MenuItem =
                     botNavi.menu.findItem(R.id.favorite)
                 menuItem.setIcon(if (!it) R.drawable.ic_favorite_false else R.drawable.ic_favorite_true)
-                Log.d("FrameFragment", "Success")
+                Log.d(TAG, "Success")
             }
         })
     }
@@ -124,8 +126,8 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
         viewModel.photoTicketsSize.observe(viewLifecycleOwner, Observer { size ->
             if(size > 0 && size !=null) {
 
-                val position = viewPager.currentItem
-                Log.d("FrameFragment", "refreshCurrentPosition photoTicket Id: ${position} : ${size}")
+                val position = if(size==1 && viewPager.currentItem==1) viewPager.currentItem-1 else viewPager.currentItem
+                Log.d(TAG, "refreshCurrentPosition photoTicket Id: ${position} : ${size}")
                 viewModel.setCurrentPosition(position)
             }
         })
@@ -145,10 +147,8 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
             when (it.itemId) {
                 R.id.favorite -> {
                     val favorite = viewModel.photoTicket.value?.favorite
-                    favorite?.let { favor ->
-                        if (favor) viewModel.togglePhotoTicketFavorite(false)
-                        else viewModel.togglePhotoTicketFavorite(true)
-                    }
+                    if(favorite!=null && favorite) viewModel.togglePhotoTicketFavorite(true)
+                    else viewModel.togglePhotoTicketFavorite(false)
                 }
                 R.id.edit -> {
                     viewModel.navigateToEdit(viewModel.photoTicket.value?.id)

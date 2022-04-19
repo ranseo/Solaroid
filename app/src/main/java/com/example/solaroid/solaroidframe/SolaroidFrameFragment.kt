@@ -41,10 +41,13 @@ class SolaroidFrameLately() : SolaroidFrameFragmentFilter() {
         val application: Application = requireNotNull(this.activity).application
         val dataSource: SolaroidDatabase = SolaroidDatabase.getInstance(application)
 
+
         viewModel = ViewModelProvider(
             requireParentFragment(),
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
+
+        Log.i("프레임컨테이너", "여기가 빠를까?")
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog(viewModel)
         })
@@ -100,6 +103,7 @@ class SolaroidFrameFavorite() : SolaroidFrameFragmentFilter() {
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
 
+        Log.i("프레임컨테이너", "여기가 빠를까?")
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog(viewModel)
         })

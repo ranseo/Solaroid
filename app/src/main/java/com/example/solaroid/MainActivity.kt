@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -35,6 +36,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel : SolaroidLoginViewModel
 
 
+    private lateinit var auth : FirebaseAuth
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "ONstart")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,16 +60,20 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        auth = FirebaseAuth.getInstance()
+
         viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
 
 
 
         viewModel.authenticationState.observe(this, Observer { state ->
             when(state) {
-                SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED-> {}
+                SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED-> {
+                    Log.i(TAG, "AUTHENTICATED")
+                }
                 else -> {
+                    Log.i(TAG, "NOT AUTHENTICATED")
                     logout()
-                    finish()
                 }
             }
         })
@@ -101,6 +112,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        auth.signOut()
+        Log.i(TAG, "onStop : auth = ${auth}")
+    }
 
     private fun logout() {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -136,6 +152,7 @@ class MainActivity : AppCompatActivity() {
 
 
     companion object {
+        const val TAG = "메인액티비티"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS =
             mutableListOf(
