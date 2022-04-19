@@ -94,6 +94,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
             }
         })
 
+        //이 부분이 바껴야해
         viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
             it?.let { photo ->
                 Log.i(TAG, "firebaseDBViewModel.setValueInPhotoTicket(photo)")

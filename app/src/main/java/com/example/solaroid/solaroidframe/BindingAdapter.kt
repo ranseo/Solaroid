@@ -1,6 +1,7 @@
 package com.example.solaroid.solaroidframe
 
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
@@ -15,6 +16,7 @@ import com.example.solaroid.database.PhotoTicket
 fun bindViewPager(viewPager: ViewPager2, photoTickets: List<PhotoTicket>?) {
     val adapter = viewPager.adapter as SolaroidFrameAdapter
     photoTickets?.let {
+        Log.i("바인딩어댑터","포토티켓값 : ${it}")
         adapter.submitList(it)
     }
 }

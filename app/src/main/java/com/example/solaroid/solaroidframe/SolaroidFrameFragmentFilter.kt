@@ -173,10 +173,10 @@ abstract class SolaroidFrameFragmentFilter() : Fragment(),
         when (position) {
             //delete
             0 -> {
-                Log.i(TAG,"url : ${viewModel.photoTicket.value!!.photo}")
-                val storageRef = Firebase.storage.getReference("photoTicket")
-                val ref = Firebase.storage.getReferenceFromUrl(viewModel.photoTicket.value!!.photo)
-                Log.i(TAG, "ref : ${ref}")
+//                Log.i(TAG,"url : ${viewModel.photoTicket.value!!.photo}")
+//                val storageRef = Firebase.storage.getReference("photoTicket")
+//                val ref = Firebase.storage.getReferenceFromUrl(viewModel.photoTicket.value!!.photo)
+//                Log.i(TAG, "ref : ${ref}")
                 viewModel.deletePhotoTicket(key)
 
                 dialog.dismiss()

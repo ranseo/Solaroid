@@ -124,6 +124,9 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTi
         _startImageCapture.value = false
     }
 
+    //이 부분이 바껴야 할듯 사진촬영 -> room -> firebase 라면
+    //사진촬영 -> 촬영된 이미지를 firebase storage 에 저장 -> realtime database에 저장 -> 해당 realtime database로 부터 사진 가져와서 room데이터베이스에 저장
+    //이게 repositery를 통해서 이루어져야 한다. 오케이?
     fun onImageSave() {
         viewModelScope.launch {
             val newPhotoTicket =

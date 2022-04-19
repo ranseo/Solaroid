@@ -17,10 +17,12 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) : AndroidViewModel(application) {
     private val firebaseUser = user
@@ -45,18 +47,25 @@ class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) :
                 return@CompletionListener
             }
 
+            val mimeType : String? = photoTicket.photo.toUri().let{
+                getApplication<Application>().contentResolver.getType(it)
+            }
+
+            val file = photoTicket.photo.toUri()
+
+
             val key = databaseReference.key
             val storageReference = Firebase.storage
                 .getReference(firebaseUser!!.uid)
                 .child(key!!)
-                .child(photoTicket.photo.toUri().lastPathSegment!!)
+                .child("${mimeType?.split("/")?.get(0)}/${file.lastPathSegment}")
 
-            val mimeType : String? = photoTicket.photo.toUri()?.let{
-                getApplication<Application>().contentResolver.getType(it)
-            }
-            Log.i(TAG, "photoTicket.photo : ${photoTicket.photo}\ntoUri() : ${photoTicket.photo.toUri()}\nlastPathSegment : ${photoTicket.photo.toUri().lastPathSegment!!}")
 
-            putImageInStorage(storageReference, photoTicket.photo.toUri(), key, photoTicket)
+            Log.i(TAG, "mimeType : ${mimeType}")
+
+            Log.i(TAG, "file : ${file}")
+
+            putImageInStorage(storageReference, file, key, photoTicket)
         })
 
 
@@ -79,7 +88,12 @@ class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) :
     private fun putImageInStorage(storageReference: StorageReference, uri: Uri, key: String, _photoTicket: PhotoTicket) {
         // Upload the image to Cloud Storage
         Log.i(TAG, "putImageInStorage")
-        storageReference.putFile(uri)
+        //타입지정 완료.
+        var metadata = storageMetadata {
+            contentType = "image/jpeg"
+        }
+
+        storageReference.putFile(uri, metadata)
             .addOnSuccessListener { taskSnashot ->
                 Log.i(TAG, "Success")
                 taskSnashot.metadata!!.reference!!.downloadUrl
@@ -123,7 +137,8 @@ class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) :
                         }
                     }
 
-                    reference.addListenerForSingleValueEvent(photoTicketListener)
+                    //reference.addListenerForSingleValueEvent(photoTicketListener)
+                    reference.addValueEventListener(photoTicketListener)
                 }
             }
         }
