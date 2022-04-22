@@ -123,7 +123,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 
         refreshDataFromRepositery(fbUser, fbDatabase)
 
-        //현재 사용자가 보고 있는 포토티켓을 설정하기 위해서 currentPosition 값을
+        // 현재 사용자가 보고 있는 포토티켓을 설정하기 위해서 currentPosition 값을
         // photoTickets의 인덱스로 이용하여 photoTicket을 가져온다.
         // 만약 현재 포지션이 0보다 작다면 아무런 포토티켓이 없는 상태이므로 null값을 대입.
         // 그렇지 않은 경우, 만약 photoTickets이 비어있다면 null 값을 대입.
@@ -165,11 +165,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
                 it.favorite = favorite
                 //이거 it asDatabaseModel이 있어야할듯.
                 //그리고 databaseModel에서도 asFirebaseDataModel이 있으면 좋을듯.
-                update(it)
-                Log.d(
-                    "FrameFragment",
-                    "toggleDatabasePhotoTicketFavorite DatabasePhotoTicket Id ${it.id} : ${favorite}"
-                )
+                photoTicketRepositery.updatePhotoTickets(fbUser, fbDatabase, it)
             }
         }
     }
@@ -185,6 +181,10 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 //    }
 
 
+    /**
+     * 수정예정.
+     * 프레임컨테이너 프래그먼트 내 fragmentContainer 내에 (즐겨찾기 <-> 최신순) 프래그먼트를 전환할 수 있다.
+     * */
     fun sortByFilter(filter: PhotoTicketFilter) {
         DatabasePhotoTickets = when (filter) {
             PhotoTicketFilter.LATELY -> {

@@ -5,7 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.*
-import com.example.solaroid.database.PhotoTicket
+import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth

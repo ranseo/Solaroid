@@ -4,12 +4,12 @@ import com.example.solaroid.database.DatabasePhotoTicket
 
 
 data class FirebasePhotoTicket(
+    var key : String = "",
     var url: String = "",
     var frontText : String = "",
     var backText: String ="",
     var date : String = "",
-    var favorite : Boolean = false,
-    var path : String = ""
+    var favorite : Boolean = false
 ) {
 
 }
@@ -21,7 +21,7 @@ fun FirebasePhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
         backText = this.backText,
         date = this.date,
         favorite = this.favorite,
-        firebasePath = this.path
+        firebaseKey = this.key
     )
 }
 
@@ -30,14 +30,5 @@ data class FirebasePhotoTicketContainer(val photoTickets : List<FirebasePhotoTic
 
 
 fun FirebasePhotoTicketContainer.asDatabaseModel():  List<DatabasePhotoTicket> {
-    return photoTickets.map {
-        DatabasePhotoTicket(
-            url = it.url,
-            frontText = it.frontText,
-            backText = it.backText,
-            date = it.date,
-            favorite = it.favorite,
-            firebasePath = it.path
-        )
-    }
+    return photoTickets.map { it.asDatabaseModel() }
 }
