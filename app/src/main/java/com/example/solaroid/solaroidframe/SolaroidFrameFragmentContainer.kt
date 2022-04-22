@@ -18,7 +18,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.R
-import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 import com.example.solaroid.firebase.RealTimeDatabaseViewModel
