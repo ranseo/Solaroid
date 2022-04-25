@@ -41,21 +41,27 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
     private lateinit var viewModel: SolaroidFrameViewModel
-    private lateinit var firebaseDBViewModel: RealTimeDatabaseViewModel
 
-            private lateinit var binding: FragmentSolaroidFrameContainerBinding
+    private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
-    //firebase
-    private lateinit var auth: FirebaseAuth
-    private lateinit var database: FirebaseDatabase
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        childFragmentManager.commit { add(R.id.fragment_add_container_view, SolaroidFrameFragment(), TAG) }
+
         val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.fragment_solaroid_frame_container,R.id.fragment_solaroid_gallery), binding.drawerLayout)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.fragment_solaroid_frame_container,
+                R.id.fragment_solaroid_gallery
+            ), binding.drawerLayout
+        )
 
         binding.frameCotainerToolbar.setupWithNavController(navController, appBarConfiguration)
         setNavigationViewListener()
+
+
     }
 
     override fun onCreateView(
@@ -74,127 +80,58 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        auth = FirebaseAuth.getInstance()
-        database = Firebase.database
-
 
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidFrameViewModel::class.java]
-
-        firebaseDBViewModel = ViewModelProvider(requireActivity(),RealTimeDatabaseViewModelFactory(auth.currentUser,application))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
 
 
-        firebaseDBViewModel.photoTickets.observe(viewLifecycleOwner, Observer {
-            it?.let{
-                Log.i(TAG, "firebaseDBViewModel : ${it}")
-                viewModel.setPhotoTicketsByFirebase(it)
-            }
-        })
-
-
-
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
-            if (it) {
+            it.getContentIfNotHandled()?.let {
                 popupShow(binding.popupMenuFilter)
-                viewModel.doneFilterPopupMenu()
-            }
-        })
-
-        viewModel.naviToLately.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                val lately = childFragmentManager.findFragmentByTag(TAG_L)
-                if (lately == null) {
-//                    childFragmentManager.commitNow {
-//                        add<SolaroidFrameLately>(R.id.fragment_frame_container_view, TAG_L)
-//                    }
-
-                    childFragmentManager.commit {
-                        val lat = SolaroidFrameLately()
-                        replace(R.id.fragment_frame_container_view, lat, TAG_L)
-                    }
-                }
-                viewModel.doneNavigateToLately()
-            }
-        })
-
-        viewModel.naviToFavorite.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                val favorite = childFragmentManager.findFragmentByTag(TAG_F)
-                if (favorite == null) {
-//                    childFragmentManager.commitNow {
-//                        add<SolaroidFrameFavorite>(R.id.fragment_frame_container_view, TAG_F)
-//                    }
-
-                    childFragmentManager.commit {
-                        val favor = SolaroidFrameFavorite()
-                        replace(R.id.fragment_frame_container_view, favor, TAG_F)
-                    }
-                }
-                viewModel.doneNavigateToFavorite()
-            }
-        })
-
-        viewModel.naviToDetailFrag.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                findNavController().navigate(
-                    SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToDetailFragment(
-                        it
-                    )
-                )
-                viewModel.doneNavigateToDetail()
             }
         })
 
 
         viewModel.naviToCreateFrag.observe(viewLifecycleOwner, Observer {
-            if (it) {
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToCreateFragment()
                 )
-                viewModel.doneNavigateToCreate()
             }
         })
 
 
         viewModel.naviToEditFrag.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                val photoTicketId = viewModel.photoTicket.value?.id
-                Log.d("프레임컨테이너", "PhotoTicketId : ${it}")
-                if (photoTicketId != null) {
-                    findNavController().navigate(
-                        SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToEditFragment(
-                            it
-                        )
+            it.getContentIfNotHandled()?.let { key ->
+                findNavController().navigate(
+                    SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToEditFragment(
+                        key
                     )
-                }
-                viewModel.doneNavigateToEdit()
+                )
             }
         })
 
+
         viewModel.naviToAddFrag.observe(viewLifecycleOwner, Observer {
-            if (it) {
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToAddFragment()
                 )
-                viewModel.doneNavigateToAdd()
             }
         })
 
+
         viewModel.naviToGallery.observe(viewLifecycleOwner, Observer {
-            if (it) {
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     SolaroidFrameFragmentContainerDirections.actionFrameFragmentContainerToGalleryFragment()
                 )
-                viewModel.doneNavigateToGallery()
             }
         })
-
-
-
 
 
         return binding.root
@@ -212,34 +149,21 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
         return when (p0?.itemId) {
             R.id.filter_lately -> {
-                viewModel.sortByFilter(PhotoTicketFilter.LATELY)
-                //Toast.makeText(this.activity, "즐겨찾기", Toast.LENGTH_SHORT).show()
-                viewModel.navigateToLately(true)
+                viewModel.setPhotoTicketFilter(PhotoTicketFilter.LATELY)
                 true
             }
             R.id.filter_favorite -> {
-                viewModel.sortByFilter(PhotoTicketFilter.FAVORITE)
-                //Toast.makeText(this.activity, "즐겨찾기", Toast.LENGTH_SHORT).show()
-                viewModel.navigateToFavorite(true)
+                viewModel.setPhotoTicketFilter(PhotoTicketFilter.FAVORITE)
                 true
             }
             R.id.login_info -> {
-                Log.i("프레임컨테이너", "login_info")
                 viewModel.logout()
                 true
             }
             else -> true
-
         }
     }
 
-
-    private fun refreshLoginInfo() {
-        val menuItem = binding.navView.menu.findItem(R.id.login_info)
-        val user = auth.currentUser!!
-        val view = menuItem.actionView
-
-    }
 
     private fun setNavigationViewListener() {
         binding.navView.setNavigationItemSelectedListener(this)
@@ -248,7 +172,6 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.login_info -> {
-                Log.i("프레임컨테이너", "login_info")
                 viewModel.logout()
             }
         }
@@ -256,8 +179,4 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         return true
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        database.goOffline()
-    }
 }

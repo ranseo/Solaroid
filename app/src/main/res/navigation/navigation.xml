@@ -104,7 +104,9 @@
 
         <action
             android:id="@+id/action_editFragment_to_frameFragmentContainer"
-            app:destination="@id/fragment_solaroid_frame_container"/>
+            app:destination="@id/fragment_solaroid_frame_container"
+            app:popUpTo="@+id/fragment_frame_container_view"
+            app:popUpToInclusive="true" />
 
         <argument
             android:name="photo_ticket_key"

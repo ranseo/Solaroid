@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidFrameBinding
+import com.example.solaroid.domain.PhotoTicket
 
 class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListener) :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {

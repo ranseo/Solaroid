@@ -5,8 +5,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.convertTodayToFormatted
-import com.example.solaroid.database.PhotoTicket
-import com.example.solaroid.database.PhotoTicketDao
+import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -15,14 +15,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SolaroidPhotoCreateViewModel(application: Application, dataSource: PhotoTicketDao) :
-    ViewModel() {
+class SolaroidPhotoCreateViewModel(application: Application, dataSource: DatabasePhotoTicketDao) :
+    AndroidViewModel(application) {
 
     val database = dataSource
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket : LiveData<PhotoTicket?>
         get() = _photoTicket
+
+
 
 //    val photoTickets = database.getLatestTicketLiveData()
 //    lateinit var photoTicket : LiveData<PhotoTicket>

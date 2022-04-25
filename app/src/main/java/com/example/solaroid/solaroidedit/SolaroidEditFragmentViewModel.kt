@@ -2,17 +2,30 @@ package com.example.solaroid.solaroidedit
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.solaroid.database.PhotoTicket
-import com.example.solaroid.database.PhotoTicketDao
+import com.example.solaroid.Event
+import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.database.asDomainModel
+import com.example.solaroid.domain.PhotoTicket
+import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.repositery.PhotoTicketRepositery
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource:PhotoTicketDao) : ViewModel() {
+class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     val database = dataSource
-    private val _photoTicket = MutableLiveData<PhotoTicket>()
-    val photoTicket : LiveData<PhotoTicket>
+
+
+    private val fbAuth: FirebaseAuth = FirebaseManager.getUserInstance()
+    private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+
+    private val photoTicketRepositery : PhotoTicketRepositery = PhotoTicketRepositery(dataSource)
+
+    private val _photoTicket = MutableLiveData<PhotoTicket?>()
+    val photoTicket : LiveData<PhotoTicket?>
         get() = _photoTicket
 
     //image_spin 버튼 클릭 시, toggle
@@ -26,19 +39,19 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource:PhotoTicketD
         get() = _backText
 
     val currBackTextLen = Transformations.map(backText) {
-        "${it.length}/100"
+        "${it.length}/300"
     }
 
     //navi
-    private val _naviToFrameFrag = MutableLiveData<Boolean>(false)
-    val naviToFrameFrag : LiveData<Boolean>
+    private val _naviToFrameFrag = MutableLiveData<Event<Boolean>>()
+    val naviToFrameFrag : LiveData<Event<Boolean>>
         get() = _naviToFrameFrag
 
 
     init {
         viewModelScope.launch {
-            _photoTicket.value = getPhotoTicket(photoTicketKey)!!
-            Log.d("에디트", "photoTicket key : ${photoTicket.value?.id}")
+            _photoTicket.value = getPhotoTicket(photoTicketKey)
+            if(photoTicket.value == null) navigateToFrame()
         }
     }
 
@@ -60,32 +73,19 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource:PhotoTicketD
     fun onUpdatePhotoTicket() {
         viewModelScope.launch {
             val curr = _photoTicket.value!!
-            val new = PhotoTicket(curr.id, curr.photo , frontText, _backText.value!!, curr.date, curr.favorite)
-            update(new)
-            _photoTicket.value = new
-
+            val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, curr.date, curr.favorite)
+            photoTicketRepositery.updatePhotoTickets(fbAuth.currentUser!!, fbDatabase, new)
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
 
-
-
-    //데이터베이스 관련 함수
-    suspend fun getPhotoTicket(key:Long) : PhotoTicket {
-        return database.getPhotoTicket(key)
+    suspend fun getPhotoTicket(key:Long) : PhotoTicket? {
+        return database.getDatabasePhotoTicket(key).asDomainModel()
     }
 
     //네비게이션
     fun navigateToFrame() {
-        _naviToFrameFrag.value = true
+        _naviToFrameFrag.value = Event(true)
     }
 
-    fun doneNavigateToFrame() {
-        _naviToFrameFrag.value = false
-    }
-
-    suspend fun update(photoTicket:PhotoTicket) = withContext(Dispatchers.IO) { database.update(photoTicket)}
 }

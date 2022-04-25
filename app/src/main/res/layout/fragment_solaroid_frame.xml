@@ -17,10 +17,8 @@
         android:layout_height="match_parent"
         >
 
-        <!--            submitList="@{viewModel.photoTickets}"-->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
-            submitList="@{viewModel.photoTickets}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toTopOf="@+id/fragment_frame_bottom_navi"

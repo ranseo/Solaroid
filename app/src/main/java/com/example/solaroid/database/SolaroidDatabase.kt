@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [DatabasePhotoTicket::class], version = 5, exportSchema = false)
 abstract class SolaroidDatabase : RoomDatabase() {
-    abstract val photoTicketDao : PhotoTicketDao
+    abstract val photoTicketDao : DatabasePhotoTicketDao
 
     companion object {
         @Volatile

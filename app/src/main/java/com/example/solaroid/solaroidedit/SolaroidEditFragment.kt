@@ -43,13 +43,11 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
         }
 
         viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer {
-            if(it) {
-                findNavController().navigate(
-                    SolaroidEditFragmentDirections.actionEditFragmentToFrameFragmentContainer()
-                )
-                viewModel.doneNavigateToFrame()
-            }
-
+           it.getContentIfNotHandled()?.let{
+               findNavController().navigate(
+                   SolaroidEditFragmentDirections.actionEditFragmentToFrameFragmentContainer()
+               )
+           }
         })
 
         return binding.root
@@ -57,7 +55,7 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         viewModel.onUpdatePhotoTicket()
-        this.requireActivity().onBackPressed()
+        viewModel.navigateToFrame()
     }
 
 

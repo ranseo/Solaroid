@@ -7,7 +7,7 @@
 
         <variable
             name="photoTicket"
-            type="com.example.solaroid.database.PhotoTicket" />
+            type="com.example.solaroid.domain.PhotoTicket" />
 
         <variable
             name="clickListener"

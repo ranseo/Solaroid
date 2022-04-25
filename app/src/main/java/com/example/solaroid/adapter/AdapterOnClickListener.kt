@@ -1,7 +1,7 @@
 package com.example.solaroid.adapter
 
 import android.net.Uri
-import com.example.solaroid.database.PhotoTicket
+import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.solaroidadd.MediaStoreData
 
 class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {

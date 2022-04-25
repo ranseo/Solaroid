@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
-import com.example.solaroid.database.PhotoTicket
+import com.example.solaroid.domain.PhotoTicket
 
 @BindingAdapter("submitList")
 fun bindViewPager(viewPager: ViewPager2, photoTickets: List<PhotoTicket>?) {

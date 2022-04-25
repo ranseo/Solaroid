@@ -3,12 +3,10 @@ package com.example.solaroid.solaroidcreate
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.solaroid.database.PhotoTicketDao
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.ktx.Firebase
+import com.example.solaroid.database.DatabasePhotoTicketDao
 import java.lang.IllegalArgumentException
 
-class SolaroidPhotoCreateViewModelFactory(private val dataSource: PhotoTicketDao, val application: Application) : ViewModelProvider.Factory {
+class SolaroidPhotoCreateViewModelFactory(private val dataSource: DatabasePhotoTicketDao, val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("Unchecked_cast")
         if(modelClass.isAssignableFrom(SolaroidPhotoCreateViewModel::class.java)) {
