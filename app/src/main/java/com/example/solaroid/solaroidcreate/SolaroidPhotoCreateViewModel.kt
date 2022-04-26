@@ -4,9 +4,12 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.solaroid.Event
 import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
+import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.repositery.PhotoTicketRepositery
 import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -18,66 +21,70 @@ import kotlinx.coroutines.launch
 class SolaroidPhotoCreateViewModel(application: Application, dataSource: DatabasePhotoTicketDao) :
     AndroidViewModel(application) {
 
-    val database = dataSource
+    private val database = dataSource
+
+    private val fbAuth = FirebaseManager.getAuthInstance()
+    private val fbDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage = FirebaseManager.getStorageInstance()
+
+    private val photoTicketRepositery = PhotoTicketRepositery(dataSource = database, fbAuth , fbDatabase ,fbStorage)
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
-    val photoTicket : LiveData<PhotoTicket?>
+    val photoTicket: LiveData<PhotoTicket?>
         get() = _photoTicket
 
 
-
-//    val photoTickets = database.getLatestTicketLiveData()
-//    lateinit var photoTicket : LiveData<PhotoTicket>
-
-    private val _startImageCapture = MutableLiveData<Boolean>()
-    val startImageCapture : LiveData<Boolean>
+    //카메라 촬영 및 캡쳐를 시작하는 프로퍼티
+    private val _startImageCapture = MutableLiveData<Event<Any?>>()
+    val startImageCapture: LiveData<Event<Any?>>
         get() = _startImageCapture
 
 
-    //Image를 capture에 성공하면 해당 프로퍼티에 uri를 설정.
+    //카메라 촬영 이후 이미지 캡처에 성공하면 해당 프로퍼티에 content uri값을 set
     private val _capturedImageUri = MutableLiveData<Uri?>(null)
-    val capturedImageUri : LiveData<Uri?>
+    val capturedImageUri: LiveData<Uri?>
         get() = _capturedImageUri
 
 
     //버튼클릭 시 카메라 셀렉터 전환. (BACK <-> FRONT) , false->BACK, true->FRONT
     private val _cameraConverter = MutableLiveData<Boolean>(false)
-    val cameraConverter : LiveData<Boolean>
+    val cameraConverter: LiveData<Boolean>
         get() = _cameraConverter
 
+
+    //포토티켓 저장 이후 해당 포토티켓과 관련된 back & front text를 모두 clear 하는 프로퍼티.
     private val _editTextClear = MutableLiveData<String?>()
-    val editTextClear : LiveData<String?>
+    val editTextClear: LiveData<String?>
         get() = _editTextClear
 
-    //image_spin 버튼 클릭 시, toggle
-    private val _imageSpin = MutableLiveData<Boolean>(false)
-    val imageSpin : LiveData<Boolean>
+
+    //image_spin 버튼 클릭 시, 포토티켓의 반대면을 보여주는 프로퍼티티
+   private val _imageSpin = MutableLiveData<Boolean>(false)
+    val imageSpin: LiveData<Boolean>
         get() = _imageSpin
 
 
-    //이미지 캡처 성공 시, view visibility 전환.
-
+    //이미지 캡처 성공 시, view visibility 전환. -> 카메라 촬영 preview 화면에서 이미지 저장 화면으로 전환
     val isLayoutCaptureVisible = Transformations.map(_capturedImageUri) {
         it == null
     }
-
     val isLayoutCreateVisible = Transformations.map(_capturedImageUri) {
         it != null
     }
 
 
-
     private var frontText: String = ""
     private val _backText = MutableLiveData<String>("")
-    val backText : LiveData<String>
+    val backText: LiveData<String>
         get() = _backText
 
-    val currBackTextLen = Transformations.map(backText){
+    val currBackTextLen = Transformations.map(backText) {
         "${it.length}/100"
     }
 
 
     val today = convertTodayToFormatted(System.currentTimeMillis())
+
 
 
     private suspend fun insert(photoTicket: PhotoTicket) {
@@ -88,42 +95,21 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
         return database.getLatestTicket()
     }
 
-//    fun setFrontText(text: String) {
-//        frontText = text
-//    }
-//
-//    fun setBackText(text: String) {
-//        backText = text
-//    }
 
-    fun onTextChangedFront(s:CharSequence) {
-        frontText= s.toString()
+    fun onTextChangedFront(s: CharSequence) {
+        frontText = s.toString()
+    }
+    fun onTextChangedBack(s: CharSequence) {
+        _backText.value = s.toString()
     }
 
-    fun onTextChangedBack(s:CharSequence) {
-        _backText.value= s.toString()
-    }
 
-/*    fun onClick() {
-        viewModelScope.launch {
-            val newPhotoTicket =
-                PhotoTicket(photo = true, date = today, frontText = frontText, backText = backText)
-            insert(newPhotoTicket)
-            _photoTicket.value = getLatestPhotoTicket()
-        }
-    }*/
-
-    fun setCapturedImageUri(savedUri : Uri) {
+    fun setCapturedImageUri(savedUri: Uri) {
         _capturedImageUri.value = savedUri
     }
 
-
     fun onImageCapture() {
-        _startImageCapture.value = true
-    }
-
-    fun stopImageCapture() {
-        _startImageCapture.value = false
+        _startImageCapture.value = Event(Unit)
     }
 
     //이 부분이 바껴야 할듯 사진촬영 -> room -> firebase 라면
@@ -131,17 +117,19 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     //이게 repositery를 통해서 이루어져야 한다. 오케이?
     fun onImageSave() {
         viewModelScope.launch {
-            val newPhotoTicket =
-                PhotoTicket(photo = capturedImageUri.value.toString(), date = today, frontText = frontText, backText = backText.value!!, favorite = false)
-            val ins = async { insert(newPhotoTicket) }
-            if(ins.await()==Unit) {
-                _photoTicket.value = getLatestPhotoTicket()
-            }
+            val new =
+                PhotoTicket(
+                    url = capturedImageUri.value.toString(),
+                    date = today,
+                    frontText = frontText,
+                    backText = backText.value!!,
+                    favorite = false
+                )
+            photoTicketRepositery.insertPhotoTickets(new, getApplication())
 
             forReadyNewImage()
         }
     }
-
 
 
     fun forReadyNewImage() {
@@ -159,7 +147,6 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
         val toggle = _imageSpin.value!!
         _imageSpin.value = !toggle
     }
-
 
 
 }

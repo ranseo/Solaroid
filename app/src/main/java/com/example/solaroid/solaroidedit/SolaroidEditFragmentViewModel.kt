@@ -10,6 +10,7 @@ import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,10 +20,11 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource: DatabasePho
     val database = dataSource
 
 
-    private val fbAuth: FirebaseAuth = FirebaseManager.getUserInstance()
+    private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage : FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    private val photoTicketRepositery : PhotoTicketRepositery = PhotoTicketRepositery(dataSource)
+    private val photoTicketRepositery : PhotoTicketRepositery = PhotoTicketRepositery(dataSource,fbAuth,fbDatabase, fbStorage)
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket : LiveData<PhotoTicket?>
@@ -74,7 +76,7 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource: DatabasePho
         viewModelScope.launch {
             val curr = _photoTicket.value!!
             val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, curr.date, curr.favorite)
-            photoTicketRepositery.updatePhotoTickets(fbAuth.currentUser!!, fbDatabase, new)
+            photoTicketRepositery.updatePhotoTickets(new)
         }
     }
 

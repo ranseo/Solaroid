@@ -15,7 +15,7 @@ class FirebaseManager {
         private var FBSTORAGE : FirebaseStorage? = null
 
 
-        fun getUserInstance(): FirebaseAuth {
+        fun getAuthInstance(): FirebaseAuth {
             synchronized(this) {
                 var fbAuth = FBAUTH
                 if (fbAuth == null) {

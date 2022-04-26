@@ -2,7 +2,6 @@ package com.example.solaroid.solaroidcreate
 
 import android.app.Application
 import android.content.ContentValues
-import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -22,14 +21,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
-import com.example.solaroid.database.PhotoTicket
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
 import com.example.solaroid.firebase.RealTimeDatabaseViewModel
 import com.example.solaroid.firebase.RealTimeDatabaseViewModelFactory
-import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -88,9 +84,8 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
 
         viewModel.startImageCapture.observe(viewLifecycleOwner, Observer {
-            if (it) {
+            it.getContentIfNotHandled()?.let {
                 captureImage()
-                viewModel.stopImageCapture()
             }
         })
 

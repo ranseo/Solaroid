@@ -4,14 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
-import com.example.solaroid.database.DatabasePhotoTicket
 import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
 enum class PhotoTicketFilter {
@@ -29,10 +28,11 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 
     val database = dataSource
 
-    private val fbAuth: FirebaseAuth = FirebaseManager.getUserInstance()
+    private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage : FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    private val photoTicketRepositery :PhotoTicketRepositery = PhotoTicketRepositery(dataSource)
+    private val photoTicketRepositery :PhotoTicketRepositery = PhotoTicketRepositery(dataSource,fbAuth,fbDatabase,fbStorage)
     private val photoTicketsOrderByLately : LiveData<List<PhotoTicket>> = photoTicketRepositery.photoTicketsOrderByLately
     private val photoTicketsOrderByFavorite : LiveData<List<PhotoTicket>> = photoTicketRepositery.photoTicketsOrderByFavorte
 
@@ -41,7 +41,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         get() = _photoTickets
 
 
-    private val _photoTicketFilter = MutableLiveData<PhotoTicketFilter>(PhotoTicketFilter.LATELY)
+    private val _photoTicketFilter = MutableLiveData(PhotoTicketFilter.LATELY)
     private val photoTicketFilter : LiveData<PhotoTicketFilter>
         get() = _photoTicketFilter
 
@@ -56,7 +56,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * 현재 포토티켓의 정렬 방식(최신순 또는 즐겨찾기)에 따라서 UI에 TEXT 표시
      * */
-    private val _currFilterText = MutableLiveData<String>("최신순")
+    private val _currFilterText = MutableLiveData("최신순")
     val currFilterText : LiveData<String>
         get() = _currFilterText
 
@@ -98,7 +98,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * 현재 viewPager에서 사용자가 보고 있는 포토티켓의 위치를 나타내는 프로퍼티.
      * 해당 변수의 값을 이용하여 현재 사용자가 보고 있는 포토티켓의 값을 설정할 수 있다.
      * */
-    private val _currentPosition = MutableLiveData<Int>(0)
+    private val _currentPosition = MutableLiveData(0)
     val currentPosition: LiveData<Int>
         get() = _currentPosition
 
@@ -112,7 +112,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     init {
         Log.d(TAG, "Init")
 
-        refreshDataFromRepositery(fbAuth.currentUser!!, fbDatabase)
+        refreshDataFromRepositery()
 
         // 현재 사용자가 보고 있는 포토티켓을 설정하기 위해서 currentPosition 값을
         // photoTickets의 인덱스로 이용하여 photoTicket을 가져온다.
@@ -134,9 +134,9 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * PhotoTicketRepositery를 이용하여 firebase realtime database로 부터 Room Database에 넣을 photoTicket Model 을 get.
      * */
-    private fun refreshDataFromRepositery(user: FirebaseUser, fbDatabase:FirebaseDatabase) {
+    private fun refreshDataFromRepositery() {
         viewModelScope.launch {
-            photoTicketRepositery.refreshPhotoTickets(user, fbDatabase)
+            photoTicketRepositery.refreshPhotoTickets()
             refreshPhotoTicketEvent()
         }
     }
@@ -151,7 +151,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         viewModelScope.launch {
             currPhotoTicket.value?.let {
                 it.favorite = favorite
-                photoTicketRepositery.updatePhotoTickets(fbAuth.currentUser!!, fbDatabase, it )
+                photoTicketRepositery.updatePhotoTickets(it)
                 refreshPhotoTicketEvent()
             }
         }
@@ -162,7 +162,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * */
     fun deletePhotoTicket(key: Long) {
         viewModelScope.launch {
-            photoTicketRepositery.deletePhotoTickets(fbAuth.currentUser!!, fbDatabase, key)
+            photoTicketRepositery.deletePhotoTickets(key)
             refreshPhotoTicketEvent()
         }
     }

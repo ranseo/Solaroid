@@ -3,12 +3,9 @@ package com.example.solaroid.firebase
 import android.app.Application
 import android.net.Uri
 import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.*
 import com.example.solaroid.domain.PhotoTicket
-import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -22,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 
 class RealTimeDatabaseViewModel(user: FirebaseUser?, application: Application) : AndroidViewModel(application) {
     private val firebaseUser = user
