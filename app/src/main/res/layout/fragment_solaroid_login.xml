@@ -14,28 +14,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".login.SolaroidLoginFragment"
-        android:background="@color/primaryDarkColor"
+        android:background="@color/white"
         >
 
         <TextView
-            android:text="쏠라로이드"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:textSize="52sp"
-            android:textAlignment="center"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
+            android:fontFamily="@font/sarina"
+            android:text="Solaroid"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="64sp"
+            android:textStyle="bold|italic"
             app:layout_constraintBottom_toTopOf="@+id/et_id"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <EditText
             android:id="@+id/et_id"
             android:layout_width="240dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:hint="아이디를 입력해주세요"
             android:textAlignment="center"
             android:textSize="16sp"
@@ -47,11 +48,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.417" />
 
+
         <EditText
             style="@style/FirebaseUI.TextInputEditText.PasswordField"
             android:id="@+id/et_password"
             android:layout_width="240dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:hint="비밀번호를 입력해주세요"
             android:textAlignment="center"
             android:textSize="16sp"
@@ -71,11 +73,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="54dp"
+            android:background="@color/fui_transparent"
             app:layout_constraintTop_toBottomOf="@+id/et_password"
             app:layout_constraintStart_toStartOf="@id/et_password"
             app:layout_constraintEnd_toStartOf="@id/btn_signup"
             />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="|"
+            android:textColor="@color/grey"
+            android:textSize="24sp"
+            app:layout_constraintTop_toTopOf="@id/btn_login"
+            app:layout_constraintBottom_toBottomOf="@id/btn_login"
+            app:layout_constraintStart_toEndOf="@+id/btn_login"
+            app:layout_constraintEnd_toStartOf="@+id/btn_signup"
+            />
         <Button
             android:id="@+id/btn_signup"
             android:text="회원가입"
@@ -83,6 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="54dp"
+            android:background="@color/fui_transparent"
             app:layout_constraintTop_toBottomOf="@+id/et_password"
             app:layout_constraintStart_toEndOf="@id/btn_login"
             app:layout_constraintEnd_toEndOf="@id/et_password"

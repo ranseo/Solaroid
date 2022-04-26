@@ -2,12 +2,14 @@ package com.example.solaroid.solaroidadd
 
 import SolaroidAddViewModelFactory
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
@@ -16,9 +18,8 @@ import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidAddBinding
 import com.example.solaroid.dialog.SaveDialogFragment
-import com.example.solaroid.firebase.RealTimeDatabaseViewModel
-import com.example.solaroid.firebase.RealTimeDatabaseViewModelFactory
-import com.example.solaroid.solaroidadd.SolaroidAddViewModel
+import com.example.solaroid.solaroidframe.SolaroidFrameFragment
+import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -29,9 +30,10 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
     private lateinit var viewModel: SolaroidAddViewModel
     private lateinit var viewModelFactory: SolaroidAddViewModelFactory
-    private lateinit var firebaseDBViewModel: RealTimeDatabaseViewModel
 
     private lateinit var auth: FirebaseAuth
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,26 +55,18 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
 
-        firebaseDBViewModel = ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(auth.currentUser!!,application))[RealTimeDatabaseViewModel::class.java]
-
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
 
 
-        viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
-            it?.let{ photo ->
-                firebaseDBViewModel.setValueInPhotoTicket(photo)
-                requireActivity().onBackPressed()
-            }
-        })
 
         viewModel.naviToAddChoice.observe(viewLifecycleOwner, Observer {
-            if (it) {
-                viewModel.setUriNull()
+            it.getContentIfNotHandled()?.let {
                 childFragmentManager.commit {
                     add<SolaroidAddChoiceFragment>(R.id.fragment_add_container_view, TAG_ADD_CHOICE)
                 }
+                binding.addChoiceFragmentLayout.visibility = VISIBLE
             }
         })
 
@@ -84,7 +78,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
                         remove(addChoiceFragment)
                     }
                 }
-                viewModel.doneNavigateToAddChoice()
+                binding.addChoiceFragmentLayout.visibility = INVISIBLE
                 viewModel.onBackPressedInChoice()
             }
         })
@@ -97,7 +91,6 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
                         remove(addChoiceFragment)
                     }
                 }
-                viewModel.doneNavigateToAddChoice()
             }
         })
 
@@ -111,12 +104,12 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
     private fun showDialog() {
         val dialog = SaveDialogFragment(this)
-        dialog.show(parentFragmentManager, "addSave")
+        dialog.show(parentFragmentManager, TAG_ADD_SAVE)
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
-        viewModel.onInsertPhotoTicket()
-
+        viewModel.insertPhotoTicket()
+        requireActivity().onBackPressed()
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
@@ -125,5 +118,6 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
     companion object {
         const val TAG_ADD_CHOICE = "TAG_ADD_CHOICE"
+        const val TAG_ADD_SAVE = "ADD_SAVE"
     }
 }

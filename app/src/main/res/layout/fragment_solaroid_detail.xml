@@ -59,7 +59,7 @@
 
             <ImageView
                 android:id="@+id/solaroid_photo"
-                setImage="@{viewModel.photoTicket.photo}"
+                setImage="@{viewModel.photoTicket.url}"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_marginLeft="24dp"

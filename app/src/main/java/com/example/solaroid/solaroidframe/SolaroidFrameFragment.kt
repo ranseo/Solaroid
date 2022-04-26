@@ -32,7 +32,7 @@ class SolaroidFrameFragment() : Fragment(),
 
     override fun onStart() {
         super.onStart()
-        viewModel.refreshPhotoTicketEvent()
+//        viewModel.refreshDataFromRepositery()
     }
 
     override fun onCreateView(

@@ -6,12 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.solaroid.database.PhotoTicket
-import com.example.solaroid.database.PhotoTicketDao
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.database.asDomainModel
+import com.example.solaroid.domain.PhotoTicket
 import kotlinx.coroutines.launch
 
-class SolaroidDetailViewModel(photoTicketKey:Long ,dataSource: PhotoTicketDao) : ViewModel() {
+class SolaroidDetailViewModel(photoTicketKey:Long ,dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     val database = dataSource
 
@@ -40,11 +40,11 @@ class SolaroidDetailViewModel(photoTicketKey:Long ,dataSource: PhotoTicketDao) :
         }
     }
 
-    suspend fun getPhotoTicket(photoTicketKey: Long) :PhotoTicket = database.getPhotoTicket(photoTicketKey)
+    suspend fun getPhotoTicket(photoTicketKey: Long) :PhotoTicket = database.getDatabasePhotoTicket(photoTicketKey).asDomainModel()
 
 
     fun onClickSpin() {
-        _spinBackSide.value = spinBackSide.value!=true
+        _spinBackSide.value = spinBackSide.value != true
     }
 
 

@@ -6,6 +6,7 @@ import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.solaroid.MainActivity
 import com.example.solaroid.databinding.ActivityLoginBinding
+import com.example.solaroid.firebase.FirebaseManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
@@ -22,9 +23,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val user = FirebaseAuth.getInstance().currentUser
+        val user = FirebaseManager.getAuthInstance().currentUser
         if(user !=null) {
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
     }
 }

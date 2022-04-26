@@ -21,7 +21,7 @@ suspend fun setPhotoTicketList(
 
                     val phototicket = FirebasePhotoTicket(
                         url = hashMap["url"]!! as String,
-                        key = hashMap["path"]!! as String,
+                        key = hashMap["key"]!! as String,
                         date = hashMap["date"]!! as String,
                         frontText = hashMap["frontText"]!! as String,
                         backText = hashMap["backText"]!! as String,

@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.databinding.ActivityMainBinding
 import com.example.solaroid.dialog.SaveDialogFragment
+import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.login.LoginActivity
 import com.example.solaroid.login.SolaroidLoginViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        auth = FirebaseAuth.getInstance()
+        auth = FirebaseManager.getAuthInstance()
 
         viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
 

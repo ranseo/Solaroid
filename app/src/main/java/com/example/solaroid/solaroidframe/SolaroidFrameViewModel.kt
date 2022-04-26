@@ -73,7 +73,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * 현재 포토티켓의 즐겨찾기 상태를 대입한다.
      * */
     fun setCurrentFavorite(favorite: Boolean) {
-        _favorite.value = favorite
+        _favorite.postValue(favorite)
     }
 
     //viewPager2의 각 page 위치에 배치된 item (=DatabasePhotoTicket)을 할당.
@@ -106,7 +106,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * currentPosition의 값 설정.
      * */
     fun setCurrentPosition(position: Int) {
-        _currentPosition.value = position
+        _currentPosition.postValue(position)
     }
 
     init {
@@ -137,7 +137,6 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     private fun refreshDataFromRepositery() {
         viewModelScope.launch {
             photoTicketRepositery.refreshPhotoTickets()
-            refreshPhotoTicketEvent()
         }
     }
 
@@ -194,14 +193,14 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
                 _currFilterText.value = "최신순"
                 val value = photoTicketsOrderByLately.value
                 value?.let{
-                    _photoTickets.value = Event(it)
+                    _photoTickets.postValue(Event(it))
                 }
             }
             PhotoTicketFilter.FAVORITE -> {
                 _currFilterText.value = "즐겨찾기"
                 val value = photoTicketsOrderByFavorite.value
                 value?.let{
-                    _photoTickets.value = Event(it)
+                    _photoTickets.postValue(Event(it))
                 }
             }
             else -> {}

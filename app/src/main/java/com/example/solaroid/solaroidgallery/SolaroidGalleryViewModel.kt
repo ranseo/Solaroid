@@ -1,30 +1,26 @@
 package com.example.solaroid.solaroidgallery
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.solaroid.database.PhotoTicket
-import com.example.solaroid.database.PhotoTicketDao
+import androidx.lifecycle.*
+import com.example.solaroid.Event
+import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.database.asDomainModel
+import com.example.solaroid.domain.PhotoTicket
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
-class SolaroidGalleryViewModel(dataSource: PhotoTicketDao, val application: Application) :
-    ViewModel() {
+class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
+    AndroidViewModel(application) {
 
     private val database = dataSource
 
-//    private val _navigateToCreateFrag = MutableLiveData<Boolean> ()
-//    val navigateToCreateFrag : LiveData<Boolean>
-//        get() = _navigateToCreateFrag
 
-    private val _navigateToDetailFrag = MutableLiveData<Long?>()
-    val navigateToDetailFrag: LiveData<Long?>
+    private val _navigateToDetailFrag = MutableLiveData<Event<Long?>>()
+    val navigateToDetailFrag: LiveData<Event<Long?>>
         get() = _navigateToDetailFrag
 
-    private val _naviToFrame = MutableLiveData<Boolean>(false)
-    val naviToFrame: LiveData<Boolean>
+    private val _naviToFrame = MutableLiveData<Event<Any?>>()
+    val naviToFrame: LiveData<Event<Any?>>
         get() = _naviToFrame
 
 
@@ -33,7 +29,7 @@ class SolaroidGalleryViewModel(dataSource: PhotoTicketDao, val application: Appl
         get() = _photoTicket
 
 
-    val photoTickets = database.getAllPhotoTicket()
+    val photoTickets = database.getAllDatabasePhotoTicket().value?.asDomainModel()
 
     init {
         initGetPhotoTicket()
@@ -48,7 +44,7 @@ class SolaroidGalleryViewModel(dataSource: PhotoTicketDao, val application: Appl
 
 
     private suspend fun getLatestPhotoTicket(): PhotoTicket? {
-        return database.getLatestTicket()
+        return database.getLatestTicket()?.asDomainModel()
     }
 
 
@@ -60,25 +56,14 @@ class SolaroidGalleryViewModel(dataSource: PhotoTicketDao, val application: Appl
 //        _navigateToCreateFrag.value = false
 //    }
 
-    fun doneToToast() {
-        _photoTicket.value = null
-    }
-
-    fun naviToDetail(photoTicketKey: Long) {
-        _navigateToDetailFrag.value = photoTicketKey
-    }
-
-    fun doneNaviToDetailFrag() {
-        _navigateToDetailFrag.value = null
+    fun naviToDetail(key: Long) {
+        _navigateToDetailFrag.value = Event(key)
     }
 
     fun navigateToFrame() {
-        _naviToFrame.value = true
+        _naviToFrame.value = Event(Unit)
     }
 
-    fun doneNavigateToFrame() {
-        _naviToFrame.value = false
-    }
 
     fun logout() {
         val auth = FirebaseAuth.getInstance()

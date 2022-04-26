@@ -10,12 +10,6 @@ import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.PhotoTicketRepositery
-import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SolaroidPhotoCreateViewModel(application: Application, dataSource: DatabasePhotoTicketDao) :
@@ -47,7 +41,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
 
 
     //버튼클릭 시 카메라 셀렉터 전환. (BACK <-> FRONT) , false->BACK, true->FRONT
-    private val _cameraConverter = MutableLiveData<Boolean>(false)
+    private val _cameraConverter = MutableLiveData(false)
     val cameraConverter: LiveData<Boolean>
         get() = _cameraConverter
 
@@ -59,7 +53,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
 
 
     //image_spin 버튼 클릭 시, 포토티켓의 반대면을 보여주는 프로퍼티티
-   private val _imageSpin = MutableLiveData<Boolean>(false)
+   private val _imageSpin = MutableLiveData(false)
     val imageSpin: LiveData<Boolean>
         get() = _imageSpin
 
@@ -74,7 +68,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
 
 
     private var frontText: String = ""
-    private val _backText = MutableLiveData<String>("")
+    private val _backText = MutableLiveData("")
     val backText: LiveData<String>
         get() = _backText
 
@@ -84,16 +78,6 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
 
 
     val today = convertTodayToFormatted(System.currentTimeMillis())
-
-
-
-    private suspend fun insert(photoTicket: PhotoTicket) {
-        database.insert(photoTicket)
-    }
-
-    private suspend fun getLatestPhotoTicket(): PhotoTicket? {
-        return database.getLatestTicket()
-    }
 
 
     fun onTextChangedFront(s: CharSequence) {
@@ -112,9 +96,11 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
         _startImageCapture.value = Event(Unit)
     }
 
-    //이 부분이 바껴야 할듯 사진촬영 -> room -> firebase 라면
-    //사진촬영 -> 촬영된 이미지를 firebase storage 에 저장 -> realtime database에 저장 -> 해당 realtime database로 부터 사진 가져와서 room데이터베이스에 저장
-    //이게 repositery를 통해서 이루어져야 한다. 오케이?
+
+    /**
+     * 이미지 저장 버튼을 누를 때 url,date,text,favorite 값을 기반으로한 포토티켓 객체를 만들고 이를 photoTicketRepositery.insert()의 매개변수로 전달하여
+     * room 과 firebase 내 database에 삽입하는 함수.
+     * */
     fun onImageSave() {
         viewModelScope.launch {
             val new =
@@ -125,28 +111,40 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
                     backText = backText.value!!,
                     favorite = false
                 )
-            photoTicketRepositery.insertPhotoTickets(new, getApplication())
 
+            Log.i(TAG, "onImageSave()")
+            photoTicketRepositery.insertPhotoTickets(new, getApplication())
             forReadyNewImage()
         }
     }
 
 
-    fun forReadyNewImage() {
+    /**
+     * 이미지 저장이 완료되면 다시 카메라 촬영 즉 preview 화면으로 전환하고 기존의 포토티켓을 초기화 하는 함수
+     * */
+    private fun forReadyNewImage() {
         _capturedImageUri.value = null
         _editTextClear.value = null
     }
 
 
+    /**
+     * preview화면에서 전면 및 후면 카메라를 선택하는 함수.
+     * */
     fun convertCameraSelector() {
-        val toggle = cameraConverter.value!!
-        _cameraConverter.value = !toggle
+        _cameraConverter.value = cameraConverter.value != true
     }
 
+    /**
+     * 포토티켓의 side를 바꿀 수 있는 함수.
+     * */
     fun onImageSpin() {
         val toggle = _imageSpin.value!!
         _imageSpin.value = !toggle
     }
 
+    companion object {
+        const val TAG = "크리에이트뷰모델"
+    }
 
 }

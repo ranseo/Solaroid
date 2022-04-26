@@ -44,6 +44,7 @@
             <!--            android:text="포토 티켓\n생성"-->
             <!--            android:backgroundTint="@color/pink"-->
             <!--            />-->
+
             <ImageButton
                 android:id="@+id/popup_menu_filter"
                 android:layout_width="wrap_content"

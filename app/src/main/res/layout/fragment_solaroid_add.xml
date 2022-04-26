@@ -192,10 +192,11 @@
             android:layout_gravity="bottom|center" />
 
         <FrameLayout
+            android:id="@+id/add_choice_fragment_layout"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:visibility="@{viewmodel.naviToAddChoice ? View.VISIBLE : View.GONE}"
             android:elevation="34dp">
 
             <androidx.fragment.app.FragmentContainerView

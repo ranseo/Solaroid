@@ -144,6 +144,10 @@ class SolaroidLoginFragment : Fragment() {
                     Toast.makeText(requireContext(), LOGIN_FAIL, Toast.LENGTH_SHORT).show()
                 }
             }
+            .addOnFailureListener { error ->
+                Log.i(TAG, "${error.cause}")
+            }
+
     }
 
     /**

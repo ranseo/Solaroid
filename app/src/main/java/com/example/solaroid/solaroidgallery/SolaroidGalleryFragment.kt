@@ -2,14 +2,13 @@ package com.example.solaroid.solaroidgallery
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,7 +17,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.R
 import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
-import com.example.solaroid.convertPhotoTicketToToastString
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidGalleryBinding
 import com.google.android.material.navigation.NavigationView
@@ -85,29 +83,19 @@ class SolaroidGalleryFragment :Fragment(), NavigationView.OnNavigationItemSelect
 //        })
 
 
-        //제대로 사진이 생성됐는지 확인하기 위해 PhotoTicket이 만들어질 때 Toast 를 생성.
-        viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
-            it?.let{
-                //Toast.makeText(context, convertPhotoTicketToToastString(it,this.resources), Toast.LENGTH_LONG).show()
-                viewModel.doneToToast()
-            }
-        })
-
         viewModel.navigateToDetailFrag.observe(viewLifecycleOwner, Observer {
-            it?.let {
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     SolaroidGalleryFragmentDirections.actionGalleryFragmentToDetailFragment(it)
                 )
-                viewModel.doneNaviToDetailFrag()
             }
         })
 
         viewModel.naviToFrame.observe(viewLifecycleOwner, Observer{
-            if(it) {
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     SolaroidGalleryFragmentDirections.actionGalleryFragmentToFrameFragment()
                 )
-                viewModel.doneNavigateToFrame()
             }
         })
 

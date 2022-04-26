@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -23,12 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
-import com.example.solaroid.firebase.RealTimeDatabaseViewModel
-import com.example.solaroid.firebase.RealTimeDatabaseViewModelFactory
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,14 +29,10 @@ import java.util.*
 class SolaroidPhotoCreateFragment : Fragment() {
     private lateinit var viewModelFactory: SolaroidPhotoCreateViewModelFactory
     private lateinit var viewModel: SolaroidPhotoCreateViewModel
-    private lateinit var firebaseDBViewModel: RealTimeDatabaseViewModel
 
     private lateinit var application: Application
 
     private lateinit var binding: FragmentSolaroidPhotoCreateBinding
-
-    private lateinit var firebaseDB: FirebaseDatabase
-    private lateinit var firebaseAuth: FirebaseAuth
 
     private var imageCapture: ImageCapture? = null
 
@@ -62,16 +51,11 @@ class SolaroidPhotoCreateFragment : Fragment() {
         application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        firebaseDB = Firebase.database
-        firebaseAuth = FirebaseAuth.getInstance()
-
         viewModelFactory =
             SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[SolaroidPhotoCreateViewModel::class.java]
 
-        firebaseDBViewModel =
-            ViewModelProvider(requireActivity(), RealTimeDatabaseViewModelFactory(firebaseAuth.currentUser!!, application))[RealTimeDatabaseViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -86,14 +70,6 @@ class SolaroidPhotoCreateFragment : Fragment() {
         viewModel.startImageCapture.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 captureImage()
-            }
-        })
-
-        //이 부분이 바껴야해
-        viewModel.photoTicket.observe(viewLifecycleOwner, Observer {
-            it?.let { photo ->
-                Log.i(TAG, "firebaseDBViewModel.setValueInPhotoTicket(photo)")
-                firebaseDBViewModel.setValueInPhotoTicket(photo)
             }
         })
 
@@ -165,7 +141,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
                     val savedUri = outputFileResults.savedUri!!
                     val msg = "Photo Capture Succeeded : $savedUri"
                     Log.i(TAG, "msg : $msg")
-                    Toast.makeText(application, "사진이 성공적으로 찍혔습니다.", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(application, "사진이 성공적으로 찍혔습니다.", Toast.LENGTH_SHORT).show()
                     viewModel.setCapturedImageUri(savedUri)
                 }
 

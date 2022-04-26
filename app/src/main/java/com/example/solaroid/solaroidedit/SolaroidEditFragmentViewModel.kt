@@ -67,8 +67,7 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource: DatabasePho
 
     //버튼 및 뷰 클릭 관련 함수
     fun onImageSpin() {
-        val toggle = _imageSpin.value!!
-        _imageSpin.value = !toggle
+        _imageSpin.value = imageSpin.value != true
     }
 
 

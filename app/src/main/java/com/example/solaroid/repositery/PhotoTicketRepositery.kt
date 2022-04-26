@@ -6,29 +6,26 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.solaroid.database.DatabasePhotoTicket
 import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.database.asDomainModel
 import com.example.solaroid.database.asFirebaseModel
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.domain.asDatabaseModel
 import com.example.solaroid.firebase.FirebasePhotoTicket
-import com.example.solaroid.firebase.FirebasePhotoTicketContainer
 import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.firebase.setPhotoTicketList
+import com.example.solaroid.solaroidcreate.SolaroidPhotoCreateViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
-import kotlinx.coroutines.*
-import java.net.URL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PhotoTicketRepositery(
     private val dataSource: DatabasePhotoTicketDao,
@@ -142,20 +139,21 @@ class PhotoTicketRepositery(
     suspend fun insertPhotoTickets(photoTicket: PhotoTicket, application: Application) {
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
-            val new = photoTicket.asDatabaseModel("").asFirebaseModel()
 
+            val new = photoTicket.asDatabaseModel("").asFirebaseModel()
+            Log.i(TAG, "new : ${new}")
             fbDatabase.reference.child("photoTicket").child(user.uid).push().setValue(new,
                 DatabaseReference.CompletionListener { error: DatabaseError?, ref: DatabaseReference ->
                     if (error != null) {
                         Log.d(TAG, "Unable to write Message to database", error.toException())
                         return@CompletionListener
                     }
-
+                    Log.i(TAG, "before launch")
                     launch(Dispatchers.IO) {
-
+                        Log.i(TAG, "after launch")
                         val file = photoTicket.url.toUri()
                         val mimeType: String? = application.contentResolver.getType(file)
-
+                        Log.i(TAG, "file ${file}")
                         val key = ref.key
                         val storageRef = fbStorage.getReference("photoTicket")
                             .child(user.uid)
@@ -165,7 +163,7 @@ class PhotoTicketRepositery(
                         insertImageInStorage(storageRef, user, file, key, new)
 
                     }
-
+                    Log.i(TAG, "not launch after")
                 })
         }
     }

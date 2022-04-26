@@ -5,9 +5,12 @@ import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.lifecycle.*
+import com.example.solaroid.Event
 import com.example.solaroid.convertTodayToFormatted
-import com.example.solaroid.database.PhotoTicket
-import com.example.solaroid.database.PhotoTicketDao
+import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.domain.PhotoTicket
+import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.repositery.PhotoTicketRepositery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -15,19 +18,25 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application) : AndroidViewModel(application) {
+class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application) : AndroidViewModel(application) {
 
-    val database = dataSource
+    private val database = dataSource
 
-    //
+    private val fbAuth = FirebaseManager.getAuthInstance()
+    private val fbDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage = FirebaseManager.getStorageInstance()
+
+    private val photoTicketRepositery = PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage)
+
+
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket : LiveData<PhotoTicket?>
         get() = _photoTicket
 
-    //addChoice & add
-    private val _images = MutableLiveData<List<MediaStoreData>>()
-    val images: LiveData<List<MediaStoreData>>
-        get() = _images
+    //AddChoiceFragment, recyclerView에 보여질 data들을 담는 프로퍼티로써 loadImage() 메서드를 통해 초기화된다.
+    private val _imagesFromMediaStore = MutableLiveData<List<MediaStoreData>>()
+    val imagesFromMediaStore: LiveData<List<MediaStoreData>>
+        get() = _imagesFromMediaStore
 
     //image_spin 버튼 클릭 시, toggle
     private val _imageSpin = MutableLiveData<Boolean>(false)
@@ -46,8 +55,8 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
     //addChoice & add
 
     //addChoice 설정하기.
-    private val _naviToAddChoice = MutableLiveData<Boolean>(false)
-    val naviToAddChoice: LiveData<Boolean>
+    private val _naviToAddChoice = MutableLiveData<Event<Any?>>()
+    val naviToAddChoice: LiveData<Event<Any?>>
         get() = _naviToAddChoice
 
     //addChoiceFrag가 FragmentContainerView에 Visible 되었을 때, back press버튼을 눌렀을 때 처리하기 위한 변수.
@@ -55,7 +64,8 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
     val backPressed : LiveData<Boolean>
         get() = _backPressed
 
-    //uri값 설정
+
+
     /**
      * we observe "uri" value in SolaroidAddFragment
      * to remove SolaroidAddChoiceFragment
@@ -68,13 +78,13 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         !it.isNullOrEmpty()
     }
 
-    private val _uri = MutableLiveData<Uri?>()
-    val uri : LiveData<Uri?>
-        get() = _uri
+    private val _uriChoiceFromMediaStore = MutableLiveData<Event<Uri?>>()
+    val uriChoiceFromMediaStore : LiveData<Event<Uri?>>
+        get() = _uriChoiceFromMediaStore
 
     //navi
-    private val _naviToFrameFrag = MutableLiveData<Boolean>(false)
-    val naviToFrameFrag: LiveData<Boolean>
+    private val _naviToFrameFrag = MutableLiveData<Event<Any?>>()
+    val naviToFrameFrag: LiveData<Event<Any?>>
         get() = _naviToFrameFrag
 
 
@@ -108,13 +118,10 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         _image.value = null
     }
 
-    fun setUri(uri: Uri) {
-        _uri.value = uri
+    fun setUriChoiceFromMediaStore(uri: Uri) {
+        _uriChoiceFromMediaStore.value = Event(uri)
     }
 
-    fun setUriNull() {
-        _uri.value = null
-    }
 
 
 
@@ -131,57 +138,57 @@ class SolaroidAddViewModel(dataSource: PhotoTicketDao, application: Application)
         setImageNull()
     }
 
-    fun onInsertPhotoTicket() {
-        if(image.value == null) return
+
+    fun insertPhotoTicket() {
+        if(image.value.isNullOrEmpty()) return
         viewModelScope.launch {
-            val newPhotoTicket =
-                PhotoTicket(
-                    photo = image.value!!,
+            val new = PhotoTicket(
+                    url = image.value!!,
                     date = date,
                     frontText = frontText,
                     backText = backText.value!!,
                     favorite = false
                 )
-            val ins = async {
-                insert(newPhotoTicket)
-            }
 
-            if(ins.await() == Unit) {
-                _photoTicket.value = database.getLatestTicket()
-            }
+            photoTicketRepositery.insertPhotoTickets(new,getApplication())
+
         }
-
     }
 
 
     fun navigateToAddChoice() {
-        _naviToAddChoice.value = true
+        _naviToAddChoice.value = Event(Unit)
     }
 
-    fun doneNavigateToAddChoice() {
-        _naviToAddChoice.value = false
-    }
-
-    private suspend fun insert(photoTicket: PhotoTicket) {
-        database.insert(photoTicket)
-    }
 
     //backPress 버튼 처리
+    /**
+     * AddChoiceFragment에서 사용자가 backpress button을 눌렀을 때
+     * 이전 프래그먼트로 돌아가지 POP 되지 않고
+     * AddChoiceFragment가 INVISIBLE 되고 AddFragment가 다시 보이도록 설정.
+     * */
     fun onBackPressedInChoice() {
-        val toggle = _backPressed.value!!
-        _backPressed.value = !toggle
+        _backPressed.value = backPressed.value != true
     }
 
-    //MediaStore API
 
+
+    /**
+     * queryMediaStoreData()메서드를 통해 MediaStore로부터 이미지를 로드하여 _imagesFromMediaStore의 값을 초기화 한다.
+     * postValue를 사용하여 백그라운드 내에서 메인 쓰레드로 값을 지연하여 할당.
+     * */
     fun loadImage() {
         viewModelScope.launch {
             val result = queryMediaStoreData()
-            _images.postValue(result)
+            _imagesFromMediaStore.postValue(result)
         }
 
     }
 
+    /**
+     * MediaStoreAPI를 이용하여 갤러리 내 사진들을 읽어오고
+     * 읽어온 사진들을 리스트에 저장하여 반환.
+     * */
     private suspend fun queryMediaStoreData(): List<MediaStoreData> {
         val images = mutableListOf<MediaStoreData>()
 

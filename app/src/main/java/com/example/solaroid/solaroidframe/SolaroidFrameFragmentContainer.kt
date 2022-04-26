@@ -20,14 +20,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
-import com.example.solaroid.firebase.RealTimeDatabaseViewModel
-import com.example.solaroid.firebase.RealTimeDatabaseViewModelFactory
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
 
 open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener,
     NavigationView.OnNavigationItemSelectedListener {
@@ -48,7 +41,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        childFragmentManager.commit { add(R.id.fragment_add_container_view, SolaroidFrameFragment(), TAG) }
+        childFragmentManager.commit { add(R.id.fragment_frame_container_view, SolaroidFrameFragment(), TAG) }
 
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(

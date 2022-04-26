@@ -38,7 +38,7 @@
 
                 <ImageView
                     android:id="@+id/captured_image"
-                    setImage="@{viewmodel.photoTicket.photo}"
+                    setImage="@{viewmodel.photoTicket.url}"
                     android:layout_width="@dimen/polaroid_image_large_width"
                     android:layout_height="@dimen/polaroid_image_large_height"
                     android:layout_marginLeft="24dp"

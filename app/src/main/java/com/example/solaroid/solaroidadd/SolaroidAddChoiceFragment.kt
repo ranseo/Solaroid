@@ -28,16 +28,6 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
 
     private lateinit var backPressCallback :OnBackPressedCallback
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d("애드초이스프래그먼트","onCreate()")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("애드초이스프래그먼트", "onDestroy()")
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,7 +50,7 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
 
         val adapter = SolaroidChoiceAdapter(OnChoiceClickListener {
             it?.let{
-                viewModel.setUri(it)
+                viewModel.setUriChoiceFromMediaStore(it)
             }
         })
 
@@ -71,14 +61,14 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
 
 
 
-        viewModel.images.observe(viewLifecycleOwner, Observer {
+        viewModel.imagesFromMediaStore.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
         })
 
-        viewModel.uri.observe(viewLifecycleOwner, Observer{
-            it?.let{
+        viewModel.uriChoiceFromMediaStore.observe(viewLifecycleOwner, Observer{
+            it.getContentIfNotHandled()?.let{
                 showDialog()
             }
         })
@@ -109,12 +99,11 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
-        val uriString = viewModel.uri.value.toString()
+        val uriString = viewModel.uriChoiceFromMediaStore.value.toString()
         viewModel.setImageValue(uriString)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
-        viewModel.setUriNull()
         dialog.dismiss()
     }
 }
