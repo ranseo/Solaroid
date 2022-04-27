@@ -143,6 +143,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         if(image.value.isNullOrEmpty()) return
         viewModelScope.launch {
             val new = PhotoTicket(
+                    id = "",
                     url = image.value!!,
                     date = date,
                     frontText = frontText,

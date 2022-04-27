@@ -23,9 +23,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class PhotoTicketRepositery(
     private val dataSource: DatabasePhotoTicketDao,
@@ -39,9 +41,7 @@ class PhotoTicketRepositery(
      * */
     val photoTicketsOrderByLately: LiveData<List<PhotoTicket>> =
         Transformations.map(dataSource.getAllDatabasePhotoTicket()) {
-            it?.let {
-                it.asDomainModel()
-            }
+            it?.asDomainModel()
         }
 
     /**
@@ -51,7 +51,7 @@ class PhotoTicketRepositery(
     val photoTicketsOrderByFavorte: LiveData<List<PhotoTicket>> =
         Transformations.map(photoTicketsOrderByLately) {
             it?.let { photoTicket ->
-                photoTicket.filter { it.favorite }
+                photoTicket.filter { ticket -> ticket.favorite }
             }
         }
 
@@ -65,9 +65,13 @@ class PhotoTicketRepositery(
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
             val ref = fbDatabase.reference.child("photoTicket").child(user.uid)
-            ref.addListenerForSingleValueEvent(setPhotoTicketList() {
-                launch(Dispatchers.IO) { dataSource.insert(it.asDatabaseModel()) }
+            ref.addValueEventListener(setPhotoTicketList() {
+                CoroutineScope(Dispatchers.IO).launch {
+                        Log.i(TAG,"photoTicket : ${it}")
+                        dataSource.insert(it.asDatabaseModel())
+                }
             })
+            Log.i(TAG,"refreshPhotoTicket() : ValueEventListener 등록.")
         }
     }
 
@@ -79,8 +83,8 @@ class PhotoTicketRepositery(
     suspend fun updatePhotoTickets(photoTicket: PhotoTicket) {
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
-            val key = dataSource.getDatabasePhotoTicket(photoTicket.id).firebaseKey
-            val new = photoTicket.asDatabaseModel(key)
+            val key = photoTicket.id
+            val new = photoTicket.asDatabaseModel()
 
             //room update
             dataSource.update(new)
@@ -109,22 +113,22 @@ class PhotoTicketRepositery(
      * 해당 함수에서는 삭제할 포토티켓을 매개변수로 전달 받아 RoomDatabase와 Firebase 실시간 데이터 베이스 및 Storage 내에
      * 포토티켓 정보를 삭제한다.
      * */
-    suspend fun deletePhotoTickets(key: Long) {
+    suspend fun deletePhotoTickets(key: String) {
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
             val del = dataSource.getDatabasePhotoTicket(key)
 
             //room delete
-            dataSource.delete(del.id)
+            dataSource.delete(del.key)
 
             //firebase database delete
             val ref =
-                fbDatabase.reference.child(user.uid).child("photoTicket").child(del.firebaseKey)
+                fbDatabase.reference.child(user.uid).child("photoTicket").child(del.key)
             ref.removeValue()
 
             //firebase storage delete
             val storageRef =
-                fbStorage.reference.child(user.uid).child("photoTicket").child(del.firebaseKey)
+                fbStorage.reference.child(user.uid).child("photoTicket").child(del.key)
             storageRef.delete()
 
         }
@@ -140,16 +144,17 @@ class PhotoTicketRepositery(
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
 
-            val new = photoTicket.asDatabaseModel("").asFirebaseModel()
-            Log.i(TAG, "new : ${new}")
+            val new = photoTicket.asDatabaseModel().asFirebaseModel()
+            Log.i(TAG, "new : ${new}, user : ${user}, user.isVerified : ${user.isEmailVerified}, fbDatabase : ${fbDatabase.reference}")
             fbDatabase.reference.child("photoTicket").child(user.uid).push().setValue(new,
                 DatabaseReference.CompletionListener { error: DatabaseError?, ref: DatabaseReference ->
+
                     if (error != null) {
                         Log.d(TAG, "Unable to write Message to database", error.toException())
                         return@CompletionListener
                     }
                     Log.i(TAG, "before launch")
-                    launch(Dispatchers.IO) {
+                    CoroutineScope(Dispatchers.IO).launch {
                         Log.i(TAG, "after launch")
                         val file = photoTicket.url.toUri()
                         val mimeType: String? = application.contentResolver.getType(file)
@@ -163,7 +168,6 @@ class PhotoTicketRepositery(
                         insertImageInStorage(storageRef, user, file, key, new)
 
                     }
-                    Log.i(TAG, "not launch after")
                 })
         }
     }
@@ -185,7 +189,7 @@ class PhotoTicketRepositery(
                 .addOnSuccessListener { taskSnapshot ->
                     taskSnapshot.metadata!!.reference!!.downloadUrl
                         .addOnSuccessListener { url ->
-                            launch(Dispatchers.IO) {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 val new = FirebasePhotoTicket(
                                     key = key,
                                     url = url.toString(),
@@ -202,6 +206,7 @@ class PhotoTicketRepositery(
 
                                 dataSource.insert(new.asDatabaseModel())
                             }
+
                         }
 
                         .addOnFailureListener { error ->

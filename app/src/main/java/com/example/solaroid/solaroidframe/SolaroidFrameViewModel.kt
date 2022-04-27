@@ -12,14 +12,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 enum class PhotoTicketFilter {
     LATELY,
     FAVORITE
 }
 
-class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Application) : AndroidViewModel(application) {
-
+class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
+    AndroidViewModel(application) {
 
 
     companion object {
@@ -30,19 +31,22 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
-    private val fbStorage : FirebaseStorage = FirebaseManager.getStorageInstance()
+    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    private val photoTicketRepositery :PhotoTicketRepositery = PhotoTicketRepositery(dataSource,fbAuth,fbDatabase,fbStorage)
-    private val photoTicketsOrderByLately : LiveData<List<PhotoTicket>> = photoTicketRepositery.photoTicketsOrderByLately
-    private val photoTicketsOrderByFavorite : LiveData<List<PhotoTicket>> = photoTicketRepositery.photoTicketsOrderByFavorte
+    private val photoTicketRepositery: PhotoTicketRepositery =
+        PhotoTicketRepositery(dataSource, fbAuth, fbDatabase, fbStorage)
+    val photoTicketsOrderByLately: LiveData<List<PhotoTicket>> =
+        photoTicketRepositery.photoTicketsOrderByLately
+    val photoTicketsOrderByFavorite: LiveData<List<PhotoTicket>> =
+        photoTicketRepositery.photoTicketsOrderByFavorte
 
     private val _photoTickets = MutableLiveData<Event<List<PhotoTicket>>>()
-    val photoTickets : LiveData<Event<List<PhotoTicket>>>
+    val photoTickets: LiveData<Event<List<PhotoTicket>>>
         get() = _photoTickets
 
 
     private val _photoTicketFilter = MutableLiveData(PhotoTicketFilter.LATELY)
-    private val photoTicketFilter : LiveData<PhotoTicketFilter>
+    val photoTicketFilter: LiveData<PhotoTicketFilter>
         get() = _photoTicketFilter
 
 
@@ -57,7 +61,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * 현재 포토티켓의 정렬 방식(최신순 또는 즐겨찾기)에 따라서 UI에 TEXT 표시
      * */
     private val _currFilterText = MutableLiveData("최신순")
-    val currFilterText : LiveData<String>
+    val currFilterText: LiveData<String>
         get() = _currFilterText
 
 
@@ -81,10 +85,6 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 //    val DatabasePhotoTicket: LiveData<DatabasePhotoTicket?>
 //        get() = _DatabasePhotoTicket
 //
-    /**
-     * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓
-     * */
-    val currPhotoTicket : LiveData<PhotoTicket?>
 
     /**
      * 오른쪽 상단의 오버플로우 메뉴 클릭 시, popup Menu open/close 하는 프로퍼티
@@ -109,6 +109,27 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         _currentPosition.postValue(position)
     }
 
+    /**
+     * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓
+     * */
+    val currPhotoTicket: LiveData<PhotoTicket?> = Transformations.map(currentPosition) { position ->
+        if (position >= 0) {
+            val list = when(photoTicketFilter.value) {
+                PhotoTicketFilter.LATELY -> {
+                    photoTicketsOrderByLately.value
+                }
+                else -> {
+                    photoTicketsOrderByFavorite.value
+                }
+            }
+
+            if (list != null) {
+                list[position]
+            } else null
+        } else null
+    }
+
+
     init {
         Log.d(TAG, "Init")
 
@@ -119,14 +140,16 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         // 만약 현재 포지션이 0보다 작다면 아무런 포토티켓이 없는 상태이므로 null값을 대입.
         // 그렇지 않은 경우, 만약 photoTickets이 비어있다면 null 값을 대입.
         // 비어있지 않은 경우 현재 포지션을 idx로 사용하여 PhotoTicket 타입의 원소를 대입한다.
-        currPhotoTicket= Transformations.map(currentPosition) { position ->
-            if(position>=0) {
-                val list = photoTickets.value?.getContentIfNotHandled()
-                if(list!=null) {
-                    list[position]
-                } else null
-            } else null
-        }
+
+
+//        currPhotoTicket = Transformations.map(currentPosition) { position ->
+//            if (position >= 0) {
+//                val list = photoTickets.value?.getContentIfNotHandled()
+//                if (list != null) {
+//                    list[position]
+//                } else null
+//            } else null
+//        }
 
 
     }
@@ -134,13 +157,16 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * PhotoTicketRepositery를 이용하여 firebase realtime database로 부터 Room Database에 넣을 photoTicket Model 을 get.
      * */
-    private fun refreshDataFromRepositery() {
+    fun refreshDataFromRepositery() {
         viewModelScope.launch {
-            photoTicketRepositery.refreshPhotoTickets()
+            try {
+                photoTicketRepositery.refreshPhotoTickets()
+                Log.i(TAG,"firebase success")
+            } catch (error: Exception) {
+                Log.i(TAG,"firebase error : ${error.message}")
+            }
         }
     }
-
-
 
 
     /**
@@ -159,13 +185,12 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * 포토티켓을 삭제.
      * */
-    fun deletePhotoTicket(key: Long) {
+    fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
             photoTicketRepositery.deletePhotoTickets(key)
             refreshPhotoTicketEvent()
         }
     }
-
 
 
     /**
@@ -192,14 +217,14 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
             PhotoTicketFilter.LATELY -> {
                 _currFilterText.value = "최신순"
                 val value = photoTicketsOrderByLately.value
-                value?.let{
+                value?.let {
                     _photoTickets.postValue(Event(it))
                 }
             }
             PhotoTicketFilter.FAVORITE -> {
                 _currFilterText.value = "즐겨찾기"
                 val value = photoTicketsOrderByFavorite.value
-                value?.let{
+                value?.let {
                     _photoTickets.postValue(Event(it))
                 }
             }
@@ -217,9 +242,9 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     }
 
 
-//    네비게이션 변수 및 함수.
-    private val _naviToDetailFrag = MutableLiveData<Event<Long?>>()
-    val naviToDetailFrag: LiveData<Event<Long?>>
+    //    네비게이션 변수 및 함수.
+    private val _naviToDetailFrag = MutableLiveData<Event<String>>()
+    val naviToDetailFrag: LiveData<Event<String>>
         get() = _naviToDetailFrag
 
     //SolaroidCreateFragment로 이동
@@ -229,8 +254,8 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 
 
     //SolaroidEditFragment로 이동
-    private val _naviToEditFrag = MutableLiveData<Event<Long?>>()
-    val naviToEditFrag: LiveData<Event<Long?>>
+    private val _naviToEditFrag = MutableLiveData<Event<String>>()
+    val naviToEditFrag: LiveData<Event<String>>
         get() = _naviToEditFrag
 
 
@@ -242,14 +267,13 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         get() = _naviToAddFrag
 
 
-
     //갤러리 프래그먼트로 이동
     private val _naviToGallery = MutableLiveData<Event<Boolean>>()
     val naviToGallery: LiveData<Event<Boolean>>
         get() = _naviToGallery
 
 
-    fun navigateToDetail(DatabasePhotoTicketKey: Long) {
+    fun navigateToDetail(DatabasePhotoTicketKey: String) {
         _naviToDetailFrag.value = Event(DatabasePhotoTicketKey)
     }
 
@@ -257,10 +281,8 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         _naviToCreateFrag.value = Event(true)
     }
 
-    fun navigateToEdit(key: Long?) {
-        key?.let {
-            _naviToEditFrag.value = Event(key)
-        }
+    fun navigateToEdit(key: String) {
+         _naviToEditFrag.value = Event(key)
     }
 
     fun navigateToAdd() {
@@ -270,7 +292,6 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     fun navigateToGallery() {
         _naviToGallery.value = Event(true)
     }
-
 
 
     /////////////////////////////////////////////////////////////////

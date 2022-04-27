@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun convertTodayToFormatted(currentTimeMilli: Long): String {
-    return SimpleDateFormat("yyyy.MM.dd.(E)", Locale.getDefault()).format(currentTimeMilli)
+    return SimpleDateFormat("yyyy.MM.dd(E).kk.mm.ss", Locale.getDefault()).format(currentTimeMilli)
 }
 
 fun convertPhotoTicketToToastString(photoTicket: PhotoTicket, res:Resources) : String {

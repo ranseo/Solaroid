@@ -4,7 +4,7 @@ import androidx.room.PrimaryKey
 import com.example.solaroid.database.DatabasePhotoTicket
 
 data class PhotoTicket(
-    val id: Long= 0L,
+    val id: String,
     val url: String,
     var frontText : String,
     var backText: String,
@@ -14,14 +14,13 @@ data class PhotoTicket(
 
 }
 
-fun PhotoTicket.asDatabaseModel(key: String) : DatabasePhotoTicket {
+fun PhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
     return DatabasePhotoTicket(
-        id = this.id,
+        key = this.id,
         url = this.url,
         frontText = this.frontText,
         backText = this.backText,
         date = this.date,
         favorite = this.favorite,
-        firebaseKey = key
     )
 }

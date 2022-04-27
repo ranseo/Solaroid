@@ -77,7 +77,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     }
 
 
-    val today = convertTodayToFormatted(System.currentTimeMillis())
+    val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0..15)
 
 
     fun onTextChangedFront(s: CharSequence) {
@@ -103,10 +103,12 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
      * */
     fun onImageSave() {
         viewModelScope.launch {
+
             val new =
                 PhotoTicket(
+                    id = "",
                     url = capturedImageUri.value.toString(),
-                    date = today,
+                    date = convertTodayToFormatted(System.currentTimeMillis()),
                     frontText = frontText,
                     backText = backText.value!!,
                     favorite = false

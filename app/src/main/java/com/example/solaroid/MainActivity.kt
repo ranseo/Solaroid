@@ -35,14 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     //Firebase
     private lateinit var viewModel : SolaroidLoginViewModel
-
-
     private lateinit var auth : FirebaseAuth
-
-    override fun onStart() {
-        super.onStart()
-        Log.i(TAG, "ONstart")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

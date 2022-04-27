@@ -1,5 +1,6 @@
 package com.example.solaroid.firebase
 
+import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -13,8 +14,7 @@ import kotlinx.coroutines.withContext
 suspend fun setPhotoTicketList(
     insert: (FirebasePhotoTicket) -> Unit
 ): ValueEventListener {
-    return withContext(Dispatchers.IO) {
-        object : ValueEventListener {
+    return object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (list in snapshot.children) {
                     val hashMap = list.value as HashMap<*, *>
@@ -28,6 +28,7 @@ suspend fun setPhotoTicketList(
                         favorite = hashMap["favorite"]!! as Boolean
                     )
 
+                    Log.i("FirebaseService","photoTicket: ${phototicket}")
                     insert(phototicket)
 
                 }
@@ -37,7 +38,6 @@ suspend fun setPhotoTicketList(
 
             }
         }
-    }
 }
 
 

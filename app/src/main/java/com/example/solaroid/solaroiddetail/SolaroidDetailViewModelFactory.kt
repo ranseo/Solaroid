@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.database.DatabasePhotoTicketDao
 import java.lang.IllegalArgumentException
 
-class SolaroidDetailViewModelFactory(val photoTicketkey: Long, val dataSource: DatabasePhotoTicketDao) : ViewModelProvider.Factory {
+class SolaroidDetailViewModelFactory(val photoTicketkey: String, val dataSource: DatabasePhotoTicketDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("Unchecked_cast")
         if(modelClass.isAssignableFrom(SolaroidDetailViewModel::class.java)) {

@@ -52,7 +52,7 @@
         tools:layout="@layout/fragment_solaroid_detail">
         <argument
             android:name="photo_tickey_key"
-            app:argType="long"/>
+            app:argType="string"/>
         
     </fragment>
 
@@ -110,7 +110,7 @@
 
         <argument
             android:name="photo_ticket_key"
-            app:argType="long"/>
+            app:argType="string"/>
 
     </fragment>
 

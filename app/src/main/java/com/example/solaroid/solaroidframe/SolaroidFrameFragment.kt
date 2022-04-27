@@ -28,11 +28,10 @@ class SolaroidFrameFragment() : Fragment(),
         const val TAG = "프레임프래그먼트"
     }
 
-    private lateinit var viewModel : SolaroidFrameViewModel
+    private lateinit var viewModel: SolaroidFrameViewModel
 
     override fun onStart() {
         super.onStart()
-//        viewModel.refreshDataFromRepositery()
     }
 
     override fun onCreateView(
@@ -55,7 +54,7 @@ class SolaroidFrameFragment() : Fragment(),
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
 
-        Log.i("프레임컨테이너", "여기가 빠를까?")
+
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog(viewModel)
         })
@@ -72,6 +71,20 @@ class SolaroidFrameFragment() : Fragment(),
         refreshCurrentPosition(binding.viewpager)
         observeCurrentPosition(adapter)
 
+        viewModel.photoTicketsOrderByLately.observe(viewLifecycleOwner, Observer {
+            if (viewModel.photoTicketFilter.value == PhotoTicketFilter.LATELY)
+                it?.let {
+                    viewModel.refreshPhotoTicketEvent()
+                }
+        })
+
+        viewModel.photoTicketsOrderByFavorite.observe(viewLifecycleOwner, Observer {
+            if (viewModel.photoTicketFilter.value == PhotoTicketFilter.FAVORITE)
+                it?.let {
+                    viewModel.refreshPhotoTicketEvent()
+                }
+        })
+
 
         setOnItemSelectedListener(binding.fragmentFrameBottomNavi, binding.viewpager)
 
@@ -80,8 +93,8 @@ class SolaroidFrameFragment() : Fragment(),
 
 
     private fun observePhotoTickets(adapter: SolaroidFrameAdapter) {
-        viewModel.photoTickets.observe(viewLifecycleOwner, Observer{ event ->
-            event.getContentIfNotHandled()?.let{
+        viewModel.photoTickets.observe(viewLifecycleOwner, Observer { event ->
+            event.getContentIfNotHandled()?.let {
                 adapter.submitList(it)
             }
         })
@@ -100,8 +113,9 @@ class SolaroidFrameFragment() : Fragment(),
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Log.d("FrameFragment", "onPageSelected")
-                if(adapter.itemCount > 0) {
+                if (adapter.itemCount > 0) {
                     viewModel.setCurrentPosition(position)
+                    Log.i(TAG, "currPhotoTicket : ${viewModel.currPhotoTicket.value}")
                 } else {
                     viewModel.setCurrentPosition(-1)
                 }
@@ -175,9 +189,10 @@ class SolaroidFrameFragment() : Fragment(),
     ) {
         viewModel.photoTicketsSize.observe(viewLifecycleOwner, Observer { size ->
             if (size != null) {
-                if(size > 0) {
+                if (size > 0) {
 
-                    val position = if(size==1 && viewPager.currentItem==1) viewPager.currentItem-1 else viewPager.currentItem
+                    val position =
+                        if (size == 1 && viewPager.currentItem == 1) viewPager.currentItem - 1 else viewPager.currentItem
                     Log.d(TAG, "refreshCurrentPosition photoTicket Id: ${position} : ${size}")
                     viewModel.setCurrentPosition(position)
                 }
@@ -198,11 +213,11 @@ class SolaroidFrameFragment() : Fragment(),
             when (it.itemId) {
                 R.id.favorite -> {
                     val favorite = viewModel.currPhotoTicket.value?.favorite
-                    if(favorite!=null && favorite) viewModel.updatePhotoTicketFavorite(true)
+                    if (favorite != null && favorite) viewModel.updatePhotoTicketFavorite(true)
                     else viewModel.updatePhotoTicketFavorite(false)
                 }
                 R.id.edit -> {
-                    viewModel.navigateToEdit(viewModel.currPhotoTicket.value?.id)
+                    viewModel.navigateToEdit(viewModel.currPhotoTicket.value!!.id)
                 }
             }
             false
@@ -226,7 +241,7 @@ class SolaroidFrameFragment() : Fragment(),
                 viewModel.deletePhotoTicket(key)
                 dialog.dismiss()
             }
-            //수정
+            //수 정
             1 -> {
                 viewModel.navigateToEdit(key)
                 dialog.dismiss()
@@ -244,7 +259,6 @@ class SolaroidFrameFragment() : Fragment(),
         val newDialogFragment = ListSetDialogFragment(this, viewModel)
         newDialogFragment.show(parentFragmentManager, "ListDialog")
     }
-
 
 
 }

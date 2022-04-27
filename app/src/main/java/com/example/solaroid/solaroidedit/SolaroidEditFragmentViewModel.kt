@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource: DatabasePhotoTicketDao) : ViewModel() {
+class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     val database = dataSource
 
@@ -80,7 +80,7 @@ class SolaroidEditFragmentViewModel(photoTicketKey:Long, dataSource: DatabasePho
     }
 
 
-    suspend fun getPhotoTicket(key:Long) : PhotoTicket? {
+    suspend fun getPhotoTicket(key:String) : PhotoTicket? {
         return database.getDatabasePhotoTicket(key).asDomainModel()
     }
 

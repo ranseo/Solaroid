@@ -4,13 +4,13 @@ import android.net.Uri
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.solaroidadd.MediaStoreData
 
-class OnClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
+class OnClickListener(val clickListener: (photoTicketKey:String)->Unit) {
     fun onClick(photoTicket: PhotoTicket) {
         clickListener(photoTicket.id)
     }
 }
 
-class OnFrameLongClickListener(val clickListener: (photoTicketKey:Long)->Unit) {
+class OnFrameLongClickListener(val clickListener: (photoTicketKey:String)->Unit) {
     fun onClick(photoTicket: PhotoTicket) : Boolean {
         clickListener(photoTicket.id)
         return true

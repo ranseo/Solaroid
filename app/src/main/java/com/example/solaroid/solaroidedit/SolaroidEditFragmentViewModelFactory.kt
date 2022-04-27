@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.database.DatabasePhotoTicketDao
 import java.lang.IllegalArgumentException
 
-class SolaroidEditFragmentViewModelFactory(val photoTicketKey:Long, val dataSource: DatabasePhotoTicketDao) : ViewModelProvider.Factory {
+class SolaroidEditFragmentViewModelFactory(val photoTicketKey:String, val dataSource: DatabasePhotoTicketDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         if(modelClass.isAssignableFrom(SolaroidEditFragmentViewModel::class.java)) {

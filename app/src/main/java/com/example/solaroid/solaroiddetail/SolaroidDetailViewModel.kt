@@ -11,7 +11,7 @@ import com.example.solaroid.database.asDomainModel
 import com.example.solaroid.domain.PhotoTicket
 import kotlinx.coroutines.launch
 
-class SolaroidDetailViewModel(photoTicketKey:Long ,dataSource: DatabasePhotoTicketDao) : ViewModel() {
+class SolaroidDetailViewModel(photoTicketKey:String ,dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     val database = dataSource
 
@@ -34,13 +34,13 @@ class SolaroidDetailViewModel(photoTicketKey:Long ,dataSource: DatabasePhotoTick
     }
 
 
-    private fun initGetPhotoTicekt(photoTicketKey: Long) {
+    private fun initGetPhotoTicekt(photoTicketKey: String) {
         viewModelScope.launch {
             _photoTicket.value = getPhotoTicket(photoTicketKey)!!
         }
     }
 
-    suspend fun getPhotoTicket(photoTicketKey: Long) :PhotoTicket = database.getDatabasePhotoTicket(photoTicketKey).asDomainModel()
+    suspend fun getPhotoTicket(photoTicketKey: String) :PhotoTicket = database.getDatabasePhotoTicket(photoTicketKey).asDomainModel()
 
 
     fun onClickSpin() {

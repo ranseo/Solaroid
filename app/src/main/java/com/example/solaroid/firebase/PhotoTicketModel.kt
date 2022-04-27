@@ -21,7 +21,7 @@ fun FirebasePhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
         backText = this.backText,
         date = this.date,
         favorite = this.favorite,
-        firebaseKey = this.key
+        key = this.key
     )
 }
 

@@ -154,6 +154,12 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+
+
     companion object {
         private const val TAG = "생성프래그먼트"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"

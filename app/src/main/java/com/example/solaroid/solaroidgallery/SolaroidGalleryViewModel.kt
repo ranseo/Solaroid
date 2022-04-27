@@ -15,8 +15,8 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     private val database = dataSource
 
 
-    private val _navigateToDetailFrag = MutableLiveData<Event<Long?>>()
-    val navigateToDetailFrag: LiveData<Event<Long?>>
+    private val _navigateToDetailFrag = MutableLiveData<Event<String>>()
+    val navigateToDetailFrag: LiveData<Event<String>>
         get() = _navigateToDetailFrag
 
     private val _naviToFrame = MutableLiveData<Event<Any?>>()
@@ -56,7 +56,7 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
 //        _navigateToCreateFrag.value = false
 //    }
 
-    fun naviToDetail(key: Long) {
+    fun naviToDetail(key: String) {
         _navigateToDetailFrag.value = Event(key)
     }
 
