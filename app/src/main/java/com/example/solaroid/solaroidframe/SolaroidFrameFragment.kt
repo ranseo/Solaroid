@@ -59,9 +59,11 @@ class SolaroidFrameFragment() : Fragment(),
             showListDialog(viewModel)
         })
 
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewpager.adapter = adapter
+
 
         observePhotoTickets(adapter)
         registerOnPageChangeCallback(binding.viewpager, adapter)
@@ -70,6 +72,12 @@ class SolaroidFrameFragment() : Fragment(),
         observeFavorite(binding.fragmentFrameBottomNavi)
         refreshCurrentPosition(binding.viewpager)
         observeCurrentPosition(adapter)
+
+        viewModel.photoTicketFilter.observe(viewLifecycleOwner) {
+            Log.i(SolaroidFrameFragmentContainer.TAG,"photoTicketFilter Observe : filter ${it}")
+            binding.viewpager.setCurrentItem(0,false)
+            viewModel.refreshPhotoTicketEvent()
+        }
 
         viewModel.photoTicketsOrderByLately.observe(viewLifecycleOwner, Observer {
             if (viewModel.photoTicketFilter.value == PhotoTicketFilter.LATELY)
@@ -132,9 +140,9 @@ class SolaroidFrameFragment() : Fragment(),
         viewModel.currPhotoTicket.observe(viewLifecycleOwner, Observer {
             it?.let { photoTicket ->
                 viewModel.setCurrentFavorite(photoTicket.favorite)
-                Log.i(TAG,"엥이게왜이렇게많이?")
                 Log.i(TAG, "currPhotoTicket : ${photoTicket}")
             }
+            if(it == null) viewModel.setCurrentFavorite(false)
         })
     }
 
@@ -194,8 +202,8 @@ class SolaroidFrameFragment() : Fragment(),
                 if (size > 0) {
 
                     val position =
-                        if (size == 1 && viewPager.currentItem == 1) viewPager.currentItem - 1 else viewPager.currentItem
-                    Log.d(TAG, "refreshCurrentPosition photoTicket Id: ${position} : ${size}")
+                        if(size <= viewPager.currentItem) viewPager.currentItem - 1 else viewPager.currentItem
+                    Log.i(TAG, "refreshCurrentPosition photoTicket Id: ${position} : ${size}")
                     viewModel.setCurrentPosition(position)
                 }
             }
@@ -218,7 +226,8 @@ class SolaroidFrameFragment() : Fragment(),
                     if (favorite != null) viewModel.updatePhotoTicketFavorite()
                 }
                 R.id.edit -> {
-                    viewModel.navigateToEdit(viewModel.currPhotoTicket.value!!.id)
+                    val id = viewModel.currPhotoTicket.value?.id
+                    if(id != null) viewModel.navigateToEdit(id)
                 }
             }
             false

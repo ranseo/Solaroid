@@ -81,6 +81,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
 
 
+
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 popupShow(binding.popupMenuFilter)

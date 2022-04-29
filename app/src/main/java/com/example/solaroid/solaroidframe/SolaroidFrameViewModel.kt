@@ -110,6 +110,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * currentPosition의 값 설정.
      * */
     fun setCurrentPosition(position: Int) {
+        Log.i(TAG,"setCurrentPosition : ${position}")
         _currentPosition.value = position
     }
 
@@ -127,7 +128,8 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
                 }
             }
 
-            if (list != null) {
+            Log.i(TAG, "Position : ${position}")
+            if (!list.isNullOrEmpty()) {
                 list[position]
             } else null
         } else null
