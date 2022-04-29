@@ -2,6 +2,7 @@ package com.example.solaroid.solaroidcreate
 
 import android.app.Application
 import android.content.ContentValues
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -9,16 +10,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.activity.OnBackPressedCallback
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
@@ -34,7 +34,10 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
     private lateinit var binding: FragmentSolaroidPhotoCreateBinding
 
+    private lateinit var backPressCallback :OnBackPressedCallback
+
     private var imageCapture: ImageCapture? = null
+    private var CameraProvider :  ProcessCameraProvider? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,8 +76,26 @@ class SolaroidPhotoCreateFragment : Fragment() {
             }
         })
 
+        viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer{
+            it.getContentIfNotHandled()?.let {
+                this.findNavController().navigate(
+                    SolaroidPhotoCreateFragmentDirections.actionCreateFragmentToFrameFragmentContainer()
+                )
+            }
+        })
+
 
         return binding.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        backPressCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.navigateToFrame()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
     }
 
     private fun startCamera(cameraConverter: Boolean) {
@@ -82,7 +103,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
-
+            CameraProvider = cameraProvider
             val preview = Preview.Builder()
                 .build()
                 .also {
@@ -155,6 +176,7 @@ class SolaroidPhotoCreateFragment : Fragment() {
     }
 
     override fun onDestroy() {
+        CameraProvider?.unbindAll()
         super.onDestroy()
     }
 

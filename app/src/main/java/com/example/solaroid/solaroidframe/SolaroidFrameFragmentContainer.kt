@@ -54,9 +54,6 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         binding.frameCotainerToolbar.setupWithNavController(navController, appBarConfiguration)
         setNavigationViewListener()
 
-        viewModel.refreshPhotoTicketEvent()
-        //viewModel.refreshDataFromRepositery()
-
     }
 
     override fun onCreateView(

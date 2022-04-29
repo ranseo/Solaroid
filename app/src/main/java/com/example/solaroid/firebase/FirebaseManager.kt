@@ -12,7 +12,7 @@ class FirebaseManager {
     companion object {
         private var FBAUTH: FirebaseAuth? = null
         private var FBDATABASE: FirebaseDatabase? = null
-        private var FBSTORAGE : FirebaseStorage? = null
+        private var FBSTORAGE: FirebaseStorage? = null
 
 
         fun getAuthInstance(): FirebaseAuth {
@@ -20,8 +20,9 @@ class FirebaseManager {
                 var fbAuth = FBAUTH
                 if (fbAuth == null) {
                     fbAuth = Firebase.auth
+                    FBAUTH = fbAuth
                 }
-                FBAUTH = fbAuth
+
                 return fbAuth
             }
         }
@@ -29,17 +30,21 @@ class FirebaseManager {
         fun getDatabaseInstance(): FirebaseDatabase {
             synchronized(this) {
                 var fbDatabase = FBDATABASE
-                if(fbDatabase == null) fbDatabase = Firebase.database
-                FBDATABASE = fbDatabase
+                if (fbDatabase == null) {
+                    fbDatabase = Firebase.database
+                    FBDATABASE = fbDatabase
+                }
                 return fbDatabase
             }
         }
 
-        fun getStorageInstance() : FirebaseStorage {
+        fun getStorageInstance(): FirebaseStorage {
             synchronized(this) {
                 var fbStorage = FBSTORAGE
-                if(fbStorage==null) fbStorage = Firebase.storage
-                FBSTORAGE = fbStorage
+                if (fbStorage == null) {
+                    fbStorage = Firebase.storage
+                    FBSTORAGE = fbStorage
+                }
                 return fbStorage
             }
         }

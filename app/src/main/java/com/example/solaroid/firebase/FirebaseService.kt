@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
  * firebase database reference photoTicket/user.uid 내에 있는 FirebasePhotoTicket을 읽어들이는
  * ValueEventListener를 리턴.
  * */
-suspend fun setPhotoTicketList(
+fun setPhotoTicketList(
     insert: (FirebasePhotoTicket) -> Unit
 ): ValueEventListener {
     return object : ValueEventListener {

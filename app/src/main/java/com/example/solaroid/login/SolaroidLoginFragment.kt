@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.solaroid.MainActivity
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentSolaroidLoginBinding
+import com.example.solaroid.firebase.FirebaseManager
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -40,7 +41,7 @@ class SolaroidLoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = FirebaseAuth.getInstance()
+        auth = FirebaseManager.getAuthInstance()
     }
 
     override fun onCreateView(
@@ -63,9 +64,8 @@ class SolaroidLoginFragment : Fragment() {
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
-                    Log.i(TAG,"메인 화면으로 이동")
+                    Log.i(TAG,"로그인 성공 userId : ${auth.currentUser!!.uid}")
                     navigateToMainActivity()
-                    requireActivity().finish()
                 }
                 SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
 //                    Toast.makeText(requireActivity(), LoginFail, Toast.LENGTH_LONG).show()
@@ -196,7 +196,10 @@ class SolaroidLoginFragment : Fragment() {
      * 로그인 성공 시 , 메인액티비티로 이동.
      * */
     private fun navigateToMainActivity() {
-        startActivity(Intent(requireActivity(), MainActivity::class.java))
+
+        findNavController().navigate(
+            SolaroidLoginFragmentDirections.actionLoginFragmentToMainActivity()
+        )
         requireActivity().finish()
     }
 

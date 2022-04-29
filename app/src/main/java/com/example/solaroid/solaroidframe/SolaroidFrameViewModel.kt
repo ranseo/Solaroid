@@ -53,8 +53,12 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
      * */
-    var photoTicketsSize = Transformations.map(photoTickets) {
-        it.getContentIfNotHandled()?.size
+    private val _photoTicketsSize = MutableLiveData<Int>()
+    val photoTicketsSize : LiveData<Int>
+        get() = _photoTicketsSize
+
+    fun setPhotoTicketSize(size :Int) {
+        _photoTicketsSize.value = size
     }
 
     /**
@@ -77,7 +81,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * 현재 포토티켓의 즐겨찾기 상태를 대입한다.
      * */
     fun setCurrentFavorite(favorite: Boolean) {
-        _favorite.postValue(favorite)
+        _favorite.value = favorite
     }
 
     //viewPager2의 각 page 위치에 배치된 item (=DatabasePhotoTicket)을 할당.
@@ -98,7 +102,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * 현재 viewPager에서 사용자가 보고 있는 포토티켓의 위치를 나타내는 프로퍼티.
      * 해당 변수의 값을 이용하여 현재 사용자가 보고 있는 포토티켓의 값을 설정할 수 있다.
      * */
-    private val _currentPosition = MutableLiveData(0)
+    private val _currentPosition = MutableLiveData(-1)
     val currentPosition: LiveData<Int>
         get() = _currentPosition
 
@@ -106,7 +110,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * currentPosition의 값 설정.
      * */
     fun setCurrentPosition(position: Int) {
-        _currentPosition.postValue(position)
+        _currentPosition.value = position
     }
 
     /**
@@ -160,7 +164,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     fun refreshDataFromRepositery() {
         viewModelScope.launch {
             try {
-                photoTicketRepositery.refreshPhotoTickets()
+                photoTicketRepositery.refreshPhotoTickets(application = getApplication())
                 Log.i(TAG,"firebase success")
             } catch (error: Exception) {
                 Log.i(TAG,"firebase error : ${error.message}")
@@ -172,12 +176,11 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * 포토티켓 즐겨찾기를 등록하거나 해제할 경우, 새로운 즐겨찾기 값으로 해당 포토티켓을 update한다.
      * */
-    fun updatePhotoTicketFavorite(favorite: Boolean) {
+    fun updatePhotoTicketFavorite() {
         viewModelScope.launch {
             currPhotoTicket.value?.let {
-                it.favorite = favorite
-                photoTicketRepositery.updatePhotoTickets(it)
-                refreshPhotoTicketEvent()
+                it.favorite = it.favorite != true
+                photoTicketRepositery.updatePhotoTickets(it, getApplication())
             }
         }
     }
@@ -187,8 +190,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            photoTicketRepositery.deletePhotoTickets(key)
-            refreshPhotoTicketEvent()
+            photoTicketRepositery.deletePhotoTickets(key, getApplication())
         }
     }
 
@@ -218,21 +220,17 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
                 _currFilterText.value = "최신순"
                 val value = photoTicketsOrderByLately.value
                 value?.let {
-                    _photoTickets.postValue(Event(it))
+                    _photoTickets.value = Event(it)
                 }
             }
             PhotoTicketFilter.FAVORITE -> {
                 _currFilterText.value = "즐겨찾기"
                 val value = photoTicketsOrderByFavorite.value
                 value?.let {
-                    _photoTickets.postValue(Event(it))
+                    _photoTickets.value = Event(it)
                 }
             }
             else -> {}
-        }
-
-        photoTicketsSize = Transformations.map(photoTickets) {
-            it.getContentIfNotHandled()?.size
         }
     }
 

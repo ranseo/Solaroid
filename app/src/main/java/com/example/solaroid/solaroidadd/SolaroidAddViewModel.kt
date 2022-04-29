@@ -18,7 +18,8 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application) : AndroidViewModel(application) {
+class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
+    AndroidViewModel(application) {
 
     private val database = dataSource
 
@@ -26,11 +27,12 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage = FirebaseManager.getStorageInstance()
 
-    private val photoTicketRepositery = PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage)
+    private val photoTicketRepositery =
+        PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage)
 
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
-    val photoTicket : LiveData<PhotoTicket?>
+    val photoTicket: LiveData<PhotoTicket?>
         get() = _photoTicket
 
     //AddChoiceFragment, recyclerView에 보여질 data들을 담는 프로퍼티로써 loadImage() 메서드를 통해 초기화된다.
@@ -61,32 +63,34 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
 
     //addChoiceFrag가 FragmentContainerView에 Visible 되었을 때, back press버튼을 눌렀을 때 처리하기 위한 변수.
     private val _backPressed = MutableLiveData<Boolean>(false)
-    val backPressed : LiveData<Boolean>
+    val backPressed: LiveData<Boolean>
         get() = _backPressed
 
 
+    private val _editTextClear = MutableLiveData<String?>()
+    val editTextClear: LiveData<String?>
+        get() = _editTextClear
 
     /**
      * we observe "uri" value in SolaroidAddFragment
      * to remove SolaroidAddChoiceFragment
      * */
     private val _image = MutableLiveData<String?>()
-    val image : LiveData<String?>
+    val image: LiveData<String?>
         get() = _image
 
-    val isImageUriSet = Transformations.map(image){
+    val isImageUriSet = Transformations.map(image) {
         !it.isNullOrEmpty()
     }
 
     private val _uriChoiceFromMediaStore = MutableLiveData<Event<Uri?>>()
-    val uriChoiceFromMediaStore : LiveData<Event<Uri?>>
+    val uriChoiceFromMediaStore: LiveData<Event<Uri?>>
         get() = _uriChoiceFromMediaStore
 
     //navi
     private val _naviToFrameFrag = MutableLiveData<Event<Any?>>()
     val naviToFrameFrag: LiveData<Event<Any?>>
         get() = _naviToFrameFrag
-
 
 
     val date = convertTodayToFormatted(System.currentTimeMillis())
@@ -123,8 +127,6 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     }
 
 
-
-
     //버튼 및 뷰 클릭 관련 함수
     fun onImageSpin() {
         val toggle = _imageSpin.value!!
@@ -134,31 +136,42 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     /**
      * addFragment의 choice_image의 image가 set된 이후에, 다시 addChoiceFragment로 돌아가기 위해 해당 사진을 취소하는 경우. reselect_image를 클릭하면 image값이 null 로변경
      */
-    fun onReselectImage(){
+    fun onReselectImage() {
         setImageNull()
     }
 
 
     fun insertPhotoTicket() {
-        if(image.value.isNullOrEmpty()) return
+        if (image.value.isNullOrEmpty()) return
         viewModelScope.launch {
             val new = PhotoTicket(
-                    id = "",
-                    url = image.value!!,
-                    date = date,
-                    frontText = frontText,
-                    backText = backText.value!!,
-                    favorite = false
-                )
+                id = "",
+                url = image.value!!,
+                date = date,
+                frontText = frontText,
+                backText = backText.value!!,
+                favorite = false
+            )
 
-            photoTicketRepositery.insertPhotoTickets(new,getApplication())
-
+            photoTicketRepositery.insertPhotoTickets(new, getApplication())
+            clearAddPhotoTicket()
         }
+    }
+
+    private fun clearAddPhotoTicket() {
+        _backText.value = ""
+        frontText = ""
+        _editTextClear.value = null
+        setImageNull()
     }
 
 
     fun navigateToAddChoice() {
         _naviToAddChoice.value = Event(Unit)
+    }
+
+    fun navigateToFrame() {
+        _naviToFrameFrag.value = Event(Unit)
     }
 
 
@@ -173,7 +186,6 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     }
 
 
-
     /**
      * queryMediaStoreData()메서드를 통해 MediaStore로부터 이미지를 로드하여 _imagesFromMediaStore의 값을 초기화 한다.
      * postValue를 사용하여 백그라운드 내에서 메인 쓰레드로 값을 지연하여 할당.
@@ -181,7 +193,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     fun loadImage() {
         viewModelScope.launch {
             val result = queryMediaStoreData()
-            _imagesFromMediaStore.postValue(result)
+            _imagesFromMediaStore.value = result
         }
 
     }
@@ -210,19 +222,22 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
                 sortOrder
             )
 
-            query?.use{ cursor->
+            query?.use { cursor ->
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-                val displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+                val displayNameColumn =
+                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
                 val dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED)
 
-                while(cursor.moveToNext()) {
+                while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColumn)
                     val name = cursor.getString(displayNameColumn)
-                    val date = convertTodayToFormatted(TimeUnit.SECONDS.toMillis(cursor.getLong(dateColumn)))
+                    val date =
+                        convertTodayToFormatted(TimeUnit.SECONDS.toMillis(cursor.getLong(dateColumn)))
 
-                    val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    val contentUri =
+                        ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
-                    val image = MediaStoreData(id, name, date,contentUri)
+                    val image = MediaStoreData(id, name, date, contentUri)
                     images += image
                 }
             }

@@ -103,7 +103,7 @@
                 android:id="@+id/today_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewmodel.date}"
+                android:text="@{viewmodel.date.substring(0,15)}"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -114,6 +114,7 @@
                 android:id="@+id/front_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{viewmodel.editTextClear}"
                 android:hint="@string/photo_create_front_hint"
                 android:imeOptions="actionDone"
                 android:inputType="text"
@@ -143,6 +144,7 @@
 
             <EditText
                 android:id="@+id/back_text"
+                android:text="@{viewmodel.editTextClear}"
                 android:layout_width="@dimen/polaroid_image_large_width"
                 android:layout_height="@dimen/polaroid_image_large_height"
                 android:hint="@string/photo_create_back_hint"

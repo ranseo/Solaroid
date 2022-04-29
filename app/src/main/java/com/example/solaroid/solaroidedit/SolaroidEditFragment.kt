@@ -1,9 +1,11 @@
 package com.example.solaroid.solaroidedit
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -20,6 +22,8 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
     private lateinit var viewModel : SolaroidEditFragmentViewModel
     private lateinit var viewModelFactory: SolaroidEditFragmentViewModelFactory
 
+    private lateinit var backPressCallback: OnBackPressedCallback
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,7 +36,7 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 
         val key = SolaroidEditFragmentArgs.fromBundle(requireArguments()).photoTicketKey
 
-        viewModelFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao)
+        viewModelFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidEditFragmentViewModel::class.java]
 
         binding.viewmodel = viewModel
@@ -52,6 +56,18 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 
         return binding.root
     }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        backPressCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.navigateToFrame()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
+    }
+
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         viewModel.onUpdatePhotoTicket()

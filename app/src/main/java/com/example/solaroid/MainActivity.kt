@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 //        val navController = navHostFragment.findNavController()
 //        binding.botNaivMenu.setupWithNavController(navController)
 
-//        navController.addOnDestinationChangedListener{_,destination,_ ->
+//        navController.addOnDestinationChan gedListener{_,destination,_ ->
 //            if(destination.id == R.id.fragment_solaroid_create || destination.id == R.id.fragment_solaroid_detail) {
 //                binding.botNaivMenu.visibility = View.GONE
 //            } else {
@@ -106,15 +106,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        auth.signOut()
-        Log.i(TAG, "onStop : auth = ${auth}")
-    }
 
     private fun logout() {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navHostFragment.navController.navigate(
+            R.id.global_action_mainActivity_to_loginActivity
+        )
+        finish()
     }
 
     override fun onRequestPermissionsResult(

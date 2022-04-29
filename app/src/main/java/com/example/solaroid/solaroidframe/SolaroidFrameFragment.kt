@@ -74,6 +74,7 @@ class SolaroidFrameFragment() : Fragment(),
         viewModel.photoTicketsOrderByLately.observe(viewLifecycleOwner, Observer {
             if (viewModel.photoTicketFilter.value == PhotoTicketFilter.LATELY)
                 it?.let {
+                    Log.i(TAG,"LIST 업데이트")
                     viewModel.refreshPhotoTicketEvent()
                 }
         })
@@ -95,6 +96,7 @@ class SolaroidFrameFragment() : Fragment(),
     private fun observePhotoTickets(adapter: SolaroidFrameAdapter) {
         viewModel.photoTickets.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let {
+                viewModel.setPhotoTicketSize(it.size)
                 adapter.submitList(it)
             }
         })
@@ -115,7 +117,6 @@ class SolaroidFrameFragment() : Fragment(),
                 Log.d("FrameFragment", "onPageSelected")
                 if (adapter.itemCount > 0) {
                     viewModel.setCurrentPosition(position)
-                    Log.i(TAG, "currPhotoTicket : ${viewModel.currPhotoTicket.value}")
                 } else {
                     viewModel.setCurrentPosition(-1)
                 }
@@ -129,9 +130,10 @@ class SolaroidFrameFragment() : Fragment(),
      */
     private fun observePhotoTicket() {
         viewModel.currPhotoTicket.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                viewModel.setCurrentFavorite(it.favorite)
-                Log.d("FrameFragment", "observePhotoTicket")
+            it?.let { photoTicket ->
+                viewModel.setCurrentFavorite(photoTicket.favorite)
+                Log.i(TAG,"엥이게왜이렇게많이?")
+                Log.i(TAG, "currPhotoTicket : ${photoTicket}")
             }
         })
     }
@@ -213,8 +215,7 @@ class SolaroidFrameFragment() : Fragment(),
             when (it.itemId) {
                 R.id.favorite -> {
                     val favorite = viewModel.currPhotoTicket.value?.favorite
-                    if (favorite != null && favorite) viewModel.updatePhotoTicketFavorite(true)
-                    else viewModel.updatePhotoTicketFavorite(false)
+                    if (favorite != null) viewModel.updatePhotoTicketFavorite()
                 }
                 R.id.edit -> {
                     viewModel.navigateToEdit(viewModel.currPhotoTicket.value!!.id)

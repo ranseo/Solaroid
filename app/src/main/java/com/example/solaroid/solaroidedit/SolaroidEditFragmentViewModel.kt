@@ -1,5 +1,6 @@
 package com.example.solaroid.solaroidedit
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
@@ -15,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabasePhotoTicketDao) : ViewModel() {
+class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabasePhotoTicketDao,application: Application) : AndroidViewModel(application) {
 
     val database = dataSource
 
@@ -54,6 +55,8 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
         viewModelScope.launch {
             _photoTicket.value = getPhotoTicket(photoTicketKey)
             if(photoTicket.value == null) navigateToFrame()
+            frontText = photoTicket.value!!.frontText
+            _backText.value = photoTicket.value!!.backText
         }
     }
 
@@ -74,8 +77,9 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     fun onUpdatePhotoTicket() {
         viewModelScope.launch {
             val curr = _photoTicket.value!!
+            Log.i(TAG,"${frontText}, ${_backText.value!!}")
             val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, curr.date, curr.favorite)
-            photoTicketRepositery.updatePhotoTickets(new)
+            photoTicketRepositery.updatePhotoTickets(new,getApplication())
         }
     }
 
@@ -87,6 +91,10 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     //네비게이션
     fun navigateToFrame() {
         _naviToFrameFrag.value = Event(true)
+    }
+
+    companion object{
+        const val TAG = "에디트프래그먼트"
     }
 
 }

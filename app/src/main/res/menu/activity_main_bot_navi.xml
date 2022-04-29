@@ -12,10 +12,10 @@
         android:enabled="true"
         android:title ="사진 촬영" />
 
-   <item
-        android:id="@+id/fragment_solaroid_frame_container"
-        android:icon="@drawable/ic_frame"
-        android:enabled="true"
-        android:title="액자식"/>
+<!--   <item-->
+<!--        android:id="@+id/fragment_solaroid_frame_container"-->
+<!--        android:icon="@drawable/ic_frame"-->
+<!--        android:enabled="true"-->
+<!--        android:title="액자식"/>-->
 
 </menu>

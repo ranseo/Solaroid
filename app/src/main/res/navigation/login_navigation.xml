@@ -5,11 +5,28 @@
     android:id="@+id/login_navigation"
     app:startDestination="@+id/fragment_solaroid_login">
 
+    <activity
+        android:id="@+id/main_activity"
+        android:name="com.example.solaroid.MainActivity"
+        android:label="메인화면"
+        tools:layout="@layout/activity_main"
+        />
+
+
+
     <fragment
         android:id="@+id/fragment_solaroid_login"
         android:label="SolaroidLoginFragment"
         android:name="com.example.solaroid.login.SolaroidLoginFragment"
         tools:layout="@layout/fragment_solaroid_login">
+
+        <action
+            android:id="@+id/action_loginFragment_to_mainActivity"
+            app:destination="@+id/main_activity"
+            app:popUpTo="@id/main_activity"
+            app:popUpToInclusive="true"
+            />
+
 
     </fragment>
 

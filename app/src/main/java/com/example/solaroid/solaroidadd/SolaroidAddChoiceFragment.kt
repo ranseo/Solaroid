@@ -68,8 +68,11 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
         })
 
         viewModel.uriChoiceFromMediaStore.observe(viewLifecycleOwner, Observer{
-            it.getContentIfNotHandled()?.let{
-                showDialog()
+            it.getContentIfNotHandled()?.let{ uri ->
+                uri?.let { notNullUri ->
+                    showDialog(notNullUri.toString())
+                }
+
             }
         })
 
@@ -93,17 +96,20 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
         backPressCallback.remove()
     }
 
-    fun showDialog() {
-        val choiceDialog = ChoiceDialogFragment(this)
+    fun showDialog(uri:String) {
+        val choiceDialog = ChoiceDialogFragment(this, uri)
         choiceDialog.show(parentFragmentManager, "choiceDialog")
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
-        val uriString = viewModel.uriChoiceFromMediaStore.value.toString()
-        viewModel.setImageValue(uriString)
+    override fun onDialogPositiveClick(dialog: DialogFragment, uri:String) {
+        viewModel.setImageValue(uri)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
         dialog.dismiss()
+    }
+
+    companion object {
+        const val TAG = "애드초이스프래그먼트"
     }
 }

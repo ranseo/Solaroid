@@ -57,6 +57,10 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     val imageSpin: LiveData<Boolean>
         get() = _imageSpin
 
+    private val _naviToFrameFrag = MutableLiveData<Event<Any?>>()
+    val naviToFrameFrag : LiveData<Event<Any?>>
+        get() = _naviToFrameFrag
+
 
     //이미지 캡처 성공 시, view visibility 전환. -> 카메라 촬영 preview 화면에서 이미지 저장 화면으로 전환
     val isLayoutCaptureVisible = Transformations.map(_capturedImageUri) {
@@ -77,7 +81,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     }
 
 
-    val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0..15)
+    val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0,15)
 
 
     fun onTextChangedFront(s: CharSequence) {
@@ -143,6 +147,10 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     fun onImageSpin() {
         val toggle = _imageSpin.value!!
         _imageSpin.value = !toggle
+    }
+
+    fun navigateToFrame() {
+        _naviToFrameFrag.value = Event(Unit)
     }
 
     companion object {
