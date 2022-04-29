@@ -107,4 +107,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
+
+    //lottie 5.0.3
+    implementation "com.airbnb.android:lottie:5.0.3"
 }

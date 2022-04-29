@@ -29,7 +29,10 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
         get() = _photoTicket
 
 
-    val photoTickets = database.getAllDatabasePhotoTicket().value?.asDomainModel()
+    val photoTickets = Transformations.map(database.getAllDatabasePhotoTicket()) {
+        it?.asDomainModel()
+
+    }
 
     init {
         initGetPhotoTicket()

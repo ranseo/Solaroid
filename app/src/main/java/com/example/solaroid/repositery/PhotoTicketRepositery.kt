@@ -109,17 +109,6 @@ class PhotoTicketRepositery(
         }
     }
 
-//    suspend fun updatePhotoTicketForUrl(application: Application, user: FirebaseUser, fbDatabase: FirebaseDatabase, fbStorage: FirebaseStorage, photoTicket:PhotoTicket, url: URL) {
-//            val file = new.url.toUri()
-//            val mimeType : String? = application.contentResolver.getType(file)
-//            val storageRef = fbStorage.reference.child(user.uid).child("photoTicket").child(key)
-//                .child("${mimeType?.split("/")?.get(0)}/${file.lastPathSegment}")
-//
-//            storageRef.putFile(new.url)
-//        }
-//    }
-
-
     /**
      * 포토티켓의 삭제 기능을 수행하는 리포지터리 함수
      * 해당 함수에서는 삭제할 포토티켓을 매개변수로 전달 받아 RoomDatabase와 Firebase 실시간 데이터 베이스 및 Storage 내에

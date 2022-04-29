@@ -54,7 +54,7 @@
             android:id="@+id/action_frameFragmentContainer_to_galleryFragment"
             app:destination="@+id/fragment_solaroid_gallery"
             app:popUpToInclusive="true"
-            app:popUpTo="@id/fragment_solaroid_gallery"/>
+            app:popUpTo="@id/fragment_solaroid_frame_container"/>
 
 
         <argument
@@ -78,7 +78,7 @@
             android:id="@+id/action_galleryFragment_to_frameFragment"
             app:destination="@+id/fragment_solaroid_frame_container"
             app:popUpToInclusive="true"
-            app:popUpTo="@id/fragment_solaroid_frame_container"/>
+            app:popUpTo="@id/fragment_solaroid_gallery"/>
 
         <argument
             android:name="ShowAppBar"
