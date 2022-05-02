@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.solaroid.BuildConfig
 import com.example.solaroid.MainActivity
 import com.example.solaroid.R
 import com.example.solaroid.databinding.ActivityLoginBinding
@@ -20,10 +21,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Firebase.auth.useEmulator("10.0.2.2", 9099)
-        Firebase.database.useEmulator("10.0.2.2", 9000)
-        Firebase.storage.useEmulator("10.0.2.2", 9199)
-
+        if (BuildConfig.DEBUG) {
+            Firebase.auth.useEmulator("10.0.2.2", 9099)
+            Firebase.database.useEmulator("10.0.2.2", 9000)
+            Firebase.storage.useEmulator("10.0.2.2", 9199)
+        }
 
     }
 

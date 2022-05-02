@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1080768750285",
+    "firebase_url": "https://solaroid-fca9c-default-rtdb.firebaseio.com",
     "project_id": "solaroid-fca9c",
     "storage_bucket": "solaroid-fca9c.appspot.com"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.example.solaroid",
             "certificate_hash": "f38d5a1f20567a93fe8c91d9e8f109615f464bb3"
+          }
+        },
+        {
+          "client_id": "1080768750285-td59f3jetnghls8mir0d1afrra60s4er.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.solaroid",
+            "certificate_hash": "e43eaa5dbcb66a2927fdfb76dce8750f279ff24d"
           }
         },
         {

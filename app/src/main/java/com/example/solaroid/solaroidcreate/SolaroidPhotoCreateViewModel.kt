@@ -81,7 +81,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     }
 
 
-    val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0,15)
+    val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0,13)
 
 
     fun onTextChangedFront(s: CharSequence) {
