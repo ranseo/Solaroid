@@ -74,7 +74,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
 
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
-        viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidFrameViewModel::class.java]
+        viewModel = ViewModelProvider(this.requireActivity(), viewModelFactory)[SolaroidFrameViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

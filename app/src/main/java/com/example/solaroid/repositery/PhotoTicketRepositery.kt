@@ -27,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class PhotoTicketRepositery(
     private val dataSource: DatabasePhotoTicketDao,
@@ -76,9 +77,9 @@ class PhotoTicketRepositery(
                 }
             }
             ref.addListenerForSingleValueEvent(listener)
-
-            ref.removeEventListener(listener)
             Log.i(TAG, "refreshPhotoTicket() : ValueEventListener 등록.")
+
+
         }
     }
 
@@ -119,7 +120,12 @@ class PhotoTicketRepositery(
         withContext(Dispatchers.IO) {
 
             //room delete
-            dataSource.delete(key)
+            try {
+                dataSource.delete(key)
+            } catch (error: Exception) {
+                Log.i(TAG, "room database delete error : ${error.message}")
+            }
+
 
             //firebase database delete
             val ref =
@@ -134,7 +140,7 @@ class PhotoTicketRepositery(
             val storageRef =
                 fbStorage.reference.child("photoTicket").child(user.uid).child(key).child("image")
             storageRef.listAll().addOnSuccessListener {
-                if (it.items.size > 0)
+                if (it.items.size > 0) {
                     storageRef.child(it.items[0].toString().toUri().lastPathSegment.toString())
                         .delete()
                         .addOnSuccessListener {
@@ -142,6 +148,7 @@ class PhotoTicketRepositery(
                         }.addOnFailureListener {
                             Log.i(TAG, "Storage Delete Fail : ${it.message}")
                         }
+                }
             }.addOnFailureListener {
                 Log.d(TAG, "Network Connection Error : ${it.message}")
                 //Toast -> SnackBar 로 변경
@@ -166,7 +173,9 @@ class PhotoTicketRepositery(
                 TAG,
                 "new : ${new}, user : ${user}, user.isVerified : ${user.isEmailVerified}, fbDatabase : ${ref}"
             )
-            ref.setValue(new, DatabaseReference.CompletionListener { error: DatabaseError?, ref: DatabaseReference ->
+            ref.setValue(
+                new,
+                DatabaseReference.CompletionListener { error: DatabaseError?, ref: DatabaseReference ->
 
                     if (error != null) {
                         Log.d(TAG, "Unable to write Message to database", error.toException())

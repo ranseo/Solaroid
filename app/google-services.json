@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "1080768750285-uk13oh8eekh89gical5s7ci8k4eqvcjc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.solaroid",
+            "certificate_hash": "860fb9830478553ed788f581b481dbc5908bf7ec"
+          }
+        },
+        {
           "client_id": "1080768750285-84iidhdrhsdvn7u4omd364dhefug6611.apps.googleusercontent.com",
           "client_type": 3
         }

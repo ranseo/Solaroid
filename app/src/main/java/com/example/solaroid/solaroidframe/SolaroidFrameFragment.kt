@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -50,7 +51,7 @@ class SolaroidFrameFragment() : Fragment(),
 
 
         viewModel = ViewModelProvider(
-            requireParentFragment(),
+            this.requireActivity(),
             SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         )[SolaroidFrameViewModel::class.java]
 
@@ -140,6 +141,7 @@ class SolaroidFrameFragment() : Fragment(),
         viewModel.currPhotoTicket.observe(viewLifecycleOwner, Observer {
             it?.let { photoTicket ->
                 viewModel.setCurrentFavorite(photoTicket.favorite)
+                Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
                 Log.i(TAG, "currPhotoTicket : ${photoTicket}")
             }
             if(it == null) viewModel.setCurrentFavorite(false)
