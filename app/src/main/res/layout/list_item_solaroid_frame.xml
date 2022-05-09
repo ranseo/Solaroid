@@ -29,8 +29,8 @@
             android:id="@+id/front_layout"
             android:visibility="@{imageSpin ? View.GONE : View.VISIBLE}"
             android:onLongClickListener="@{()->onLongClickListener.onClick(photoTicket)}"
-            android:layout_width="@dimen/polaroid_film_large_width"
-            android:layout_height="@dimen/polaroid_film_large_height"
+            android:layout_width="@dimen/polaroid_film_larger_width"
+            android:layout_height="@dimen/polaroid_film_larger_height"
             android:layout_gravity="center"
             android:elevation="12dp"
             android:background="@color/white"
@@ -40,8 +40,8 @@
             <ImageView
                 android:id="@+id/solaroid_photo"
                 setImage="@{photoTicket.url}"
-                android:layout_width="@dimen/polaroid_image_large_width"
-                android:layout_height="@dimen/polaroid_image_large_height"
+                android:layout_width="@dimen/polaroid_image_larger_width"
+                android:layout_height="@dimen/polaroid_image_larger_height"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginRight="24dp"
@@ -93,8 +93,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/back_layout"
             android:visibility="@{imageSpin ? View.VISIBLE : View.GONE}"
-            android:layout_width="@dimen/polaroid_film_large_width"
-            android:layout_height="@dimen/polaroid_film_large_height"
+            android:layout_width="@dimen/polaroid_film_larger_width"
+            android:layout_height="@dimen/polaroid_film_larger_height"
             android:elevation="12dp"
             android:layout_gravity="center"
             android:background="@color/white">
@@ -104,8 +104,8 @@
             <TextView
                 android:id="@+id/back_text"
                 android:text="@{photoTicket.backText}"
-                android:layout_width="@dimen/polaroid_image_large_width"
-                android:layout_height="@dimen/polaroid_image_large_height"
+                android:layout_width="@dimen/polaroid_image_larger_width"
+                android:layout_height="@dimen/polaroid_image_larger_height"
                 android:textAlignment="center"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"

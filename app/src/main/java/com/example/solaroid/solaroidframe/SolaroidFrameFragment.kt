@@ -141,7 +141,7 @@ class SolaroidFrameFragment() : Fragment(),
         viewModel.currPhotoTicket.observe(viewLifecycleOwner, Observer {
             it?.let { photoTicket ->
                 viewModel.setCurrentFavorite(photoTicket.favorite)
-                Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
+                //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
                 Log.i(TAG, "currPhotoTicket : ${photoTicket}")
             }
             if(it == null) viewModel.setCurrentFavorite(false)
@@ -226,13 +226,27 @@ class SolaroidFrameFragment() : Fragment(),
                 R.id.favorite -> {
                     val favorite = viewModel.currPhotoTicket.value?.favorite
                     if (favorite != null) viewModel.updatePhotoTicketFavorite()
+                    true
                 }
                 R.id.edit -> {
                     val id = viewModel.currPhotoTicket.value?.id
                     if(id != null) viewModel.navigateToEdit(id)
+                    true
+
                 }
+                R.id.camera -> {
+                    viewModel.navigateToCreate()
+                    true
+
+                }
+                R.id.add -> {
+                    viewModel.navigateToAdd()
+                    true
+
+                }
+                else -> false
             }
-            false
+
         }
     }
 

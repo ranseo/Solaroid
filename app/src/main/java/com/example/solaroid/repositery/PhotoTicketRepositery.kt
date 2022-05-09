@@ -12,6 +12,7 @@ import com.example.solaroid.database.asDomainModel
 import com.example.solaroid.database.asFirebaseModel
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.domain.asDatabaseModel
+import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.firebase.setPhotoTicketList
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
@@ -61,24 +63,23 @@ class PhotoTicketRepositery(
      * 화면에 띄우기 위해 firebase의 실시간 데이버테이스로 부터 FirebasePhotoTicket을 불러오고 이를 다시 room database에 insert하는
      * ValueEventListener를 등록하여 refresh하는 함수.
      * */
-    suspend fun refreshPhotoTickets(application: Application) {
-        val user = fbAuth.currentUser!!
-        withContext(Dispatchers.IO) {
+    suspend fun refreshPhotoTickets(application: Application) : ValueEventListener?{
+
+        return withContext(Dispatchers.IO) {
+            val user = fbAuth.currentUser!!
             val ref = fbDatabase.reference.child("photoTicket").child(user.uid)
             if (ref == fbDatabase.reference) {
                 Log.d(TAG, "Network Error")
                 Toast.makeText(application, "네트워크 연결이 동기화 되지 않았습니다.", Toast.LENGTH_SHORT).show()
-                return@withContext
+                null
             }
-            val listener = setPhotoTicketList() {
+
+             else setPhotoTicketList() {
                 CoroutineScope(Dispatchers.IO).launch {
                     Log.i(TAG, "photoTicket : ${it}")
                     dataSource.insert(it.asDatabaseModel())
                 }
             }
-            ref.addListenerForSingleValueEvent(listener)
-            Log.i(TAG, "refreshPhotoTicket() : ValueEventListener 등록.")
-
 
         }
     }
@@ -167,15 +168,13 @@ class PhotoTicketRepositery(
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
 
-            val new = photoTicket.asDatabaseModel().asFirebaseModel()
-            val ref = fbDatabase.reference.child("photoTicket").child(user.uid).push()
-            Log.i(
-                TAG,
-                "new : ${new}, user : ${user}, user.isVerified : ${user.isEmailVerified}, fbDatabase : ${ref}"
-            )
-            ref.setValue(
+
+            val insertRef = fbDatabase.reference.child("photoTicket").child(user.uid).push()
+            val key = insertRef.key ?: ""
+            val new = photoTicket.asFirebaseModel(key)
+            insertRef.setValue(
                 new,
-                DatabaseReference.CompletionListener { error: DatabaseError?, ref: DatabaseReference ->
+                DatabaseReference.CompletionListener { error: DatabaseError?, _: DatabaseReference ->
 
                     if (error != null) {
                         Log.d(TAG, "Unable to write Message to database", error.toException())
@@ -184,11 +183,12 @@ class PhotoTicketRepositery(
 
                     val file = photoTicket.url.toUri()
                     val mimeType: String? = application.contentResolver.getType(file)
+
                     Log.i(TAG, "file ${file}")
-                    val key = ref.key
+
                     val storageRef = fbStorage.getReference("photoTicket")
                         .child(user.uid)
-                        .child(key!!)
+                        .child(key)
                         .child("${mimeType?.split("/")?.get(0)}/${file.lastPathSegment}")
 
                     insertImageInStorage(storageRef, user, file, key, new)
@@ -217,7 +217,7 @@ class PhotoTicketRepositery(
                     .addOnSuccessListener { url ->
                         CoroutineScope(Dispatchers.IO).launch {
                             val new = FirebasePhotoTicket(
-                                key = key,
+                                key = pre.key,
                                 url = url.toString(),
                                 frontText = pre.frontText,
                                 backText = pre.backText,
@@ -230,7 +230,7 @@ class PhotoTicketRepositery(
                                 .child(key)
                                 .setValue(new)
 
-                            dataSource.insert(new.asDatabaseModel())
+                            dataSource.update(new.asDatabaseModel())
                         }
 
                     }

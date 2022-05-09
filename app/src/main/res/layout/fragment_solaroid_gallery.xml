@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            app:menu="@menu/activity_main_app_bar_menu"/>
+            app:menu="@menu/fragment_frame_drawer_layout_menu"/>
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

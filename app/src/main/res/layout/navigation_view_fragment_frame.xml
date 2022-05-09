@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.solaroid.solaroidframe.SolaroidFrameViewModel" />
+
+    </data>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        >
+
+        <LinearLayout
+            android:id="@+id/nav_layout"
+            android:layout_width="270dp"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profile_layout"
+                android:layout_width="match_parent"
+                android:layout_height="70dp">
+
+                <ImageView
+                    android:id="@+id/user_profile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    tools:src="@drawable/baseline_account_circle_black_24"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/user_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="란서"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@+id/user_profile"
+                    app:layout_constraintTop_toTopOf="@+id/user_profile"
+                    android:layout_marginStart="12dp"
+                    />
+
+                <TextView
+                    android:id="@+id/user_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_profile"
+                    app:layout_constraintStart_toEndOf="@+id/user_profile"
+                    app:layout_constraintTop_toBottomOf="@+id/user_nickname"
+                    app:layout_constraintVertical_bias="1.0"
+                    tools:text="slckscool@naver.com" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/album_list"
+                tools:text="사진첩"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginTop="12dp"
+                android:paddingStart="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/friend_list"
+                tools:text="친구 관리"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginTop="12dp"
+                android:paddingStart="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            
+            <androidx.constraintlayout.widget.Barrier
+                android:layout_width=""
+                android:layout_height=""
+
+            <TextView
+                android:id="@+id/announcement"
+                tools:text="공지사항"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="12dp"
+                />
+
+
+
+
+        </LinearLayout>
+
+
+    </com.google.android.material.navigation.NavigationView>
+</layout>

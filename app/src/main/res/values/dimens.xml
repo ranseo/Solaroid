@@ -11,5 +11,11 @@
     <dimen name="polaroid_image_large_height">275dp</dimen>
 
 
+
+
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="polaroid_film_larger_width">320dp</dimen>
+    <dimen name="polaroid_film_larger_height">510dp</dimen>
+    <dimen name="polaroid_image_larger_width">278dp</dimen>
+    <dimen name="polaroid_image_larger_height">376dp</dimen>
 </resources>

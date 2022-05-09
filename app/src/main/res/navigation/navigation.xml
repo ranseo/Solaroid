@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_frame_container"
         android:name="com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer"
-        android:label="솔라로이드"
+        android:label=""
         tools:layout="@layout/fragment_solaroid_frame_container">
 
 

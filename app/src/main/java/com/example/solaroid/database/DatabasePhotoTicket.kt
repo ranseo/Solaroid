@@ -59,7 +59,6 @@ fun DatabasePhotoTicket.asFirebaseModel(): FirebasePhotoTicket {
         date = this.date,
         favorite = this.favorite
     )
-
 }
 
 

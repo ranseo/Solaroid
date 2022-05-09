@@ -6,7 +6,7 @@
         android:id="@+id/move_frame_fragment"
         android:title="프레임프래그먼트"
         android:icon="@drawable/baseline_crop_portrait_black_24"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
 
     <item

@@ -10,6 +10,7 @@ import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -32,6 +33,8 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
+    private var valueEventListener : ValueEventListener? = null
 
     private val photoTicketRepositery: PhotoTicketRepositery =
         PhotoTicketRepositery(dataSource, fbAuth, fbDatabase, fbStorage)
@@ -166,8 +169,12 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     fun refreshDataFromRepositery() {
         viewModelScope.launch {
             try {
-                photoTicketRepositery.refreshPhotoTickets(application = getApplication())
-                Log.i(TAG,"firebase success")
+                valueEventListener = photoTicketRepositery.refreshPhotoTickets(application = getApplication())
+                if(valueEventListener == null) Log.i(TAG, "firebase valueEventListener error")
+                else fbDatabase.reference.child("photoTicket").child(fbAuth.currentUser!!.uid).addValueEventListener(
+                    valueEventListener!!
+                )
+
             } catch (error: Exception) {
                 Log.i(TAG,"firebase error : ${error.message}")
             }
@@ -302,5 +309,8 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         fbAuth.signOut()
     }
 
-
+    override fun onCleared() {
+        if(valueEventListener!=null) fbDatabase.reference.removeEventListener(valueEventListener!!)
+        super.onCleared()
+    }
 }

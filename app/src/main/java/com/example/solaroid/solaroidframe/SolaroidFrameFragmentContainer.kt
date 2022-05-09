@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -17,9 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener,
@@ -37,6 +40,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
     private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +55,25 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             ), binding.drawerLayout
         )
 
-        binding.frameCotainerToolbar.setupWithNavController(navController, appBarConfiguration)
+        toolbar = binding.frameCotainerToolbar
+
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        toolbar.inflateMenu(R.menu.fragment_frame_toolbar_menu)
+        toolbar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.move_gallery_fragment -> {
+                    viewModel.navigateToGallery()
+                    true
+                }
+                R.id.filter -> {
+                    viewModel.onFilterPopupMenu()
+                    true
+                }
+                else -> false
+            }
+
+        }
         setNavigationViewListener()
 
     }
@@ -68,6 +90,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             false
         )
 
+        setHasOptionsMenu(true)
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
@@ -81,10 +104,9 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
 
 
-
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
-                popupShow(binding.popupMenuFilter)
+                popupShow(binding.frameCotainerToolbar.findViewById(R.id.filter))
             }
         })
 
@@ -149,10 +171,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
                 viewModel.setPhotoTicketFilter(PhotoTicketFilter.FAVORITE)
                 true
             }
-            R.id.login_info -> {
-                viewModel.logout()
-                true
-            }
+
             else -> true
         }
     }
@@ -171,5 +190,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
+
+
 
 }
