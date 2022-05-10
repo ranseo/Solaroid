@@ -20,8 +20,10 @@
         <LinearLayout
             android:id="@+id/nav_layout"
             android:layout_width="270dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
-            android:layout_height="match_parent">
+           >
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/profile_layout"
@@ -33,7 +35,10 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="12dp"
-                    tools:src="@drawable/baseline_account_circle_black_24"
+                    tools:src="@drawable/tmp_photo_image"
+                    android:clipToOutline="true"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/profile_frame"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/user_email"
-                    android:text="@{viewModel.getUserEmail()}"
+                    android:text="@{viewModel.userEmail}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -84,7 +89,7 @@
                 android:paddingStart="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-            
+
 
 
             <LinearLayout

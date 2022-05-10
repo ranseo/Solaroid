@@ -21,7 +21,7 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        tools:openDrawer="start">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -128,11 +128,9 @@
 
 
         <include layout="@layout/navigation_view_fragment_frame"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:id="@+id/navView"
-            bind:viewModel="@{naviViewModel}"/>
+            android:id="@+id/nav_view"
+            bind:viewModel="@{naviViewModel}"
+            />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
