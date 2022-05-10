@@ -19,11 +19,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.example.solaroid.NavigationViewModel
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
+import com.example.solaroid.firebase.FirebaseManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import kotlin.math.log
 
 open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener,
     NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +40,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
     private lateinit var viewModel: SolaroidFrameViewModel
+
+    private lateinit var naviViewModel : NavigationViewModel
 
     private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
@@ -99,10 +104,20 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this.requireActivity(), viewModelFactory)[SolaroidFrameViewModel::class.java]
 
+        naviViewModel = ViewModelProvider(this.requireActivity())[NavigationViewModel::class.java]
+
+
         binding.viewModel = viewModel
+        binding.naviViewModel = naviViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
 
+
+        naviViewModel.naviToLoginAct.observe(viewLifecycleOwner, Observer{
+            it.getContentIfNotHandled()?.let{
+                logout()
+            }
+        })
 
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
@@ -178,7 +193,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
 
     private fun setNavigationViewListener() {
-        binding.navView.setNavigationItemSelectedListener(this)
+        binding.navView.navView.setNavigationItemSelectedListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -191,7 +206,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         return true
     }
 
-
-
-
+    private fun logout() {
+        FirebaseManager.getAuthInstance().signOut()
+    }
 }
