@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!--    <item>-->
+<!--        <shape android:shape="rectangle">-->
+<!--            <gradient-->
+<!--                android:type="linear"-->
+<!--                android:angle="45"-->
+<!--                android:endColor="@color/solaroid_skyblue"-->
+<!--                android:startColor="@color/primaryColor"-->
+<!--                android:centerColor="@color/soft_grey"-->
+<!--                />-->
+
+<!--        </shape>-->
+<!--    </item>-->
+
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:gradientRadius="225dp"
+                android:endColor="@color/solaroid_skyblue"
+                android:startColor="@color/primaryColor"
+                android:centerX="0.6"
+                android:centerColor="@color/white"
+                />
+
+        </shape>
+    </item>
+
+</layer-list>

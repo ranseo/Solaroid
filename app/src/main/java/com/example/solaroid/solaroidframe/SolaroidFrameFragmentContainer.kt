@@ -1,14 +1,13 @@
 package com.example.solaroid.solaroidframe
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toolbar
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -47,6 +46,26 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
+    private lateinit var backPressCallback : OnBackPressedCallback
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        backPressCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if(binding.drawerLayout.isDrawerOpen(Gravity.LEFT))
+                    binding.drawerLayout.closeDrawer(Gravity.LEFT)
+                else requireActivity().finish()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        backPressCallback.remove()
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,7 +82,6 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         toolbar = binding.frameCotainerToolbar
 
         toolbar.setupWithNavController(navController, appBarConfiguration)
-
         toolbar.inflateMenu(R.menu.fragment_frame_toolbar_menu)
         toolbar.setOnMenuItemClickListener {
             when(it.itemId) {
@@ -209,4 +227,6 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     private fun logout() {
         FirebaseManager.getAuthInstance().signOut()
     }
+
+
 }

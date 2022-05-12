@@ -44,6 +44,19 @@ android {
         dataBinding = true
         viewBinding true
     }
+
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res/layouts/login',
+                            'src/main/res/layouts/main',
+                            'src/main/res/layouts/utils',
+                            'src/main/res/layouts',
+                            'src/main/res'
+                    ]
+        }
+    }
 }
 
 dependencies {

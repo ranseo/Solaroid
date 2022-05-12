@@ -40,6 +40,15 @@ class LoginActivity : AppCompatActivity() {
             //finish()
         }
     }
+
+    override fun onDestroy() {
+        val currentUser = FirebaseManager.getAuthInstance().currentUser
+        if(currentUser != null) {
+            if(!currentUser.isEmailVerified) FirebaseManager.getAuthInstance().signOut()
+        }
+
+        super.onDestroy()
+    }
 }
 
 

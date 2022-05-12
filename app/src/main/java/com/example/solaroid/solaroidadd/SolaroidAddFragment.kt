@@ -138,6 +138,11 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        backPressCallback.remove()
+    }
+
     companion object {
         const val TAG_ADD_CHOICE = "TAG_ADD_CHOICE"
         const val TAG_ADD_SAVE = "ADD_SAVE"

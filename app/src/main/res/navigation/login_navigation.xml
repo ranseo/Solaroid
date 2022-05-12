@@ -12,11 +12,9 @@
         tools:layout="@layout/activity_main"
         />
 
-
-
     <fragment
         android:id="@+id/fragment_solaroid_login"
-        android:label="SolaroidLoginFragment"
+        android:label="로그인"
         android:name="com.example.solaroid.login.SolaroidLoginFragment"
         tools:layout="@layout/fragment_solaroid_login">
 
@@ -27,6 +25,25 @@
             app:popUpToInclusive="true"
             />
 
+        <action
+            android:id="@+id/action_loginFragment_to_signupFragment"
+            app:destination="@+id/fragment_solaroid_signup"
+            />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_solaroid_signup"
+        android:label="회원가입"
+        android:name="com.example.solaroid.login.signup.SolaroidSignUpFragment"
+        tools:layout="@layout/fragment_solaroid_signup">
+
+        <action
+            android:id="@+id/action_signupFragment_to_loginFragment"
+            app:destination="@+id/fragment_solaroid_login"
+            app:popUpTo="@id/fragment_solaroid_login"
+            app:popUpToInclusive="true"
+            />
 
     </fragment>
 

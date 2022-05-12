@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="photoTicket"
+            type="com.example.solaroid.domain.PhotoTicket" />
+
+        <variable
+            name="clickListener"
+            type="com.example.solaroid.adapter.OnClickListener" />
+
+    </data>
+
+    <!--    android:layout_width="130dp"-->
+    <!--    android:layout_height="180dp"-->
+    <!--    width를 match로 해놔야 이게 딲딱맞네 포스팅해두자-->
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="110dp"
+        android:background="@drawable/gallery_photo_boarder_line"
+        android:onClick="@{()->clickListener.onClick(photoTicket)}">
+
+        <ImageView
+            android:id="@+id/solaroid_photo"
+            setImage="@{photoTicket.url}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="centerInside"
+            tools:src="@tools:sample/avatars"
+
+            />
+
+    </FrameLayout>
+</layout>

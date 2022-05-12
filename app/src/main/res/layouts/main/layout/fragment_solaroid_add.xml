@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="com.example.solaroid.solaroidadd.SolaroidAddViewModel"/>
+
+        <import type="android.view.View"/>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_front"
+            android:layout_width="@dimen/polaroid_film_large_width"
+            android:layout_height="@dimen/polaroid_film_large_height"
+            android:layout_marginEnd="3dp"
+            android:background="@color/white"
+            android:elevation="12dp"
+            android:visibility="@{viewmodel.imageSpin ? View.GONE : View.VISIBLE}"
+            android:layout_gravity="center">
+
+
+            <FrameLayout
+                android:id="@+id/add_image"
+                android:layout_width="@dimen/polaroid_image_large_width"
+                android:layout_height="@dimen/polaroid_image_large_height"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="24dp"
+                android:onClick="@{()->viewmodel.navigateToAddChoice()}"
+                android:visibility="@{viewmodel.isImageUriSet() ? View.GONE : View.VISIBLE}"
+                android:background="@drawable/solaroid_add_photo"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center"
+                    android:background="@color/image_btn_background"
+                    android:src="@drawable/ic_baseline_add_circle_outline_24"/>
+
+                <TextView
+                    android:text="사진을 추가해주세요"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginBottom="64dp"
+                    />
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:id="@+id/choice_image"
+                android:layout_width="@dimen/polaroid_image_large_width"
+                android:layout_height="@dimen/polaroid_image_large_height"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="24dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    app:setImage="@{viewmodel.image}"
+                    android:visibility="@{viewmodel.isImageUriSet() ? View.VISIBLE : View.GONE}"
+                    android:layout_gravity="center"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/reselect_image"
+                    android:visibility="@{viewmodel.isImageUriSet() ? View.VISIBLE : View.GONE}"
+                    android:onClick="@{()->viewmodel.onReselectImage()}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_cancel_24"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_gravity="top|right"/>
+
+            </FrameLayout>
+
+
+
+
+            <TextView
+                android:id="@+id/today_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.date.substring(0,13)}"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choice_image"
+                tools:text="2022.01.21" />
+
+            <EditText
+                android:id="@+id/front_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.editTextClear}"
+                android:hint="@string/photo_create_front_hint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLength="20"
+                android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedFront(s)}"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/today_date"
+                app:layout_constraintVertical_bias="0.104" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_back"
+            android:layout_width="@dimen/polaroid_film_large_width"
+            android:layout_height="@dimen/polaroid_film_large_height"
+            android:layout_marginStart="3dp"
+            android:background="@color/white"
+            android:elevation="12dp"
+            android:visibility="@{viewmodel.imageSpin ? View.VISIBLE : View.GONE}"
+            android:layout_gravity="center">
+
+
+            <EditText
+                android:id="@+id/back_text"
+                android:text="@{viewmodel.editTextClear}"
+                android:layout_width="@dimen/polaroid_image_large_width"
+                android:layout_height="@dimen/polaroid_image_large_height"
+                android:hint="@string/photo_create_back_hint"
+                android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedBack(s)}"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="@{viewmodel.currBackTextLen}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/back_text" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="72dp"
+            android:layout_marginBottom="56dp"
+            android:backgroundTint="@color/white"
+            android:scaleType="fitCenter"
+            android:src="@drawable/outline_file_download_black_24"
+            android:layout_gravity="bottom|center" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/spin_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="72dp"
+            android:layout_marginBottom="56dp"
+            android:backgroundTint="@color/white"
+            android:onClick="@{()->viewmodel.onImageSpin()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_autorenew_24"
+            android:layout_gravity="bottom|center" />
+
+        <FrameLayout
+            android:id="@+id/add_choice_fragment_layout"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:elevation="34dp">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_add_container_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                tools:layout="@layout/fragment_solaroid_add_choice"
+                android:elevation="50dp"
+                />
+
+
+
+        </FrameLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+</layout>

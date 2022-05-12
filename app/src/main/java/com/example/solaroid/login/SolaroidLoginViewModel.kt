@@ -1,16 +1,18 @@
 package com.example.solaroid.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
-import androidx.lifecycle.map
+import com.example.solaroid.Event
 
 
 class SolaroidLoginViewModel : ViewModel() {
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
+    }
+
+    enum class LoginErrorType {
+        EMAILTYPEERROR, PASSWORDERROR, ACCOUNTERROR,ISRIGHT, INVALID,  EMPTY
     }
 
     val authenticationState = FirebaseAuthLiveData().map { user ->
@@ -24,31 +26,54 @@ class SolaroidLoginViewModel : ViewModel() {
         }
     }
 
-    private val _loginBtn = MutableLiveData<Boolean>(false)
-    val loginBtn : LiveData<Boolean>
+    private val _loginBtn = MutableLiveData<Event<Any?>>()
+    val loginBtn : LiveData<Event<Any?>>
         get() = _loginBtn
 
-    private val _signUpBtn = MutableLiveData<Boolean>(false)
-    val signUpBtn : LiveData<Boolean>
-        get() = _signUpBtn
 
+    private val _loginErrorType = MutableLiveData<LoginErrorType>()
+    val loginErrorType : LiveData<LoginErrorType>
+        get() = _loginErrorType
+
+    val isSingUpAlert = Transformations.map(loginErrorType){ type ->
+        when(type) {
+            LoginErrorType.ISRIGHT, LoginErrorType.EMPTY -> false
+            else -> true
+        }
+    }
+
+
+    val alertText = Transformations.map(loginErrorType){ type->
+        val prefix = "※"
+        prefix + when(type) {
+            LoginErrorType.EMAILTYPEERROR -> "올바른 이메일 주소 형식을 입력하세요."
+            LoginErrorType.PASSWORDERROR -> "올바른 비밀번호를 입력하세요."
+            LoginErrorType.ACCOUNTERROR -> "이메일 혹은 비밀번호가 틀렸습니다."
+            LoginErrorType.INVALID -> "본인 인증이 되지 않았습니다."
+            else -> ""
+        }
+    }
+
+    //////////////////////
+
+    private val _naviToSignUp = MutableLiveData<Event<Any?>>()
+    val naviToSignUp : LiveData<Event<Any?>>
+     get() = _naviToSignUp
+
+
+    fun navigateToSignUp() {
+        _naviToSignUp.value = Event(Unit)
+    }
 
     //////////////////////
 
     fun onLogin() {
-        _loginBtn.value = true
+        _loginBtn.value = Event(Unit)
     }
 
-    fun doneLogin() {
-        _loginBtn.value = false
-    }
 
-    fun onSignUp() {
-        _signUpBtn.value = true
-    }
-
-    fun doneSignUp() {
-        _signUpBtn.value = false
+    fun setLoginErrorType(type : LoginErrorType) {
+        _loginErrorType.value = type
     }
 
 

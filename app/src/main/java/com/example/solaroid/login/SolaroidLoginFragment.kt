@@ -1,32 +1,26 @@
 package com.example.solaroid.login
 
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.solaroid.MainActivity
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentSolaroidLoginBinding
 import com.example.solaroid.firebase.FirebaseManager
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.example.solaroid.login.signup.SolaroidSignUpFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.ktx.Firebase
 
 class SolaroidLoginFragment : Fragment() {
 
@@ -42,6 +36,11 @@ class SolaroidLoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = FirebaseManager.getAuthInstance()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.EMPTY)
     }
 
     override fun onCreateView(
@@ -71,8 +70,7 @@ class SolaroidLoginFragment : Fragment() {
 //                    Toast.makeText(requireActivity(), LoginFail, Toast.LENGTH_LONG).show()
                 }
                 SolaroidLoginViewModel.AuthenticationState.INVALID_AUTHENTICATION -> {
-                    Toast.makeText(requireActivity(), VERIFY, Toast.LENGTH_LONG).show()
-                    sendEmailVerifyAccount(auth.currentUser!!)
+                    viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.INVALID)
                     auth.signOut()
                 }
                 else ->{}
@@ -80,27 +78,45 @@ class SolaroidLoginFragment : Fragment() {
         })
 
         viewModel.loginBtn.observe(viewLifecycleOwner, Observer { login ->
-            if (login) {
+            login.getContentIfNotHandled()?.let {
                 val email = binding.etId.text.toString()
                 val password = binding.etPassword.text.toString()
-                if (email.isEmpty() || password.isEmpty()) return@Observer
-                logInWithEmailAndPassword(email, password)
-                viewModel.doneLogin()
+                checkLoginError(email, password)
             }
         })
 
-        viewModel.signUpBtn.observe(viewLifecycleOwner, Observer { signup ->
-            if (signup) {
-                val email = binding.etId.text.toString()
-                val password = binding.etPassword.text.toString()
-                if (email.isEmpty() || password.isEmpty()) return@Observer
-                createUserWithEmailAndPassword(email, password)
-                viewModel.doneSignUp()
+        viewModel.loginErrorType.observe(viewLifecycleOwner, Observer{ type ->
+            when(type) {
+                SolaroidLoginViewModel.LoginErrorType.ISRIGHT -> logInWithEmailAndPassword(binding.etId.text.toString(), binding.etPassword.text.toString())
+                SolaroidLoginViewModel.LoginErrorType.INVALID -> showSnackbar(binding.coordinatorLayout, SEND_CHECK)
+                else -> {}
             }
         })
 
-//       launchSignInFlow()
+        viewModel.naviToSignUp.observe(viewLifecycleOwner, Observer{
+            it.getContentIfNotHandled()?.let{
+                Log.i(TAG,"viewModel.naviToSignUp")
+                findNavController().navigate(
+                    SolaroidLoginFragmentDirections.actionLoginFragmentToSignupFragment()
+                )
+
+            }
+        })
+
+
         return binding.root
+    }
+
+    fun showSnackbar(layout:CoordinatorLayout, str: String) {
+        val sendEmail = Snackbar.make(layout, str, Snackbar.LENGTH_LONG)
+        sendEmail.setAction("전송", SendValidEmail(FirebaseManager.getAuthInstance().currentUser!!))
+        sendEmail.show()
+    }
+
+    inner class SendValidEmail(val user: FirebaseUser) : View.OnClickListener {
+        override fun onClick(p0: View?) {
+            sendEmailVerifyAccount(user)
+        }
     }
 
 
@@ -138,59 +154,14 @@ class SolaroidLoginFragment : Fragment() {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     Log.i(TAG, "로그인 성공.")
-                    Toast.makeText(requireContext(), LOGIN_SUCCESS, Toast.LENGTH_SHORT).show()
                 } else {
                     Log.d(TAG, "로그인 실패")
-                    Toast.makeText(requireContext(), LOGIN_FAIL, Toast.LENGTH_SHORT).show()
+                    viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.ACCOUNTERROR)
                 }
             }
-            .addOnFailureListener { error ->
-                Log.i(TAG, "${error.cause}")
-            }
-
     }
 
-    /**
-     * 신규 사용자 가입
-     * */
-    private fun createUserWithEmailAndPassword(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(requireActivity()) { task ->
-                if (task.isSuccessful) {
-                    Log.i(TAG, "회원가입 성공")
-                    Toast.makeText(requireContext(), SEND, Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Log.w(TAG, "회원가입 실패", task.exception)
-                    Toast.makeText(requireContext(), SIGNUP_FAIL, Toast.LENGTH_SHORT).show()
-                }
-            }
 
-
-    }
-
-    private fun sendEmailVerifyAccount(user: FirebaseUser) {
-        val url = "https://ssolaroid.page.link/rniX?mode=verifyEmail&uid="+user.uid
-        val actionCodeSetting = ActionCodeSettings.newBuilder()
-            .setUrl(url)
-            .setAndroidPackageName(
-                "com.example.solaroid.login",
-                true,
-                null
-            )
-            .setHandleCodeInApp(true)
-            .build()
-
-        user.sendEmailVerification(actionCodeSetting)
-            .addOnCompleteListener { task->
-                if(task.isSuccessful) {
-                    Log.i(TAG,"이메일 인증 메시지 전송")
-                } else {
-                    Log.w(TAG, "이메일 인증 메시지 전송 실패")
-                }
-            }
-
-    }
 
     /**
      * 로그인 성공 시 , 메인액티비티로 이동.
@@ -203,20 +174,50 @@ class SolaroidLoginFragment : Fragment() {
         requireActivity().finish()
     }
 
-    /**
-     * 로그아웃 시행.
-     * */
-    fun logout() {
-        auth.signOut()
+
+    fun checkLoginError(email: String, password: String) {
+        val type =
+            if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Log.i(TAG, "email.matches fails")
+                SolaroidLoginViewModel.LoginErrorType.EMAILTYPEERROR
+            }
+            else if (password.isEmpty() || password.length < 8) SolaroidLoginViewModel.LoginErrorType.PASSWORDERROR
+            else SolaroidLoginViewModel.LoginErrorType.ISRIGHT
+
+        Log.i(SolaroidSignUpFragment.TAG,"TYPE : ${type}")
+        viewModel.setLoginErrorType(type)
     }
 
+    /**
+     * 회원가입 성공 시, 이메일로 인증 메일 전송하는 함수
+     * */
+    private fun sendEmailVerifyAccount(user: FirebaseUser) {
+        val url = "https://ssolaroid.page.link/rniX?mode=verifyEmail&uid=" + user.uid
+        val actionCodeSetting = ActionCodeSettings.newBuilder()
+            .setUrl(url)
+            .setAndroidPackageName(
+                "com.example.solaroid.login",
+                true,
+                null
+            )
+            .setHandleCodeInApp(true)
+            .build()
+
+        user.sendEmailVerification(actionCodeSetting)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i(SolaroidSignUpFragment.TAG, "이메일 인증 메시지 전송")
+                    Toast.makeText(this.context, "메일을 전송하였습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.w(SolaroidSignUpFragment.TAG, "이메일 인증 메시지 전송 실패")
+                    Toast.makeText(this.context, "메일을 전송에 실패.네트워크 확인", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
 
     companion object {
         const val TAG = "Login"
-        const val LOGIN_SUCCESS = "로그인 성공"
-        const val LOGIN_FAIL = "이메일 또는 비밀번호를 다시 확인해주세요."
-        const val SIGNUP_FAIL = "회원가입에 실패하셨습니다."
-        const val VERIFY = "해당 이메일은 인증되지 않았습니다."
-        const val SEND = "이메일로 인증 메일을 전송하였습니다."
+
+        const val SEND_CHECK = "해당 이메일로 인증 메일을 보내시겠습니까?"
     }
 }
