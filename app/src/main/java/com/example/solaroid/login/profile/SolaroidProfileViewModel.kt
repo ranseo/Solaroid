@@ -6,9 +6,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.solaroid.Event
+import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.repositery.ProfileRepostiery
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 
 class SolaroidProfileViewModel : ViewModel() {
 
+    private val fbAuth : FirebaseAuth = FirebaseManager.getAuthInstance()
+    private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
+    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage)
     enum class ProfileErrorType{
         IMAGEERROR, NICKNAMEERROR, ISRIGHT, EMPTY
     }

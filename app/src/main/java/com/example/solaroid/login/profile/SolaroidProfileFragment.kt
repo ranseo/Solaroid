@@ -30,8 +30,6 @@ class SolaroidProfileFragment() : Fragment() {
 
         viewModel = ViewModelProvider(this)[SolaroidProfileViewModel::class.java]
 
-
-
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 

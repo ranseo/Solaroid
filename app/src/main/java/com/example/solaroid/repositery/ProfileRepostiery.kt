@@ -1,0 +1,106 @@
+package com.example.solaroid.repositery
+
+import android.app.Application
+import android.net.Uri
+import android.util.Log
+import androidx.core.net.toUri
+import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.firebase.FirebaseProfile
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storageMetadata
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+class ProfileRepostiery(
+    private val fbAuth: FirebaseAuth,
+    private val fbDatabase: FirebaseDatabase,
+    private val fbStorage: FirebaseStorage
+) {
+
+
+    suspend fun insertProfileInfo(profile: FirebaseProfile, application: Application) {
+        val user = fbAuth.currentUser ?: return
+
+        withContext(Dispatchers.IO) {
+
+            val profileRef = fbDatabase.reference.child("profile").child(user.uid)
+
+            profileRef.setValue(
+                profile,
+                DatabaseReference.CompletionListener { error: DatabaseError?, _: DatabaseReference ->
+                    if (error != null) {
+                        Log.d(TAG, "Unable to Write Message to Database", error.toException())
+                        return@CompletionListener
+                    }
+
+                    val file = profile.profileImg.toUri()
+                    val mimeType: String? = application.contentResolver.getType(file)
+
+                    Log.i(TAG, "file : ${file}")
+
+                    val storageRef = fbStorage.getReference("profile")
+                        .child(user.uid)
+                        .child("${mimeType}/${file.lastPathSegment}")
+
+                    insertProfileInStorage(storageRef, profile, file, user)
+
+                })
+        }
+    }
+
+    private fun insertProfileInStorage(
+        storageRef: StorageReference,
+        profile: FirebaseProfile,
+        file: Uri,
+        user: FirebaseUser
+    ) {
+
+        val metadata = storageMetadata {
+            contentType = "image/jpeg"
+        }
+
+        storageRef.putFile(file, metadata).addOnSuccessListener { taskSnapShot ->
+            taskSnapShot.metadata!!.reference!!.downloadUrl
+                .addOnSuccessListener { url ->
+                    val new = FirebaseProfile(
+                        id = profile.id,
+                        nickname = profile.nickname,
+                        profileImg = url.toString()
+                    )
+
+                    fbDatabase.reference.child("profile")
+                        .child(user.uid)
+                        .setValue(new)
+                }
+        }
+    }
+
+    companion object {
+        const val TAG = ""
+    }
+
+
+    suspend fun isProfileInStorage(): Boolean {
+        var flag = false
+        return withContext(Dispatchers.IO) {
+
+            val user = fbAuth.currentUser
+
+            val profileRef = fbDatabase.reference.child("profile").child(user!!.uid)
+            profileRef.get().addOnSuccessListener {
+                flag = true
+            }.addOnFailureListener {
+                flag = false
+            }
+
+            flag
+        }
+    }
+
+}

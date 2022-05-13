@@ -23,6 +23,8 @@ class NavigationViewModel : ViewModel() {
 
 
 
+
+
     fun navigateToLoginAct() {
         _naviToLoginAct.value = Event(Unit)
     }
