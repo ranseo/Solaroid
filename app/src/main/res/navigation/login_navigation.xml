@@ -18,16 +18,22 @@
         android:name="com.example.solaroid.login.SolaroidLoginFragment"
         tools:layout="@layout/fragment_solaroid_login">
 
-        <action
-            android:id="@+id/action_loginFragment_to_mainActivity"
-            app:destination="@+id/main_activity"
-            app:popUpTo="@id/main_activity"
-            app:popUpToInclusive="true"
-            />
 
         <action
             android:id="@+id/action_loginFragment_to_signupFragment"
             app:destination="@+id/fragment_solaroid_signup"
+            />
+
+        <action
+            android:id="@+id/action_loginFragment_to_profileFragment"
+            app:destination="@id/fragment_solaroid_profile"
+            />
+
+        <action
+            android:id="@+id/action_loginFragment_to_mainActivity"
+            app:destination="@+id/main_activity"
+            app:popUpTo="@id/fragment_solaroid_login"
+            app:popUpToInclusive="true"
             />
 
     </fragment>
@@ -44,6 +50,21 @@
             app:popUpTo="@id/fragment_solaroid_login"
             app:popUpToInclusive="true"
             />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/fragment_solaroid_profile"
+        android:label="프로필 설정"
+        android:name="com.example.solaroid.login.profile.SolaroidProfileFragment"
+        tools:layout="@layout/fragment_solaroid_profile">
+
+        <action
+            android:id="@+id/action_profileFragment_to_mainActivity"
+            app:destination="@id/main_activity"
+            app:popUpTo="@id/fragment_solaroid_profile"
+            app:popUpToInclusive="true"/>
 
     </fragment>
 

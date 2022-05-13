@@ -1,72 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.solaroid.login.profile.SolaroidProfileViewModel" />
 
+        <import type="android.view.View" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/Theme.LoginActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".login.profile.SolaroidProfileFragment"
-        style="@style/Theme.LoginActivity"
-        >
+        tools:context=".login.profile.SolaroidProfileFragment">
 
-
-        <ImageView
-            android:visibility="invisible"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:background="@drawable/profile_frame"
-            android:clipToOutline="true"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/tmp_photo_image"
+        <TextView
+            android:text="프로필 설정"
+            style="@style/Theme.LoginActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/layout_profile"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/guideline"
             android:layout_marginBottom="12dp"
             />
 
 
+        <FrameLayout
+            android:id="@+id/layout_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:visibility="@{viewModel.isSetProfile ? View.VISIBLE : View.INVISIBLE}"
+            android:onClick="@{()-> viewModel.onAddBtn()}"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:background="@drawable/profile_frame"
+                android:clipToOutline="true"
+                setImage="@{viewModel.profileUrl}"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                tools:src="@drawable/tmp_photo_image" />
+
+        </FrameLayout>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
-
+            android:id="@+id/layout_add_profile"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:background="@drawable/profile_frame"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/guideline"
             android:layout_marginBottom="12dp"
-            >
+            android:background="@drawable/profile_frame"
+            android:onClick="@{()-> viewModel.onAddBtn()}"
+            android:visibility="@{viewModel.isSetProfile ? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/iv_add"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_marginBottom="12dp"
                 android:src="@drawable/ic_baseline_add_24"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginBottom="12dp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
+                android:layout_marginBottom="12dp"
                 android:text="프로필 사진 추가"
-                app:layout_constraintTop_toBottomOf="@+id/iv_add"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textColor="@color/black"
                 android:textSize="12sp"
-                android:layout_marginBottom="12dp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_add" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -77,29 +101,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"/>
+            app:layout_constraintGuide_percent="0.5" />
 
         <EditText
             android:id="@+id/et_nickname"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:hint="별명을 입력하세요"
-            android:textAlignment="center"
             android:maxLength="12"
+            android:onTextChanged="@{(s,start,before,count)->viewModel.onNicknameEditTextChanged(s)}"
             android:singleLine="true"
-            app:layout_constraintTop_toBottomOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
         <TextView
             android:id="@+id/tv_limit"
-            tools:text="0/10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.nicknameLen}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_nickname"
+            tools:text="0/12" />
+
+
+        <TextView
+            style="@style/Theme.LoginActivity"
+            android:text="@{viewModel.alertMessage}"
+            tools:text="※프로필 사진을 설정 해주세요"
+            android:visibility="@{viewModel.isAlamVisible ? View.VISIBLE : View.INVISIBLE}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/guideline_sec"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/alert_color"
+
             />
 
         <androidx.constraintlayout.widget.Guideline
@@ -107,22 +146,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.9"/>
+            app:layout_constraintGuide_percent="0.9" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_set_profile"
-            android:text="설정 완료"
             style="@style/Theme.LoginActivity"
-            android:background="@drawable/solaroid_background_gradient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/guideline_sec"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            />
+            android:background="@drawable/solaroid_background_gradient"
+            android:onClick="@{()->viewModel.onSetProfile()}"
+            android:text="설정 완료"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/guideline_sec" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
