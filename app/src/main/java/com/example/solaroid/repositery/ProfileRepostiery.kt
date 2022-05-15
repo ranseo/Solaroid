@@ -82,19 +82,18 @@ class ProfileRepostiery(
     }
 
     companion object {
-        const val TAG = ""
+        const val TAG = "프로필 리포지터리"
     }
 
 
-    suspend fun isProfileInStorage(): Boolean {
-        var flag = false
+    suspend fun isInitProfile(): Boolean {
         return withContext(Dispatchers.IO) {
-
+            var flag = false
             val user = fbAuth.currentUser
 
             val profileRef = fbDatabase.reference.child("profile").child(user!!.uid)
             profileRef.get().addOnSuccessListener {
-                flag = true
+                flag = it.exists()
             }.addOnFailureListener {
                 flag = false
             }

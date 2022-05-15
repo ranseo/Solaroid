@@ -1,6 +1,17 @@
 {
   "rules": {
-    ".read": "auth.uid != null",
-    ".write": "auth.uid != null"
+    "profile" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        ".write" : "auth != null && auth.uid == $uid"
+      }
+    },
+
+    "photoTicket" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        ".write" : "auth != null && auth.uid == $uid"
+      }
+    }
   }
 }

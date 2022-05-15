@@ -55,11 +55,19 @@ class SolaroidProfileFragment() : Fragment() {
         viewModel.profileType.observe(viewLifecycleOwner, Observer{ type ->
             when(type) {
                 SolaroidProfileViewModel.ProfileErrorType.ISRIGHT-> {
-                    findNavController().navigate(
-                        SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
-                    )
+                    viewModel.insertProfileFirebase()
+                    viewModel.navigateToMain()
                 }
                 else -> {}
+            }
+        })
+
+        viewModel.naviToMain.observe(viewLifecycleOwner, Observer{
+            if(it) {
+                findNavController().navigate(
+                    SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
+                )
+                viewModel.doneNavigateToMain()
             }
         })
 
