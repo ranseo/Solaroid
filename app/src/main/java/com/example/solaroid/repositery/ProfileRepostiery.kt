@@ -5,17 +5,22 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
 import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseProfile
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Thread.sleep
 
 class ProfileRepostiery(
     private val fbAuth: FirebaseAuth,
@@ -81,25 +86,34 @@ class ProfileRepostiery(
         }
     }
 
+    suspend fun isInitProfile(): Task<DataSnapshot> {
+        return withContext(Dispatchers.IO) {
+            val user = fbAuth.currentUser
+
+            val profileRef = fbDatabase.reference.child("profile").child(user!!.uid)
+            val task = profileRef.get()
+
+            task
+        }
+    }
+
+    suspend fun getProfileInfo() : Task<DataSnapshot> {
+        return withContext(Dispatchers.IO){
+            val user = fbAuth.currentUser
+            val profileRef = fbDatabase.reference.child("profile").child(user!!.uid).get()
+
+            profileRef
+        }
+    }
+
+
     companion object {
         const val TAG = "프로필 리포지터리"
     }
 
 
-    suspend fun isInitProfile(): Boolean {
-        return withContext(Dispatchers.IO) {
-            var flag = false
-            val user = fbAuth.currentUser
 
-            val profileRef = fbDatabase.reference.child("profile").child(user!!.uid)
-            profileRef.get().addOnSuccessListener {
-                flag = it.exists()
-            }.addOnFailureListener {
-                flag = false
-            }
 
-            flag
-        }
-    }
+
 
 }

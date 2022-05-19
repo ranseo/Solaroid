@@ -1,6 +1,7 @@
 package com.example.solaroid.login.profile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,16 @@ class SolaroidProfileFragment() : Fragment() {
         profileObserver = ProfileObserver(this.requireActivity().activityResultRegistry, viewModel)
         lifecycle.addObserver(profileObserver)
 
+        viewModel.naviToMain.observe(viewLifecycleOwner, Observer{
+            it.getContentIfNotHandled()?.let {
+                Log.i(TAG,"메인액티비티 이동")
+                findNavController().navigate(
+                    SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
+                )
+                this.requireActivity().finish()
+            }
+        })
+
         viewModel.addImage.observe(viewLifecycleOwner, Observer{
             it.getContentIfNotHandled()?.let{
                 profileObserver.selectImage()
@@ -62,15 +73,10 @@ class SolaroidProfileFragment() : Fragment() {
             }
         })
 
-        viewModel.naviToMain.observe(viewLifecycleOwner, Observer{
-            if(it) {
-                findNavController().navigate(
-                    SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
-                )
-                viewModel.doneNavigateToMain()
-            }
-        })
-
         return binding.root
+    }
+
+    companion object {
+        const val TAG = "프로필 프래그먼트"
     }
 }

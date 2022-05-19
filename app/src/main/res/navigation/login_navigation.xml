@@ -27,6 +27,8 @@
         <action
             android:id="@+id/action_loginFragment_to_profileFragment"
             app:destination="@id/fragment_solaroid_profile"
+            app:popUpTo="@id/fragment_solaroid_login"
+            app:popUpToInclusive="true"
             />
 
         <action

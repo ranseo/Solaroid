@@ -1,25 +1,62 @@
 package com.example.solaroid
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.firebase.FirebaseProfile
+import com.example.solaroid.firebase.toDomainModel
 import com.example.solaroid.login.FirebaseAuthLiveData
+import com.example.solaroid.repositery.ProfileRepostiery
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.launch
 
 class NavigationViewModel : ViewModel() {
-    val firebaseAuth = FirebaseManager.getAuthInstance()
 
+    private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
+    private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
+
+    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage)
 
     private val _naviToLoginAct = MutableLiveData<Event<Any?>>()
     val naviToLoginAct : LiveData<Event<Any?>>
         get() = _naviToLoginAct
 
-    val userEmail = Transformations.map(FirebaseAuthLiveData()){
-        it?.let{ user ->
-            user.email
+    private val _profile = MutableLiveData<Profile>()
+    val profile : LiveData<Profile>
+        get() = _profile
+
+    val emailId = Transformations.map(profile) {
+        it.id
+    }
+    val nickName = Transformations.map(profile) {
+        it.nickname
+    }
+    val url = Transformations.map(profile) {
+        it.profileImg
+    }
+
+    init {
+        getProfile()
+    }
+
+    fun getProfile(){
+        viewModelScope.launch {
+            profileRepositery.getProfileInfo().addOnSuccessListener {
+                val profile = it.value as HashMap<*,*>
+
+                _profile.value = FirebaseProfile(
+                    profile["id"] as String,
+                    profile["nickname"] as String,
+                    profile["profileImg"] as String
+                ).toDomainModel()
+            }
         }
     }
+
 
 
 

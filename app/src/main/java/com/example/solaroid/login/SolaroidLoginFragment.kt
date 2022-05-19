@@ -64,12 +64,13 @@ class SolaroidLoginFragment : Fragment() {
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
                     Log.i(TAG,"로그인 성공 userId : ${auth.currentUser!!.uid}")
-                    navigateToMainActivity()
+                    viewModel.isProfileSet()
                 }
                 SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
 //                    Toast.makeText(requireActivity(), LoginFail, Toast.LENGTH_LONG).show()
                 }
                 SolaroidLoginViewModel.AuthenticationState.INVALID_AUTHENTICATION -> {
+                    Log.i(TAG,"로그인 인증 확인 안됨")
                     viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.INVALID)
                     auth.signOut()
                 }
@@ -103,12 +104,24 @@ class SolaroidLoginFragment : Fragment() {
             }
         })
 
+        viewModel.naviToNext.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{ isProfileSet ->
+                if(isProfileSet) {
+                    navigateToMainActivity()
+                } else {
+                    findNavController().navigate(
+                        SolaroidLoginFragmentDirections.actionLoginFragmentToProfileFragment()
+                    )
+                }
+            }
+        }
+
 
         return binding.root
     }
 
     fun showSnackbar(layout:CoordinatorLayout, str: String) {
-        val sendEmail = Snackbar.make(layout, str, Snackbar.LENGTH_LONG)
+        val sendEmail = Snackbar.make(layout, str, Snackbar.LENGTH_INDEFINITE)
         sendEmail.setAction("전송", SendValidEmail(FirebaseManager.getAuthInstance().currentUser!!))
         sendEmail.show()
     }
@@ -216,7 +229,7 @@ class SolaroidLoginFragment : Fragment() {
     }
 
     companion object {
-        const val TAG = "Login"
+        const val TAG = "로그인 프래그먼트"
 
         const val SEND_CHECK = "해당 이메일로 인증 메일을 보내시겠습니까?"
     }

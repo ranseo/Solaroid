@@ -2,6 +2,7 @@ package com.example.solaroid.login.profile
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.firebase.FirebaseManager
@@ -67,6 +68,14 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    private val _naviToMain = MutableLiveData<Event<Any?>>()
+    val naviToMain: LiveData<Event<Any?>>
+        get() = _naviToMain
+
+    fun navigateToMain() {
+        _naviToMain.value = Event(Unit)
+    }
+
 
     fun onNicknameEditTextChanged(str: CharSequence) {
         _nickname.value = str.toString()
@@ -76,28 +85,6 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         _profileUrl.value = uri.toString()
     }
 
-    init {
-        viewModelScope.launch {
-            val isInit = profileRepositery.isInitProfile()
-            if (isInit) navigateToMain() else doneNavigateToMain()
-        }
-    }
-
-    ///////////////
-
-    private val _naviToMain = MutableLiveData<Boolean>()
-    val naviToMain: LiveData<Boolean>
-        get() = _naviToMain
-
-    fun navigateToMain() {
-        _naviToMain.value = true
-    }
-
-    fun doneNavigateToMain() {
-        _naviToMain.value = false
-    }
-
-    ///////////////
 
     private val _addImage = MutableLiveData<Event<Any?>>()
     val addImage: LiveData<Event<Any?>>
@@ -131,6 +118,10 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
 
             profileRepositery.insertProfileInfo(profile, getApplication())
         }
+    }
+
+    companion object {
+        const val TAG = "프로필 뷰모델"
     }
 
 

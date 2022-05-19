@@ -4,9 +4,19 @@ import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.example.solaroid.Event
+import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.repositery.ProfileRepostiery
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.launch
 
 
 class SolaroidLoginViewModel : ViewModel() {
+
+    private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
+    private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
     }
@@ -14,6 +24,9 @@ class SolaroidLoginViewModel : ViewModel() {
     enum class LoginErrorType {
         EMAILTYPEERROR, PASSWORDERROR, ACCOUNTERROR,ISRIGHT, INVALID,  EMPTY
     }
+
+    val profileRepositery = ProfileRepostiery(fbAuth = fbAuth,fbDatabase =fbDatabase ,fbStorage =fbStorage )
+
 
     val authenticationState = FirebaseAuthLiveData().map { user ->
         if(user != null) {
@@ -54,6 +67,10 @@ class SolaroidLoginViewModel : ViewModel() {
         }
     }
 
+    private val _naviToNext = MutableLiveData<Event<Boolean>>()
+    val naviToNext : LiveData<Event<Boolean>>
+        get() = _naviToNext
+
     //////////////////////
 
     private val _naviToSignUp = MutableLiveData<Event<Any?>>()
@@ -63,6 +80,14 @@ class SolaroidLoginViewModel : ViewModel() {
 
     fun navigateToSignUp() {
         _naviToSignUp.value = Event(Unit)
+    }
+
+    private val _naviToProfile = MutableLiveData<Event<Any?>>()
+    val naviToProfile : LiveData<Event<Any?>>
+        get() = _naviToProfile
+
+    fun navigateToProfile() {
+        _naviToProfile.value = Event(Unit)
     }
 
     //////////////////////
@@ -76,6 +101,18 @@ class SolaroidLoginViewModel : ViewModel() {
         _loginErrorType.value = type
     }
 
+
+    fun isProfileSet() {
+        viewModelScope.launch {
+            profileRepositery.isInitProfile()
+                .addOnSuccessListener {
+                    if(it.exists()) _naviToNext.value = Event(true)
+                    else _naviToNext.value = Event(false)
+                }.addOnFailureListener {
+                    _naviToNext.value = Event(false)
+                }
+        }
+    }
 
 
 

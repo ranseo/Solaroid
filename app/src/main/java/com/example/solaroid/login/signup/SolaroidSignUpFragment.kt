@@ -81,7 +81,7 @@ class SolaroidSignUpFragment : Fragment() {
     }
 
     fun showSnackbar(layout: CoordinatorLayout, str: String) {
-        val sendSnackbar = Snackbar.make(layout, str, Snackbar.LENGTH_SHORT)
+        val sendSnackbar = Snackbar.make(layout, str, Snackbar.LENGTH_INDEFINITE)
 //        sendSnackbar.setAction("이동", moveEmailListener())
         sendSnackbar.setTextColor(ContextCompat.getColor(requireView().context, R.color.white))
         sendSnackbar.setAction("로그인 화면\n이동", MoveLoginFragment())
