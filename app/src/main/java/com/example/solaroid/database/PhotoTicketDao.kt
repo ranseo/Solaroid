@@ -9,6 +9,9 @@ interface DatabasePhotoTicketDao {
     suspend fun insert(DatabasePhotoTicket:DatabasePhotoTicket)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(DatabaseProfile: DatabaseProfile)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(DatabasePhotoTickets: List<DatabasePhotoTicket>)
 
     @Update
@@ -25,6 +28,7 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM photo_ticket_table WHERE favorite == :favorite ORDER BY  photo_ticket_date DESC")
     fun getFavoriteDatabasePhotoTicket(favorite:Boolean) : LiveData<List<DatabasePhotoTicket>?>
 
+    @Query("SELECT * FROM photo_ticket_table WHERE ")
     //제일 최근에 만든 포토티켓
     @Query("SELECT * FROM photo_ticket_table ORDER BY  photo_ticket_date DESC LIMIT 1")
     suspend fun getLatestTicket() : DatabasePhotoTicket?
@@ -36,8 +40,5 @@ interface DatabasePhotoTicketDao {
     //유저가 원하는 포토티켓
     @Query("SELECT * FROM photo_ticket_table WHERE :key == photo_ticket_key")
     suspend fun getDatabasePhotoTicket(key:String) : DatabasePhotoTicket
-
-
-
 
 }

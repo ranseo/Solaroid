@@ -24,6 +24,7 @@ fun PhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
         backText = this.backText,
         date = this.date,
         favorite = this.favorite,
+
     )
 }
 
