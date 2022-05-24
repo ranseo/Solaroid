@@ -14,14 +14,15 @@ data class FirebasePhotoTicket(
 
 }
 
-fun FirebasePhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
+fun FirebasePhotoTicket.asDatabaseModel(user:String) : DatabasePhotoTicket {
     return DatabasePhotoTicket(
         url = this.url,
         frontText = this.frontText,
         backText = this.backText,
         date = this.date,
         favorite = this.favorite,
-        key = this.key
+        key = this.key,
+        user = user
     )
 }
 
@@ -29,6 +30,6 @@ fun FirebasePhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
 data class FirebasePhotoTicketContainer(val photoTickets : List<FirebasePhotoTicket>)
 
 
-fun FirebasePhotoTicketContainer.asDatabaseModel():  List<DatabasePhotoTicket> {
-    return photoTickets.map { it.asDatabaseModel() }
+fun FirebasePhotoTicketContainer.asDatabaseModel(user:String):  List<DatabasePhotoTicket> {
+    return photoTickets.map { it.asDatabaseModel(user) }
 }

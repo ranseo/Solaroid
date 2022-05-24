@@ -11,12 +11,11 @@ data class PhotoTicket(
     var backText: String,
     var date : String,
     var favorite : Boolean = false
-
 ) {
 
 }
 
-fun PhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
+fun PhotoTicket.asDatabaseModel(user:String) : DatabasePhotoTicket {
     return DatabasePhotoTicket(
         key = this.id,
         url = this.url,
@@ -24,7 +23,7 @@ fun PhotoTicket.asDatabaseModel() : DatabasePhotoTicket {
         backText = this.backText,
         date = this.date,
         favorite = this.favorite,
-
+        user = user
     )
 }
 

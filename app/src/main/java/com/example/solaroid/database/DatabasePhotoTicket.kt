@@ -20,8 +20,8 @@ data class DatabasePhotoTicket(
     @ColumnInfo(name = "photo_ticket_date")
     var date: String,
     var favorite: Boolean = false,
-    @ColumnInfo(name = "photo_ticket_email")
-    var userEmail : String
+    @ColumnInfo(name = "photo_ticket_user")
+    var user : String
 ) {
 
 }

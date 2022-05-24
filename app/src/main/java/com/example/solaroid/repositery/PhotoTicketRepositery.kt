@@ -42,7 +42,7 @@ class PhotoTicketRepositery(
      * 포토티켓의 최신순 정렬.
      * */
     val photoTicketsOrderByLately: LiveData<List<PhotoTicket>> =
-        Transformations.map(dataSource.getAllDatabasePhotoTicket()) {
+        Transformations.map(dataSource.getAllPhotoTicketWithUser(fbAuth.currentUser!!.email!!)) {
             it?.asDomainModel()
         }
 
@@ -77,7 +77,7 @@ class PhotoTicketRepositery(
              else setPhotoTicketList() {
                 CoroutineScope(Dispatchers.IO).launch {
                     Log.i(TAG, "photoTicket : ${it}")
-                    dataSource.insert(it.asDatabaseModel())
+                    dataSource.insert(it.asDatabaseModel(user.email!!))
                 }
             }
 
@@ -93,7 +93,7 @@ class PhotoTicketRepositery(
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
             val key = photoTicket.id
-            val new = photoTicket.asDatabaseModel()
+            val new = photoTicket.asDatabaseModel(user.email!!)
 
             //room update
             dataSource.update(new)
@@ -230,7 +230,7 @@ class PhotoTicketRepositery(
                                 .child(key)
                                 .setValue(new)
 
-                            dataSource.update(new.asDatabaseModel())
+                            dataSource.update(new.asDatabaseModel(user.email!!))
                         }
 
                     }
