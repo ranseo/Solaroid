@@ -47,6 +47,7 @@
                 android:background="@drawable/edit_text_shadow"
                 android:hint="이메일을 입력해주세요"
                 android:textAlignment="center"
+                android:text="@{viewModel.savedLoginId}"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -74,6 +75,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/et_id" />
 
             <TextView
+                android:id="@+id/tv_alarm"
                 style="@style/Theme.LoginActivity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -89,17 +91,44 @@
                 app:layout_constraintTop_toBottomOf="@+id/et_password"
                 tools:text="※올바른 이메일 주소를 입력해주세요" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintGuide_percent="0.5"
+                android:orientation="vertical"/>
+
+            <CheckBox
+                android:id="@+id/cb_save_id"
+                android:text="아이디 저장"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_alarm"
+                app:layout_constraintEnd_toStartOf="@id/guideline"
+                app:layout_constraintStart_toStartOf="@id/et_password"
+                />
+
+            <CheckBox
+                android:id="@+id/cb_auto_login"
+                android:text="자동 로그인"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/tv_alarm"
+                app:layout_constraintEnd_toEndOf="@+id/et_password"
+                />
+
+
             <Button
                 android:id="@+id/btn_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="54dp"
                 android:background="@color/fui_transparent"
                 android:onClick="@{()->viewModel.onLogin()}"
                 android:text="로그인"
                 app:layout_constraintEnd_toStartOf="@id/btn_signup"
                 app:layout_constraintStart_toStartOf="@id/et_password"
-                app:layout_constraintTop_toBottomOf="@+id/et_password" />
+                app:layout_constraintTop_toBottomOf="@+id/cb_save_id" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -107,22 +136,23 @@
                 android:text="|"
                 android:textColor="@color/grey"
                 android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="@id/btn_login"
-                app:layout_constraintEnd_toStartOf="@+id/btn_signup"
-                app:layout_constraintStart_toEndOf="@+id/btn_login"
+                app:layout_constraintBottom_toBottomOf="@id/btn_signup"
+                app:layout_constraintStart_toEndOf="@id/guideline"
+                app:layout_constraintEnd_toStartOf="@id/guideline"
                 app:layout_constraintTop_toTopOf="@id/btn_login" />
 
             <Button
                 android:id="@+id/btn_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="54dp"
                 android:background="@color/fui_transparent"
                 android:onClick="@{()->viewModel.navigateToSignUp()}"
                 android:text="회원가입"
                 app:layout_constraintEnd_toEndOf="@id/et_password"
                 app:layout_constraintStart_toEndOf="@id/btn_login"
-                app:layout_constraintTop_toBottomOf="@+id/et_password" />
+                app:layout_constraintTop_toBottomOf="@+id/cb_auto_login" />
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

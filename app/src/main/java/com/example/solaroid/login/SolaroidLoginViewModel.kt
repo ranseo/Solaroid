@@ -27,6 +27,19 @@ class SolaroidLoginViewModel : ViewModel() {
 
     val profileRepositery = ProfileRepostiery(fbAuth = fbAuth,fbDatabase =fbDatabase ,fbStorage =fbStorage )
 
+    private val _SavedLoginId = MutableLiveData<String>()
+    val SavedLoginId : LiveData<String>
+        get() = _SavedLoginId
+
+
+    private val _isSaveId = MutableLiveData<Boolean>()
+    val isSaveId : LiveData<Boolean>
+        get() = _isSaveId
+
+    fun setIsSaveId(b:Boolean) {
+        _isSaveId.value = b
+    }
+
 
     val authenticationState = FirebaseAuthLiveData().map { user ->
         if(user != null) {
@@ -42,6 +55,7 @@ class SolaroidLoginViewModel : ViewModel() {
     private val _loginBtn = MutableLiveData<Event<Any?>>()
     val loginBtn : LiveData<Event<Any?>>
         get() = _loginBtn
+
 
 
     private val _loginErrorType = MutableLiveData<LoginErrorType>()
@@ -67,11 +81,14 @@ class SolaroidLoginViewModel : ViewModel() {
         }
     }
 
+
+    //////////////////////
+
     private val _naviToNext = MutableLiveData<Event<Boolean>>()
     val naviToNext : LiveData<Event<Boolean>>
         get() = _naviToNext
 
-    //////////////////////
+
 
     private val _naviToSignUp = MutableLiveData<Event<Any?>>()
     val naviToSignUp : LiveData<Event<Any?>>
@@ -80,14 +97,6 @@ class SolaroidLoginViewModel : ViewModel() {
 
     fun navigateToSignUp() {
         _naviToSignUp.value = Event(Unit)
-    }
-
-    private val _naviToProfile = MutableLiveData<Event<Any?>>()
-    val naviToProfile : LiveData<Event<Any?>>
-        get() = _naviToProfile
-
-    fun navigateToProfile() {
-        _naviToProfile.value = Event(Unit)
     }
 
     //////////////////////
@@ -114,6 +123,10 @@ class SolaroidLoginViewModel : ViewModel() {
         }
     }
 
+    fun setSavedLoginId(id:String?) {
+        if(id ==null) return
+        _SavedLoginId.value = id!!
+    }
 
 
 }

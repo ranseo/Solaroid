@@ -38,6 +38,7 @@
             android:label="@string/Solaroid">
 
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

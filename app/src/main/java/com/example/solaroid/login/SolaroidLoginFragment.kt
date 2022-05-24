@@ -1,5 +1,7 @@
 package com.example.solaroid.login
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -7,6 +9,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.CompoundButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
@@ -28,9 +33,13 @@ class SolaroidLoginFragment : Fragment() {
 //        FirebaseAuthUIActivityResultContract(), this::onSignResult
 //    )
 
+    private lateinit var binding:FragmentSolaroidLoginBinding
+
     private lateinit var viewModel: SolaroidLoginViewModel
 
     private lateinit var auth: FirebaseAuth
+
+    private lateinit var sharedPref: SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +49,27 @@ class SolaroidLoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setSaveIdListener()
+
         viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.EMPTY)
+        sharedPref = this.context?.getSharedPreferences(
+            getString(R.string.com_example_solaroid_LoginSave),
+            Context.MODE_PRIVATE
+        ) ?: return
+        val isLoginSave =
+            sharedPref.getBoolean(getString(R.string.com_example_solaroid_LoginSave), false)
+        Toast.makeText(requireContext(), "isLoginSave : ${isLoginSave}", Toast.LENGTH_SHORT).show()
+
+        if (isLoginSave) {
+            val savedId =
+                sharedPref.getString(getString(R.string.com_example_solaroid_LoginSave), null)
+            viewModel.setSavedLoginId(savedId)
+            binding.cbSaveId.isChecked = true
+        } else {
+            binding.cbSaveId.isChecked = false
+        }
+
+
     }
 
     override fun onCreateView(
@@ -48,7 +77,7 @@ class SolaroidLoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentSolaroidLoginBinding>(
+        binding = DataBindingUtil.inflate<FragmentSolaroidLoginBinding>(
             inflater,
             R.layout.fragment_solaroid_login,
             container,
@@ -63,18 +92,19 @@ class SolaroidLoginFragment : Fragment() {
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
-                    Log.i(TAG,"로그인 성공 userId : ${auth.currentUser!!.uid}")
+                    Log.i(TAG, "로그인 성공 userId : ${auth.currentUser!!.uid}")
+                    putEmailSharedPref(viewModel.isSaveId.value ==true, auth.currentUser?.email)
                     viewModel.isProfileSet()
                 }
                 SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
 //                    Toast.makeText(requireActivity(), LoginFail, Toast.LENGTH_LONG).show()
                 }
                 SolaroidLoginViewModel.AuthenticationState.INVALID_AUTHENTICATION -> {
-                    Log.i(TAG,"로그인 인증 확인 안됨")
+                    Log.i(TAG, "로그인 인증 확인 안됨")
                     viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.INVALID)
                     auth.signOut()
                 }
-                else ->{}
+                else -> {}
             }
         })
 
@@ -86,17 +116,23 @@ class SolaroidLoginFragment : Fragment() {
             }
         })
 
-        viewModel.loginErrorType.observe(viewLifecycleOwner, Observer{ type ->
-            when(type) {
-                SolaroidLoginViewModel.LoginErrorType.ISRIGHT -> logInWithEmailAndPassword(binding.etId.text.toString(), binding.etPassword.text.toString())
-                SolaroidLoginViewModel.LoginErrorType.INVALID -> showSnackbar(binding.coordinatorLayout, SEND_CHECK)
+        viewModel.loginErrorType.observe(viewLifecycleOwner, Observer { type ->
+            when (type) {
+                SolaroidLoginViewModel.LoginErrorType.ISRIGHT -> logInWithEmailAndPassword(
+                    binding.etId.text.toString(),
+                    binding.etPassword.text.toString()
+                )
+                SolaroidLoginViewModel.LoginErrorType.INVALID -> showSnackbar(
+                    binding.coordinatorLayout,
+                    SEND_CHECK
+                )
                 else -> {}
             }
         })
 
-        viewModel.naviToSignUp.observe(viewLifecycleOwner, Observer{
-            it.getContentIfNotHandled()?.let{
-                Log.i(TAG,"viewModel.naviToSignUp")
+        viewModel.naviToSignUp.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let {
+                Log.i(TAG, "viewModel.naviToSignUp")
                 findNavController().navigate(
                     SolaroidLoginFragmentDirections.actionLoginFragmentToSignupFragment()
                 )
@@ -105,8 +141,8 @@ class SolaroidLoginFragment : Fragment() {
         })
 
         viewModel.naviToNext.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{ isProfileSet ->
-                if(isProfileSet) {
+            it.getContentIfNotHandled()?.let { isProfileSet ->
+                if (isProfileSet) {
                     navigateToMainActivity()
                 } else {
                     findNavController().navigate(
@@ -116,11 +152,18 @@ class SolaroidLoginFragment : Fragment() {
             }
         }
 
+        viewModel.isSaveId.observe(viewLifecycleOwner) {
+            with(sharedPref.edit()) {
+                putBoolean(getString(R.string.com_example_solaroid_LoginSave), it)
+                apply()
+            }
+        }
+
 
         return binding.root
     }
 
-    fun showSnackbar(layout:CoordinatorLayout, str: String) {
+    fun showSnackbar(layout: CoordinatorLayout, str: String) {
         val sendEmail = Snackbar.make(layout, str, Snackbar.LENGTH_INDEFINITE)
         sendEmail.setAction("전송", SendValidEmail(FirebaseManager.getAuthInstance().currentUser!!))
         sendEmail.show()
@@ -132,7 +175,32 @@ class SolaroidLoginFragment : Fragment() {
         }
     }
 
+    fun setSaveIdListener() {
+        val checkBox = binding.cbSaveId
+        checkBox.setOnCheckedChangeListener { _, b ->
+            viewModel.setIsSaveId(b)
+        }
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        putEmailSharedPref(viewModel.isSaveId.value == true , viewModel.SavedLoginId.value)
+
+    }
+
+    fun putEmailSharedPref(flag:Boolean, email:String?) {
+        if(flag) {
+            with(sharedPref.edit()){
+                putString(getString(R.string.com_example_solaroid_LoginSave), email)
+                apply()
+            }
+        } else {
+            with(sharedPref.edit()){
+                putString(getString(R.string.com_example_solaroid_LoginSave), null)
+                apply()
+            }
+        }
+    }
 
 
 //    private fun onSignResult(result: FirebaseAuthUIAuthenticationResult) {
@@ -175,7 +243,6 @@ class SolaroidLoginFragment : Fragment() {
     }
 
 
-
     /**
      * 로그인 성공 시 , 메인액티비티로 이동.
      * */
@@ -193,11 +260,10 @@ class SolaroidLoginFragment : Fragment() {
             if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Log.i(TAG, "email.matches fails")
                 SolaroidLoginViewModel.LoginErrorType.EMAILTYPEERROR
-            }
-            else if (password.isEmpty() || password.length < 8) SolaroidLoginViewModel.LoginErrorType.PASSWORDERROR
+            } else if (password.isEmpty() || password.length < 8) SolaroidLoginViewModel.LoginErrorType.PASSWORDERROR
             else SolaroidLoginViewModel.LoginErrorType.ISRIGHT
 
-        Log.i(SolaroidSignUpFragment.TAG,"TYPE : ${type}")
+        Log.i(SolaroidSignUpFragment.TAG, "TYPE : ${type}")
         viewModel.setLoginErrorType(type)
     }
 
