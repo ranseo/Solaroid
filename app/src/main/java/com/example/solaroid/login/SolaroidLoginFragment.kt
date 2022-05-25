@@ -39,7 +39,8 @@ class SolaroidLoginFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
 
-    private lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPrefStr: SharedPreferences
+    private lateinit var sharedPrefBool: SharedPreferences
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,24 +53,28 @@ class SolaroidLoginFragment : Fragment() {
         setSaveIdListener()
 
         viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.EMPTY)
-        sharedPref = this.context?.getSharedPreferences(
-            getString(R.string.com_example_solaroid_LoginSave),
+        sharedPrefBool = this.context?.getSharedPreferences(
+            getString(R.string.com_example_solaroid_LoginSaveKeyBool),
             Context.MODE_PRIVATE
         ) ?: return
-        val isLoginSave =
-            sharedPref.getBoolean(getString(R.string.com_example_solaroid_LoginSave), false)
-        Toast.makeText(requireContext(), "isLoginSave : ${isLoginSave}", Toast.LENGTH_SHORT).show()
 
+        sharedPrefStr = this.context?.getSharedPreferences(
+            getString(R.string.com_example_solaroid_LoginSaveKeyStr),
+            Context.MODE_PRIVATE
+        ) ?: return
+
+
+        val isLoginSave =
+            sharedPrefBool.getBoolean(getString(R.string.com_example_solaroid_LoginSaveKeyBool), false)
+
+        val savedId = sharedPrefStr.getString(getString(R.string.com_example_solaroid_LoginSaveKeyStr), null)
         if (isLoginSave) {
-            val savedId =
-                sharedPref.getString(getString(R.string.com_example_solaroid_LoginSave), null)
             viewModel.setSavedLoginId(savedId)
             binding.cbSaveId.isChecked = true
         } else {
+            viewModel.setSavedLoginId(savedId)
             binding.cbSaveId.isChecked = false
         }
-
-
     }
 
     override fun onCreateView(
@@ -92,8 +97,8 @@ class SolaroidLoginFragment : Fragment() {
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
-                    Log.i(TAG, "로그인 성공 userId : ${auth.currentUser!!.uid}")
-                    putEmailSharedPref(viewModel.isSaveId.value ==true, auth.currentUser?.email)
+                    Log.i(TAG, "로그인 성공 userId : ${auth.currentUser?.uid}")
+                    viewModel.setSavedLoginId(auth.currentUser?.email)
                     viewModel.isProfileSet()
                 }
                 SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
@@ -153,11 +158,15 @@ class SolaroidLoginFragment : Fragment() {
         }
 
         viewModel.isSaveId.observe(viewLifecycleOwner) {
-            with(sharedPref.edit()) {
-                putBoolean(getString(R.string.com_example_solaroid_LoginSave), it)
+            Log.i(TAG, "viewModel.isSaveId : ${it}")
+            with(sharedPrefBool.edit()) {
+                putBoolean(getString(R.string.com_example_solaroid_LoginSaveKeyBool), it)
                 apply()
             }
+
+            putEmailSharedPref(it, viewModel.SavedLoginId.value)
         }
+
 
 
         return binding.root
@@ -190,15 +199,17 @@ class SolaroidLoginFragment : Fragment() {
 
     fun putEmailSharedPref(flag:Boolean, email:String?) {
         if(flag) {
-            with(sharedPref.edit()){
-                putString(getString(R.string.com_example_solaroid_LoginSave), email)
+            with(sharedPrefStr.edit()){
+                putString(getString(R.string.com_example_solaroid_LoginSaveKeyStr), email)
                 apply()
             }
+            Log.i(TAG,"putEmailSharedPref : putString ${email}")
         } else {
-            with(sharedPref.edit()){
-                putString(getString(R.string.com_example_solaroid_LoginSave), null)
+            with(sharedPrefStr.edit()){
+                putString(getString(R.string.com_example_solaroid_LoginSaveKeyStr), "")
                 apply()
             }
+            Log.i(TAG,"putEmailSharedPref : putString null")
         }
     }
 
