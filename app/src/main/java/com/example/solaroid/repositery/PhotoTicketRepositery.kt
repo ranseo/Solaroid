@@ -175,23 +175,25 @@ class PhotoTicketRepositery(
             insertRef.setValue(
                 new,
                 DatabaseReference.CompletionListener { error: DatabaseError?, _: DatabaseReference ->
-
                     if (error != null) {
                         Log.d(TAG, "Unable to write Message to database", error.toException())
                         return@CompletionListener
                     }
 
-                    val file = photoTicket.url.toUri()
-                    val mimeType: String? = application.contentResolver.getType(file)
 
-                    Log.i(TAG, "file ${file}")
+                        val file = photoTicket.url.toUri()
+                        val mimeType: String? = application.contentResolver.getType(file)
 
-                    val storageRef = fbStorage.getReference("photoTicket")
-                        .child(user.uid)
-                        .child(key)
-                        .child("${mimeType?.split("/")?.get(0)}/${file.lastPathSegment}")
+                        Log.i(TAG, "file ${file}")
 
-                    insertImageInStorage(storageRef, user, file, key, new)
+                        val storageRef = fbStorage.getReference("photoTicket")
+                            .child(user.uid)
+                            .child(key)
+                            .child("${mimeType?.split("/")?.get(0)}/${file.lastPathSegment}")
+
+                        insertImageInStorage(storageRef, user, file, key, new)
+
+
 
 
                 })
@@ -230,7 +232,7 @@ class PhotoTicketRepositery(
                                 .child(key)
                                 .setValue(new)
 
-                            dataSource.update(new.asDatabaseModel(user.email!!))
+                            dataSource.insert(new.asDatabaseModel(user.email!!))
                         }
 
                     }

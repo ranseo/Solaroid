@@ -39,6 +39,11 @@ class SolaroidLoginFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
 
+
+    /*
+     * 해당 sharedPreferences는 "아이디 저장" 에 해당하는 변수이다.
+     * Str은 저장할 아이디를, Bool은 아이디 저장 여부를.
+     * */
     private lateinit var sharedPrefStr: SharedPreferences
     private lateinit var sharedPrefBool: SharedPreferences
 
@@ -53,6 +58,8 @@ class SolaroidLoginFragment : Fragment() {
         setSaveIdListener()
 
         viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.EMPTY)
+
+        //아이디 저장
         sharedPrefBool = this.context?.getSharedPreferences(
             getString(R.string.com_example_solaroid_LoginSaveKeyBool),
             Context.MODE_PRIVATE
@@ -75,6 +82,11 @@ class SolaroidLoginFragment : Fragment() {
             viewModel.setSavedLoginId(savedId)
             binding.cbSaveId.isChecked = false
         }
+        ////
+
+
+
+
     }
 
     override fun onCreateView(
@@ -98,8 +110,12 @@ class SolaroidLoginFragment : Fragment() {
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
                     Log.i(TAG, "로그인 성공 userId : ${auth.currentUser?.uid}")
-                    viewModel.setSavedLoginId(auth.currentUser?.email)
-                    viewModel.isProfileSet()
+                    if(auth.currentUser == null) auth.signOut()
+                    else {
+                        Log.i(TAG, "프로필설정 또는 메인컨텐츠 이동")
+                        viewModel.setSavedLoginId(auth.currentUser?.email)
+                        viewModel.isProfileSet()
+                    }
                 }
                 SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
 //                    Toast.makeText(requireActivity(), LoginFail, Toast.LENGTH_LONG).show()
@@ -148,8 +164,10 @@ class SolaroidLoginFragment : Fragment() {
         viewModel.naviToNext.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { isProfileSet ->
                 if (isProfileSet) {
+                    Log.i(TAG, "naviToNext.observe : 메인 액티비티로 이동")
                     navigateToMainActivity()
                 } else {
+                    Log.i(TAG, "naviToNext.observe : 프로필 프래그먼트로 이동")
                     findNavController().navigate(
                         SolaroidLoginFragmentDirections.actionLoginFragmentToProfileFragment()
                     )

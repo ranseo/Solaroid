@@ -18,76 +18,12 @@ import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidGalleryBinding
 import com.google.android.material.navigation.NavigationView
 
-class SolaroidGalleryFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
+class SolaroidGalleryFragment : Fragment() {
 
     private lateinit var viewModelFactory: SolaroidGalleryViewModelFactory
     private lateinit var viewModel: SolaroidGalleryViewModel
     private lateinit var binding: FragmentSolaroidGalleryBinding
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.fragment_solaroid_frame_container,
-                R.id.fragment_solaroid_gallery
-            ), binding.drawerLayout
-        )
-
-        binding.galleryToolbar.setupWithNavController(navController, appBarConfiguration)
-        binding.galleryToolbar.inflateMenu(R.menu.fragment_gallery_toolbar_menu)
-        binding.galleryToolbar.setOnMenuItemClickListener {
-            when(it.itemId) {
-                R.id.move_frame_fragment -> {
-                    Log.i(TAG, "main_frame_fragment")
-                    viewModel.navigateToFrame()
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        }
-        setNavigationViewListener()
-    }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.fragment_gallery_toolbar_menu,menu)
-//        Log.i(TAG,"inflater.inflate(R.menu.fragment_gallery_toolbar_menu,menu)")
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.move_frame_fragment -> {
-//                Log.i(TAG, "main_frame_fragment")
-//                viewModel.navigateToFrame()
-//                true
-//            }
-//            else -> {
-//                super.onOptionsItemSelected(item)
-//            }
-//        }
-//    }
-
-    private fun setNavigationViewListener() {
-        binding.navView.setNavigationItemSelectedListener(this)
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.login_info -> {
-                Log.i("프레임컨테이너", "login_info")
-                viewModel.logout()
-            }
-        }
-        binding.drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,6 +32,7 @@ class SolaroidGalleryFragment : Fragment(), NavigationView.OnNavigationItemSelec
     ): View? {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_solaroid_gallery, container, false)
+        setHasOptionsMenu(true)
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
@@ -133,6 +70,26 @@ class SolaroidGalleryFragment : Fragment(), NavigationView.OnNavigationItemSelec
         return binding.root
 
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_gallery_toolbar_menu,menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.move_frame_fragment -> {
+                Log.i(TAG, "main_frame_fragment")
+                viewModel.navigateToFrame()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
+
 
     companion object {
         const val TAG = "갤러리프래그먼트"

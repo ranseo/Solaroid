@@ -31,8 +31,10 @@ class SolaroidFrameFragment() : Fragment(),
 
     private lateinit var viewModel: SolaroidFrameViewModel
 
-    override fun onStart() {
-        super.onStart()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.i(TAG, "솔라로이드 프레임 프래그먼트 onCreate")
     }
 
     override fun onCreateView(
@@ -46,6 +48,7 @@ class SolaroidFrameFragment() : Fragment(),
             container,
             false
         )
+
         val application: Application = requireNotNull(this.activity).application
         val dataSource: SolaroidDatabase = SolaroidDatabase.getInstance(application)
 
@@ -75,23 +78,27 @@ class SolaroidFrameFragment() : Fragment(),
         observeCurrentPosition(adapter)
 
         viewModel.photoTicketFilter.observe(viewLifecycleOwner) {
-            Log.i(SolaroidFrameFragmentContainer.TAG,"photoTicketFilter Observe : filter ${it}")
+            Log.i(TAG,"photoTicketFilter Observe : filter ${it}")
             binding.viewpager.setCurrentItem(0,false)
             viewModel.refreshPhotoTicketEvent()
+
         }
 
         viewModel.photoTicketsOrderByLately.observe(viewLifecycleOwner, Observer {
             if (viewModel.photoTicketFilter.value == PhotoTicketFilter.LATELY)
                 it?.let {
-                    Log.i(TAG,"LIST 업데이트")
-                    viewModel.refreshPhotoTicketEvent()
+                    Log.i(TAG, "photoTicketsOrderByLately")
+                    viewModel.setPhotoTicketSize(it.size)
+                    adapter.submitList(it)
                 }
         })
 
         viewModel.photoTicketsOrderByFavorite.observe(viewLifecycleOwner, Observer {
             if (viewModel.photoTicketFilter.value == PhotoTicketFilter.FAVORITE)
                 it?.let {
-                    viewModel.refreshPhotoTicketEvent()
+                    Log.i(TAG, "photoTicketsOrderByFavorite")
+                    viewModel.setPhotoTicketSize(it.size)
+                    adapter.submitList(it)
                 }
         })
 
@@ -105,6 +112,7 @@ class SolaroidFrameFragment() : Fragment(),
     private fun observePhotoTickets(adapter: SolaroidFrameAdapter) {
         viewModel.photoTickets.observe(viewLifecycleOwner, Observer { event ->
             event.getContentIfNotHandled()?.let {
+                Log.i(TAG, "photoTickets.observe")
                 viewModel.setPhotoTicketSize(it.size)
                 adapter.submitList(it)
             }
@@ -112,26 +120,7 @@ class SolaroidFrameFragment() : Fragment(),
     }
 
 
-    /**
-     * binding된 viewPager의 selected page의 PhotoTicket 객체를 추출. -> viewModel의 setCurrentPhotoTicket() 호출하여 인자로 넘겨줌.
-     * */
-    private fun registerOnPageChangeCallback(
-        viewPager: ViewPager2,
-        adapter: SolaroidFrameAdapter
-    ) {
 
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                Log.d("FrameFragment", "onPageSelected")
-                if (adapter.itemCount > 0) {
-                    viewModel.setCurrentPosition(position)
-                } else {
-                    viewModel.setCurrentPosition(-1)
-                }
-            }
-        })
-    }
 
     /**
      * viewModel의 photoTicket 프로퍼티를 관찰.
@@ -142,7 +131,7 @@ class SolaroidFrameFragment() : Fragment(),
             it?.let { photoTicket ->
                 viewModel.setCurrentFavorite(photoTicket.favorite)
                 //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
-                Log.i(TAG, "currPhotoTicket : ${photoTicket}")
+                Log.i(TAG, "viewModel.currPhotoTicket.observe : ${photoTicket}")
             }
             if(it == null) viewModel.setCurrentFavorite(false)
         })
@@ -183,6 +172,7 @@ class SolaroidFrameFragment() : Fragment(),
             //현재 위치가 0보다 커야한다. (음수가 되는 상황은 발생하지 않음)
             //현재 위치가 adapter내의 전체 아이템의 크기 수보다 작아야 한다. (아이템의 크기를 넘어서 존재할 수 없음)
             pos?.let {
+                Log.i(TAG, "currentPosition.observe pos : ${it}")
                 if (it > adapter.itemCount) {
                     viewModel.setCurrentFavorite(false)
                 }
@@ -211,6 +201,26 @@ class SolaroidFrameFragment() : Fragment(),
             }
         })
 
+    }
+    /**
+     * binding된 viewPager의 selected page의 PhotoTicket 객체를 추출. -> viewModel의 setCurrentPhotoTicket() 호출하여 인자로 넘겨줌.
+     * */
+    private fun registerOnPageChangeCallback(
+        viewPager: ViewPager2,
+        adapter: SolaroidFrameAdapter
+    ) {
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.i(TAG, "onPageSelected")
+                if (adapter.itemCount > 0) {
+                    viewModel.setCurrentPosition(position)
+                } else {
+                    viewModel.setCurrentPosition(-1)
+                }
+            }
+        })
     }
 
     /**

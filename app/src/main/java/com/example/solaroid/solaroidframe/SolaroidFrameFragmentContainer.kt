@@ -27,8 +27,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlin.math.log
 
-open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener,
-    NavigationView.OnNavigationItemSelectedListener {
+open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener
+ {
 
     companion object {
         const val TAG = "프레임 컨테이너"
@@ -45,61 +45,23 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
+    private lateinit var toolbarMenu : Menu
 
     private lateinit var backPressCallback : OnBackPressedCallback
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        backPressCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if(binding.drawerLayout.isDrawerOpen(Gravity.LEFT))
-                    binding.drawerLayout.closeDrawer(Gravity.LEFT)
-                else requireActivity().finish()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        backPressCallback.remove()
+//        backPressCallback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                if(binding.drawerLayout.isDrawerOpen(Gravity.LEFT))
+//                    binding.drawerLayout.closeDrawer(Gravity.LEFT)
+//                else requireActivity().finish()
+//            }
+//        }
+//        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        childFragmentManager.commit { add(R.id.fragment_frame_container_view, SolaroidFrameFragment(), TAG) }
-
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.fragment_solaroid_frame_container,
-                R.id.fragment_solaroid_gallery
-            ), binding.drawerLayout
-        )
-
-        toolbar = binding.frameCotainerToolbar
-
-        toolbar.setupWithNavController(navController, appBarConfiguration)
-        toolbar.inflateMenu(R.menu.fragment_frame_toolbar_menu)
-        toolbar.setOnMenuItemClickListener {
-            when(it.itemId) {
-                R.id.move_gallery_fragment -> {
-                    viewModel.navigateToGallery()
-                    true
-                }
-                R.id.filter -> {
-                    viewModel.onFilterPopupMenu()
-                    true
-                }
-                else -> false
-            }
-
-        }
-        setNavigationViewListener()
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -139,7 +101,10 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
         viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
-                popupShow(binding.frameCotainerToolbar.findViewById(R.id.filter))
+
+                val view = this.requireActivity().window.decorView.findViewById(R.id.filter) as View
+                popupShow(view)
+
             }
         })
 
@@ -186,7 +151,37 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
     }
 
 
-    private fun popupShow(view: View) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val childFragment = childFragmentManager.findFragmentByTag(TAG)
+        if(childFragment == null) childFragmentManager.commit { add(R.id.fragment_frame_container_view, SolaroidFrameFragment(), TAG) }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.fragment_frame_toolbar_menu, menu)
+        toolbarMenu = menu
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.move_gallery_fragment -> {
+                viewModel.navigateToGallery()
+                true
+            }
+            R.id.filter -> {
+                viewModel.onFilterPopupMenu()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    private fun popupShow(view: View?) {
+        if(view ==null){
+            Log.i(TAG,"popupShow : ${view}")
+            return
+        }
         val popUp = PopupMenu(this.activity, view)
         popUp.setOnMenuItemClickListener(this@SolaroidFrameFragmentContainer)
         popUp.menuInflater.inflate(R.menu.fragment_frame_popup_menu, popUp.menu)
@@ -209,20 +204,6 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         }
     }
 
-
-    private fun setNavigationViewListener() {
-        binding.navView.navView.setNavigationItemSelectedListener(this)
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.login_info -> {
-                viewModel.logout()
-            }
-        }
-        binding.drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-    }
 
     private fun logout() {
         FirebaseManager.getAuthInstance().signOut()

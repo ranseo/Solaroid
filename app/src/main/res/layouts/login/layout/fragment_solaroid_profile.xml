@@ -155,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            android:background="@drawable/solaroid_background_gradient"
+            android:background="@color/toolbar_pink"
             android:onClick="@{()->viewModel.onSetProfile()}"
             android:text="설정 완료"
             app:layout_constraintBottom_toBottomOf="parent"

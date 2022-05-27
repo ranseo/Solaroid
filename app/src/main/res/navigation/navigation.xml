@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/fragment_solaroid_frame_container">
+    app:startDestination="@+id/fragment_solaroid_intro">
 
 
     <action
@@ -25,8 +25,6 @@
         android:name="com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer"
         android:label=""
         tools:layout="@layout/fragment_solaroid_frame_container">
-
-
         <action
             android:id="@+id/action_frameFragmentContainer_to_detailFragment"
             app:destination="@+id/fragment_solaroid_detail" />
@@ -60,8 +58,6 @@
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>
-
-
     </fragment>
 
     <fragment
@@ -83,13 +79,12 @@
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>
-
     </fragment>
 
     <fragment
         android:id="@+id/fragment_solaroid_create"
         android:name="com.example.solaroid.solaroidcreate.SolaroidPhotoCreateFragment"
-        android:label="SolaroidPhotoCreateFragment"
+        android:label="카메라 촬영"
         tools:layout="@layout/fragment_solaroid_photo_create">
 
         <action
@@ -97,10 +92,6 @@
             app:destination="@+id/fragment_solaroid_frame_container"
             app:popUpTo="@+id/fragment_solaroid_frame_container"
             app:popUpToInclusive="true"/>
-
-
-
-
     </fragment>
 
 
@@ -112,7 +103,6 @@
         <argument
             android:name="photo_tickey_key"
             app:argType="string"/>
-        
     </fragment>
 
 
@@ -121,7 +111,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_edit"
         android:name="com.example.solaroid.solaroidedit.SolaroidEditFragment"
-        android:label="SolaroidEditFragment"
+        android:label="수정"
         tools:layout="@layout/fragment_solaroid_edit">
 
         <action
@@ -133,13 +123,12 @@
         <argument
             android:name="photo_ticket_key"
             app:argType="string"/>
-
     </fragment>
 
     <fragment
         android:id="@+id/fragment_solaroid_add"
         android:name="com.example.solaroid.solaroidadd.SolaroidAddFragment"
-        android:label="SolaroidAddFragment"
+        android:label=""
         tools:layout="@layout/fragment_solaroid_add">
 
         <action
@@ -147,7 +136,19 @@
             app:destination="@+id/fragment_solaroid_frame_container"
             app:popUpTo="@+id/fragment_solaroid_frame_container"
             app:popUpToInclusive="true"/>
+    </fragment>
 
+    <fragment
+        android:id="@+id/fragment_solaroid_intro"
+        android:name="com.example.solaroid.intro.IntroFragment"
+        android:label=""
+        tools:layout="@layout/fragment_solaroid_intro">
+
+        <action
+            android:id="@+id/action_introFragment_to_frameFragmentContainer"
+            app:destination="@+id/fragment_solaroid_frame_container"
+            app:popUpTo="@+id/fragment_solaroid_intro"
+            app:popUpToInclusive="true"/>
 
     </fragment>
 

@@ -7,11 +7,11 @@
         android:icon="@drawable/ic_gallery"
         app:showAsAction="ifRoom"/>
 
-
     <item
         android:id="@+id/filter"
         android:title="정렬"
         android:icon="@drawable/ic_filter"
+        android:actionViewClass="androidx.appcompat.view.menu.ActionMenuItemView"
         app:showAsAction="ifRoom"/>
 
 </menu>

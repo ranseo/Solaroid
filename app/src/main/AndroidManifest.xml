@@ -21,15 +21,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Solaroid"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".IntroActivity"
             android:exported="true"
             android:label="@string/Solaroid">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -42,7 +39,14 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="솔라로이드"></activity>
+            android:label="솔라로이드">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"

@@ -68,6 +68,12 @@
             app:popUpTo="@id/fragment_solaroid_profile"
             app:popUpToInclusive="true"/>
 
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@+id/fragment_solaroid_login"
+            app:popUpTo="@id/fragment_solaroid_profile"
+            app:popUpToInclusive="true"/>
+
     </fragment>
 
 </navigation>

@@ -1,37 +1,63 @@
 package com.example.solaroid
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
+import android.view.Gravity
+import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.solaroid.databinding.ActivityMainBinding
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.login.SolaroidLoginViewModel
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
-class MainActivity : AppCompatActivity() {
-    var isCameraAvailable : Boolean = false
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    var isCameraAvailable: Boolean = false
 
+
+    private lateinit var binding: ActivityMainBinding
+
+    //viewModel
+    private lateinit var viewModel: SolaroidLoginViewModel
+    private lateinit var naviViewModel: NavigationViewModel
 
     //Firebase
-    private lateinit var viewModel : SolaroidLoginViewModel
-    private lateinit var auth : FirebaseAuth
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db : FirebaseDatabase
+
+    //toolbar
+    private lateinit var appBarConfiguration: AppBarConfiguration
+
+    private lateinit var navHostFragment: NavHostFragment
+    private lateinit var navController : NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         if (BuildConfig.DEBUG) {
             Firebase.auth.useEmulator("10.0.2.2", 9099)
@@ -39,9 +65,14 @@ class MainActivity : AppCompatActivity() {
             Firebase.storage.useEmulator("10.0.2.2", 9199)
 
         }
+
+        navHostFragment = binding.navHostFragment.getFragment<NavHostFragment>()
+        navController = navHostFragment.navController
+
+
         // Request camera permissions
         if (allPermissionsGranted()) {
-            isCameraAvailable =true
+            isCameraAvailable = true
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
@@ -50,14 +81,18 @@ class MainActivity : AppCompatActivity() {
 
         auth = FirebaseManager.getAuthInstance()
 
+        //LoginViewModel
         viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
-
-
+        //NavigationViewModel
+        naviViewModel = ViewModelProvider(this)[NavigationViewModel::class.java]
+        binding.naviViewModel = naviViewModel
+        binding.lifecycleOwner = this
 
         viewModel.authenticationState.observe(this, Observer { state ->
-            when(state) {
-                SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED-> {
+            when (state) {
+                SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
                     Log.i(TAG, "AUTHENTICATED")
+                    viewModel.isProfileSet()
                 }
                 else -> {
                     Log.i(TAG, "NOT AUTHENTICATED")
@@ -66,53 +101,64 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        val navHostFragment = binding.navHostFragment.getFragment<NavHostFragment>()
-//        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-//        val navController = navHostFragment.findNavController()
-//        binding.botNaivMenu.setupWithNavController(navController)
+        viewModel.naviToNext.observe(this) { event ->
+            event.getContentIfNotHandled()?.let{
+                if(!it) {
+                       navController.navigate(
+                           R.id.global_action_mainActivity_to_loginActivity
+                       )
+                }
+            }
+        }
 
-//        navController.addOnDestinationChan gedListener{_,destination,_ ->
-//            if(destination.id == R.id.fragment_solaroid_create || destination.id == R.id.fragment_solaroid_detail) {
-//                binding.botNaivMenu.visibility = View.GONE
-//            } else {
-//                binding.botNaivMenu.visibility = View.VISIBLE
-//            }
-//        }
 
-//        navController.addOnDestinationChangedListener{_, _, argument ->
-//            binding.botNaivMenu.isVisible = argument?.getBoolean("ShowAppBar",false) == true
-//        }
-//
-//
-//        navController.addOnDestinationChangedListener{_, destination, _ ->
-//            if(destination.id == R.id.fragment_solaroid_create) {
-//                if(!isCameraAvailable) {
-//                    Toast.makeText(
-//                        this,
-//                        "해당 기능을 사용하기 위해서는 카메라 허용 승인이 필수적 입니다.",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                    onBackPressed()
-//                }
-//            }
-//        }
+        //toolbar
+        setSupportActionBar(binding.mainToolbar)
+
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.fragment_solaroid_frame_container,
+                R.id.fragment_solaroid_gallery
+            ), binding.drawerLayoutMain
+        )
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        binding.naviationViewMain.navView.setNavigationItemSelectedListener(this)
+
+        //
+        navController.addOnDestinationChangedListener{_,destination,_ ->
+            val id = destination.id
+            if(id== R.id.fragment_solaroid_gallery || id==R.id.fragment_solaroid_frame_container) supportActionBar?.show()
+            else supportActionBar?.hide()
+        }
 
 
     }
 
-    override fun onBackPressed() {
-        if(onBackPressedDispatcher.hasEnabledCallbacks()) {
-            onBackPressedDispatcher.onBackPressed()
-            return
-        }
+    override fun onSupportNavigateUp() : Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
 
-        super.onBackPressed()
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.login_info -> {
+                auth.signOut()
+            }
+        }
+        binding.drawerLayoutMain.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    override fun onBackPressed() {
+        if (binding.drawerLayoutMain.isDrawerOpen(Gravity.LEFT))
+            binding.drawerLayoutMain.closeDrawer(Gravity.LEFT)
+        else  super.onBackPressed()
     }
 
 
     private fun logout() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navHostFragment.navController.navigate(
+        navController.navigate(
             R.id.global_action_mainActivity_to_loginActivity
         )
         finish()
@@ -124,8 +170,8 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == REQUEST_CODE_PERMISSIONS) {
-            if(allPermissionsGranted()) {
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (allPermissionsGranted()) {
                 isCameraAvailable = true
             } else {
                 Toast.makeText(
@@ -141,8 +187,9 @@ class MainActivity : AppCompatActivity() {
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it
-        )== PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
     }
+
 
 
 
@@ -154,7 +201,7 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             ).apply {
-                if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()

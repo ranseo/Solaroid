@@ -86,23 +86,31 @@ class ProfileRepostiery(
         }
     }
 
-    suspend fun isInitProfile(): Task<DataSnapshot> {
+    suspend fun isInitProfile(): Task<DataSnapshot>? {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser
+            if (user == null) null
+            else {
+                val profileRef = fbDatabase.reference.child("profile").child(user.uid)
+                val task = profileRef.get()
 
-            val profileRef = fbDatabase.reference.child("profile").child(user!!.uid)
-            val task = profileRef.get()
-
-            task
+                task
+            }
         }
     }
 
-    suspend fun getProfileInfo() : Task<DataSnapshot> {
-        return withContext(Dispatchers.IO){
+    suspend fun getProfileInfo(): Task<DataSnapshot>? {
+        return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser
-            val profileRef = fbDatabase.reference.child("profile").child(user!!.uid).get()
+            if (user == null) null
+            else {
+                val profileRef: Task<DataSnapshot>? =
+                    fbDatabase.reference.child("profile").child(user!!.uid).get()
 
-            profileRef
+
+                profileRef
+
+            }
         }
     }
 
@@ -110,10 +118,6 @@ class ProfileRepostiery(
     companion object {
         const val TAG = "프로필 리포지터리"
     }
-
-
-
-
 
 
 }

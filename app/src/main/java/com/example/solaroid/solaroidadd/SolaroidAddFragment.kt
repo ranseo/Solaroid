@@ -3,12 +3,14 @@ package com.example.solaroid.solaroidadd
 import SolaroidAddViewModelFactory
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -50,7 +52,6 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
             container,
             false
         )
-
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
@@ -114,6 +115,11 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+    }
 
     private fun showDialog() {
         val dialog = SaveDialogFragment(this)
@@ -144,6 +150,7 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
     }
 
     companion object {
+        const val TAG ="애드프래그먼트"
         const val TAG_ADD_CHOICE = "TAG_ADD_CHOICE"
         const val TAG_ADD_SAVE = "ADD_SAVE"
     }

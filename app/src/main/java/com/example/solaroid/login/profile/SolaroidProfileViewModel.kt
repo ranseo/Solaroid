@@ -76,6 +76,14 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         _naviToMain.value = Event(Unit)
     }
 
+    private val _naviToLogin = MutableLiveData<Event<Any?>>()
+    val naviToLogin : LiveData<Event<Any?>>
+        get() = _naviToLogin
+
+    fun navigateToLogin() {
+        _naviToLogin.value = Event(Unit)
+    }
+
 
     fun onNicknameEditTextChanged(str: CharSequence) {
         _nickname.value = str.toString()

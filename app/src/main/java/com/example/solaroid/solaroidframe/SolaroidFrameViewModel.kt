@@ -171,7 +171,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
             try {
                 valueEventListener = photoTicketRepositery.refreshPhotoTickets(application = getApplication())
                 if(valueEventListener == null) Log.i(TAG, "firebase valueEventListener error")
-                else fbDatabase.reference.child("photoTicket").child(fbAuth.currentUser!!.uid).addValueEventListener(
+                else fbDatabase.reference.child("photoTicket").child(fbAuth.currentUser!!.uid).addListenerForSingleValueEvent(
                     valueEventListener!!
                 )
 
