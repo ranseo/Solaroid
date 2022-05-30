@@ -92,9 +92,13 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val naviToFrameFrag: LiveData<Event<Any?>>
         get() = _naviToFrameFrag
 
+    private val _date = MutableLiveData<String>(convertTodayToFormatted(System.currentTimeMillis()))
+    val date : LiveData<String>
+        get() = _date
 
-    val date = convertTodayToFormatted(System.currentTimeMillis())
-
+    fun setDate(date:String) {
+        _date.value = date
+    }
 
     init {
         loadImage()
@@ -147,7 +151,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
             val new = PhotoTicket(
                 id = "",
                 url = image.value!!,
-                date = date,
+                date = date.value!!,
                 frontText = frontText,
                 backText = backText.value!!,
                 favorite = false
@@ -173,6 +177,9 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     fun navigateToFrame() {
         _naviToFrameFrag.value = Event(Unit)
     }
+
+
+
 
 
     //backPress 버튼 처리

@@ -18,4 +18,8 @@
     <dimen name="polaroid_film_larger_height">510dp</dimen>
     <dimen name="polaroid_image_larger_width">278dp</dimen>
     <dimen name="polaroid_image_larger_height">376dp</dimen>
+
+    <dimen name="phototicket_front_text_size">18sp</dimen>
+    <dimen name="phototicket_front_date_size">20sp</dimen>
+    <dimen name="phototicket_back_text_size">24sp</dimen>
 </resources>

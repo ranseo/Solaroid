@@ -36,8 +36,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:labelVisibilityMode="unlabeled"
-            app:menu="@menu/fragment_frame_bot_navi" />
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/fragment_frame_bot_navi"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

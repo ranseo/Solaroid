@@ -41,6 +41,15 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     val backText : LiveData<String>
         get() = _backText
 
+    private val _date = MutableLiveData<String>()
+    val date : LiveData<String>
+        get() = _date
+
+    fun setDate(date:String) {
+        _date.value = date
+    }
+
+
     val currBackTextLen = Transformations.map(backText) {
         "${it.length}/300"
     }
@@ -57,6 +66,7 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
             if(photoTicket.value == null) navigateToFrame()
             frontText = photoTicket.value!!.frontText
             _backText.value = photoTicket.value!!.backText
+            setDate(photoTicket.value!!.date)
         }
     }
 
@@ -78,7 +88,7 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
         viewModelScope.launch {
             val curr = _photoTicket.value!!
             Log.i(TAG,"${frontText}, ${_backText.value!!}")
-            val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, curr.date, curr.favorite)
+            val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, date.value!!, curr.favorite)
             photoTicketRepositery.updatePhotoTickets(new,getApplication())
         }
     }

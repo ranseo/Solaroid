@@ -25,6 +25,5 @@
     </style>
 
     <style name="Theme.Solaroid.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="Theme.Solaroid.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -19,10 +19,12 @@
     <!--    android:layout_height="180dp"-->
     <!--    width를 match로 해놔야 이게 딲딱맞네 포스팅해두자-->
     <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="110dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:background="@drawable/gallery_photo_boarder_line"
-        android:onClick="@{()->clickListener.onClick(photoTicket)}">
+        android:onClick="@{()->clickListener.onClick(photoTicket)}"
+        android:layout_margin="1dp"
+        android:padding="1dp">
 
         <ImageView
             android:id="@+id/solaroid_photo"
@@ -30,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             tools:src="@tools:sample/avatars"
 
             />

@@ -13,11 +13,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
+import com.example.solaroid.convertDateToLong
+import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidEditBinding
+import com.example.solaroid.dialog.DatePickerDialogFragment
 import com.example.solaroid.dialog.SaveDialogFragment
 
-class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListener {
+class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListener, DatePickerDialogFragment.OnDatePickerDialogListener {
 
     private lateinit var viewModel : SolaroidEditFragmentViewModel
     private lateinit var viewModelFactory: SolaroidEditFragmentViewModelFactory
@@ -54,6 +57,10 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
            }
         })
 
+        binding.todayDate.setOnClickListener {
+            showDatePickerDialog()
+        }
+
         return binding.root
     }
 
@@ -82,5 +89,14 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
     fun showDialog() {
         val editSaveDialog = SaveDialogFragment(this)
         editSaveDialog.show(parentFragmentManager, "editSave")
+    }
+
+    fun showDatePickerDialog() {
+        val newFragment = DatePickerDialogFragment(this)
+        newFragment.show(parentFragmentManager, "datePicker")
+    }
+
+    override fun onDateSet(year: Int, month: Int, day: Int) {
+        viewModel.setDate(convertTodayToFormatted(convertDateToLong(year,month,day)))
     }
 }

@@ -37,7 +37,7 @@ class IntroFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             Log.i(TAG,"CoroutineScope(Dispatchers.IO).launch")
             val user = auth.currentUser
-
+            delay(1000)
             if (user == null || !user.isEmailVerified) {
                 startLoginActivity()
             } else startMainActivity()

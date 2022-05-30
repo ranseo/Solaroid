@@ -20,8 +20,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
+import com.example.solaroid.convertDateToLong
+import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidAddBinding
+import com.example.solaroid.dialog.DatePickerDialogFragment
 import com.example.solaroid.dialog.SaveDialogFragment
 import com.example.solaroid.solaroidframe.SolaroidFrameFragment
 import com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer
@@ -31,7 +34,7 @@ import com.google.firebase.auth.FirebaseAuth
 /**
  * mediaCollection을 열어 사진을 골라 새로운 포토티켓을 만드는 프래그먼트.
  * */
-class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListener {
+class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListener, DatePickerDialogFragment.OnDatePickerDialogListener {
 
     private lateinit var viewModel: SolaroidAddViewModel
     private lateinit var viewModelFactory: SolaroidAddViewModelFactory
@@ -112,6 +115,10 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
             showDialog()
         }
 
+        binding.todayDate.setOnClickListener {
+            showDatePickerDialog()
+        }
+
         return binding.root
     }
 
@@ -153,5 +160,14 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         const val TAG ="애드프래그먼트"
         const val TAG_ADD_CHOICE = "TAG_ADD_CHOICE"
         const val TAG_ADD_SAVE = "ADD_SAVE"
+    }
+
+    fun showDatePickerDialog() {
+        val newFragment = DatePickerDialogFragment(this)
+        newFragment.show(parentFragmentManager, "DatePicker")
+    }
+
+    override fun onDateSet(year: Int, month: Int, day: Int) {
+        viewModel.setDate(convertTodayToFormatted(convertDateToLong(year,month,day)))
     }
 }

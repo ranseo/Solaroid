@@ -10,6 +10,11 @@ fun convertTodayToFormatted(currentTimeMilli: Long): String {
     return SimpleDateFormat("yyyy.MM.dd(E).kk.mm.ss", Locale.getDefault()).format(currentTimeMilli)
 }
 
+fun convertDateToLong(year:Int,month:Int,day:Int) :Long{
+    val gc = GregorianCalendar(year,month,day)
+    return gc.timeInMillis
+}
+
 fun convertPhotoTicketToToastString(photoTicket: PhotoTicket, res:Resources) : String {
     return "${photoTicket.url}\n${photoTicket.date}\n${photoTicket.frontText}\n${photoTicket.backText}"
 }

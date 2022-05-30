@@ -6,7 +6,11 @@ import com.example.solaroid.Event
 import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.database.asDomainModel
 import com.example.solaroid.domain.PhotoTicket
+import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.repositery.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
 class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
@@ -14,6 +18,12 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
 
     private val database = dataSource
 
+    private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
+    private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
+
+    val photoTicketRepositery = PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage)
 
     private val _navigateToDetailFrag = MutableLiveData<Event<String>>()
     val navigateToDetailFrag: LiveData<Event<String>>
@@ -24,40 +34,8 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
         get() = _naviToFrame
 
 
-    private val _photoTicket = MutableLiveData<PhotoTicket?>()
-    val photoTicket: LiveData<PhotoTicket?>
-        get() = _photoTicket
+    val photoTickets = photoTicketRepositery.photoTicketsOrderByLately
 
-
-    val photoTickets = Transformations.map(database.getAllDatabasePhotoTicket()) {
-        it?.asDomainModel()
-
-    }
-
-    init {
-        initGetPhotoTicket()
-    }
-
-
-    private fun initGetPhotoTicket() {
-        viewModelScope.launch {
-            _photoTicket.value = getLatestPhotoTicket()
-        }
-    }
-
-
-    private suspend fun getLatestPhotoTicket(): PhotoTicket? {
-        return database.getLatestTicket()?.asDomainModel()
-    }
-
-
-//    fun onClick() {
-//        _navigateToCreateFrag.value = true
-//    }
-//
-//    fun doneNaviToCreateFrag() {
-//        _navigateToCreateFrag.value = false
-//    }
 
     fun naviToDetail(key: String) {
         _navigateToDetailFrag.value = Event(key)
@@ -65,12 +43,6 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
 
     fun navigateToFrame() {
         _naviToFrame.value = Event(Unit)
-    }
-
-
-    fun logout() {
-        val auth = FirebaseAuth.getInstance()
-        auth.signOut()
     }
 
 }
