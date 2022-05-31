@@ -1,40 +1,27 @@
 package com.example.solaroid.solaroidframe
 
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.PopupMenu
-import android.widget.Toolbar
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
-import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.NavigationViewModel
 import com.example.solaroid.R
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
+import com.example.solaroid.dialog.FilterDialogFragment
 import com.example.solaroid.firebase.FirebaseManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
-import kotlin.math.log
 
-open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClickListener
+open class SolaroidFrameFragmentContainer : Fragment(), FilterDialogFragment.OnFilterDialogListener
  {
 
     companion object {
         const val TAG = "프레임 컨테이너"
-        const val TAG_L = "LATELY"
-        const val TAG_F = "FAVORITE"
-
     }
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
@@ -44,23 +31,11 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
 
     private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
-    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private lateinit var toolbarMenu : Menu
 
     private lateinit var backPressCallback : OnBackPressedCallback
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-//        backPressCallback = object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                if(binding.drawerLayout.isDrawerOpen(Gravity.LEFT))
-//                    binding.drawerLayout.closeDrawer(Gravity.LEFT)
-//                else requireActivity().finish()
-//            }
-//        }
-//        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
-    }
-
+    private lateinit var filterDialogFragment : FilterDialogFragment
 
 
     override fun onCreateView(
@@ -68,7 +43,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate<FragmentSolaroidFrameContainerBinding>(
+        binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_solaroid_frame_container,
             container,
@@ -99,14 +74,14 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             }
         })
 
-        viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-
-                val view = this.requireActivity().window.decorView.findViewById(R.id.filter) as View
-                popupShow(view)
-
-            }
-        })
+//        viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
+//            it.getContentIfNotHandled()?.let {
+//
+//                val view = this.requireActivity().window.decorView.findViewById(R.id.filter) as View
+//                popupShow(view)
+//
+//            }
+//        })
 
 
         viewModel.naviToCreateFrag.observe(viewLifecycleOwner, Observer {
@@ -146,7 +121,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
             }
         })
 
-
+        filterDialogFragment = FilterDialogFragment(this)
         return binding.root
     }
 
@@ -169,45 +144,57 @@ open class SolaroidFrameFragmentContainer : Fragment(), PopupMenu.OnMenuItemClic
                 true
             }
             R.id.filter -> {
-                viewModel.onFilterPopupMenu()
+                showFilterDialog()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+//
+//    private fun popupShow(view: View?) {
+//        if(view ==null){
+//            Log.i(TAG,"popupShow : ${view}")
+//            return
+//        }
+//        val popUp = PopupMenu(this.activity, view)
+//        popUp.setOnMenuItemClickListener(this@SolaroidFrameFragmentContainer)
+//        popUp.menuInflater.inflate(R.menu.fragment_frame_popup_menu, popUp.menu)
+//        popUp.show()
+//    }
+//
+//
+//    override fun onMenuItemClick(p0: MenuItem?): Boolean {
+//        return when (p0?.itemId) {
+//            R.id.filter_lately -> {
+//                viewModel.setPhotoTicketFilter(PhotoTicketFilter.LATELY)
+//                true
+//            }
+//            R.id.filter_favorite -> {
+//                viewModel.setPhotoTicketFilter(PhotoTicketFilter.FAVORITE)
+//                true
+//            }
+//
+//            else -> true
+//        }
+//    }
 
-    private fun popupShow(view: View?) {
-        if(view ==null){
-            Log.i(TAG,"popupShow : ${view}")
-            return
-        }
-        val popUp = PopupMenu(this.activity, view)
-        popUp.setOnMenuItemClickListener(this@SolaroidFrameFragmentContainer)
-        popUp.menuInflater.inflate(R.menu.fragment_frame_popup_menu, popUp.menu)
-        popUp.show()
-    }
-
-
-    override fun onMenuItemClick(p0: MenuItem?): Boolean {
-        return when (p0?.itemId) {
-            R.id.filter_lately -> {
-                viewModel.setPhotoTicketFilter(PhotoTicketFilter.LATELY)
-                true
-            }
-            R.id.filter_favorite -> {
-                viewModel.setPhotoTicketFilter(PhotoTicketFilter.FAVORITE)
-                true
-            }
-
-            else -> true
-        }
-    }
+     private fun showFilterDialog() {
+         filterDialogFragment.show(parentFragmentManager, "filterDialog")
+     }
 
 
     private fun logout() {
         FirebaseManager.getAuthInstance().signOut()
     }
 
+     override fun onFilterLately() {
+         viewModel.setPhotoTicketFilter(PhotoTicketFilter.LATELY)
+     }
 
-}
+     override fun onFilterFavorite() {
+         viewModel.setPhotoTicketFilter(PhotoTicketFilter.FAVORITE)
+     }
+
+
+ }

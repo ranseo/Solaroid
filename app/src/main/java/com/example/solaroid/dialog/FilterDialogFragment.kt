@@ -1,0 +1,56 @@
+package com.example.solaroid.dialog
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.RadioGroup
+import androidx.databinding.DataBindingUtil
+import com.example.solaroid.R
+import com.example.solaroid.databinding.FragmentFilterDialogBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
+class FilterDialogFragment(_listener:OnFilterDialogListener) : BottomSheetDialogFragment() {
+    private lateinit var binding: FragmentFilterDialogBinding
+
+    val listener : OnFilterDialogListener = _listener
+
+    interface OnFilterDialogListener {
+        fun onFilterLately()
+        fun onFilterFavorite()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_filter_dialog, container, false)
+
+        val radioChangedLister = RadioGroup.OnCheckedChangeListener { p0, p1 ->
+            when(p1) {
+                R.id.radio_favorite -> {
+                    listener.onFilterFavorite()
+                }
+                R.id.radio_date -> {
+                    listener.onFilterLately()
+                }
+            }
+        }
+        binding.radioGroup.setOnCheckedChangeListener(radioChangedLister)
+        binding.radioDate.isChecked=true
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val bottomSheet = binding.layoutBottomSheet
+        val behavior = BottomSheetBehavior.from(bottomSheet!!)
+
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+}

@@ -141,6 +141,15 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         dialog.dismiss()
     }
 
+    fun showDatePickerDialog() {
+        val newFragment = DatePickerDialogFragment(this)
+        newFragment.show(parentFragmentManager, "DatePicker")
+    }
+
+    override fun onDateSet(year: Int, month: Int, day: Int) {
+        viewModel.setDate(convertTodayToFormatted(convertDateToLong(year,month,day)))
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         backPressCallback = object : OnBackPressedCallback(true) {
@@ -162,12 +171,5 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         const val TAG_ADD_SAVE = "ADD_SAVE"
     }
 
-    fun showDatePickerDialog() {
-        val newFragment = DatePickerDialogFragment(this)
-        newFragment.show(parentFragmentManager, "DatePicker")
-    }
 
-    override fun onDateSet(year: Int, month: Int, day: Int) {
-        viewModel.setDate(convertTodayToFormatted(convertDateToLong(year,month,day)))
-    }
 }

@@ -44,12 +44,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/friend_toolbar"
                 app:navGraph="@navigation/friend_navigation"
-                tools:layout="@layout/fragment_friend" />
+                tools:layout="@layout/fragment_friend_list" />
 
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_navi_friend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:menu="@menu/activity_friend_bot_navi"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

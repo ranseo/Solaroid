@@ -14,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.R
 import com.example.solaroid.databinding.ActivityFriendBinding
 import com.google.android.material.navigation.NavigationView
@@ -44,7 +45,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         ///
 
 
-
+        binding.bottomNaviFriend.setupWithNavController(navController)
 
     }
 

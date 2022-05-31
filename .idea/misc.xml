@@ -38,10 +38,15 @@
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layout/list_item_solaroid_photo.xml" value="0.33" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layout/menu_item_login_info.xml" value="0.25" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layout/navigation_view_fragment_frame.xml" value="0.4753211629479378" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/drawable/border_line_only_bot.xml" value="0.1655" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/activity_friend.xml" value="0.22" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_filter_dialog.xml" value="0.2297383535417996" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend.xml" value="0.25" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_add.xml" value="0.2" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_list.xml" value="0.25" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_profile.xml" value="0.2573749465583583" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/list_item_solaroid_friend.xml" value="0.22" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/menu/activity_friend_bot_navi.xml" value="0.15391192817443353" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_add.xml" value="0.30055579307396324" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_detail.xml" value="0.30055579307396324" />
