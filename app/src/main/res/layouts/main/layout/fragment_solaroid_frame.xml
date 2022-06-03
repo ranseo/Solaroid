@@ -28,7 +28,7 @@
             android:layout_marginBottom="50dp"/>
 
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+        <com.example.solaroid.custom.view.CustomBottomNavigationView
             android:id="@+id/fragment_frame_bottom_navi"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,6 +39,22 @@
             app:labelVisibilityMode="labeled"
             app:menu="@menu/fragment_frame_bot_navi"
             />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:src="@drawable/ic_photo_create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:elevation="3dp"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

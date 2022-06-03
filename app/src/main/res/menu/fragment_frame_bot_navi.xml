@@ -12,8 +12,10 @@
 
     <item
         android:id="@+id/camera"
-        android:icon="@drawable/ic_photo_create"
-        android:title="촬영"/>
+        android:title=""
+        android:enabled="false"
+        android:checkable="false"
+        />
 
     <item
         android:id="@+id/add"
