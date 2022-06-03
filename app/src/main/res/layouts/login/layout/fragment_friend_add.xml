@@ -60,13 +60,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:background="@drawable/edit_text_shadow">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rec_friend"
+
+            <TableLayout
+                android:id="@+id/tablayout_friend_add"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/list_item_solaroid_friend"
-                tools:itemCount="6"/>
+                android:layout_height="wrap_content"
+                app:tabMode="scrollable"/>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPage_friend_add"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
         </FrameLayout>
 
 
