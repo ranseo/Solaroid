@@ -61,7 +61,7 @@
             android:background="@drawable/edit_text_shadow">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rec_friend"
+                android:id="@+id/rec_friend_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

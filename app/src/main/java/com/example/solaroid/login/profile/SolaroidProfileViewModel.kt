@@ -5,9 +5,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.repositery.ProfileRepostiery
+import com.example.solaroid.repositery.UsersRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -20,6 +22,7 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
     val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage)
+    val usersRepositery = UsersRepositery(fbAuth,fbDatabase,fbStorage)
 
     enum class ProfileErrorType {
         IMAGEERROR, NICKNAMEERROR, ISRIGHT, EMPTY
@@ -53,6 +56,8 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         _profileType.value = type
     }
 
+    var firebaseProfile : FirebaseProfile? = null
+
     val isAlamVisible = Transformations.map(profileType) { type ->
         when (type) {
             ProfileErrorType.ISRIGHT, ProfileErrorType.EMPTY -> false
@@ -68,6 +73,23 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    var allUserNum : Long = 0L
+
+
+    fun getFriendCode() {
+        viewModelScope.launch {
+            usersRepositery.getAllUserNum()?.addOnSuccessListener {
+                try {
+                    allUserNum = it.value as Long
+
+                } catch (error: Exception) {
+                    Log.i(TAG,"getFriendCode error : ${error.message}")
+                }
+            }
+        }
+    }
+
+
     private val _naviToMain = MutableLiveData<Event<Any?>>()
     val naviToMain: LiveData<Event<Any?>>
         get() = _naviToMain
@@ -77,11 +99,15 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
     }
 
     private val _naviToLogin = MutableLiveData<Event<Any?>>()
-    val naviToLogin : LiveData<Event<Any?>>
+    val naviToLogin: LiveData<Event<Any?>>
         get() = _naviToLogin
 
     fun navigateToLogin() {
         _naviToLogin.value = Event(Unit)
+    }
+
+    init {
+        getFriendCode()
     }
 
 
@@ -121,10 +147,24 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
             val profile = FirebaseProfile(
                 user.email!!,
                 nickname = nickname.value!!,
-                profileImg = profileUrl.value!!
+                profileImg = profileUrl.value!!,
+                friendCode = (allUserNum+1)
             )
 
+            firebaseProfile = profile
             profileRepositery.insertProfileInfo(profile, getApplication())
+        }
+    }
+
+    fun updateAllUsersNum() {
+        viewModelScope.launch {
+            usersRepositery.updateAllUserNum(allUserNum+1L)
+        }
+    }
+
+    fun insertUserList() {
+        viewModelScope.launch {
+            usersRepositery.insertUsersList(allUserNum+1L, firebaseProfile!!)
         }
     }
 

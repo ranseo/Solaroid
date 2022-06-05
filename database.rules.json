@@ -7,6 +7,44 @@
       }
     },
 
+
+    "currentUsersNum" : {
+      ".read" : "auth != null",
+      ".write" : "auth != null"
+    },
+
+
+    "allUsers" : {
+      ".read" : "root.child('profile').child(auth.uid).exists()",
+      ".write" : "root.child('profile').child(auth.uid).exists()"
+    },
+
+
+
+
+    "myFriendList" : {
+      "$uid" : {
+        "list" : {
+          ".read" : "auth !=null && auth.uid == $uid",
+          ".write" : "auth != null && auth.uid == $uid"
+        },
+      }
+    },
+
+    "friendRequest" : {
+      "$uid" : {
+        "list" : {
+          ".read" : "auth !=null && auth.uid == $uid",
+          ".write" : "auth != null && auth.uid == $uid"
+        }
+      }
+    },
+
+
+
+
+
+
     "photoTicket" : {
       "$uid" : {
         ".read" : "auth != null && auth.uid == $uid",

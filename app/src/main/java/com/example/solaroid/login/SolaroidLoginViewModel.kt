@@ -115,13 +115,18 @@ class SolaroidLoginViewModel : ViewModel() {
         viewModelScope.launch {
             Log.i(TAG, "fun isProfileSet()")
             val task = profileRepositery.isInitProfile()
-            if (task == null) _naviToNext.value = Event(false)
+            if (task == null) {
+                Log.i(TAG, "fun isProfileSet() task null")
+                _naviToNext.value = Event(false)
+            }
             else task
                 .addOnSuccessListener {
+                    Log.i(TAG, "fun isProfileSet() task success")
                     if (it.exists()) _naviToNext.value = Event(true)
                     else _naviToNext.value = Event(false)
                 }
                 .addOnFailureListener {
+                    Log.i(TAG, "fun isProfileSet() task fail")
                     _naviToNext.value = Event(false)
                 }
         }

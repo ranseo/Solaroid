@@ -50,7 +50,9 @@ class SolaroidProfileFragment() : Fragment() {
 
         viewModel.naviToMain.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
+
                 Log.i(TAG, "메인액티비티 이동")
+
                 findNavController().navigate(
                     SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
                 )
@@ -78,6 +80,8 @@ class SolaroidProfileFragment() : Fragment() {
             when (type) {
                 SolaroidProfileViewModel.ProfileErrorType.ISRIGHT -> {
                     viewModel.insertProfileFirebase()
+                    viewModel.updateAllUsersNum()
+                    viewModel.insertUserList()
                     viewModel.navigateToMain()
                 }
                 else -> {}

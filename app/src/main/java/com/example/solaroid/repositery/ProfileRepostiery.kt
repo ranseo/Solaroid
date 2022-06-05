@@ -76,7 +76,8 @@ class ProfileRepostiery(
                     val new = FirebaseProfile(
                         id = profile.id,
                         nickname = profile.nickname,
-                        profileImg = url.toString()
+                        profileImg = url.toString(),
+                        friendCode = profile.friendCode
                     )
 
                     fbDatabase.reference.child("profile")
@@ -85,6 +86,7 @@ class ProfileRepostiery(
                 }
         }
     }
+
 
     suspend fun isInitProfile(): Task<DataSnapshot>? {
         return withContext(Dispatchers.IO) {

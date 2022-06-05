@@ -59,6 +59,19 @@
                     />
 
                 <TextView
+                    android:id="@+id/user_friend_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.friendCode}"
+                    tools:text="#0002"
+                    android:textColor="@color/grey"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@+id/user_nickname"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_nickname"
+                    android:layout_marginStart="3dp"
+                    />
+
+                <TextView
                     android:id="@+id/user_email"
                     android:text="@{viewModel.emailId}"
                     android:layout_width="wrap_content"

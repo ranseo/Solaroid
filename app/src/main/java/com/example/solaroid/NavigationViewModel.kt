@@ -39,6 +39,9 @@ class NavigationViewModel : ViewModel() {
     val url = Transformations.map(profile) {
         it.profileImg
     }
+    val friendCode = Transformations.map(profile) {
+        it.friendCode
+    }
 
     init {
         getProfile()
@@ -50,15 +53,14 @@ class NavigationViewModel : ViewModel() {
                 try {
                     val profile = it.value as HashMap<*, *>
 
-
-
                     _profile.value = FirebaseProfile(
                         profile["id"] as String,
                         profile["nickname"] as String,
-                        profile["profileImg"] as String
+                        profile["profileImg"] as String,
+                        profile["friendCode"] as Long
                     ).toDomainModel()
                 } catch (error: Exception) {
-                    Log.i(TAG, "profile value error : ${profile}")
+                    Log.i(TAG, "profile value error : ${error.message}")
                 }
             }
         }

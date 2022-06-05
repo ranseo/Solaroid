@@ -244,11 +244,11 @@ class SolaroidFrameFragment() : Fragment(),
                     true
 
                 }
-                R.id.camera -> {
-                    viewModel.navigateToCreate()
-                    true
-
-                }
+//                R.id.camera -> {
+//                    viewModel.navigateToCreate()
+//                    true
+//
+//                }
                 R.id.add -> {
                     viewModel.navigateToAdd()
                     true
