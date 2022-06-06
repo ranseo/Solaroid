@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.solaroid.solaroidedit.SolaroidEditFragmentViewModel" />
+            type="com.example.solaroid.home.fragment.edit.SolaroidEditFragmentViewModel" />
 
         <import type="android.view.View" />
 
@@ -28,6 +28,7 @@
                 android:layout_width="@dimen/polaroid_film_larger_width"
                 android:layout_height="@dimen/polaroid_film_larger_height"
                 android:layout_marginEnd="3dp"
+                android:layout_marginBottom="50dp"
                 android:background="@color/white"
                 android:elevation="12dp"
                 android:visibility="@{viewmodel.imageSpin ? View.GONE : View.VISIBLE}"
@@ -94,6 +95,7 @@
                 android:layout_width="@dimen/polaroid_film_larger_width"
                 android:layout_height="@dimen/polaroid_film_larger_height"
                 android:layout_marginStart="3dp"
+                android:layout_marginBottom="50dp"
                 android:background="@color/white"
                 android:elevation="12dp"
                 android:visibility="@{viewmodel.imageSpin ? View.VISIBLE : View.GONE }"

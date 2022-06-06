@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_frame_container"
-        android:name="com.example.solaroid.solaroidframe.SolaroidFrameFragmentContainer"
+        android:name="com.example.solaroid.home.fragment.frame.SolaroidFrameFragmentContainer"
         android:label=""
         tools:layout="@layout/fragment_solaroid_frame_container">
         <action
@@ -62,7 +62,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_gallery"
-        android:name="com.example.solaroid.solaroidgallery.SolaroidGalleryFragment"
+        android:name="com.example.solaroid.home.fragment.gallery.SolaroidGalleryFragment"
         android:label="갤러리"
         tools:layout="@layout/fragment_solaroid_gallery">
 
@@ -83,7 +83,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_create"
-        android:name="com.example.solaroid.solaroidcreate.SolaroidPhotoCreateFragment"
+        android:name="com.example.solaroid.home.fragment.create.SolaroidPhotoCreateFragment"
         android:label="카메라 촬영"
         tools:layout="@layout/fragment_solaroid_photo_create">
 
@@ -97,7 +97,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_detail"
-        android:name="com.example.solaroid.solaroiddetail.SolaroidDetailFragment"
+        android:name="com.example.solaroid.home.fragment.detail.SolaroidDetailFragment"
         android:label="SolaroidPhotoDetailFragment"
         tools:layout="@layout/fragment_solaroid_detail">
         <argument
@@ -110,7 +110,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_edit"
-        android:name="com.example.solaroid.solaroidedit.SolaroidEditFragment"
+        android:name="com.example.solaroid.home.fragment.edit.SolaroidEditFragment"
         android:label="수정"
         tools:layout="@layout/fragment_solaroid_edit">
 
@@ -127,7 +127,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_add"
-        android:name="com.example.solaroid.solaroidadd.SolaroidAddFragment"
+        android:name="com.example.solaroid.home.fragment.add.SolaroidAddFragment"
         android:label=""
         tools:layout="@layout/fragment_solaroid_add">
 
@@ -140,7 +140,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_intro"
-        android:name="com.example.solaroid.intro.IntroFragment"
+        android:name="com.example.solaroid.home.fragment.intro.IntroFragment"
         android:label=""
         tools:layout="@layout/fragment_solaroid_intro">
 

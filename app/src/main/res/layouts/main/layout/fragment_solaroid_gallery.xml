@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.solaroidgallery.SolaroidGalleryViewModel" />
+            type="com.example.solaroid.home.fragment.gallery.SolaroidGalleryViewModel" />
 
     </data>
 
@@ -15,7 +15,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".solaroidgallery.SolaroidGalleryFragment">
+            tools:context=".home.fragment.gallery.SolaroidGalleryFragment">
 
             <Toolbar
                 android:id="@+id/toolbar"

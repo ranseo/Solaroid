@@ -49,4 +49,13 @@ interface DatabasePhotoTicketDao {
     fun getAllPhotoTicketWithUser(user:String) : LiveData<List<DatabasePhotoTicket>?>
 
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(databaseFriend: DatabaseFriend)
+
+    @Query("DELETE FROM friend_table WHERE friend_code == :friendCode")
+    suspend fun delete(friendCode:Long)
+
+    @Query("SELECT * FROM friend_table ORDER BY friend_nickname DESC")
+    fun getAllFriends() : LiveData<List<DatabaseFriend>>
+
 }

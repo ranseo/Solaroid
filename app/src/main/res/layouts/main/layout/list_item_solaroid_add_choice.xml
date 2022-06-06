@@ -6,7 +6,7 @@
     <data>
         <variable
             name="item"
-            type="com.example.solaroid.solaroidadd.MediaStoreData" />
+            type="com.example.solaroid.domain.MediaStoreData" />
 
         <variable
             name="clickListener"

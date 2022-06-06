@@ -10,7 +10,8 @@ data class DatabaseProfile(
     @ColumnInfo(name = "profile_user")
     val user : String,
     var nickname: String?,
-    var profileImage : String?
+    var profileImage : String?,
+    val friendCode : String
 ) {
 
 }

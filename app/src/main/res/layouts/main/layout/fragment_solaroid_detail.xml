@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.solaroiddetail.SolaroidDetailViewModel" />
+            type="com.example.solaroid.home.fragment.detail.SolaroidDetailViewModel" />
 
         <import type="android.view.View"/>
 
@@ -16,7 +16,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".solaroiddetail.SolaroidDetailFragment">
+        tools:context=".home.fragment.detail.SolaroidDetailFragment">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,14 +1,8 @@
 package com.example.solaroid.login
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavHostController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.example.solaroid.BuildConfig
-import com.example.solaroid.MainActivity
-import com.example.solaroid.R
 import com.example.solaroid.databinding.ActivityLoginBinding
 import com.example.solaroid.firebase.FirebaseManager
 import com.google.firebase.auth.ktx.auth

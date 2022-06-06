@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".solaroidcreate.SolaroidPhotoCreateFragment">
+    tools:context=".home.fragment.create.SolaroidPhotoCreateFragment">
 
     <data>
 
         <variable
             name="viewmodel"
-            type="com.example.solaroid.solaroidcreate.SolaroidPhotoCreateViewModel" />
+            type="com.example.solaroid.home.fragment.create.SolaroidPhotoCreateViewModel" />
 
         <import type="android.view.View"/>
 

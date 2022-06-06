@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/Theme.FriendActivity"
-        tools:context=".friend.fragment.FriendListFragment"
+        tools:context=".friend.fragment.list.FriendListFragment"
         android:background="@color/soft_grey">
 
 

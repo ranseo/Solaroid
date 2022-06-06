@@ -7,14 +7,14 @@
 
     <fragment
         android:id="@+id/fragment_friend_list"
-        android:name="com.example.solaroid.friend.fragment.FriendListFragment"
+        android:name="com.example.solaroid.friend.fragment.list.FriendListFragment"
         tools:layout="@layout/fragment_friend_list">
 
     </fragment>
 
     <fragment
         android:id="@+id/fragment_friend_add"
-        android:name="com.example.solaroid.friend.fragment.FriendAddFragment"
+        android:name="com.example.solaroid.friend.fragment.add.FriendAddFragment"
         tools:layout="@layout/fragment_friend_add">
 
     </fragment>

@@ -1,6 +1,6 @@
 package com.example.solaroid.firebase
 
-import com.example.solaroid.convertLongToDecimalFormat
+import com.example.solaroid.convertLongToHexStringFormat
 import com.example.solaroid.domain.Profile
 
 data class FirebaseProfile(
@@ -10,12 +10,12 @@ data class FirebaseProfile(
     val friendCode : Long
 )
 
-fun FirebaseProfile.toDomainModel() : Profile {
+fun FirebaseProfile.asDomainModel() : Profile {
     return Profile(
         id,
         nickname,
         profileImg,
-        convertLongToDecimalFormat(friendCode)
+        convertLongToHexStringFormat(friendCode)
     )
 }
 

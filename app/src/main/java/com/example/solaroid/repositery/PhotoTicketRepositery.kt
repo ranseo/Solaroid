@@ -214,6 +214,7 @@ class PhotoTicketRepositery(
 
         storageRef.putFile(file, metadata)
             .addOnSuccessListener { taskSnapshot ->
+                Log.i(TAG, "taskSnapshot.metadata!!.reference!!.downloadUrl")
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { url ->
                         CoroutineScope(Dispatchers.IO).launch {
@@ -230,7 +231,7 @@ class PhotoTicketRepositery(
                                 .child(user.uid)
                                 .child(key)
                                 .setValue(new)
-
+                            Log.i(TAG, "Before dataSource.insert(new.asDatabaseModel(user.email!!))")
                             dataSource.insert(new.asDatabaseModel(user.email!!))
                         }
 

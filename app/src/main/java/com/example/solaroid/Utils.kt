@@ -20,6 +20,11 @@ fun convertPhotoTicketToToastString(photoTicket: PhotoTicket, res:Resources) : S
     return "${photoTicket.url}\n${photoTicket.date}\n${photoTicket.frontText}\n${photoTicket.backText}"
 }
 
-fun convertLongToDecimalFormat(num:Long) : String {
+fun convertLongToHexStringFormat(num:Long) : String {
     return "#"+"%04x".format(num)
 }
+
+fun convertHexStringToLongFormat(str:String) : Long {
+    return str.substring(1..4).toLong(16)
+}
+

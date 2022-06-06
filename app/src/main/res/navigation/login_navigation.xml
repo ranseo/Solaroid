@@ -7,9 +7,9 @@
 
     <activity
         android:id="@+id/main_activity"
-        android:name="com.example.solaroid.MainActivity"
+        android:name="com.example.solaroid.home.activity.HomeActivity"
         android:label="메인화면"
-        tools:layout="@layout/activity_main"
+        tools:layout="@layout/activity_home"
         />
 
     <fragment

@@ -2,7 +2,7 @@ package com.example.solaroid.adapter
 
 import android.net.Uri
 import com.example.solaroid.domain.PhotoTicket
-import com.example.solaroid.solaroidadd.MediaStoreData
+import com.example.solaroid.domain.MediaStoreData
 
 class OnClickListener(val clickListener: (photoTicketKey:String)->Unit) {
     fun onClick(photoTicket: PhotoTicket) {
