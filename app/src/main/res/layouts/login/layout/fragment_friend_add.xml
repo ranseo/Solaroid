@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.example.solaroid.friend.fragment.add.FriendAddViewModel" />
+
+        <import type="android.view.View"/>
 
     </data>
 
@@ -21,9 +27,11 @@
             android:layout_width="0dp"
             android:layout_height="42dp"
             android:textSize="16sp"
+            android:onTextChanged="@{(s,start,before,count)->viewModel.setSearchFriendCode(s)}"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="12dp"
+            android:inputType="phone"
             android:background="@drawable/edit_text_shadow"
             android:hint="친구 코드를 입력해주세요"
             android:textAlignment="center"
@@ -52,6 +60,7 @@
 
         <FrameLayout
             android:id="@+id/layout_request"
+            android:visibility="@{viewModel.isSearchUser ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -65,8 +74,18 @@
             <include
                 android:id="@+id/list_friend"
                 android:visibility="visible"
+                bind:profile="@{viewModel.searchUser}"
                 layout="@layout/list_item_solaroid_friend"/>
 
+            <ImageButton
+                android:id="@+id/btn_send"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:scaleType="fitCenter"
+                android:background="@color/fui_transparent"
+                android:src="@drawable/ic_baseline_send_24"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="24dp"/>
 
         </FrameLayout>
 
@@ -81,7 +100,7 @@
             android:background="@drawable/edit_text_shadow">
 
 
-            <TableLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tablayout_friend_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,7 +109,8 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPage_friend_add"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:orientation="horizontal"/>
 
         </FrameLayout>
 

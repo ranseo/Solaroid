@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
-import com.example.solaroid.firebase.toDomainModel
+import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.repositery.ProfileRepostiery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -58,7 +58,7 @@ class NavigationViewModel : ViewModel() {
                         profile["nickname"] as String,
                         profile["profileImg"] as String,
                         profile["friendCode"] as Long
-                    ).toDomainModel()
+                    ).asDomainModel()
                 } catch (error: Exception) {
                     Log.i(TAG, "profile value error : ${error.message}")
                 }

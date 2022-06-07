@@ -38,9 +38,9 @@ class UsersRepositery(
         }
     }
 
-    suspend fun insertUsersList(friendCode:Long,profile: FirebaseProfile) {
+    suspend fun insertUsersList(profile: FirebaseProfile) {
         withContext(Dispatchers.IO) {
-            val usersRef = fbDatabase.reference.child("allUsers").child("${friendCode}")
+            val usersRef = fbDatabase.reference.child("allUsers").child("${profile.friendCode}")
 
             usersRef.setValue(profile).addOnCompleteListener {
                 if (it.isSuccessful) {

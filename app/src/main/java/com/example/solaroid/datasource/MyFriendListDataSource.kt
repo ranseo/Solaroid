@@ -7,9 +7,8 @@ import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 
 class MyFriendListDataSource(
-
+    private var listener : OnValueListener
 ) {
-    private var listener : OnValueListener? = null
     interface OnValueListener {
         fun onValueAdded(profile: FirebaseProfile)
         fun onValueRemoved(profile: FirebaseProfile)
@@ -52,11 +51,6 @@ class MyFriendListDataSource(
         }
 
     }
-
-    fun setListener(_listener:OnValueListener) {
-        listener = _listener
-    }
-
     companion object {
         const val TAG = "마이프렌드리스트 데이터소스"
     }

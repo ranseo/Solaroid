@@ -22,11 +22,11 @@ class FriendListRepositery(
     private val fbAuth: FirebaseAuth,
     private val fbDatabase: FirebaseDatabase,
     private val myFriendListDataSource: MyFriendListDataSource,
-    private val roomDatabase : DatabasePhotoTicketDao
+    roomDatabase : DatabasePhotoTicketDao
 
-) : MyFriendListDataSource.OnValueListener {
+)  {
 
-    private val friendList : LiveData<List<Profile>> = Transformations.map(roomDatabase.getAllFriends()){ list ->
+    val friendList : LiveData<List<Profile>> = Transformations.map(roomDatabase.getAllFriends()){ list ->
         list.asDomainModel()
     }
 
@@ -34,21 +34,12 @@ class FriendListRepositery(
     suspend fun addListenerForMyFriendList()  {
         withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
-            myFriendListDataSource.setListener(this@FriendListRepositery)
             fbDatabase.reference.child("myFriendList").child(user.uid).addChildEventListener(myFriendListDataSource.friendListListener)
         }
     }
 
 
-    override fun onValueAdded(profile: FirebaseProfile) {
-        CoroutineScope(Dispatchers.IO).launch {
-            roomDatabase.insert(profile.asDomainModel().asDatabaseFriend())
-        }
-    }
 
-    override fun onValueRemoved(profile: FirebaseProfile) {
-
-    }
 
 
 }

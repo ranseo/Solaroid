@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.example.solaroid.friend.fragment.list.FriendListViewModel" />
 
     </data>
 
@@ -62,6 +65,7 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rec_friend_list"
+                submitList="@{viewModel.friendList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

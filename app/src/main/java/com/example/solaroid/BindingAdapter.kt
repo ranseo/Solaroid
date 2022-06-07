@@ -13,6 +13,8 @@ import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.domain.PhotoTicket
+import com.example.solaroid.domain.Profile
+import com.example.solaroid.friend.adapter.FriendListAdatper
 
 @BindingAdapter("submitList")
 fun bindViewPager(viewPager: ViewPager2, photoTickets: List<PhotoTicket>?) {
@@ -33,6 +35,15 @@ fun bindRecycler(recyclerView: RecyclerView, photoTickets: List<PhotoTicket>?) {
     }
 }
 
+@JvmName("bindRecycler1")
+@BindingAdapter("submitList")
+fun bindRecycler(recyclerView: RecyclerView, profiles: List<Profile>?) {
+    val adapter = recyclerView.adapter as FriendListAdatper
+    profiles?.let {
+        Log.i("바인딩어댑터","포토티켓값 : ${it}")
+        adapter.submitList(it)
+    }
+}
 
 
 @BindingAdapter("setImage")

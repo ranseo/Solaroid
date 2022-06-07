@@ -13,6 +13,7 @@ import com.example.solaroid.repositery.UsersRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SolaroidProfileViewModel(application: Application) : AndroidViewModel(application) {
@@ -141,7 +142,7 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
 
 
     fun insertProfileFirebase() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
 
             val user = fbAuth.currentUser!!
             val profile = FirebaseProfile(
@@ -157,14 +158,14 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
     }
 
     fun updateAllUsersNum() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             usersRepositery.updateAllUserNum(allUserNum+1L)
         }
     }
 
     fun insertUserList() {
-        viewModelScope.launch {
-            usersRepositery.insertUsersList(allUserNum+1L, firebaseProfile!!)
+        viewModelScope.launch(Dispatchers.IO) {
+            usersRepositery.insertUsersList(firebaseProfile!!)
         }
     }
 

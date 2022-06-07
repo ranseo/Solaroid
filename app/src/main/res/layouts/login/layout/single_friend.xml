@@ -8,7 +8,6 @@
             name="profile"
             type="com.example.solaroid.domain.Profile" />
 
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +28,6 @@
                 android:id="@+id/iv_profile"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                setImage="@{profile.profileImg}"
                 android:background="@drawable/profile_frame"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
@@ -41,7 +39,6 @@
         <TextView
             android:id="@+id/tv_nickname"
             tools:text="란서"
-            android:text="@{profile.nickname}"
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +50,6 @@
         <TextView
             android:id="@+id/tv_friend_code"
             tools:text="#2366"
-            android:text="@{profile.friendCode}"
             android:textSize="24sp"
             android:textColor="@color/grey"
             android:layout_width="wrap_content"
@@ -62,6 +58,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="6dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_send"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:background="@color/fui_transparent"
+            android:src="@drawable/ic_baseline_send_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 
 

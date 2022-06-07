@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentFriendAddBinding
+import com.example.solaroid.friend.adapter.FriendAddAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 
 class FriendAddFragment : Fragment() {
 
@@ -17,8 +19,23 @@ class FriendAddFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_add, container, false)
+
+
+        val adapter = FriendAddAdapter(this)
+        binding.viewPageFriendAdd.adapter = adapter
+
+        setTabLayout()
+
         return binding.root
     }
+
+
+    private fun setTabLayout() {
+        TabLayoutMediator(binding.tablayoutFriendAdd, binding.viewPageFriendAdd) { tab, pos ->
+            tab.text = if (pos == 0) "수신 목록" else "발신 목록"
+        }.attach()
+    }
+
+
 }
