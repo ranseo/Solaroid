@@ -56,7 +56,7 @@ class IntroFragment : Fragment() {
     suspend fun startLoginActivity() {
         withContext(Dispatchers.Main) {
             findNavController().navigate(
-                IntroFragmentDirections.globalActionMainActivityToLoginActivity()
+                IntroFragmentDirections.globalActionHomeActivityToLoginActivity()
             )
         }
     }

@@ -104,7 +104,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             event.getContentIfNotHandled()?.let{
                 if(!it) {
                        navController.navigate(
-                           R.id.global_action_mainActivity_to_loginActivity
+                           R.id.global_action_homeActivity_to_loginActivity
                        )
                 }
             }
@@ -131,6 +131,19 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             else supportActionBar?.hide()
         }
 
+        naviViewModel.naviToLoginAct.observe(this) {
+            it.getContentIfNotHandled()?.let{
+                logout()
+            }
+        }
+
+        naviViewModel.naviToFriendAct.observe(this) {
+            it.getContentIfNotHandled()?.let{
+                navController.navigate(
+                    R.id.global_action_homeActivity_to_friendActivity
+                )
+            }
+        }
 
     }
 
@@ -140,11 +153,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.login_info -> {
-                auth.signOut()
-            }
-        }
+//        when (item.itemId) {
+//            R.id.login_info -> {
+//                auth.signOut()
+//            }
+//        }
         binding.drawerLayoutMain.closeDrawer(GravityCompat.START)
         return true
     }
@@ -157,8 +170,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     private fun logout() {
+        auth.signOut()
         navController.navigate(
-            R.id.global_action_mainActivity_to_loginActivity
+            R.id.global_action_homeActivity_to_loginActivity
         )
         finish()
     }

@@ -12,7 +12,6 @@ import com.example.solaroid.friend.adapter.FriendAddAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class FriendAddFragment : Fragment() {
-
     private lateinit var binding : FragmentFriendAddBinding
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +35,4 @@ class FriendAddFragment : Fragment() {
             tab.text = if (pos == 0) "수신 목록" else "발신 목록"
         }.attach()
     }
-
-
 }

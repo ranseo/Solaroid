@@ -68,11 +68,7 @@ open class SolaroidFrameFragmentContainer : Fragment(), FilterDialogFragment.OnF
 
 
 
-        naviViewModel.naviToLoginAct.observe(viewLifecycleOwner, Observer{
-            it.getContentIfNotHandled()?.let{
-                logout()
-            }
-        })
+
 
 //        viewModel.popUpMenu.observe(viewLifecycleOwner, Observer {
 //            it.getContentIfNotHandled()?.let {

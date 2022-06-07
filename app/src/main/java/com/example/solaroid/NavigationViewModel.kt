@@ -25,6 +25,16 @@ class NavigationViewModel : ViewModel() {
     val naviToLoginAct: LiveData<Event<Any?>>
         get() = _naviToLoginAct
 
+    private val _naviToHomeAct = MutableLiveData<Event<Any?>>()
+    val naviToHomeAct: LiveData<Event<Any?>>
+        get() = _naviToHomeAct
+
+
+    private val _naviToFriendAct = MutableLiveData<Event<Any?>>()
+    val naviToFriendAct: LiveData<Event<Any?>>
+        get() = _naviToFriendAct
+
+
     private val _profile = MutableLiveData<Profile>()
     val profile: LiveData<Profile>
         get() = _profile
@@ -69,6 +79,14 @@ class NavigationViewModel : ViewModel() {
 
     fun navigateToLoginAct() {
         _naviToLoginAct.value = Event(Unit)
+    }
+
+    fun navigateToHomeAct() {
+        _naviToHomeAct.value = Event(Unit)
+    }
+
+    fun navigateToFriendAct() {
+        _naviToFriendAct.value = Event(Unit)
     }
 
     companion object {

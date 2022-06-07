@@ -7,18 +7,28 @@
 
 
     <action
-        android:id="@+id/global_action_mainActivity_to_loginActivity"
+        android:id="@+id/global_action_homeActivity_to_loginActivity"
         app:destination="@+id/login_activity"
         app:popUpTo="@+id/login_activity"
         app:popUpToInclusive="true"/>
+
+    <action
+        android:id="@+id/global_action_homeActivity_to_friendActivity"
+        app:destination="@+id/friend_activity"
+        app:popUpTo="@+id/friend_activity"
+        app:popUpToInclusive="true"/>
+
 
     <activity
         android:id="@+id/login_activity"
         android:name="com.example.solaroid.login.LoginActivity"
         tools:layout="@layout/activity_login"
-        android:label="로그인 활동">
-
-    </activity>
+        android:label="로그인 활동"/>
+    <activity
+        android:id="@+id/friend_activity"
+        android:name="com.example.solaroid.friend.activity.FriendActivity"
+        tools:layout="@layout/activity_friend"
+        android:label=""/>
 
     <fragment
         android:id="@+id/fragment_solaroid_frame_container"

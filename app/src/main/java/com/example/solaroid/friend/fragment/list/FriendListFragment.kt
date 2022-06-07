@@ -24,8 +24,9 @@ class FriendListFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_list, container, false)
         setHasOptionsMenu(true)
 
-        val application = requireActivity().application
+        val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
+
         viewModelFactory = FriendListViewModelFactory(dataSource)
         viewModel = ViewModelProvider(this, viewModelFactory)[FriendListViewModel::class.java]
 
