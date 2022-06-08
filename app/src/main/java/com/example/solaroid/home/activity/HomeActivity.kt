@@ -95,7 +95,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 else -> {
                     Log.i(TAG, "NOT AUTHENTICATED")
-                    logout()
+                    navController.navigate(
+                        R.id.global_action_homeActivity_to_loginActivity
+                    )
+                    finish()
                 }
             }
         })
@@ -142,13 +145,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navController.navigate(
                     R.id.global_action_homeActivity_to_friendActivity
                 )
+                this.finish()
             }
         }
 
     }
 
     override fun onSupportNavigateUp() : Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
@@ -171,10 +174,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun logout() {
         auth.signOut()
-        navController.navigate(
-            R.id.global_action_homeActivity_to_loginActivity
-        )
-        finish()
     }
 
     override fun onRequestPermissionsResult(

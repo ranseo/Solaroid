@@ -119,16 +119,16 @@ class SolaroidLoginViewModel : ViewModel() {
                 Log.i(TAG, "fun isProfileSet() task null")
                 _naviToNext.value = Event(false)
             }
-            else task
-                .addOnSuccessListener {
+            else task.addOnCompleteListener {
+                if(it.isSuccessful) {
                     Log.i(TAG, "fun isProfileSet() task success")
-                    if (it.exists()) _naviToNext.value = Event(true)
+                    if (it.result.exists()) _naviToNext.value = Event(true)
                     else _naviToNext.value = Event(false)
-                }
-                .addOnFailureListener {
+                } else {
                     Log.i(TAG, "fun isProfileSet() task fail")
                     _naviToNext.value = Event(false)
                 }
+            }
         }
     }
 

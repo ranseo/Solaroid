@@ -5,16 +5,20 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.NavigationViewModel
 import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
+import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.repositery.ProfileRepostiery
 import com.example.solaroid.repositery.UsersRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SolaroidProfileViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -23,7 +27,7 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
     val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage)
-    val usersRepositery = UsersRepositery(fbAuth,fbDatabase,fbStorage)
+    val usersRepositery = UsersRepositery(fbAuth, fbDatabase, fbStorage)
 
     enum class ProfileErrorType {
         IMAGEERROR, NICKNAMEERROR, ISRIGHT, EMPTY
@@ -57,7 +61,7 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         _profileType.value = type
     }
 
-    var firebaseProfile : FirebaseProfile? = null
+    var firebaseProfile: FirebaseProfile? = null
 
     val isAlamVisible = Transformations.map(profileType) { type ->
         when (type) {
@@ -74,19 +78,25 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    var allUserNum : Long = 0L
+    var allUserNum: Long = 0L
 
 
     fun getFriendCode() {
         viewModelScope.launch {
-            usersRepositery.getAllUserNum()?.addOnSuccessListener {
-                try {
-                    allUserNum = it.value as Long
+            usersRepositery.getAllUserNum()?.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    try {
+                        allUserNum = it.result.value as Long
+                        Log.i(TAG, "getFriendCode : ${allUserNum}")
 
-                } catch (error: Exception) {
-                    Log.i(TAG,"getFriendCode error : ${error.message}")
+                    } catch (error: Exception) {
+                        Log.i(TAG, "getFriendCode error : ${error.message}")
+                    }
+                } else {
+                    Log.i(TAG, "getFriendCode error : ${it.exception?.message}")
                 }
             }
+
         }
     }
 
@@ -140,31 +150,60 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
 
     ///////////////
 
+    fun insertRefreshUpdateInsert() {
+        viewModelScope.launch {
+            insertProfileFirebase()
+            refreshProfile()
+            updateAllUsersNum()
+            insertUserList()
+            navigateToMain()
+        }
+    }
 
-    fun insertProfileFirebase() {
-        viewModelScope.launch(Dispatchers.IO) {
 
+    suspend fun insertProfileFirebase(): Unit {
+        return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
             val profile = FirebaseProfile(
                 user.email!!,
                 nickname = nickname.value!!,
                 profileImg = profileUrl.value!!,
-                friendCode = (allUserNum+1)
+                friendCode = (allUserNum + 1)
             )
 
-            firebaseProfile = profile
             profileRepositery.insertProfileInfo(profile, getApplication())
+            delay(500)
         }
     }
 
-    fun updateAllUsersNum() {
-        viewModelScope.launch(Dispatchers.IO) {
-            usersRepositery.updateAllUserNum(allUserNum+1L)
+    suspend fun refreshProfile(): Unit {
+        return withContext(Dispatchers.IO) {
+            profileRepositery.getProfileInfo()?.addOnSuccessListener {
+                try {
+                    val profile = it.value as HashMap<*, *>
+
+                    firebaseProfile = FirebaseProfile(
+                        profile["id"] as String,
+                        profile["nickname"] as String,
+                        profile["profileImg"] as String,
+                        profile["friendCode"] as Long
+                    )
+                } catch (error: Exception) {
+                    Log.i(TAG, "profile value error : ${error.message}")
+                }
+            }
         }
     }
 
-    fun insertUserList() {
-        viewModelScope.launch(Dispatchers.IO) {
+    suspend fun updateAllUsersNum(): Unit {
+        withContext(Dispatchers.IO) {
+            usersRepositery.updateAllUserNum(allUserNum + 1L)
+        }
+    }
+
+    suspend fun insertUserList() {
+        withContext(Dispatchers.IO) {
+            delay(1000)
             usersRepositery.insertUsersList(firebaseProfile!!)
         }
     }

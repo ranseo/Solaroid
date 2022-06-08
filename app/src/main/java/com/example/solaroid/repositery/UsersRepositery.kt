@@ -22,9 +22,9 @@ class UsersRepositery(
 
             fbDatabase.reference.child("currentUsersNum").setValue(num).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Log.i(ProfileRepostiery.TAG, "fun updateAllUserNum success")
+                    Log.i(TAG, "fun updateAllUserNum success")
                 } else {
-                    Log.i(ProfileRepostiery.TAG, "fun updateAllUserNum fail")
+                    Log.i(TAG, "fun updateAllUserNum fail")
                 }
             }
         }
@@ -32,7 +32,7 @@ class UsersRepositery(
 
     suspend fun getAllUserNum(): Task<DataSnapshot>? {
         return withContext(Dispatchers.IO) {
-            val numRef = fbDatabase.reference.child("currentUserNum").get()
+            val numRef = fbDatabase.reference.child("currentUsersNum").get()
 
             numRef
         }
@@ -44,9 +44,9 @@ class UsersRepositery(
 
             usersRef.setValue(profile).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Log.i(ProfileRepostiery.TAG, "fun insertUsersList success")
+                    Log.i(TAG, "fun insertUsersList success")
                 } else {
-                    Log.i(ProfileRepostiery.TAG, "fun insertUsersList fail")
+                    Log.i(TAG, "fun insertUsersList fail")
                 }
             }
         }

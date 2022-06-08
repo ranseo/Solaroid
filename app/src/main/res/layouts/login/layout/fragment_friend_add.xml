@@ -18,6 +18,7 @@
         android:layout_height="match_parent"
         android:theme="@style/Theme.FriendActivity"
         tools:context=".friend.fragment.list.FriendListFragment"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:background="@color/soft_grey">
         
 
@@ -31,10 +32,12 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="12dp"
-            android:inputType="phone"
             android:background="@drawable/edit_text_shadow"
             android:hint="친구 코드를 입력해주세요"
             android:textAlignment="center"
+            android:inputType="phone"
+            android:singleLine="true"
+            android:maxLength="5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -87,32 +90,28 @@
                 android:layout_gravity="center|end"
                 android:layout_marginEnd="24dp"/>
 
-        </FrameLayout>
+<!--            <FrameLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="90dp"-->
+<!--                android:visibility="@{viewModel.isSearchUser ? View.GONE: View.VISIBLE}"-->
+<!--                android:background="@drawable/edit_text_shadow">-->
+<!--                <TextView-->
+<!--                    android:text="친구를 찾을 수 없습니다\n친구 코드를 다시 확인 해주세요"-->
+<!--                    android:textColor="@color/soft_grey"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:gravity="center"/>-->
 
-        <FrameLayout
-            android:visibility="@{viewModel.isSearchUser ? View.GONE : View.VISIBLE}"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/edit_text_shadow"
-            app:layout_constraintTop_toBottomOf="@id/et_search"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-            <TextView
-                android:text="친구를 찾을 수 없습니다\n친구 코드를 다시 확인 해주세요"
-                android:textColor="@color/soft_grey"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"/>
 
+<!--            </FrameLayout>-->
 
         </FrameLayout>
 
-        <FrameLayout
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="12dp"
@@ -125,17 +124,25 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tablayout_friend_add"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:tabMode="scrollable"/>
+                app:tabMode="scrollable"
+                android:background="@drawable/edit_text_shadow"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/viewPage_friend_add"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"/>
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/tablayout_friend_add"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

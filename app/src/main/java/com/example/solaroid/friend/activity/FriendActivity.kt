@@ -11,6 +11,7 @@ import android.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -38,19 +39,20 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
         binding = ActivityFriendBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         naviViewModel = ViewModelProvider(this)[NavigationViewModel::class.java]
 
+        binding.naviViewModel = naviViewModel
+        binding.lifecycleOwner = this
         //toolbar
         setSupportActionBar(binding.friendToolbar)
 
         navHostFragment = binding.navHostFragmentFriend.getFragment()
         navController = navHostFragment.navController
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.fragment_friend_list, R.id.fragment_friend_add), binding.drawerLayoutFriend)
 
-
-        val appBarConfiguration = AppBarConfiguration(setOf(), binding.drawerLayoutFriend)
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navigtionViewFriend.navView.setNavigationItemSelectedListener(this)
         ///
@@ -60,6 +62,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 navController.navigate(
                     R.id.global_action_friendActivity_to_homeActivity
                 )
+                this.finish()
             }
         }
 
@@ -69,6 +72,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 navController.navigate(
                     R.id.global_action_friendActivity_to_loginActivity
                 )
+                this.finish()
             }
         }
 

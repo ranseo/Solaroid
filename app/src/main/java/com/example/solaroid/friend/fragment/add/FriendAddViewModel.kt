@@ -20,7 +20,7 @@ class FriendAddViewModel : ViewModel() {
     //repositery
     private val friendAddRepositery = FriendAddRepositery(fbAuth, fbDatabase)
 
-    private val _searchUser = MutableLiveData<Profile?>()
+    private val _searchUser = MutableLiveData<Profile?>(null)
     val searchUser : LiveData<Profile?>
         get() = _searchUser
 
@@ -28,7 +28,7 @@ class FriendAddViewModel : ViewModel() {
         profile != null
     }
 
-    private var searchFriendCode : Long? = null
+    private var searchFriendCode : Long = -1
 
 
 
@@ -37,20 +37,26 @@ class FriendAddViewModel : ViewModel() {
     }
 
     fun setSearchFriendCode(text:CharSequence) {
+        Log.i(TAG,"setSearchFriendCode : ${text}")
         var code = text.toString()
         if(code.isNotEmpty()) {
-            if(code.first() == '#') code = code.substring(1..4)
-            searchFriendCode = convertHexStringToLongFormat(code)
+            if(code.first() != '#') code = "#${code}"
+            if(code.length >= 5)
+                searchFriendCode = convertHexStringToLongFormat(code)
+            else
+                searchFriendCode = -1L
         }
         getSearchProfile()
+
     }
 
     fun getSearchProfile() {
         viewModelScope.launch {
-            if(searchFriendCode!=null)
+            Log.i(TAG,"getSearchProfile()")
+            if(searchFriendCode!=null && searchFriendCode > -1L)
                 friendAddRepositery.getTask(searchFriendCode!!).addOnCompleteListener {
                     if(it.isSuccessful) {
-                        val hashMap = it.result.value as HashMap<*,*>
+                        val hashMap = it.result.value as HashMap<*,*>? ?: return@addOnCompleteListener
 
                         _searchUser.value = FirebaseProfile(
                             hashMap["id"]!! as String,
@@ -65,6 +71,7 @@ class FriendAddViewModel : ViewModel() {
                         Log.i(TAG,"task is fail")
                     }
                 }
+            else setSearchUserNull()
         }
     }
 

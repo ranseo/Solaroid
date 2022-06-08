@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentFriendAddBinding
 import com.example.solaroid.friend.adapter.FriendAddAdapter
@@ -13,6 +14,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class FriendAddFragment : Fragment() {
     private lateinit var binding : FragmentFriendAddBinding
+
+    private lateinit var viewModel : FriendAddViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -20,6 +24,10 @@ class FriendAddFragment : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_add, container, false)
 
+        viewModel = ViewModelProvider(this)[FriendAddViewModel::class.java]
+
+        binding.viewModel=viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         val adapter = FriendAddAdapter(this)
         binding.viewPageFriendAdd.adapter = adapter

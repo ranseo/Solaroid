@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/friend_navigation"
-    app:startDestination="@layout/fragment_friend_list">
+    app:startDestination="@+id/fragment_friend_list">
 
     <action
         android:id="@+id/global_action_friendActivity_to_homeActivity"
         app:destination="@id/home_activity"
-        app:popUpTo="@id/home_activity"
+        app:popUpTo="@id/fragment_friend_list"
         app:popUpToInclusive="true"/>
 
     <action
