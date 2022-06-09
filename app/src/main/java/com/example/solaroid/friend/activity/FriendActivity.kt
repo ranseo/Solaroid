@@ -100,4 +100,10 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     fun logout() {
         FirebaseManager.getAuthInstance().signOut()
     }
+
+
+    fun setActionBarTitle(str:String) {
+        val actionBar = supportActionBar
+        actionBar?.title = str
+    }
 }

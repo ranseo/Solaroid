@@ -20,7 +20,6 @@
         tools:context=".friend.fragment.list.FriendListFragment"
         android:layout_marginBottom="?attr/actionBarSize"
         android:background="@color/soft_grey">
-        
 
 
         <EditText
@@ -61,7 +60,7 @@
             app:layout_constraintStart_toStartOf="@id/et_search"
             app:layout_constraintTop_toTopOf="@id/et_search" />
 
-        <FrameLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/layout_request"
             android:visibility="@{viewModel.isSearchUser ? View.VISIBLE : View.GONE}"
             android:layout_width="match_parent"
@@ -82,6 +81,7 @@
 
             <ImageButton
                 android:id="@+id/btn_send"
+                android:onClick="@{()-viewModel.sendFriendRequest()}"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:scaleType="fitCenter"
@@ -107,7 +107,7 @@
 
 <!--            </FrameLayout>-->
 
-        </FrameLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 

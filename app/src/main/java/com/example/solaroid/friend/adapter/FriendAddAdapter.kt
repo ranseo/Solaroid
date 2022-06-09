@@ -13,4 +13,6 @@ class FriendAddAdapter(fm:Fragment) : FragmentStateAdapter(fm) {
     override fun createFragment(position: Int): Fragment {
         return list[position]
     }
+
+
 }

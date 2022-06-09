@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -15,11 +16,13 @@ class FriendAddRepositery(
     private val fbDatabase: FirebaseDatabase
 ) {
 
-    suspend fun getTask(friendCode: Long) : Task<DataSnapshot> {
+    suspend fun addSearchListener(friendCode: Long, listener:ValueEventListener) {
         return withContext(Dispatchers.IO) {
-            fbDatabase.reference.child("allUsers").child("${friendCode}").get()
+            fbDatabase.reference.child("allUsers").child("${friendCode}").addListenerForSingleValueEvent(listener)
         }
     }
+
+    suspend fun setValueToFriendReception()
 
     companion object {
         const val TAG = "프렌드 애드 리포지터리"
