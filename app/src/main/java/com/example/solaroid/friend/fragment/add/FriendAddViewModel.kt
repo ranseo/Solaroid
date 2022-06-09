@@ -6,6 +6,7 @@ import com.example.solaroid.Event
 import com.example.solaroid.NavigationViewModel
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.domain.Profile
+import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDomainModel
@@ -127,6 +128,18 @@ class FriendAddViewModel : ViewModel() {
 
     fun sendFriendRequest() {
         _friendRequest.value = Event(Unit)
+    }
+
+    fun setValueFriendReception() {
+        viewModelScope.launch {
+            friendAddRepositery.setValueToFriendReception(searchFriendCode, searchUser.value!!.asFirebaseModel())
+        }
+    }
+
+    fun setValueFriendDispatch() {
+        viewModelScope.launch {
+            friendAddRepositery.setValueToFriendDispatch(searchFriendCode, myProfile.value!!.asFirebaseModel())
+        }
     }
 
 

@@ -15,8 +15,8 @@
 
 
     "allUsers" : {
-      ".read" : "root.child('profile').child(auth.uid).exists()",
-      ".write" : "root.child('profile').child(auth.uid).exists()"
+      ".read" : "auth != null && root.child('profile').child(auth.uid).exists()",
+      ".write" : "auth != null && root.child('profile').child(auth.uid).exists()"
     },
 
 
@@ -31,17 +31,25 @@
       }
     },
 
-    "friendRequest" : {
-      "$uid" : {
+    "friendReception" : {
+      "$friendCode" : {
         "list" : {
-          ".read" : "auth !=null && auth.uid == $uid",
-          ".write" : "auth != null && auth.uid == $uid"
+          "$uid" : {
+            ".read" : "auth !=null",
+            ".write" : "auth != null && auth.uid == $uid"
+          }
         }
       }
     },
 
-
-
+    "friendDispatch" : {
+      "$uid" : {
+        "list" : {
+          ".read" : "auth != null && auth.uid == $uid",
+          ".write": "auth != null && auth.uid == $uid"
+        }
+      }
+    },
 
 
 

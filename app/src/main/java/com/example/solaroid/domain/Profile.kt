@@ -29,3 +29,12 @@ fun Profile.asDatabaseFriend() : DatabaseFriend {
         friendCode = friendCode
     )
 }
+
+fun Profile.asFirebaseModel() : FirebaseProfile {
+    return FirebaseProfile(
+        id = id,
+        nickname = nickname,
+        profileImg =  profileImg,
+        friendCode = convertHexStringToLongFormat(friendCode)
+    )
+}

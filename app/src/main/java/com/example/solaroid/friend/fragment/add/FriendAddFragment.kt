@@ -47,6 +47,9 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
         }
 
         viewModel.friendRequest.observe(viewLifecycleOwner) { request ->
+            request.getContentIfNotHandled()?.let{
+                showDialog()
+            }
 
         }
 
@@ -59,11 +62,12 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
-
+        viewModel.setValueFriendDispatch()
+        viewModel.setValueFriendReception()
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
-
+        dialog.dismiss()
     }
 
 

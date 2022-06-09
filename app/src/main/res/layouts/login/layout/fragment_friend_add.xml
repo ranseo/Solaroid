@@ -81,7 +81,7 @@
 
             <ImageButton
                 android:id="@+id/btn_send"
-                android:onClick="@{()-viewModel.sendFriendRequest()}"
+                android:onClick="@{()->viewModel.sendFriendRequest()}"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:scaleType="fitCenter"
