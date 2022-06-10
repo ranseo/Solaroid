@@ -31,10 +31,11 @@ class FriendListRepositery(
     }
 
 
+
     suspend fun addListenerForMyFriendList()  {
         withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
-            fbDatabase.reference.child("myFriendList").child(user.uid).addChildEventListener(myFriendListDataSource.friendListListener)
+            fbDatabase.reference.child("myFriendList").child(user.uid).child("list").addChildEventListener(myFriendListDataSource.friendListListener)
         }
     }
 

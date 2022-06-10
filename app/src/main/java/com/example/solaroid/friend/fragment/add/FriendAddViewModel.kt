@@ -118,8 +118,6 @@ class FriendAddViewModel : ViewModel() {
                 setSearchUserNull()
             }
         }
-
-
     }
 
     fun setSearchUserNull() {
@@ -132,13 +130,13 @@ class FriendAddViewModel : ViewModel() {
 
     fun setValueFriendReception() {
         viewModelScope.launch {
-            friendAddRepositery.setValueToFriendReception(searchFriendCode, searchUser.value!!.asFirebaseModel())
+            friendAddRepositery.setValueToFriendReception(searchFriendCode, myProfile.value!!.asFirebaseModel())
         }
     }
 
     fun setValueFriendDispatch() {
         viewModelScope.launch {
-            friendAddRepositery.setValueToFriendDispatch(searchFriendCode, myProfile.value!!.asFirebaseModel())
+            friendAddRepositery.setValueToFriendDispatch(searchFriendCode, searchUser.value!!.asFirebaseModel())
         }
     }
 

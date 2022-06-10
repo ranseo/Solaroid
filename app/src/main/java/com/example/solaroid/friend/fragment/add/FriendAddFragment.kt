@@ -6,14 +6,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
+import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.databinding.FragmentFriendAddBinding
 import com.example.solaroid.dialog.NormalDialogFragment
 import com.example.solaroid.friend.activity.FriendActivity
 import com.example.solaroid.friend.adapter.FriendAddAdapter
+import com.example.solaroid.friend.fragment.add.dispatch.FriendDispatchFragment
+import com.example.solaroid.friend.fragment.add.reception.FriendReceptionFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
 class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener {
@@ -37,12 +42,15 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
         val adapter = FriendAddAdapter(this)
         binding.viewPageFriendAdd.adapter = adapter
 
-        setTabLayout()
+        adapter.addDispatchFragment(FriendDispatchFragment())
 
         viewModel.myProfile.observe(viewLifecycleOwner) { profile ->
             profile?.let {
                 val activity = this.requireActivity() as FriendActivity
                 activity.setActionBarTitle("나의 친구코드 : ${profile.friendCode}")
+
+                adapter.addReceptionFragment(FriendReceptionFragment(), convertHexStringToLongFormat(profile.friendCode))
+                setTabLayout()
             }
         }
 
@@ -53,8 +61,11 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
 
         }
 
+        setTabLayout()
+
         return binding.root
     }
+
 
     private fun showDialog() {
         val newFragment = NormalDialogFragment(this,"친구 요청을 하시겠습니까?", "요청", "아니요")
@@ -73,7 +84,7 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
 
     private fun setTabLayout() {
         TabLayoutMediator(binding.tablayoutFriendAdd, binding.viewPageFriendAdd) { tab, pos ->
-            tab.text = if (pos == 0) "수신" else "발신"
+            tab.text = if (pos == 0)  "발신" else "수신"
         }.attach()
     }
 
@@ -86,6 +97,5 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
     companion object {
         const val TAG = "프렌드_애드_프래그먼트"
     }
-
 
 }

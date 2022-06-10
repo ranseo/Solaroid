@@ -26,14 +26,14 @@ class FriendAddRepositery(
     suspend fun setValueToFriendReception(friendCode: Long, myProfile: FirebaseProfile) {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser
-            if(user!=null) fbDatabase.reference.child("friendReception").child("${friendCode}").child("list").child(user.uid).setValue(myProfile)
+            if(user!=null) fbDatabase.reference.child("friendReception").child("${friendCode}").child("list").push().setValue(myProfile)
         }
     }
 
     suspend fun setValueToFriendDispatch(friendCode: Long, profile: FirebaseProfile) {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser
-            if(user!=null) fbDatabase.reference.child("friendDispatch").child(user.uid).child("list").push().setValue(profile)
+            if(user!=null) fbDatabase.reference.child("friendDispatch").child(user.uid).child("list").setValue(profile)
         }
     }
 

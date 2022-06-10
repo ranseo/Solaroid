@@ -40,7 +40,7 @@ fun bindRecycler(recyclerView: RecyclerView, photoTickets: List<PhotoTicket>?) {
 fun bindRecycler(recyclerView: RecyclerView, profiles: List<Profile>?) {
     val adapter = recyclerView.adapter as FriendListAdatper
     profiles?.let {
-        Log.i("바인딩어댑터","포토티켓값 : ${it}")
+        Log.i("바인딩어댑터","프로필 값 : ${it}")
         adapter.submitList(it)
     }
 }

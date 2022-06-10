@@ -17,6 +17,7 @@ class FriendListAdatper : ListAdapter<Profile,FriendListAdatper.FriendListViewHo
 
     override fun onBindViewHolder(holder: FriendListViewHolder, position: Int) {
         val item = getItem(position)
+        holder.bind(item)
 
     }
 
