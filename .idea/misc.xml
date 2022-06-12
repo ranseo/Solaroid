@@ -55,6 +55,8 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.259" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_add_circle_outline_24.xml" value="0.252" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_autorenew_24.xml" value="0.252" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.2135" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_check_circle_outline_24.xml" value="0.2135" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.252" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.1955" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/ic_favorite_false.xml" value="0.252" />
@@ -104,7 +106,7 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_profile.xml" value="0.2" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_signup.xml" value="0.22" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_dispatch.xml" value="0.33" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_reception.xml" value="0.25" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_reception.xml" value="0.33" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_solaroid_friend.xml" value="0.5" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/menu_item_login_info.xml" value="0.2078125" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/single_friend.xml" value="0.25" />

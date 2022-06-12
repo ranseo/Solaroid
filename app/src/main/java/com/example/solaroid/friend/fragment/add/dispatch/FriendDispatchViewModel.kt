@@ -27,7 +27,7 @@ class FriendDispatchViewModel : ViewModel() {
         get() = _profiles
 
     val profilesDistinct = Transformations.map(profiles) {
-        it.distinct()
+        it.distinct().map { DispatchProfile(it) }
     }
 
 

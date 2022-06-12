@@ -30,12 +30,20 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel() {
         get() = _profiles
 
     val profilesDistinct = Transformations.map(profiles){
-        it.distinct()
+        it.distinct().map{ReceptionProfile(it)}
     }
 
 
     init {
         refreshReceptionProfiles()
+    }
+
+    fun onAccept() {
+
+    }
+
+    fun onDecline() {
+
     }
 
     private fun refreshReceptionProfiles() {
