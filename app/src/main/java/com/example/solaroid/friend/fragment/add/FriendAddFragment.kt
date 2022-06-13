@@ -42,13 +42,14 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
         val adapter = FriendAddAdapter(this)
         binding.viewPageFriendAdd.adapter = adapter
 
-        adapter.addDispatchFragment(FriendDispatchFragment())
+
 
         viewModel.myProfile.observe(viewLifecycleOwner) { profile ->
             profile?.let {
                 val activity = this.requireActivity() as FriendActivity
                 activity.setActionBarTitle("나의 친구코드 : ${profile.friendCode}")
 
+                adapter.addDispatchFragment(FriendDispatchFragment(), convertHexStringToLongFormat(profile.friendCode))
                 adapter.addReceptionFragment(FriendReceptionFragment(), convertHexStringToLongFormat(profile.friendCode))
                 setTabLayout()
             }
@@ -60,8 +61,6 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
             }
 
         }
-
-        setTabLayout()
 
         return binding.root
     }

@@ -5,11 +5,12 @@ import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.database.DatabaseFriend
 import com.example.solaroid.firebase.FirebaseProfile
 
-data class Profile(
+data class Friend(
     val id: String,
     val nickname : String,
     val profileImg : String,
     val friendCode: String,
+    val key:String
 ) {
 
     companion object {
@@ -21,12 +22,21 @@ data class Profile(
 
 }
 
+fun Friend.asDatabaseFriend() : DatabaseFriend {
+    return DatabaseFriend(
+        user = id,
+        nickname = nickname,
+        profileImage =  profileImg,
+        friendCode = friendCode,
+        key=key
+    )
+}
 
-fun Profile.asFirebaseModel() : FirebaseProfile {
+fun Friend.asFirebaseModel() : FirebaseProfile {
     return FirebaseProfile(
         id = id,
         nickname = nickname,
         profileImg =  profileImg,
-        friendCode = convertHexStringToLongFormat(friendCode),
+        friendCode = convertHexStringToLongFormat(friendCode)
     )
 }

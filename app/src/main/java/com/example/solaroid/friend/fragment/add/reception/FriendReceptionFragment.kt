@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentFriendReceptionBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
+import com.example.solaroid.friend.adapter.OnReceptionClickListener
 
 class FriendReceptionFragment() : Fragment() {
     private lateinit var binding : FragmentFriendReceptionBinding
@@ -51,7 +52,25 @@ class FriendReceptionFragment() : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = FriendListAdatper()
+        viewModel.clickAction.observe(viewLifecycleOwner) {
+            viewModel.deleteReceptionList()
+
+            if(it) {
+                val friend = viewModel.friend.value
+
+            } else {
+
+            }
+        }
+
+
+        val adapter = FriendListAdatper(receptionClickListener = OnReceptionClickListener{ friend,flag ->
+            if(flag) {
+                viewModel.onAccept(friend)
+            } else {
+                viewModel.onDecline(friend)
+            }
+        })
 
         binding.recFriendReception.adapter = adapter
     }

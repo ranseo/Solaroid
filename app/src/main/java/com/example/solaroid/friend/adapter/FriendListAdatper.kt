@@ -8,16 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.databinding.ListItemFriendDispatchBinding
 import com.example.solaroid.databinding.ListItemFriendReceptionBinding
 import com.example.solaroid.databinding.ListItemSolaroidFriendBinding
+import com.example.solaroid.domain.Friend
 import com.example.solaroid.domain.Profile
-import com.example.solaroid.friend.fragment.add.dispatch.DispatchProfile
-import com.example.solaroid.friend.fragment.add.reception.ReceptionProfile
+import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
+import com.example.solaroid.friend.fragment.add.reception.ReceptionFriend
 import java.lang.ClassCastException
 
 private val VIEW_TYPE_NORMAL_PROFILE = 0
 private val VIEW_TYPE_RECEPTION_PROFILE = 1
 private val VIEW_TYPE_DISPATCH_PROFILE = 2
 
-class FriendListAdatper : ListAdapter<FriendListDataItem,RecyclerView.ViewHolder>(FriendListDataItemCallback()) {
+class FriendListAdatper(val receptionClickListener:OnReceptionClickListener?=null, val dispatchClickListener: OnDispatchClickListener?=null) : ListAdapter<FriendListDataItem,RecyclerView.ViewHolder>(FriendListDataItemCallback()) {
 
     override fun getItemViewType(position: Int): Int {
         return when(getItem(position)) {
@@ -40,23 +41,23 @@ class FriendListAdatper : ListAdapter<FriendListDataItem,RecyclerView.ViewHolder
         when(holder) {
             is FriendListViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.NormalProfileDataItem
-                holder.bind(item.profiles)
+                holder.bind(item.friend)
             }
             is FriendReceptionViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.ReceptionProfileDataItem
-                holder.bind(item.profiles)
+                holder.bind(item.friend, receptionClickListener!!)
             }
             is FriendDispatchViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.DispatchProfileDataItem
-                holder.bind(item.profiles)
+                holder.bind(item.friend, dispatchClickListener!!)
             }
         }
     }
 
     class FriendListViewHolder(private val binding : ListItemSolaroidFriendBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item:Profile) {
-            binding.profile = item
+        fun bind(item:Friend) {
+            binding.friend = item
         }
 
         companion object {
@@ -70,8 +71,9 @@ class FriendListAdatper : ListAdapter<FriendListDataItem,RecyclerView.ViewHolder
 
     class FriendReceptionViewHolder(private val binding : ListItemFriendReceptionBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item:ReceptionProfile) {
-            binding.profile = item.profile
+        fun bind(item:ReceptionFriend, onClickListener:OnReceptionClickListener) {
+            binding.friend = item.friend
+            binding.onClickListener = onClickListener
         }
 
         companion object {
@@ -85,8 +87,9 @@ class FriendListAdatper : ListAdapter<FriendListDataItem,RecyclerView.ViewHolder
 
     class FriendDispatchViewHolder(private val binding : ListItemFriendDispatchBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item:DispatchProfile) {
-            binding.profile = item.profile
+        fun bind(item:DispatchFriend, onClickListener:OnDispatchClickListener) {
+            binding.friend= item.friend
+            binding.onClickListener = onClickListener
         }
 
         companion object {
@@ -114,15 +117,33 @@ class FriendListDataItemCallback() : DiffUtil.ItemCallback<FriendListDataItem>()
 
 
 sealed class FriendListDataItem() {
-    class NormalProfileDataItem(val profiles: Profile) : FriendListDataItem() {
+    class NormalProfileDataItem(val friend: Friend) : FriendListDataItem() {
 
     }
 
-    class ReceptionProfileDataItem(val profiles: ReceptionProfile) : FriendListDataItem() {
+    class ReceptionProfileDataItem(val friend: ReceptionFriend) : FriendListDataItem() {
 
     }
 
-    class DispatchProfileDataItem(val profiles: DispatchProfile) : FriendListDataItem() {
+    class DispatchProfileDataItem(val friend: DispatchFriend) : FriendListDataItem() {
 
     }
+}
+
+class OnReceptionClickListener(val listener: (friend:Friend, flag:Boolean)->Unit) {
+    fun onPositiveClick(friend:Friend) {
+        listener(friend,true)
+    }
+
+    fun onNegativeClick(friend:Friend) {
+        listener(friend,false)
+    }
+}
+
+class OnDispatchClickListener(val listener: (profile:Profile)->Unit) {
+    fun onClick(profile:Profile) {
+        listener(profile)
+    }
+
+
 }

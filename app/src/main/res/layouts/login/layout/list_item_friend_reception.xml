@@ -5,8 +5,12 @@
 
     <data>
         <variable
-            name="profile"
-            type="com.example.solaroid.domain.Profile" />
+            name="friend"
+            type="com.example.solaroid.domain.Friend" />
+
+        <variable
+            name="onClickListener"
+            type="com.example.solaroid.friend.adapter.OnReceptionClickListener" />
 
     </data>
 
@@ -27,7 +31,7 @@
 
             <ImageView
                 android:id="@+id/iv_profile"
-
+                setImage="@{friend.profileImg}"
                 android:layout_width="52dp"
                 android:layout_height="52dp"
                 android:background="@drawable/profile_frame"
@@ -42,6 +46,7 @@
         <TextView
             android:id="@+id/tv_nickname"
             tools:text="란서"
+            android:text="@{friend.nickname}"
             android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +57,8 @@
 
         <TextView
             android:id="@+id/tv_friend_code"
-            android:text="#2366"
+            tools:text="#2366"
+            android:text="@{friend.friendCode}"
             android:textSize="18sp"
             android:textColor="@color/grey"
             android:layout_width="wrap_content"
@@ -64,6 +70,7 @@
 
         <ImageButton
             android:id="@+id/btn_check"
+            android:onClick="@{()->onClickListener.onPositiveClick(friend)}"
             android:src="@drawable/ic_baseline_check_circle_outline_24"
             android:background="@color/fui_transparent"
             android:layout_width="wrap_content"
@@ -75,6 +82,7 @@
 
         <ImageButton
             android:id="@+id/btn_cancel"
+            android:onClick="@{()->onClickListener.onNegativeClick(friend)}"
             android:src="@drawable/ic_baseline_cancel_24"
             android:background="@color/fui_transparent"
             android:layout_width="wrap_content"

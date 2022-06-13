@@ -2,19 +2,15 @@ package com.example.solaroid.friend.fragment.add.reception
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.solaroid.domain.Profile
+import com.example.solaroid.Event
+import com.example.solaroid.datasource.FriendCommunicationDataSource
+import com.example.solaroid.domain.Friend
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.firebase.FirebaseProfile
-import com.example.solaroid.firebase.asDomainModel
-import com.example.solaroid.friend.fragment.add.FriendAddViewModel
 import com.example.solaroid.repositery.FriendCommunicateRepositery
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 
-class FriendReceptionViewModel(_friendCode: Long) : ViewModel() {
+class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
+    FriendCommunicationDataSource.OnDataListener {
 
     private val friendCode = _friendCode
 
@@ -23,88 +19,95 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel() {
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
 
     //repositery
-    private val friendCommunicateRepositery = FriendCommunicateRepositery(fbAuth, fbDatabase)
+    private val friendCommunicateRepositery = FriendCommunicateRepositery(
+        fbAuth, fbDatabase,
+        FriendCommunicationDataSource(this)
+    )
 
-    private val _profiles = MutableLiveData<List<Profile>>(listOf())
-    val profiles : LiveData<List<Profile>>
-        get() = _profiles
+    private val _friends = MutableLiveData<List<Friend>>(listOf())
+    val friends: LiveData<List<Friend>>
+        get() = _friends
 
-    val profilesDistinct = Transformations.map(profiles){
-        it.distinct().map{ReceptionProfile(it)}
+    private val _friend = MutableLiveData<Friend?>()
+    val friend: LiveData<Friend?>
+        get() = _friend
+
+    private val _isClick = MutableLiveData<Event<Boolean>>()
+    val isClick: LiveData<Event<Boolean>>
+        get() = _isClick
+
+    private val _clickAction = MediatorLiveData<Boolean>()
+    val clickAction: LiveData<Boolean>
+        get() = _clickAction
+
+    private fun checkClickAction(friend: LiveData<Friend?>, isClick: LiveData<Event<Boolean>>) {
+        _clickAction.value = (friend.value != null && isClick.value!!.peekContent())
+    }
+
+    val profilesDistinct = Transformations.map(friends) {
+        it.distinct().map { ReceptionFriend(it) }
     }
 
 
     init {
         refreshReceptionProfiles()
+
+        with(_clickAction) {
+            addSource(friend) {
+                checkClickAction(friend, isClick)
+            }
+            addSource(isClick) {
+                checkClickAction(friend, isClick)
+            }
+        }
     }
 
-    fun onAccept() {
-
+    fun onAccept(fri: Friend) {
+        _friend.value = fri
+        _isClick.value = Event(true)
     }
 
-    fun onDecline() {
-
+    fun onDecline(fri: Friend) {
+        _friend.value = fri
+        _isClick.value = Event(false)
     }
 
     private fun refreshReceptionProfiles() {
         viewModelScope.launch {
+            friendCommunicateRepositery.addValueListenerToReceptionRef(friendCode)
+        }
+    }
 
-            val valueListener = object : ChildEventListener {
-                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    val hashMap = snapshot.value as HashMap<*,*>
+    fun setValueMyFriendList(fri:Friend) {
+        viewModelScope.launch {
+            friendCommunicateRepositery.setValueMyFriendList(fri)
+        }
+    }
 
-                    try {
-                        val profile = FirebaseProfile(
-                            hashMap["id"]!! as String,
-                            hashMap["nickname"]!! as String,
-                            hashMap["profileImg"]!! as String,
-                            hashMap["friendCode"]!! as Long
-                        ).asDomainModel()
+    fun setValueTmpFrientList(friendCode:Long, fri:Friend) {
+        viewModelScope.launch {
+            friendCommunicateRepositery.setValueTmpList(friendCode,fri)
+        }
+    }
 
-
-                        _profiles.value = _profiles.value?.plus(listOf(profile))
-
-                    } catch (e:Exception){
-                        Log.i(TAG, "ChildEventListener  onChildAdded error : ${e.message}")
-                    }
-
-
-                }
-
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                }
-
-                override fun onChildRemoved(snapshot: DataSnapshot) {
-                    val hashMap = snapshot.value as HashMap<*,*>
-
-                    try {
-                        val profile = FirebaseProfile(
-                            hashMap["id"]!! as String,
-                            hashMap["nickname"]!! as String,
-                            hashMap["profileImg"]!! as String,
-                            hashMap["friendCode"]!! as Long
-                        ).asDomainModel()
-
-
-                        _profiles.value = _profiles.value?.filter {
-                            it != profile
-                        }
-                    } catch (e:Exception){
-                        Log.i(TAG, "ChildEventListener  onChildAdded error : ${e.message}")
-                    }
-                }
-
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                }
+    fun deleteReceptionList() {
+        viewModelScope.launch {
+            try {
+                friendCommunicateRepositery.deleteReceptionList(friendCode, friend.value!!.key)
+            } catch (error:Exception) {
+                Log.d(TAG,"deleteReceptionList() error : ${error}")
             }
-            friendCommunicateRepositery.addValueListenerToReceptionRef(friendCode,valueListener)
+
         }
     }
 
     companion object {
         const val TAG = "프렌드_리셉션_뷰모델"
     }
+
+    override fun onDataChanged(friend: List<Friend>) {
+        _friends.value = friend
+    }
+
+
 }

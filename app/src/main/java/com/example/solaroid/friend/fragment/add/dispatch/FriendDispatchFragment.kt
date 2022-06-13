@@ -13,11 +13,16 @@ import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentFriendDispatchBinding
 import com.example.solaroid.databinding.FragmentFriendReceptionBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
+import com.example.solaroid.friend.fragment.add.reception.FriendReceptionFragment
 
 class FriendDispatchFragment() : Fragment() {
+
     private lateinit var binding : FragmentFriendDispatchBinding
 
+    private lateinit var viewModelFactory: FriendDispatchViewModelFactory
     private lateinit var viewModel: FriendDispatchViewModel
+
+    private var friendCode : Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,7 +31,20 @@ class FriendDispatchFragment() : Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_dispatch, container,false)
 
-        viewModel = ViewModelProvider(this)[FriendDispatchViewModel::class.java]
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        arguments?.takeIf { it.containsKey(FriendReceptionFragment.KEY)}?.apply{
+            friendCode=getLong(FriendReceptionFragment.KEY)
+        }
+
+
+        viewModelFactory = FriendDispatchViewModelFactory(friendCode ?: -1L)
+        viewModel = ViewModelProvider(this,viewModelFactory)[FriendDispatchViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -35,7 +53,6 @@ class FriendDispatchFragment() : Fragment() {
 
         binding.recFriendDispatch.adapter = adapter
 
-        return binding.root
     }
 
     companion object {

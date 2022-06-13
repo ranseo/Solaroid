@@ -41,6 +41,12 @@ class FriendAddViewModel : ViewModel() {
     val myProfile: LiveData<Profile?>
         get() = _myProfile
 
+    val myFriendCode = Transformations.map(myProfile) {
+        it?.let{
+            convertHexStringToLongFormat(it.friendCode)
+        }
+    }
+
     private var searchFriendCode: Long = -1
 
     private val _friendRequest = MutableLiveData<Event<Any?>>()
@@ -100,6 +106,7 @@ class FriendAddViewModel : ViewModel() {
                             hashMap["nickname"]!! as String,
                             hashMap["profileImg"]!! as String,
                             hashMap["friendCode"]!! as Long
+
                         ).asDomainModel()
 
                         if (profile == myProfile.value) setSearchUserNull()
@@ -136,7 +143,7 @@ class FriendAddViewModel : ViewModel() {
 
     fun setValueFriendDispatch() {
         viewModelScope.launch {
-            friendAddRepositery.setValueToFriendDispatch(searchFriendCode, searchUser.value!!.asFirebaseModel())
+            friendAddRepositery.setValueToFriendDispatch(myFriendCode.value ?: -1L ,searchFriendCode, searchUser.value!!.asFirebaseModel())
         }
     }
 

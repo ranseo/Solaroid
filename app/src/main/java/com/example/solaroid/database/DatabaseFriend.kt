@@ -9,21 +9,24 @@ import com.example.solaroid.domain.Profile
 data class DatabaseFriend(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "friend_code")
-    val friendCode : String,
-    val user : String,
+    val friendCode: String,
+    val user: String,
     @ColumnInfo(name = "friend_nickname")
     var nickname: String,
-    var profileImage : String
+    var profileImage: String,
+    val key: String
 ) {
 
 }
 
-fun List<DatabaseFriend>.asDomainModel() : List<Profile> {
-    return this.map{
+fun List<DatabaseFriend>.asDomainModel(): List<Profile> {
+    return this.map {
         Profile(
-        it.user,
-        it.nickname,
-        it.profileImage,
-        it.friendCode
-    )}
+            it.user,
+            it.nickname,
+            it.profileImage,
+            it.friendCode,
+            it.key
+        )
+    }
 }

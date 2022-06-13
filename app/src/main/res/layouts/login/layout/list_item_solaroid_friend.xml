@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="profile"
-            type="com.example.solaroid.domain.Profile" />
+            name="friend"
+            type="com.example.solaroid.domain.Friend" />
 
 
     </data>
@@ -30,7 +30,7 @@
                 android:id="@+id/iv_profile"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                setImage="@{profile.profileImg}"
+                setImage="@{friend.profileImg}"
                 android:background="@drawable/profile_frame"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
@@ -42,7 +42,7 @@
         <TextView
             android:id="@+id/tv_nickname"
             tools:text="란서"
-            android:text="@{profile.nickname}"
+            android:text="@{friend.nickname}"
             android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         <TextView
             android:id="@+id/tv_friend_code"
             tools:text="#2366"
-            android:text="@{profile.friendCode}"
+            android:text="@{friend.friendCode}"
             android:textSize="24sp"
             android:textColor="@color/grey"
             android:layout_width="wrap_content"
