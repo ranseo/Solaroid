@@ -13,6 +13,7 @@ import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentFriendDispatchBinding
 import com.example.solaroid.databinding.FragmentFriendReceptionBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
+import com.example.solaroid.friend.adapter.OnDispatchClickListener
 import com.example.solaroid.friend.fragment.add.reception.FriendReceptionFragment
 
 class FriendDispatchFragment() : Fragment() {
@@ -49,7 +50,9 @@ class FriendDispatchFragment() : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = FriendListAdatper()
+        val adapter = FriendListAdatper(dispatchClickListener = OnDispatchClickListener {
+
+        })
 
         binding.recFriendDispatch.adapter = adapter
 

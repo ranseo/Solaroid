@@ -48,7 +48,7 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
     }
 
     val profilesDistinct = Transformations.map(friends) {
-        it.distinct()
+        it.distinct().map{FriendListDataItem.ReceptionProfileDataItem(ReceptionFriend(it))}
     }
 
 

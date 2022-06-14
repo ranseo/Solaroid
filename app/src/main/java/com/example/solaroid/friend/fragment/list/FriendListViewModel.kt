@@ -31,7 +31,9 @@ class FriendListViewModel(dataSource:DatabasePhotoTicketDao, _friendCode:Long) :
     private val friendListRepositery : FriendListRepositery = FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(this),  database)
 
     //data
-    val friendList = friendListRepositery.friendList
+    val friendList = Transformations.map(friendListRepositery.friendList){
+        it.map{FriendListDataItem.NormalProfileDataItem(it)}
+    }
 
     init {
         initRefreshFriendList()

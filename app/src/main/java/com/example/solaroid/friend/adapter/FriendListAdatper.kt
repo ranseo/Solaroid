@@ -29,6 +29,7 @@ class FriendListAdatper(
 
 
 
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is FriendListDataItem.NormalProfileDataItem -> VIEW_TYPE_NORMAL_PROFILE
@@ -37,7 +38,7 @@ class FriendListAdatper(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_NORMAL_PROFILE -> FriendListViewHolder.from(parent)
             VIEW_TYPE_RECEPTION_PROFILE -> FriendReceptionViewHolder.from(parent)
@@ -88,10 +89,10 @@ class FriendListAdatper(
         }
 
         companion object {
-            fun from(parent: ViewGroup): FriendListViewHolder {
+            fun from(parent: ViewGroup): FriendReceptionViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemSolaroidFriendBinding.inflate(layoutInflater, parent, false)
-                return FriendListViewHolder(binding)
+                val binding = ListItemFriendReceptionBinding.inflate(layoutInflater, parent, false)
+                return FriendReceptionViewHolder(binding)
             }
         }
     }
@@ -105,10 +106,10 @@ class FriendListAdatper(
         }
 
         companion object {
-            fun from(parent: ViewGroup): FriendListViewHolder {
+            fun from(parent: ViewGroup):FriendDispatchViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemSolaroidFriendBinding.inflate(layoutInflater, parent, false)
-                return FriendListViewHolder(binding)
+                val binding = ListItemFriendDispatchBinding.inflate(layoutInflater, parent, false)
+                return FriendDispatchViewHolder(binding)
             }
         }
     }

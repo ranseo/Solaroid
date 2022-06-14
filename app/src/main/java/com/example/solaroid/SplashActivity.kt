@@ -22,6 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.*
 
 class SplashActivity : AppCompatActivity() {
     var isCameraAvailable: Boolean = false
@@ -47,21 +48,27 @@ class SplashActivity : AppCompatActivity() {
         binding.introImage.playAnimation()
 
 
-        if (allPermissionsGranted()) {
-            isCameraAvailable = true
-        } else {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
-        }
 
-        splashScreen()
+            if (allPermissionsGranted()) {
+                isCameraAvailable = true
+                splashScreen()
+            } else {
+                ActivityCompat.requestPermissions(
+                    this@SplashActivity, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+                )
+
+            }
+
+
+
+
 
 
         viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
 
 
     }
+
 
     fun splashScreen() {
         Handler(Looper.getMainLooper()).postDelayed({
@@ -91,6 +98,7 @@ class SplashActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 isCameraAvailable = true
+                splashScreen()
             } else {
                 Toast.makeText(
                     this,

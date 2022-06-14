@@ -5,6 +5,7 @@ import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.friend.adapter.FriendListDataItem
+import com.example.solaroid.friend.fragment.add.reception.ReceptionFriend
 import com.example.solaroid.repositery.friend.FriendCommunicateRepositery
 import kotlinx.coroutines.launch
 
@@ -24,7 +25,7 @@ class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicati
         get() = _friends
 
     val profilesDistinct = Transformations.map(friends) {
-        it.distinct()
+        it.distinct().map{FriendListDataItem.DispatchProfileDataItem(it)}
     }
 
 
