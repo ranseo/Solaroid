@@ -38,8 +38,8 @@ class FriendDispatchFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.takeIf { it.containsKey(FriendReceptionFragment.KEY)}?.apply{
-            friendCode=getLong(FriendReceptionFragment.KEY)
+        arguments?.takeIf { it.containsKey(KEY)}?.apply{
+            friendCode=getLong(KEY)
         }
 
 
@@ -57,5 +57,6 @@ class FriendDispatchFragment() : Fragment() {
 
     companion object {
         const val TAG = "프렌드_디스패치_프래그먼트"
+        const val KEY = "DispatchKey"
     }
 }

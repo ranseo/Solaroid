@@ -1,14 +1,13 @@
-package com.example.solaroid.repositery
+package com.example.solaroid.repositery.friend
 
 import android.util.Log
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.datasource.FriendCommunicationDataSource
+import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +17,10 @@ class FriendCommunicateRepositery(
     private val fbDatabase: FirebaseDatabase,
     private val friendCommunicationDataSource: FriendCommunicationDataSource,
 ) {
+
+    /**
+     * DispatchFragment에서 Firebase/DispatchList 에 있는 Friend객체를 읽기 위해 해당 경로에 ValueEventListener를 추가하는 함수.
+     * */
     suspend fun addValueListenerToDisptachRef(friendCode: Long) {
         return withContext(Dispatchers.IO) {
             try {
@@ -30,6 +33,9 @@ class FriendCommunicateRepositery(
         }
     }
 
+    /**
+     * ReceptionFragment에서 Firebase/ReceptionList 에 있는 Friend객체를 읽기 위해 해당 경로에 ValueEventListnener를 추가하는 함수.
+     * */
     suspend fun addValueListenerToReceptionRef(friendCode: Long) {
         return withContext(Dispatchers.IO) {
             try {
@@ -42,6 +48,10 @@ class FriendCommunicateRepositery(
         }
     }
 
+
+    /**
+     * receptionFragment에서 친구추가 또는 거절 이후 Firebase의 ReceptionList에서 해당  friend 객체 삭제.
+     * */
     suspend fun deleteReceptionList(friendCode: Long, key: String) {
         return withContext(Dispatchers.IO) {
             fbDatabase.reference.child("friendReception").child("${friendCode}").child("list")
@@ -50,6 +60,9 @@ class FriendCommunicateRepositery(
 
     }
 
+    /**
+     * receptionFragment 또는 dispatchFragment에서 Friend객체를 Firebase/FriendList에 추가하는 함수
+     * */
     suspend fun setValueMyFriendList(_friend:Friend) {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
@@ -69,6 +82,9 @@ class FriendCommunicateRepositery(
         }
     }
 
+    /**
+     * receptionFragment에서 친구추가가 되었음을 상대에게도 알리기 위해 Firebase/tmpFriendList 경로에 Friend객체를 쓰는 함수.
+     * */
     suspend fun setValueTmpList(friendCode:Long, _friend:Friend) {
         return withContext(Dispatchers.IO) {
 
@@ -87,18 +103,22 @@ class FriendCommunicateRepositery(
         }
     }
 
+
+    /**
+     * receptionFragment에서 친구추가 또는 거절을 했을 때 상대의 DispatchFragment에 수신여부를 전달하기 위해
+     * Firebase/DispatchList 에 새로운 DispatchFragment 객체를 쓰는 함수.
+     * */
     suspend fun setValueFriendDispatch(friendCode: Long, myFriendCode:Long, _friend: Friend, flag:DispatchStatus) {
         return withContext(Dispatchers.IO) {
 
             val ref = fbDatabase.reference.child("friendDispatch").child("${friendCode}").child("list").child("${myFriendCode}")
 
-            val key = ref.key ?: return@withContext
             val friend = FirebaseDispatchFriend(
+                flag.status,
                 _friend.id,
                 _friend.nickname,
                 _friend.profileImg,
-                convertHexStringToLongFormat(_friend.friendCode),
-                key
+                convertHexStringToLongFormat(_friend.friendCode)
             )
 
             ref.setValue(friend)

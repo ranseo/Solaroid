@@ -31,6 +31,17 @@
       }
     },
 
+
+    "tmpFriendList" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth !=null",
+          ".write" : "auth != null"
+        }
+      }
+    },
+
+
     "friendReception" : {
       "$friendCode" : {
         "list" : {
@@ -41,10 +52,10 @@
     },
 
     "friendDispatch" : {
-      "$uid" : {
+      "$friendCode" : {
         "list" : {
-          ".read" : "auth != null && auth.uid == $uid",
-          ".write": "auth != null && auth.uid == $uid"
+          ".read" : "auth != null",
+          ".write": "auth != null"
         }
       }
     },

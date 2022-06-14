@@ -45,6 +45,7 @@ interface DatabasePhotoTicketDao {
     suspend fun insert(DatabaseProfile: DatabaseProfile)
 
 
+
     @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_user == :user ORDER BY photo_ticket_date DESC")
     fun getAllPhotoTicketWithUser(user:String) : LiveData<List<DatabasePhotoTicket>?>
 

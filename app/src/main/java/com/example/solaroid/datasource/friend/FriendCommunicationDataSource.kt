@@ -1,15 +1,11 @@
-package com.example.solaroid.datasource
+package com.example.solaroid.datasource.friend
 
 import android.util.Log
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
-import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
-import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
-import com.example.solaroid.friend.fragment.add.reception.FriendReceptionViewModel
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

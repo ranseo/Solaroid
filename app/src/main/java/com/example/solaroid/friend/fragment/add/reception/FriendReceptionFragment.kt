@@ -10,9 +10,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
+import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.databinding.FragmentFriendReceptionBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
 import com.example.solaroid.friend.adapter.OnReceptionClickListener
+import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 
 class FriendReceptionFragment() : Fragment() {
     private lateinit var binding : FragmentFriendReceptionBinding
@@ -46,7 +48,7 @@ class FriendReceptionFragment() : Fragment() {
         }
 
         Log.i(TAG,"friendCode : ${friendCode}")
-        viewModelFactory = FriendReceptionViewModelFactory(friendCode?:-1L)
+        viewModelFactory = FriendReceptionViewModelFactory(friendCode ?: -1L)
         viewModel = ViewModelProvider(this,viewModelFactory)[FriendReceptionViewModel::class.java]
 
         binding.viewModel = viewModel
@@ -55,11 +57,15 @@ class FriendReceptionFragment() : Fragment() {
         viewModel.clickAction.observe(viewLifecycleOwner) {
             viewModel.deleteReceptionList()
 
+            val friend = viewModel.friend.value ?: return@observe
+            val friendCode = convertHexStringToLongFormat(friend.friendCode)
+
             if(it) {
-                val friend = viewModel.friend.value
-
+                viewModel.setValueMyFriendList(friend)
+                viewModel.setValueTmpFrientList(friendCode,friend)
+                viewModel.setValueDispatchList(friendCode,friend,DispatchStatus.ACCEPT)
             } else {
-
+                viewModel.setValueDispatchList(friendCode,friend,DispatchStatus.DECLINE)
             }
         }
 
@@ -71,6 +77,10 @@ class FriendReceptionFragment() : Fragment() {
                 viewModel.onDecline(friend)
             }
         })
+
+        viewModel.profilesDistinct.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
 
         binding.recFriendReception.adapter = adapter
     }

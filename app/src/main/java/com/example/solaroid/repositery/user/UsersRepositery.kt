@@ -1,7 +1,6 @@
-package com.example.solaroid.repositery
+package com.example.solaroid.repositery.user
 
 import android.util.Log
-import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseProfile
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth

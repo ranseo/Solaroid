@@ -26,7 +26,6 @@ class FriendAddAdapter(fm:Fragment) : FragmentStateAdapter(fm) {
     }
 
 
-
     fun addDispatchFragment(fragment: Fragment, friendCode:Long) {
         Log.i(TAG,"addDispatchFragment")
         fragment.arguments = Bundle().apply {

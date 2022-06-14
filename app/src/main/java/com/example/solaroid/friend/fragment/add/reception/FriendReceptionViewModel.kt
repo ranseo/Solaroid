@@ -3,16 +3,19 @@ package com.example.solaroid.friend.fragment.add.reception
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
-import com.example.solaroid.datasource.FriendCommunicationDataSource
+import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.repositery.FriendCommunicateRepositery
+import com.example.solaroid.friend.adapter.FriendListDataItem
+import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
+import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
+import com.example.solaroid.repositery.friend.FriendCommunicateRepositery
 import kotlinx.coroutines.launch
 
 class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
     FriendCommunicationDataSource.OnDataListener {
 
-    private val friendCode = _friendCode
+    private val myFriendCode = _friendCode
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
@@ -45,7 +48,8 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
     }
 
     val profilesDistinct = Transformations.map(friends) {
-        it.distinct().map { ReceptionFriend(it) }
+        it.distinct().map { friend ->
+            FriendListDataItem.ReceptionProfileDataItem(ReceptionFriend(friend)) }
     }
 
 
@@ -74,28 +78,34 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
 
     private fun refreshReceptionProfiles() {
         viewModelScope.launch {
-            friendCommunicateRepositery.addValueListenerToReceptionRef(friendCode)
+            friendCommunicateRepositery.addValueListenerToReceptionRef(myFriendCode)
         }
     }
 
-    fun setValueMyFriendList(fri:Friend) {
+    fun setValueMyFriendList(fri: Friend) {
         viewModelScope.launch {
             friendCommunicateRepositery.setValueMyFriendList(fri)
         }
     }
 
-    fun setValueTmpFrientList(friendCode:Long, fri:Friend) {
+    fun setValueTmpFrientList(friendCode: Long, fri: Friend) {
         viewModelScope.launch {
-            friendCommunicateRepositery.setValueTmpList(friendCode,fri)
+            friendCommunicateRepositery.setValueTmpList(friendCode, fri)
+        }
+    }
+
+    fun setValueDispatchList(friendCode:Long, fri:Friend ,flag: DispatchStatus) {
+        viewModelScope.launch {
+            friendCommunicateRepositery.setValueFriendDispatch(friendCode,myFriendCode,fri, flag)
         }
     }
 
     fun deleteReceptionList() {
         viewModelScope.launch {
             try {
-                friendCommunicateRepositery.deleteReceptionList(friendCode, friend.value!!.key)
-            } catch (error:Exception) {
-                Log.d(TAG,"deleteReceptionList() error : ${error}")
+                friendCommunicateRepositery.deleteReceptionList(myFriendCode, friend.value!!.key)
+            } catch (error: Exception) {
+                Log.d(TAG, "deleteReceptionList() error : ${error}")
             }
 
         }
@@ -105,8 +115,12 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
         const val TAG = "프렌드_리셉션_뷰모델"
     }
 
-    override fun onDataChanged(friend: List<Friend>) {
+    override fun onReceptionDataChanged(friend: List<Friend>) {
         _friends.value = friend
+    }
+
+    override fun onDispatchDataChanged(friend: List<DispatchFriend>) {
+
     }
 
 

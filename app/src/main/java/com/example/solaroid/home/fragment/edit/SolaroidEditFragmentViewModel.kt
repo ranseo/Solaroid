@@ -8,7 +8,7 @@ import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.database.asDomainModel
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.repositery.PhotoTicketRepositery
+import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage

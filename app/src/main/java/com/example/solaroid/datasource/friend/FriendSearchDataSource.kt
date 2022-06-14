@@ -1,4 +1,4 @@
-package com.example.solaroid.datasource
+package com.example.solaroid.datasource.friend
 
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth

@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
+import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.database.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentFriendListBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
@@ -16,6 +18,16 @@ class FriendListFragment : Fragment() {
     private lateinit var binding: FragmentFriendListBinding
     private lateinit var viewModel: FriendListViewModel
     private lateinit var viewModelFactory : FriendListViewModelFactory
+
+    private lateinit var dataSource : DatabasePhotoTicketDao
+    private var friendCode = 0L
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener("FriendFragment"){ _, bundle ->
+            friendCode = bundle.getLong("bundleKey")
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,9 +37,18 @@ class FriendListFragment : Fragment() {
         setHasOptionsMenu(true)
 
         val application = requireNotNull(this.activity).application
-        val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
+        dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
 
-        viewModelFactory = FriendListViewModelFactory(dataSource)
+
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        viewModelFactory = FriendListViewModelFactory(dataSource, friendCode)
         viewModel = ViewModelProvider(this, viewModelFactory)[FriendListViewModel::class.java]
 
         binding.viewModel = viewModel
@@ -39,6 +60,5 @@ class FriendListFragment : Fragment() {
 
 
 
-        return binding.root
     }
 }

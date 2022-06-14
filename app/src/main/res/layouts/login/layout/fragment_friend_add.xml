@@ -77,7 +77,7 @@
                 android:id="@+id/list_friend"
                 android:visibility="visible"
                 bind:profile="@{viewModel.searchUser}"
-                layout="@layout/list_item_solaroid_friend"/>
+                layout="@layout/single_friend"/>
 
             <ImageButton
                 android:id="@+id/btn_send"

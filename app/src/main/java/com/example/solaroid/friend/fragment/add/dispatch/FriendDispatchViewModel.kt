@@ -1,10 +1,11 @@
 package com.example.solaroid.friend.fragment.add.dispatch
 
 import androidx.lifecycle.*
-import com.example.solaroid.datasource.FriendCommunicationDataSource
+import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.repositery.FriendCommunicateRepositery
+import com.example.solaroid.friend.adapter.FriendListDataItem
+import com.example.solaroid.repositery.friend.FriendCommunicateRepositery
 import kotlinx.coroutines.launch
 
 class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicationDataSource.OnDataListener {
@@ -18,12 +19,14 @@ class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicati
     //repositery
     private val friendCommunicateRepositery = FriendCommunicateRepositery(fbAuth, fbDatabase, FriendCommunicationDataSource(this))
 
-    private val _friends = MutableLiveData<List<Friend>>(listOf())
-    val friends: LiveData<List<Friend>>
+    private val _friends = MutableLiveData<List<DispatchFriend>>(listOf())
+    val friends: LiveData<List<DispatchFriend>>
         get() = _friends
 
     val profilesDistinct = Transformations.map(friends) {
-        it.distinct().map { DispatchFriend(friend = it) }
+        it.distinct().map{ friend->
+            FriendListDataItem.DispatchProfileDataItem(friend)
+        }
     }
 
 
@@ -37,12 +40,18 @@ class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicati
         }
     }
 
-    companion object {
-        const val TAG = "프렌드_디스패치_뷰모델"
+
+
+
+    override fun onReceptionDataChanged(friend: List<Friend>) {
+
     }
 
-
-    override fun onDataChanged(friend: List<Friend>) {
+    override fun onDispatchDataChanged(friend: List<DispatchFriend>) {
         _friends.value = friend
+    }
+
+    companion object {
+        const val TAG = "프렌드_디스패치_뷰모델"
     }
 }

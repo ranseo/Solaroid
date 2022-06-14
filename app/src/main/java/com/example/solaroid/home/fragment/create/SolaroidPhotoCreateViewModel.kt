@@ -9,7 +9,7 @@ import com.example.solaroid.convertTodayToFormatted
 import com.example.solaroid.database.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.repositery.PhotoTicketRepositery
+import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import kotlinx.coroutines.launch
 
 class SolaroidPhotoCreateViewModel(application: Application, dataSource: DatabasePhotoTicketDao) :

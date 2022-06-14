@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -19,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.NavigationViewModel
 import com.example.solaroid.R
+import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.databinding.ActivityFriendBinding
 import com.example.solaroid.firebase.FirebaseManager
 import com.google.android.material.navigation.NavigationView
@@ -74,6 +76,10 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
                 )
                 this.finish()
             }
+        }
+
+        naviViewModel.friendCode.observe(this) {
+            supportFragmentManager.setFragmentResult("FriendFragment", bundleOf("bundleKey" to convertHexStringToLongFormat(it)))
         }
 
         binding.bottomNaviFriend.setupWithNavController(navController)

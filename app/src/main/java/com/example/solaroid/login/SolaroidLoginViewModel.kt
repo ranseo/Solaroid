@@ -3,10 +3,9 @@ package com.example.solaroid.login
 import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
 import com.example.solaroid.Event
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.repositery.ProfileRepostiery
+import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch

@@ -88,7 +88,7 @@ class FriendListAdatper(val receptionClickListener:OnReceptionClickListener?=nul
     class FriendDispatchViewHolder(private val binding : ListItemFriendDispatchBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item:DispatchFriend, onClickListener:OnDispatchClickListener) {
-            binding.friend= item.friend
+            binding.friend= item
             binding.onClickListener = onClickListener
         }
 
@@ -140,9 +140,9 @@ class OnReceptionClickListener(val listener: (friend:Friend, flag:Boolean)->Unit
     }
 }
 
-class OnDispatchClickListener(val listener: (profile:Profile)->Unit) {
-    fun onClick(profile:Profile) {
-        listener(profile)
+class OnDispatchClickListener(val listener: (dispatchFriend: DispatchFriend)->Unit) {
+    fun onClick(dispatchFriend: DispatchFriend) {
+        listener(dispatchFriend)
     }
 
 

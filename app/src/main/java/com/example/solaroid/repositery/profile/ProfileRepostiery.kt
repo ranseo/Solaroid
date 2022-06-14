@@ -1,11 +1,9 @@
-package com.example.solaroid.repositery
+package com.example.solaroid.repositery.profile
 
 import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
-import com.example.solaroid.database.DatabasePhotoTicketDao
-import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseProfile
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -17,10 +15,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Thread.sleep
 
 class ProfileRepostiery(
     private val fbAuth: FirebaseAuth,

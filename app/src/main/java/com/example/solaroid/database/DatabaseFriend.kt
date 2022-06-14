@@ -3,6 +3,7 @@ package com.example.solaroid.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.solaroid.domain.Friend
 import com.example.solaroid.domain.Profile
 
 @Entity(tableName = "friend_table")
@@ -19,9 +20,9 @@ data class DatabaseFriend(
 
 }
 
-fun List<DatabaseFriend>.asDomainModel(): List<Profile> {
+fun List<DatabaseFriend>.asDomainModel(): List<Friend> {
     return this.map {
-        Profile(
+        Friend(
             it.user,
             it.nickname,
             it.profileImage,

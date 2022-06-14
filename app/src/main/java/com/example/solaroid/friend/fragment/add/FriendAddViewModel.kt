@@ -3,19 +3,17 @@ package com.example.solaroid.friend.fragment.add
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
-import com.example.solaroid.NavigationViewModel
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.domain.Profile
 import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDomainModel
-import com.example.solaroid.repositery.FriendAddRepositery
-import com.example.solaroid.repositery.ProfileRepostiery
+import com.example.solaroid.repositery.friend.FriendAddRepositery
+import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FriendAddViewModel : ViewModel() {
@@ -32,6 +30,12 @@ class FriendAddViewModel : ViewModel() {
     private val _searchUser = MutableLiveData<Profile?>(null)
     val searchUser: LiveData<Profile?>
         get() = _searchUser
+
+    val searchProfile = Transformations.map(searchUser) {
+        it?.let{
+
+        }
+    }
 
     val isSearchUser = Transformations.map(searchUser) { profile ->
         profile != null
@@ -143,7 +147,7 @@ class FriendAddViewModel : ViewModel() {
 
     fun setValueFriendDispatch() {
         viewModelScope.launch {
-            friendAddRepositery.setValueToFriendDispatch(myFriendCode.value ?: -1L ,searchFriendCode, searchUser.value!!.asFirebaseModel())
+            friendAddRepositery.setValueToFriendDispatch(myProfile.value!!.asFirebaseModel() ,searchFriendCode, searchUser.value!!.asFirebaseModel())
         }
     }
 

@@ -6,7 +6,7 @@ import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDomainModel
-import com.example.solaroid.repositery.ProfileRepostiery
+import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
