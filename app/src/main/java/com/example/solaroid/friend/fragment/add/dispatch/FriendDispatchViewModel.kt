@@ -24,9 +24,7 @@ class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicati
         get() = _friends
 
     val profilesDistinct = Transformations.map(friends) {
-        it.distinct().map{ friend->
-            FriendListDataItem.DispatchProfileDataItem(friend)
-        }
+        it.distinct()
     }
 
 
