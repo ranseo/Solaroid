@@ -39,6 +39,7 @@
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layout/menu_item_login_info.xml" value="0.25" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layout/navigation_view_fragment_frame.xml" value="0.4753211629479378" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/activity_friend.xml" value="0.15946985891406584" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/activity_splash.xml" value="0.17828131680205217" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_add.xml" value="0.2" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_list.xml" value="0.18426678067550234" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_dispatch.xml" value="0.1" />
@@ -141,7 +142,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="Android Studio java home" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio java home" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

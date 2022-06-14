@@ -58,25 +58,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (BuildConfig.DEBUG) {
-            Firebase.auth.useEmulator("10.0.2.2", 9099)
-            Firebase.database.useEmulator("10.0.2.2", 9000)
-            Firebase.storage.useEmulator("10.0.2.2", 9199)
-
-        }
+//        if (BuildConfig.DEBUG) {
+//            Firebase.auth.useEmulator("10.0.2.2", 9099)
+//            Firebase.database.useEmulator("10.0.2.2", 9000)
+//            Firebase.storage.useEmulator("10.0.2.2", 9199)
+//        }
 
         navHostFragment = binding.navHostFragment.getFragment<NavHostFragment>()
         navController = navHostFragment.navController
 
-
-        // Request camera permissions
-        if (allPermissionsGranted()) {
-            isCameraAvailable = true
-        } else {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
-        }
 
         auth = FirebaseManager.getAuthInstance()
 
@@ -176,47 +166,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         auth.signOut()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                isCameraAvailable = true
-            } else {
-                Toast.makeText(
-                    this,
-                    "카메라 승인 요청에 거부됐습니다.\n해당 어플리케이션의 일부 기능을 사용하기 위해서는 카메라 허용이 필수적 입니다.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-        }
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-
 
 
     companion object {
         const val TAG = "메인액티비티"
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS =
-            mutableListOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ).apply {
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-                    add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
-            }.toTypedArray()
     }
 
 

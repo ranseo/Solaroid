@@ -15,11 +15,11 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (BuildConfig.DEBUG) {
-            Firebase.auth.useEmulator("10.0.2.2", 9099)
-            Firebase.database.useEmulator("10.0.2.2", 9000)
-            Firebase.storage.useEmulator("10.0.2.2", 9199)
-        }
+//        if (BuildConfig.DEBUG) {
+//            Firebase.auth.useEmulator("10.0.2.2", 9099)
+//            Firebase.database.useEmulator("10.0.2.2", 9000)
+//            Firebase.storage.useEmulator("10.0.2.2", 9199)
+//        }
 
     }
 

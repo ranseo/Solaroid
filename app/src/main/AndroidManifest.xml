@@ -22,23 +22,27 @@
         android:theme="@style/Theme.Solaroid"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".friend.activity.FriendActivity"
-            android:exported="true"
-            android:theme="@style/Theme.FriendActivity"/>
-
-        <activity
-            android:name=".login.LoginActivity"
-            android:exported="true"
-            android:label="@string/Solaroid" />
-        <activity
-            android:name=".home.activity.HomeActivity"
-            android:exported="true"
-            android:label="솔라로이드">
+            android:name=".SplashActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".friend.activity.FriendActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FriendActivity" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:exported="false"
+            android:label="@string/Solaroid" />
+        <activity
+            android:name=".home.activity.HomeActivity"
+            android:exported="false"
+            android:label="솔라로이드">
+
         </activity>
 
         <meta-data
