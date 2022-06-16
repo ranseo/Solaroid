@@ -1,12 +1,11 @@
-package com.example.solaroid.database
+package com.example.solaroid.room
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [DatabasePhotoTicket::class, DatabaseProfile::class, DatabaseFriend::class], version = 9, exportSchema = false)
+@Database(entities = [DatabasePhotoTicket::class, DatabaseProfile::class, DatabaseFriend::class], version = 10, exportSchema = false)
 abstract class SolaroidDatabase : RoomDatabase() {
     abstract val photoTicketDao : DatabasePhotoTicketDao
 

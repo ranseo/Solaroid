@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidDetailBinding
 
 

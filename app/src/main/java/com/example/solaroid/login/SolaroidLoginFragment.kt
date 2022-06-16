@@ -22,6 +22,7 @@ import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentSolaroidLoginBinding
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.login.signup.SolaroidSignUpFragment
+import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
@@ -35,6 +36,7 @@ class SolaroidLoginFragment : Fragment() {
 
     private lateinit var binding:FragmentSolaroidLoginBinding
 
+    private lateinit var viewModelFactory: LoginViewModelFactory
     private lateinit var viewModel: SolaroidLoginViewModel
 
     private lateinit var auth: FirebaseAuth
@@ -101,8 +103,12 @@ class SolaroidLoginFragment : Fragment() {
             false
         )
 
+        val application = requireNotNull(this.activity).application
+        val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
 
-        viewModel = ViewModelProvider(requireActivity())[SolaroidLoginViewModel::class.java]
+        viewModelFactory = LoginViewModelFactory(dataSource)
+        viewModel = ViewModelProvider(requireActivity(), viewModelFactory)[SolaroidLoginViewModel::class.java]
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 

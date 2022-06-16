@@ -5,10 +5,14 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.repositery.user.UsersRepositery
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabaseProfile
+import com.example.solaroid.room.asFirebaseModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -17,13 +21,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SolaroidProfileViewModel(application: Application) : AndroidViewModel(application) {
+class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: Application) : AndroidViewModel(application), ProfileRepostiery.ProfileRepositeryListener {
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage)
+    private val dataSource = database
+
+    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource,this)
     val usersRepositery = UsersRepositery(fbAuth, fbDatabase, fbStorage)
 
     enum class ProfileErrorType {
@@ -34,6 +40,7 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
     val nickname: LiveData<String>
         get() = _nickname
 
+    val myProfile = profileRepositery.myProfile
 
     val nicknameLen = Transformations.map(nickname) {
         val len = if (it.isNullOrEmpty()) 0
@@ -150,9 +157,13 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
     fun insertRefreshUpdateInsert() {
         viewModelScope.launch {
             insertProfileFirebase()
-            refreshProfile()
             updateAllUsersNum()
-            insertUserList()
+        }
+    }
+
+    fun insertUserListAndNavigateHome(profile: DatabaseProfile) {
+        viewModelScope.launch {
+            insertUserList(profile)
             navigateToMain()
         }
     }
@@ -169,11 +180,10 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
             )
 
             profileRepositery.insertProfileInfo(profile, getApplication())
-            delay(500)
         }
     }
 
-    suspend fun refreshProfile(): Unit {
+    suspend fun refreshProfile() {
         return withContext(Dispatchers.IO) {
             profileRepositery.getProfileInfo()?.addOnSuccessListener {
                 try {
@@ -185,6 +195,7 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
                         profile["profileImg"] as String,
                         profile["friendCode"] as Long
                     )
+
                 } catch (error: Exception) {
                     Log.i(TAG, "profile value error : ${error.message}")
                 }
@@ -198,15 +209,26 @@ class SolaroidProfileViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
-    suspend fun insertUserList() {
+    suspend fun insertUserList(profile: DatabaseProfile) {
         withContext(Dispatchers.IO) {
-            delay(1000)
-            usersRepositery.insertUsersList(firebaseProfile!!)
+            usersRepositery.insertUsersList(profile.asFirebaseModel())
+
         }
     }
 
     companion object {
         const val TAG = "프로필 뷰모델"
+    }
+
+    override fun insertRoomDatabase(profile: DatabaseProfile) {
+        viewModelScope.launch {
+            insertProfile(profile)
+            Log.i(TAG,"insertRoomDatabase")
+        }
+    }
+
+    suspend fun insertProfile(profile: DatabaseProfile) {
+        dataSource.insert(profile)
     }
 
 

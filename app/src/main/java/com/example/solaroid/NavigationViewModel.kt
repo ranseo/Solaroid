@@ -7,19 +7,25 @@ import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.repositery.profile.ProfileRepostiery
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabaseProfile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
-class NavigationViewModel : ViewModel() {
+class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(), ProfileRepostiery.ProfileRepositeryListener {
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
 
-    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage)
+    private val dataSource = database
+
+    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource, this)
+
+    val myProfile = profileRepositery.myProfile
 
     private val _naviToLoginAct = MutableLiveData<Event<Any?>>()
     val naviToLoginAct: LiveData<Event<Any?>>
@@ -54,27 +60,8 @@ class NavigationViewModel : ViewModel() {
     }
 
     init {
-        getProfile()
     }
 
-    fun getProfile() {
-        viewModelScope.launch {
-            profileRepositery.getProfileInfo()?.addOnSuccessListener {
-                try {
-                    val profile = it.value as HashMap<*, *>
-
-                    _profile.value = FirebaseProfile(
-                        profile["id"] as String,
-                        profile["nickname"] as String,
-                        profile["profileImg"] as String,
-                        profile["friendCode"] as Long
-                    ).asDomainModel()
-                } catch (error: Exception) {
-                    Log.i(TAG, "profile value error : ${error.message}")
-                }
-            }
-        }
-    }
 
 
     fun navigateToLoginAct() {
@@ -91,6 +78,9 @@ class NavigationViewModel : ViewModel() {
 
     companion object {
         const val TAG = "네비게이션뷰모델"
+    }
+
+    override fun insertRoomDatabase(profile: DatabaseProfile) {
     }
 
 

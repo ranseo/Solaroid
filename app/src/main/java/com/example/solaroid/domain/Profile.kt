@@ -1,16 +1,19 @@
 package com.example.solaroid.domain
 
+import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.database.DatabaseFriend
 import com.example.solaroid.firebase.FirebaseProfile
+import com.example.solaroid.room.DatabaseProfile
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Profile(
     val id: String,
     val nickname : String,
     val profileImg : String,
     val friendCode: String,
-) {
+) : Parcelable {
 
     companion object {
         val itemCallback = object :  DiffUtil.ItemCallback<Profile>(){
@@ -22,11 +25,29 @@ data class Profile(
 }
 
 
+fun Profile.asDatabaseModel() : DatabaseProfile {
+    return DatabaseProfile(
+        id,
+        nickname,
+        profileImg,
+        friendCode
+    )
+}
 fun Profile.asFirebaseModel() : FirebaseProfile {
     return FirebaseProfile(
         id = id,
         nickname = nickname,
         profileImg =  profileImg,
         friendCode = convertHexStringToLongFormat(friendCode),
+    )
+}
+
+fun Profile.asFriend(key:String) : Friend {
+    return Friend(
+        id=id,
+        nickname=nickname,
+        profileImg=profileImg,
+        friendCode=friendCode,
+        key=key
     )
 }

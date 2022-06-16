@@ -19,10 +19,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.NavigationViewModel
+import com.example.solaroid.NavigationViewModelFactory
 import com.example.solaroid.R
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.databinding.ActivityFriendBinding
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.navigation.NavigationView
 
 class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -35,6 +37,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     //viewModel
+    private lateinit var navigationViewModelFactory: NavigationViewModelFactory
     private lateinit var naviViewModel : NavigationViewModel
 
 
@@ -44,7 +47,9 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         binding = ActivityFriendBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        naviViewModel = ViewModelProvider(this)[NavigationViewModel::class.java]
+        val dataSource = SolaroidDatabase.getInstance(this).photoTicketDao
+        navigationViewModelFactory = NavigationViewModelFactory(dataSource)
+        naviViewModel = ViewModelProvider(this, navigationViewModelFactory)[NavigationViewModel::class.java]
 
         binding.naviViewModel = naviViewModel
         binding.lifecycleOwner = this

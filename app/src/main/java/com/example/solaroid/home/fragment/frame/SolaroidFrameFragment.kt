@@ -16,7 +16,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.R
 import com.example.solaroid.adapter.OnFrameLongClickListener
 import com.example.solaroid.adapter.SolaroidFrameAdapter
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameBinding
 import com.example.solaroid.dialog.ListSetDialogFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView

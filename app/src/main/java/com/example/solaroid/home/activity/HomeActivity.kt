@@ -1,38 +1,29 @@
 package com.example.solaroid.home.activity
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.solaroid.BuildConfig
 import com.example.solaroid.NavigationViewModel
+import com.example.solaroid.NavigationViewModelFactory
 import com.example.solaroid.R
 import com.example.solaroid.databinding.ActivityHomeBinding
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.login.LoginViewModelFactory
 import com.example.solaroid.login.SolaroidLoginViewModel
+import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     var isCameraAvailable: Boolean = false
@@ -41,7 +32,10 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityHomeBinding
 
     //viewModel
+    private lateinit var viewModelFactory : LoginViewModelFactory
     private lateinit var viewModel: SolaroidLoginViewModel
+
+    private lateinit var navigationViewModelFactory: NavigationViewModelFactory
     private lateinit var naviViewModel: NavigationViewModel
 
     //Firebase
@@ -70,10 +64,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         auth = FirebaseManager.getAuthInstance()
 
+        val dataSource = SolaroidDatabase.getInstance(this).photoTicketDao
         //LoginViewModel
-        viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
+        viewModelFactory = LoginViewModelFactory(dataSource)
+        viewModel = ViewModelProvider(this,viewModelFactory)[SolaroidLoginViewModel::class.java]
+
         //NavigationViewModel
-        naviViewModel = ViewModelProvider(this)[NavigationViewModel::class.java]
+        navigationViewModelFactory = NavigationViewModelFactory(dataSource)
+        naviViewModel = ViewModelProvider(this,navigationViewModelFactory)[NavigationViewModel::class.java]
         binding.naviViewModel = naviViewModel
         binding.lifecycleOwner = this
 
@@ -81,7 +79,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
                     Log.i(TAG, "AUTHENTICATED")
-                    viewModel.isProfileSet()
+
                 }
                 else -> {
                     Log.i(TAG, "NOT AUTHENTICATED")
@@ -92,6 +90,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         })
+
+        viewModel.myProfile.observe(this) {
+            it?.let{
+                Log.i(TAG,"myProfile : ${it}")
+            }
+        }
+
 
         viewModel.naviToNext.observe(this) { event ->
             event.getContentIfNotHandled()?.let{

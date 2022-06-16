@@ -13,16 +13,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.databinding.ActivitySplashBinding
-import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.home.activity.HomeActivity
 import com.example.solaroid.login.LoginActivity
+import com.example.solaroid.login.LoginViewModelFactory
 import com.example.solaroid.login.SolaroidLoginViewModel
+import com.example.solaroid.room.SolaroidDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.*
 
 class SplashActivity : AppCompatActivity() {
     var isCameraAvailable: Boolean = false
@@ -30,7 +30,10 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     private lateinit var binding : ActivitySplashBinding
+
+    private lateinit var viewModelFactory: LoginViewModelFactory
     private lateinit var viewModel : SolaroidLoginViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,9 +65,9 @@ class SplashActivity : AppCompatActivity() {
 
 
 
-
-
-        viewModel = ViewModelProvider(this)[SolaroidLoginViewModel::class.java]
+        val dataSource = SolaroidDatabase.getInstance(this).photoTicketDao
+        viewModelFactory = LoginViewModelFactory(dataSource)
+        viewModel = ViewModelProvider(this,viewModelFactory)[SolaroidLoginViewModel::class.java]
 
 
     }
@@ -85,7 +88,7 @@ class SplashActivity : AppCompatActivity() {
                 }
 
             }
-        }, 2000)
+        }, 1000)
     }
 
 

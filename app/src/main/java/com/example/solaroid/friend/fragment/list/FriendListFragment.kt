@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
-import com.example.solaroid.database.DatabasePhotoTicketDao
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentFriendListBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
 

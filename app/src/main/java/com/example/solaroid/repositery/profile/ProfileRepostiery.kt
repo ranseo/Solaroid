@@ -4,7 +4,15 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseProfile
+import com.example.solaroid.firebase.asDatabaseModel
+import com.example.solaroid.firebase.asDomainModel
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabaseProfile
+import com.example.solaroid.room.asDomainModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -15,14 +23,27 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileRepostiery(
     private val fbAuth: FirebaseAuth,
     private val fbDatabase: FirebaseDatabase,
-    private val fbStorage: FirebaseStorage
+    private val fbStorage: FirebaseStorage,
+    private val database: DatabasePhotoTicketDao,
+    private val profileListener : ProfileRepositeryListener
 ) {
+
+    interface ProfileRepositeryListener {
+        fun insertRoomDatabase(profile: DatabaseProfile)
+    }
+
+    val user = fbAuth.currentUser?.email ?: "UNKNOWN"
+    val myProfile: LiveData<Profile> = Transformations.map(database.getMyProfileInfo(user)) {
+        it?.let { it.asDomainModel() }
+    }
 
 
     suspend fun insertProfileInfo(profile: FirebaseProfile, application: Application) {
@@ -79,6 +100,10 @@ class ProfileRepostiery(
                     fbDatabase.reference.child("profile")
                         .child(user.uid)
                         .setValue(new)
+
+
+                    profileListener.insertRoomDatabase(new.asDatabaseModel())
+                    Log.i(TAG,"profileListener.insertRoomDatabase(new.asDatabaseModel())")
                 }
         }
     }

@@ -3,19 +3,24 @@ package com.example.solaroid.friend.fragment.add.reception
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.domain.Friend
+import com.example.solaroid.domain.Profile
+import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.friend.adapter.FriendListDataItem
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 import com.example.solaroid.repositery.friend.FriendCommunicateRepositery
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
+class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(),
     FriendCommunicationDataSource.OnDataListener {
 
-    private val myFriendCode = _friendCode
+    private val myProfile = _myProfile
+    private val myFriendCode :Long = convertHexStringToLongFormat(myProfile.friendCode)
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
@@ -27,8 +32,11 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
         FriendCommunicationDataSource(this)
     )
 
-    private val _friends = MutableLiveData<List<Friend>>(listOf())
-    val friends: LiveData<List<Friend>>
+
+
+    private val _friends =
+        MutableLiveData<List<FriendListDataItem.ReceptionProfileDataItem>>(listOf())
+    val friends: LiveData<List<FriendListDataItem.ReceptionProfileDataItem>>
         get() = _friends
 
     private val _friend = MutableLiveData<Friend?>()
@@ -44,11 +52,7 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
         get() = _clickAction
 
     private fun checkClickAction(friend: LiveData<Friend?>, isClick: LiveData<Event<Boolean>>) {
-        _clickAction.value = (friend.value != null && isClick.value!!.peekContent())
-    }
-
-    val profilesDistinct = Transformations.map(friends) {
-        it.distinct().map{FriendListDataItem.ReceptionProfileDataItem(ReceptionFriend(it))}
+        _clickAction.value = (friend.value != null && isClick.value != null)
     }
 
 
@@ -87,15 +91,15 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
         }
     }
 
-    fun setValueTmpFrientList(friendCode: Long, fri: Friend) {
+    fun setValueTmpFrientList(friendCode: Long) {
         viewModelScope.launch {
-            friendCommunicateRepositery.setValueTmpList(friendCode, fri)
+            friendCommunicateRepositery.setValueTmpList(friendCode, myProfile)
         }
     }
 
-    fun setValueDispatchList(friendCode:Long, fri:Friend ,flag: DispatchStatus) {
+    fun setValueDispatchList(friendCode: Long, flag: DispatchStatus) {
         viewModelScope.launch {
-            friendCommunicateRepositery.setValueFriendDispatch(friendCode,myFriendCode,fri, flag)
+            friendCommunicateRepositery.setValueFriendDispatch(friendCode, myProfile, flag, myFriendCode)
         }
     }
 
@@ -115,7 +119,10 @@ class FriendReceptionViewModel(_friendCode: Long) : ViewModel(),
     }
 
     override fun onReceptionDataChanged(friend: List<Friend>) {
-        _friends.value = friend
+        viewModelScope.launch(Dispatchers.Default) {
+            _friends.postValue( friend.distinct().map { FriendListDataItem.ReceptionProfileDataItem(ReceptionFriend(it))})
+        }
+        Log.i(TAG, "onReceptionDataChanged : ${friend}")
     }
 
     override fun onDispatchDataChanged(friend: List<DispatchFriend>) {

@@ -1,7 +1,5 @@
-package com.example.solaroid.database
+package com.example.solaroid.room
 
-import android.net.Uri
-import android.widget.ImageView
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey

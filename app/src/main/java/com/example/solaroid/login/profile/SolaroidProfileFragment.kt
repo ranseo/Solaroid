@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentSolaroidProfileBinding
+import com.example.solaroid.domain.asDatabaseModel
+import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.room.SolaroidDatabase
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 
@@ -23,6 +26,8 @@ class SolaroidProfileFragment() : Fragment() {
 
     private lateinit var backPressedCallback: OnBackPressedCallback
     private lateinit var profileObserver: ProfileObserver
+
+    private lateinit var viewModelFactory : SolaroidProfileViewModelFactory
     private lateinit var viewModel: SolaroidProfileViewModel
 
     private lateinit var auth: FirebaseAuth
@@ -40,7 +45,12 @@ class SolaroidProfileFragment() : Fragment() {
         )
 
         auth = FirebaseManager.getAuthInstance()
-        viewModel = ViewModelProvider(this)[SolaroidProfileViewModel::class.java]
+
+        val application = requireNotNull(this.activity).application
+        val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
+
+        viewModelFactory = SolaroidProfileViewModelFactory(dataSource, application)
+        viewModel = ViewModelProvider(this,viewModelFactory)[SolaroidProfileViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -91,6 +101,12 @@ class SolaroidProfileFragment() : Fragment() {
                 findNavController().navigate(
                     SolaroidProfileFragmentDirections.actionProfileFragmentToLoginFragment()
                 )
+            }
+        }
+
+        viewModel.myProfile.observe(viewLifecycleOwner) {
+            it?.let { profile->
+                viewModel.insertUserListAndNavigateHome(profile.asDatabaseModel())
             }
         }
 

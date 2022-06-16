@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.NavigationViewModel
 import com.example.solaroid.R
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
 import com.example.solaroid.dialog.FilterDialogFragment
 import com.example.solaroid.firebase.FirebaseManager
@@ -26,8 +26,6 @@ open class SolaroidFrameFragmentContainer : Fragment(), FilterDialogFragment.OnF
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
     private lateinit var viewModel: SolaroidFrameViewModel
-
-    private lateinit var naviViewModel : NavigationViewModel
 
     private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
@@ -59,11 +57,8 @@ open class SolaroidFrameFragmentContainer : Fragment(), FilterDialogFragment.OnF
         viewModelFactory = SolaroidFrameViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this.requireActivity(), viewModelFactory)[SolaroidFrameViewModel::class.java]
 
-        naviViewModel = ViewModelProvider(this.requireActivity())[NavigationViewModel::class.java]
-
 
         binding.viewModel = viewModel
-        binding.naviViewModel = naviViewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
 

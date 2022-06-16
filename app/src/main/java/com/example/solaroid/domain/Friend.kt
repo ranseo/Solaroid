@@ -2,7 +2,8 @@ package com.example.solaroid.domain
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.database.DatabaseFriend
+import com.example.solaroid.firebase.FirebaseFriend
+import com.example.solaroid.room.DatabaseFriend
 import com.example.solaroid.firebase.FirebaseProfile
 
 data class Friend(
@@ -32,11 +33,12 @@ fun Friend.asDatabaseFriend() : DatabaseFriend {
     )
 }
 
-fun Friend.asFirebaseModel() : FirebaseProfile {
-    return FirebaseProfile(
+fun Friend.asFirebaseModel() : FirebaseFriend {
+    return FirebaseFriend(
         id = id,
         nickname = nickname,
         profileImg =  profileImg,
-        friendCode = convertHexStringToLongFormat(friendCode)
+        friendCode = convertHexStringToLongFormat(friendCode),
+        key =key
     )
 }

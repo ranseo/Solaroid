@@ -7,9 +7,9 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.solaroid.database.DatabasePhotoTicketDao
-import com.example.solaroid.database.asDomainModel
-import com.example.solaroid.database.asFirebaseModel
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.asDomainModel
+import com.example.solaroid.room.asFirebaseModel
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.domain.asDatabaseModel
 import com.example.solaroid.domain.asFirebaseModel

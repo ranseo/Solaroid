@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidGalleryBinding
 
 class SolaroidGalleryFragment : Fragment() {

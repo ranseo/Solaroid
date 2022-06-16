@@ -1,13 +1,12 @@
 package com.example.solaroid.home.fragment.detail
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.solaroid.database.DatabasePhotoTicketDao
-import com.example.solaroid.database.asDomainModel
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.asDomainModel
 import com.example.solaroid.domain.PhotoTicket
 import kotlinx.coroutines.launch
 

@@ -1,17 +1,23 @@
 package com.example.solaroid.friend.fragment.add.dispatch
 
+import android.util.Log
 import androidx.lifecycle.*
+import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.domain.Friend
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.friend.adapter.FriendListDataItem
 import com.example.solaroid.friend.fragment.add.reception.ReceptionFriend
 import com.example.solaroid.repositery.friend.FriendCommunicateRepositery
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicationDataSource.OnDataListener {
+class FriendDispatchViewModel(_myProfile:Profile) : ViewModel(), FriendCommunicationDataSource.OnDataListener {
 
-    private val friendCode = _friendCode
+    private val myProfile = _myProfile
+    private val myFriendCode :Long = convertHexStringToLongFormat(myProfile.friendCode)
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
@@ -20,13 +26,10 @@ class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicati
     //repositery
     private val friendCommunicateRepositery = FriendCommunicateRepositery(fbAuth, fbDatabase, FriendCommunicationDataSource(this))
 
-    private val _friends = MutableLiveData<List<DispatchFriend>>(listOf())
-    val friends: LiveData<List<DispatchFriend>>
+    private val _friends = MutableLiveData<List<FriendListDataItem.DispatchProfileDataItem>>(listOf())
+    val friends: LiveData<List<FriendListDataItem.DispatchProfileDataItem>>
         get() = _friends
 
-    val profilesDistinct = Transformations.map(friends) {
-        it.distinct().map{FriendListDataItem.DispatchProfileDataItem(it)}
-    }
 
 
     init {
@@ -35,7 +38,7 @@ class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicati
 
     private fun refreshDispatchProfiles() {
         viewModelScope.launch {
-            friendCommunicateRepositery.addValueListenerToDisptachRef(friendCode)
+            friendCommunicateRepositery.addValueListenerToDisptachRef(myFriendCode)
         }
     }
 
@@ -47,7 +50,14 @@ class FriendDispatchViewModel(_friendCode:Long) : ViewModel(), FriendCommunicati
     }
 
     override fun onDispatchDataChanged(friend: List<DispatchFriend>) {
-        _friends.value = friend
+        viewModelScope.launch(Dispatchers.Default) {
+            val tmp = friend.distinct().map{FriendListDataItem.DispatchProfileDataItem(it)}
+            withContext(Dispatchers.Main) {
+                _friends.value = tmp
+            }
+        }
+
+        Log.i(TAG,"nDispatchDataChanged : ${friend}}")
     }
 
     companion object {

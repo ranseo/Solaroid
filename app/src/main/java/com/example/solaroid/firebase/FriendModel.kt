@@ -6,15 +6,15 @@ import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 
 
-data class FirebaseFriend (
+data class FirebaseFriend(
     val id: String,
-    val nickname : String,
-    val profileImg : String,
-    val friendCode : Long,
-    var key : String
+    val nickname: String,
+    val profileImg: String,
+    val friendCode: Long,
+    var key: String
 )
 
-fun FirebaseFriend.asDomainModel() : Friend {
+fun FirebaseFriend.asDomainModel(): Friend {
     return Friend(
         id,
         nickname,
@@ -24,12 +24,22 @@ fun FirebaseFriend.asDomainModel() : Friend {
     )
 }
 
+fun FirebaseFriend.asFirebaseDispatchFriend(status: String): FirebaseDispatchFriend {
+    return FirebaseDispatchFriend(
+        status,
+        id,
+        nickname,
+        profileImg,
+        friendCode
+    )
+}
+
 data class FirebaseDispatchFriend(
-    val flag : String,
+    val flag: String,
     val id: String,
-    val nickname : String,
-    val profileImg : String,
-    val friendCode: Long,
+    val nickname: String,
+    val profileImg: String,
+    val friendCode: Long
 ) {
 }
 
@@ -42,3 +52,5 @@ fun FirebaseDispatchFriend.asDomainModel(): DispatchFriend {
         convertLongToHexStringFormat(friendCode),
     )
 }
+
+

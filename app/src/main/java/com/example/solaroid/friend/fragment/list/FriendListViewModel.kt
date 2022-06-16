@@ -3,7 +3,7 @@ package com.example.solaroid.friend.fragment.list
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.datasource.friend.MyFriendListDataSource
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.domain.asDatabaseFriend
@@ -12,8 +12,6 @@ import com.example.solaroid.friend.adapter.FriendListDataItem
 import com.example.solaroid.repositery.friend.FriendListRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FriendListViewModel(dataSource:DatabasePhotoTicketDao, _friendCode:Long) : ViewModel(),  MyFriendListDataSource.OnValueListener  {

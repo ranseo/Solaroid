@@ -3,7 +3,7 @@ package com.example.solaroid.home.fragment.add
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabasePhotoTicketDao
 import java.lang.IllegalArgumentException
 
 class SolaroidAddViewModelFactory(val dataSource: DatabasePhotoTicketDao, val application: Application) : ViewModelProvider.Factory {

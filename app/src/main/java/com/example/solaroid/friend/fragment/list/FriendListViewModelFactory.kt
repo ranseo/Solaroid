@@ -2,7 +2,7 @@ package com.example.solaroid.friend.fragment.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.solaroid.database.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabasePhotoTicketDao
 
 class FriendListViewModelFactory(val dataSource: DatabasePhotoTicketDao, val friendCode:Long): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -12,40 +12,51 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentFriendDispatchBinding
 import com.example.solaroid.databinding.FragmentFriendReceptionBinding
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.friend.adapter.FriendListAdatper
+import com.example.solaroid.friend.adapter.FriendListDataItem
 import com.example.solaroid.friend.adapter.OnDispatchClickListener
 import com.example.solaroid.friend.fragment.add.reception.FriendReceptionFragment
 
 class FriendDispatchFragment() : Fragment() {
 
-    private lateinit var binding : FragmentFriendDispatchBinding
+    private lateinit var binding: FragmentFriendDispatchBinding
 
     private lateinit var viewModelFactory: FriendDispatchViewModelFactory
     private lateinit var viewModel: FriendDispatchViewModel
 
-    private var friendCode : Long? = null
+    private lateinit var myProfile: Profile
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "onStart()")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "onDestroy")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_dispatch, container,false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_friend_dispatch, container, false)
 
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        arguments?.takeIf { it.containsKey(KEY)}?.apply{
-            friendCode=getLong(KEY)
+        arguments?.takeIf { it.containsKey(KEY) }?.apply {
+            try {
+                myProfile = getParcelable<Profile>(KEY)!!
+            } catch (error:Exception) {
+                Log.d(TAG, "arguments?.takeIf : ${error.message}")
+            }
         }
 
 
-        viewModelFactory = FriendDispatchViewModelFactory(friendCode ?: -1L)
-        viewModel = ViewModelProvider(this,viewModelFactory)[FriendDispatchViewModel::class.java]
+        Log.i(TAG, "myProfile : ${myProfile}")
+        viewModelFactory = FriendDispatchViewModelFactory(myProfile)
+        viewModel = ViewModelProvider(this, viewModelFactory)[FriendDispatchViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -56,6 +67,15 @@ class FriendDispatchFragment() : Fragment() {
 
         binding.recFriendDispatch.adapter = adapter
 
+        viewModel.friends.observe(viewLifecycleOwner) {
+            it?.let { dispatchFriend ->
+                adapter.submitList(dispatchFriend)
+            }
+
+            Log.i(TAG, "friendDistinct.observe : ${it}")
+        }
+
+        return binding.root
     }
 
     companion object {

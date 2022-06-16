@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.adapter.OnChoiceClickListener
 import com.example.solaroid.adapter.SolaroidChoiceAdapter
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidAddChoiceBinding
 import com.example.solaroid.dialog.ChoiceDialogFragment
 

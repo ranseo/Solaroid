@@ -6,16 +6,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.solaroid.Event
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.profile.ProfileRepostiery
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabaseProfile
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
 
-class SolaroidLoginViewModel : ViewModel() {
+class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel(), ProfileRepostiery.ProfileRepositeryListener {
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
+    private val dataSource = database
 
     enum class AuthenticationState {
         AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
@@ -26,7 +30,7 @@ class SolaroidLoginViewModel : ViewModel() {
     }
 
     val profileRepositery =
-        ProfileRepostiery(fbAuth = fbAuth, fbDatabase = fbDatabase, fbStorage = fbStorage)
+        ProfileRepostiery(fbAuth = fbAuth, fbDatabase = fbDatabase, fbStorage = fbStorage, dataSource,this)
 
     private val _SavedLoginId = MutableLiveData<String>()
     val SavedLoginId: LiveData<String>
@@ -40,6 +44,8 @@ class SolaroidLoginViewModel : ViewModel() {
     fun setIsSaveId(b: Boolean) {
         _isSaveId.value = b
     }
+
+    val myProfile = profileRepositery.myProfile
 
 
     val authenticationState = FirebaseAuthLiveData().map { user ->
@@ -110,26 +116,33 @@ class SolaroidLoginViewModel : ViewModel() {
     }
 
 
+//    fun isProfileSet() {
+//        viewModelScope.launch {
+//            Log.i(TAG, "fun isProfileSet()")
+//            val task = profileRepositery.isInitProfile()
+//            if (task == null) {
+//                Log.i(TAG, "fun isProfileSet() task null")
+//                _naviToNext.value = Event(false)
+//            }
+//            else task.addOnCompleteListener {
+//                if(it.isSuccessful) {
+//                    Log.i(TAG, "fun isProfileSet() task success")
+//                    if (it.result.exists()) _naviToNext.value = Event(true)
+//                    else _naviToNext.value = Event(false)
+//                } else {
+//                    Log.i(TAG, "fun isProfileSet() task fail")
+//                    _naviToNext.value = Event(false)
+//                }
+//            }
+//        }
+//    }
+
     fun isProfileSet() {
-        viewModelScope.launch {
-            Log.i(TAG, "fun isProfileSet()")
-            val task = profileRepositery.isInitProfile()
-            if (task == null) {
-                Log.i(TAG, "fun isProfileSet() task null")
-                _naviToNext.value = Event(false)
-            }
-            else task.addOnCompleteListener {
-                if(it.isSuccessful) {
-                    Log.i(TAG, "fun isProfileSet() task success")
-                    if (it.result.exists()) _naviToNext.value = Event(true)
-                    else _naviToNext.value = Event(false)
-                } else {
-                    Log.i(TAG, "fun isProfileSet() task fail")
-                    _naviToNext.value = Event(false)
-                }
-            }
-        }
+        if(myProfile.value ==null) _naviToNext.value = Event(false)
+        else _naviToNext.value = Event(true)
     }
+
+
 
     fun setSavedLoginId(id: String?) {
         if (id == null) return
@@ -138,6 +151,10 @@ class SolaroidLoginViewModel : ViewModel() {
 
     companion object {
         const val TAG = "로그인뷰모델"
+    }
+
+    override fun insertRoomDatabase(profile: DatabaseProfile) {
+
     }
 
 

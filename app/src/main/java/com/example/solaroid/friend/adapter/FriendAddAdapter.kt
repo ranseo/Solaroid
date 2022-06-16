@@ -3,12 +3,20 @@ package com.example.solaroid.friend.adapter
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.friend.fragment.add.dispatch.FriendDispatchFragment
 import com.example.solaroid.friend.fragment.add.reception.FriendReceptionFragment
 
-class FriendAddAdapter(fm:Fragment) : FragmentStateAdapter(fm) {
-    val list = mutableListOf<Fragment>()
+class FriendAddAdapter(fm: FragmentManager, lifecycle:Lifecycle) : FragmentStateAdapter(fm, lifecycle) {
+    var list : List<Fragment> = listOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     override fun getItemCount(): Int = list.size
 
 
@@ -16,22 +24,22 @@ class FriendAddAdapter(fm:Fragment) : FragmentStateAdapter(fm) {
         return list[position]
     }
 
-    fun addReceptionFragment(fragment: Fragment, friendCode:Long) {
+    fun addReceptionFragment(fragment: Fragment, myProfile: Profile) {
         Log.i(TAG,"addReceptionFragment")
         fragment.arguments = Bundle().apply {
-            putLong("ReceptionKey", friendCode)
+            putParcelable("ReceptionKey", myProfile)
         }
 
-        list.add(fragment)
+        list = list + listOf(fragment)
     }
 
 
-    fun addDispatchFragment(fragment: Fragment, friendCode:Long) {
+    fun addDispatchFragment(fragment: Fragment, myProfile:Profile) {
         Log.i(TAG,"addDispatchFragment")
         fragment.arguments = Bundle().apply {
-            putLong("DispatchKey", friendCode)
+            putParcelable("DispatchKey", myProfile)
         }
-        list.add(fragment)
+        list = list + listOf(fragment)
     }
     
     companion object {

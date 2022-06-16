@@ -1,7 +1,6 @@
 package com.example.solaroid.domain
 
-import androidx.room.PrimaryKey
-import com.example.solaroid.database.DatabasePhotoTicket
+import com.example.solaroid.room.DatabasePhotoTicket
 import com.example.solaroid.firebase.FirebasePhotoTicket
 
 data class PhotoTicket(

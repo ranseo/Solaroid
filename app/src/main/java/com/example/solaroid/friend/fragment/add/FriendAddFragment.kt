@@ -19,11 +19,13 @@ import com.example.solaroid.friend.activity.FriendActivity
 import com.example.solaroid.friend.adapter.FriendAddAdapter
 import com.example.solaroid.friend.fragment.add.dispatch.FriendDispatchFragment
 import com.example.solaroid.friend.fragment.add.reception.FriendReceptionFragment
+import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.tabs.TabLayoutMediator
 
 class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener {
     private lateinit var binding: FragmentFriendAddBinding
 
+    private lateinit var viewModelFactory: FriendAddViewModelFactory
     private lateinit var viewModel: FriendAddViewModel
 
     override fun onCreateView(
@@ -34,24 +36,29 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
         setHasOptionsMenu(true)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_add, container, false)
 
-        viewModel = ViewModelProvider(this)[FriendAddViewModel::class.java]
+        val application = requireNotNull(this.activity).application
+        val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
+        viewModelFactory = FriendAddViewModelFactory(dataSource)
+        viewModel = ViewModelProvider(this,viewModelFactory)[FriendAddViewModel::class.java]
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = FriendAddAdapter(this)
+        val adapter = FriendAddAdapter(childFragmentManager, lifecycle)
         binding.viewPageFriendAdd.adapter = adapter
+
 
 
 
         viewModel.myProfile.observe(viewLifecycleOwner) { profile ->
             profile?.let {
-                val activity = this.requireActivity() as FriendActivity
-                activity.setActionBarTitle("나의 친구코드 : ${profile.friendCode}")
+//                val activity = this.requireActivity() as FriendActivity
+//                activity.setActionBarTitle("나의 친구코드 : ${profile.friendCode}")
 
-                adapter.addDispatchFragment(FriendDispatchFragment(), convertHexStringToLongFormat(profile.friendCode))
-                adapter.addReceptionFragment(FriendReceptionFragment(), convertHexStringToLongFormat(profile.friendCode))
+                adapter.addDispatchFragment(FriendDispatchFragment(), profile)
+                adapter.addReceptionFragment(FriendReceptionFragment(), profile)
                 setTabLayout()
+
             }
         }
 

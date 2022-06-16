@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@+id/fragment_solaroid_intro">
+    app:startDestination="@+id/fragment_solaroid_frame_container">
 
 
     <action
@@ -147,23 +147,6 @@
             app:popUpTo="@+id/fragment_solaroid_frame_container"
             app:popUpToInclusive="true"/>
     </fragment>
-
-    <fragment
-        android:id="@+id/fragment_solaroid_intro"
-        android:name="com.example.solaroid.home.fragment.intro.IntroFragment"
-        android:label=""
-        tools:layout="@layout/fragment_solaroid_intro">
-
-        <action
-            android:id="@+id/action_introFragment_to_frameFragmentContainer"
-            app:destination="@+id/fragment_solaroid_frame_container"
-            app:popUpTo="@+id/fragment_solaroid_intro"
-            app:popUpToInclusive="true"/>
-
-    </fragment>
-
-
-
 
 
 </navigation>

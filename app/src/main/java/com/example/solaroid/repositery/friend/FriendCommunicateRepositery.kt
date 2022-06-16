@@ -4,8 +4,12 @@ import android.util.Log
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.domain.Friend
+import com.example.solaroid.domain.Profile
+import com.example.solaroid.domain.asFirebaseModel
+import com.example.solaroid.domain.asFriend
 import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
+import com.example.solaroid.firebase.asFirebaseDispatchFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -85,19 +89,13 @@ class FriendCommunicateRepositery(
     /**
      * receptionFragment에서 친구추가가 되었음을 상대에게도 알리기 위해 Firebase/tmpFriendList 경로에 Friend객체를 쓰는 함수.
      * */
-    suspend fun setValueTmpList(friendCode:Long, _friend:Friend) {
+    suspend fun setValueTmpList(friendCode:Long, myProfile:Profile) {
         return withContext(Dispatchers.IO) {
 
             val ref = fbDatabase.reference.child("tmpFriendList").child("${friendCode}").child("list").push()
             val key = ref.key ?: return@withContext
-            val friend = FirebaseFriend(
-                _friend.id,
-                _friend.nickname,
-                _friend.profileImg,
-                convertHexStringToLongFormat(_friend.friendCode),
-                key
-            )
 
+            val friend = myProfile.asFriend(key).asFirebaseModel()
             ref.setValue(friend)
 
         }
@@ -108,18 +106,13 @@ class FriendCommunicateRepositery(
      * receptionFragment에서 친구추가 또는 거절을 했을 때 상대의 DispatchFragment에 수신여부를 전달하기 위해
      * Firebase/DispatchList 에 새로운 DispatchFragment 객체를 쓰는 함수.
      * */
-    suspend fun setValueFriendDispatch(friendCode: Long, myFriendCode:Long, _friend: Friend, flag:DispatchStatus) {
+    suspend fun setValueFriendDispatch(friendCode: Long, myProfile: Profile, flag:DispatchStatus,myFriendCode:Long) {
         return withContext(Dispatchers.IO) {
 
             val ref = fbDatabase.reference.child("friendDispatch").child("${friendCode}").child("list").child("${myFriendCode}")
+            val key=ref.key ?:return@withContext
 
-            val friend = FirebaseDispatchFriend(
-                flag.status,
-                _friend.id,
-                _friend.nickname,
-                _friend.profileImg,
-                convertHexStringToLongFormat(_friend.friendCode)
-            )
+            val friend = myProfile.asFriend(key).asFirebaseModel().asFirebaseDispatchFriend(flag.status)
 
             ref.setValue(friend)
 

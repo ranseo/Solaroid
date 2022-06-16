@@ -11,21 +11,26 @@ import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.repositery.friend.FriendAddRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
+import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.room.DatabaseProfile
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 
-class FriendAddViewModel : ViewModel() {
+class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(),ProfileRepostiery.ProfileRepositeryListener {
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage = FirebaseManager.getStorageInstance()
 
+    //room
+    private val dataSource = database
+
     //repositery
     private val friendAddRepositery = FriendAddRepositery(fbAuth, fbDatabase)
-    private val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage)
+    private val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource,this)
 
     private val _searchUser = MutableLiveData<Profile?>(null)
     val searchUser: LiveData<Profile?>
@@ -41,15 +46,7 @@ class FriendAddViewModel : ViewModel() {
         profile != null
     }
 
-    private val _myProfile = MutableLiveData<Profile?>()
-    val myProfile: LiveData<Profile?>
-        get() = _myProfile
-
-    val myFriendCode = Transformations.map(myProfile) {
-        it?.let{
-            convertHexStringToLongFormat(it.friendCode)
-        }
-    }
+    val myProfile = profileRepositery.myProfile
 
     private var searchFriendCode: Long = -1
 
@@ -59,29 +56,6 @@ class FriendAddViewModel : ViewModel() {
 
 
 
-    init {
-        refreshMyProfile()
-    }
-
-    private fun refreshMyProfile() {
-        viewModelScope.launch {
-            profileRepositery.getProfileInfo()?.addOnSuccessListener {
-                try {
-                    val profile = it.value as HashMap<*, *>
-
-                    _myProfile.value = FirebaseProfile(
-                        profile["id"] as String,
-                        profile["nickname"] as String,
-                        profile["profileImg"] as String,
-                        profile["friendCode"] as Long
-                    ).asDomainModel()
-                } catch (error: Exception) {
-                    _myProfile.value = null
-                    Log.i(TAG, "profile value error : ${error.message}")
-                }
-            }
-        }
-    }
 
     fun setSearchFriendCode(text: CharSequence) {
         Log.i(TAG, "setSearchFriendCode : ${text}")
@@ -154,5 +128,9 @@ class FriendAddViewModel : ViewModel() {
 
     companion object {
         const val TAG = "프렌드_애드_뷰모델"
+    }
+
+    override fun insertRoomDatabase(profile: DatabaseProfile) {
+
     }
 }

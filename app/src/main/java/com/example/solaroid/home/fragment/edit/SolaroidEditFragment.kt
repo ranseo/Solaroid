@@ -15,7 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.convertDateToLong
 import com.example.solaroid.convertTodayToFormatted
-import com.example.solaroid.database.SolaroidDatabase
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidEditBinding
 import com.example.solaroid.dialog.DatePickerDialogFragment
 import com.example.solaroid.dialog.SaveDialogFragment
