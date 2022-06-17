@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
@@ -83,9 +84,6 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
         }
 
-        naviViewModel.friendCode.observe(this) {
-            supportFragmentManager.setFragmentResult("FriendFragment", bundleOf("bundleKey" to convertHexStringToLongFormat(it)))
-        }
 
         binding.bottomNaviFriend.setupWithNavController(navController)
 
@@ -116,5 +114,9 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     fun setActionBarTitle(str:String) {
         val actionBar = supportActionBar
         actionBar?.title = str
+    }
+
+    companion object{
+        const val TAG = "프렌드_액티비티"
     }
 }

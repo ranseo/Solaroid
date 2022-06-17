@@ -8,6 +8,7 @@ import com.example.solaroid.Event
 import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
+import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.repositery.user.UsersRepositery
 import com.example.solaroid.room.DatabasePhotoTicketDao
@@ -16,12 +17,9 @@ import com.example.solaroid.room.asFirebaseModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
-class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: Application) : AndroidViewModel(application), ProfileRepostiery.ProfileRepositeryListener {
+class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: Application) : AndroidViewModel(application){
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
@@ -29,7 +27,7 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
 
     private val dataSource = database
 
-    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource,this)
+    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource)
     val usersRepositery = UsersRepositery(fbAuth, fbDatabase, fbStorage)
 
     enum class ProfileErrorType {
@@ -39,8 +37,6 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
     private val _nickname = MutableLiveData<String>("")
     val nickname: LiveData<String>
         get() = _nickname
-
-    val myProfile = profileRepositery.myProfile
 
     val nicknameLen = Transformations.map(nickname) {
         val len = if (it.isNullOrEmpty()) 0
@@ -65,7 +61,9 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
         _profileType.value = type
     }
 
-    var firebaseProfile: FirebaseProfile? = null
+    private val _firebaseProfile = MutableLiveData<FirebaseProfile>()
+    val firebaseProfile : LiveData<FirebaseProfile>
+        get() = _firebaseProfile
 
     val isAlamVisible = Transformations.map(profileType) { type ->
         when (type) {
@@ -154,22 +152,23 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
 
     ///////////////
 
-    fun insertRefreshUpdateInsert() {
+    fun insertAndUpdateProfile() {
         viewModelScope.launch {
             insertProfileFirebase()
             updateAllUsersNum()
+            refreshProfile()
         }
     }
 
-    fun insertUserListAndNavigateHome(profile: DatabaseProfile) {
+    fun insertAndNavigateMain(profile: FirebaseProfile) {
         viewModelScope.launch {
+            insertProfile(profile.asDatabaseModel())
             insertUserList(profile)
             navigateToMain()
         }
     }
 
-
-    suspend fun insertProfileFirebase(): Unit {
+    suspend fun insertProfileFirebase() {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
             val profile = FirebaseProfile(
@@ -180,6 +179,8 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
             )
 
             profileRepositery.insertProfileInfo(profile, getApplication())
+
+            delay(500)
         }
     }
 
@@ -189,13 +190,12 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
                 try {
                     val profile = it.value as HashMap<*, *>
 
-                    firebaseProfile = FirebaseProfile(
+                    _firebaseProfile.value = FirebaseProfile(
                         profile["id"] as String,
                         profile["nickname"] as String,
                         profile["profileImg"] as String,
                         profile["friendCode"] as Long
                     )
-
                 } catch (error: Exception) {
                     Log.i(TAG, "profile value error : ${error.message}")
                 }
@@ -206,26 +206,21 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
     suspend fun updateAllUsersNum(): Unit {
         withContext(Dispatchers.IO) {
             usersRepositery.updateAllUserNum(allUserNum + 1L)
+            delay(500)
         }
     }
 
-    suspend fun insertUserList(profile: DatabaseProfile) {
+    suspend fun insertUserList(profile: FirebaseProfile) {
         withContext(Dispatchers.IO) {
-            usersRepositery.insertUsersList(profile.asFirebaseModel())
-
+            usersRepositery.insertUsersList(profile)
         }
     }
+
 
     companion object {
         const val TAG = "프로필 뷰모델"
     }
 
-    override fun insertRoomDatabase(profile: DatabaseProfile) {
-        viewModelScope.launch {
-            insertProfile(profile)
-            Log.i(TAG,"insertRoomDatabase")
-        }
-    }
 
     suspend fun insertProfile(profile: DatabaseProfile) {
         dataSource.insert(profile)

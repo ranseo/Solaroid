@@ -23,7 +23,7 @@ class MyFriendListDataSource(
                 val friend = FirebaseFriend(
                     id = hashMap["id"]!! as String,
                     nickname = hashMap["nickname"] as String,
-                    profileImg = hashMap["profileMap"] as String,
+                    profileImg = hashMap["profileImg"] as String,
                     friendCode = hashMap["friendCode"] as Long,
                     key = hashMap["key"] as String
                 ).asDomainModel()
@@ -64,7 +64,7 @@ class MyFriendListDataSource(
                     val friend = FirebaseFriend(
                         id = hashMap["id"]!! as String,
                         nickname = hashMap["nickname"] as String,
-                        profileImg = hashMap["profileMap"] as String,
+                        profileImg = hashMap["profileImg"] as String,
                         friendCode = hashMap["friendCode"] as Long,
                         key = hashMap["key"] as String
                     ).asDomainModel()

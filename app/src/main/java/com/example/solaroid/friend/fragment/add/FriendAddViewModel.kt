@@ -18,7 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 
-class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(),ProfileRepostiery.ProfileRepositeryListener {
+class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(){
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
@@ -30,7 +30,7 @@ class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(),Profil
 
     //repositery
     private val friendAddRepositery = FriendAddRepositery(fbAuth, fbDatabase)
-    private val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource,this)
+    private val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource)
 
     private val _searchUser = MutableLiveData<Profile?>(null)
     val searchUser: LiveData<Profile?>
@@ -130,7 +130,4 @@ class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(),Profil
         const val TAG = "프렌드_애드_뷰모델"
     }
 
-    override fun insertRoomDatabase(profile: DatabaseProfile) {
-
-    }
 }

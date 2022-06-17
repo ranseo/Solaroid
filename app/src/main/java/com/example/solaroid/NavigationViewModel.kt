@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
-class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(), ProfileRepostiery.ProfileRepositeryListener {
+class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(){
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
@@ -23,7 +23,7 @@ class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(), Profil
 
     private val dataSource = database
 
-    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource, this)
+    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource)
 
     val myProfile = profileRepositery.myProfile
 
@@ -78,9 +78,6 @@ class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(), Profil
 
     companion object {
         const val TAG = "네비게이션뷰모델"
-    }
-
-    override fun insertRoomDatabase(profile: DatabaseProfile) {
     }
 
 

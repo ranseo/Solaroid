@@ -33,12 +33,8 @@ class ProfileRepostiery(
     private val fbDatabase: FirebaseDatabase,
     private val fbStorage: FirebaseStorage,
     private val database: DatabasePhotoTicketDao,
-    private val profileListener : ProfileRepositeryListener
 ) {
 
-    interface ProfileRepositeryListener {
-        fun insertRoomDatabase(profile: DatabaseProfile)
-    }
 
     val user = fbAuth.currentUser?.email ?: "UNKNOWN"
     val myProfile: LiveData<Profile> = Transformations.map(database.getMyProfileInfo(user)) {
@@ -101,8 +97,6 @@ class ProfileRepostiery(
                         .child(user.uid)
                         .setValue(new)
 
-
-                    profileListener.insertRoomDatabase(new.asDatabaseModel())
                     Log.i(TAG,"profileListener.insertRoomDatabase(new.asDatabaseModel())")
                 }
         }

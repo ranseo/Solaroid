@@ -13,7 +13,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
 
-class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel(), ProfileRepostiery.ProfileRepositeryListener {
+class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
@@ -30,7 +30,7 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel(), Pr
     }
 
     val profileRepositery =
-        ProfileRepostiery(fbAuth = fbAuth, fbDatabase = fbDatabase, fbStorage = fbStorage, dataSource,this)
+        ProfileRepostiery(fbAuth = fbAuth, fbDatabase = fbDatabase, fbStorage = fbStorage, dataSource)
 
     private val _SavedLoginId = MutableLiveData<String>()
     val SavedLoginId: LiveData<String>
@@ -151,10 +151,6 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel(), Pr
 
     companion object {
         const val TAG = "로그인뷰모델"
-    }
-
-    override fun insertRoomDatabase(profile: DatabaseProfile) {
-
     }
 
 

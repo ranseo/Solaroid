@@ -95,8 +95,8 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
     }
 
     override fun onDetach() {
-        val activity = this.requireActivity() as FriendActivity
-        activity.setActionBarTitle("")
+//        val activity = this.requireActivity() as FriendActivity
+//        activity.setActionBarTitle("")
         super.onDetach()
     }
 

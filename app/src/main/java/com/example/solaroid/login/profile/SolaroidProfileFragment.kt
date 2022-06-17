@@ -90,11 +90,17 @@ class SolaroidProfileFragment() : Fragment() {
         viewModel.profileType.observe(viewLifecycleOwner, Observer { type ->
             when (type) {
                 SolaroidProfileViewModel.ProfileErrorType.ISRIGHT -> {
-                    viewModel.insertRefreshUpdateInsert()
+                    viewModel.insertAndUpdateProfile()
                 }
                 else -> {}
             }
         })
+
+        viewModel.firebaseProfile.observe(viewLifecycleOwner) {
+            it?.let{ profile ->
+                viewModel.insertAndNavigateMain(profile)
+            }
+        }
 
         viewModel.naviToLogin.observe(viewLifecycleOwner){
             it.getContentIfNotHandled()?.let{
@@ -104,11 +110,6 @@ class SolaroidProfileFragment() : Fragment() {
             }
         }
 
-        viewModel.myProfile.observe(viewLifecycleOwner) {
-            it?.let { profile->
-                viewModel.insertUserListAndNavigateHome(profile.asDatabaseModel())
-            }
-        }
 
         return binding.root
     }
