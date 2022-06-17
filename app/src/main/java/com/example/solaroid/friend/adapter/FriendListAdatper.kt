@@ -11,6 +11,7 @@ import com.example.solaroid.databinding.ListItemSolaroidFriendBinding
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.domain.Profile
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
+import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 import com.example.solaroid.friend.fragment.add.reception.ReceptionFriend
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,8 +27,6 @@ class FriendListAdatper(
     val dispatchClickListener: OnDispatchClickListener? = null
 ) : ListAdapter<FriendListDataItem, RecyclerView.ViewHolder>(FriendListDataItemCallback()) {
     val adapterScope = CoroutineScope(Dispatchers.Default)
-
-
 
 
     override fun getItemViewType(position: Int): Int {
@@ -103,14 +102,32 @@ class FriendListAdatper(
         fun bind(item: DispatchFriend, onClickListener: OnDispatchClickListener) {
             binding.friend = item
             binding.onClickListener = onClickListener
+            val statusMsg = when (item.flag) {
+                DispatchStatus.UNKNOWN -> {
+                    UNKNOWN
+                }
+                DispatchStatus.DECLINE -> {
+                    DECLINE
+                }
+                DispatchStatus.ACCEPT -> {
+                    ACCEPT
+                }
+            }
+            binding.statusMsg = statusMsg
+
+
         }
 
         companion object {
-            fun from(parent: ViewGroup):FriendDispatchViewHolder {
+            fun from(parent: ViewGroup): FriendDispatchViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemFriendDispatchBinding.inflate(layoutInflater, parent, false)
                 return FriendDispatchViewHolder(binding)
             }
+            const val UNKNOWN = "아직 상대가 요청을 확인하지 않았습니다."
+            const val DECLINE = "상대가 요청을 거절하였습니다."
+            const val ACCEPT = "상대가 요청을 수락하였습니다."
+
         }
     }
 }
@@ -153,9 +170,13 @@ class OnReceptionClickListener(val listener: (friend: Friend, flag: Boolean) -> 
     }
 }
 
-class OnDispatchClickListener(val listener: (dispatchFriend: DispatchFriend) -> Unit) {
+class OnDispatchClickListener(val listener: (dispatchFriend: DispatchFriend, click: Boolean) -> Unit) {
     fun onClick(dispatchFriend: DispatchFriend) {
-        listener(dispatchFriend)
+        listener(dispatchFriend, true)
+    }
+
+    fun onLongClick(dispatchFriend: DispatchFriend) {
+        listener(dispatchFriend, false)
     }
 
 

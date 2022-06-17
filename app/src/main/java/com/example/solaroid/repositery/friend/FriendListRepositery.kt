@@ -59,5 +59,12 @@ class FriendListRepositery(
         }
     }
 
+    suspend fun deleteTmpList(myFriendCode:Long, key:String) {
+        return withContext(Dispatchers.IO) {
+            val ref= fbDatabase.reference.child("tmpFriendList").child("${myFriendCode}").child("list").child(key)
+            ref.removeValue()
+        }
+    }
+
 
 }

@@ -48,7 +48,7 @@ class FriendDispatchFragment() : Fragment() {
         arguments?.takeIf { it.containsKey(KEY) }?.apply {
             try {
                 myProfile = getParcelable<Profile>(KEY)!!
-            } catch (error:Exception) {
+            } catch (error: Exception) {
                 Log.d(TAG, "arguments?.takeIf : ${error.message}")
             }
         }
@@ -61,8 +61,13 @@ class FriendDispatchFragment() : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = FriendListAdatper(dispatchClickListener = OnDispatchClickListener {
 
+        val adapter = FriendListAdatper(dispatchClickListener = OnDispatchClickListener { friend, click ->
+            if(click) {
+
+            } else {
+
+            }
         })
 
         binding.recFriendDispatch.adapter = adapter
@@ -81,5 +86,7 @@ class FriendDispatchFragment() : Fragment() {
     companion object {
         const val TAG = "프렌드_디스패치_프래그먼트"
         const val KEY = "DispatchKey"
+
+
     }
 }

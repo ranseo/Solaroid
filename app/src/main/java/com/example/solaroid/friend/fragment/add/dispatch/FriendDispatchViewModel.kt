@@ -14,22 +14,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FriendDispatchViewModel(_myProfile:Profile) : ViewModel(), FriendCommunicationDataSource.OnDataListener {
+class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(),
+    FriendCommunicationDataSource.OnDataListener {
 
     private val myProfile = _myProfile
-    private val myFriendCode :Long = convertHexStringToLongFormat(myProfile.friendCode)
+    private val myFriendCode: Long = convertHexStringToLongFormat(myProfile.friendCode)
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
 
     //repositery
-    private val friendCommunicateRepositery = FriendCommunicateRepositery(fbAuth, fbDatabase, FriendCommunicationDataSource(this))
+    private val friendCommunicateRepositery =
+        FriendCommunicateRepositery(fbAuth, fbDatabase, FriendCommunicationDataSource(this))
 
-    private val _friends = MutableLiveData<List<FriendListDataItem.DispatchProfileDataItem>>(listOf())
+    private val _friends =
+        MutableLiveData<List<FriendListDataItem.DispatchProfileDataItem>>(listOf())
     val friends: LiveData<List<FriendListDataItem.DispatchProfileDataItem>>
         get() = _friends
 
+    private val _dispatchStatus = MutableLiveData<DispatchStatus>()
+    val dispatchStatus: LiveData<DispatchStatus>
+        get() = _dispatchStatus
+
+    val statusMsg = Transformations.map(dispatchStatus) { status ->
+        when (status) {
+
+        }
+    }
 
 
     init {
@@ -43,24 +55,23 @@ class FriendDispatchViewModel(_myProfile:Profile) : ViewModel(), FriendCommunica
     }
 
 
-
-
     override fun onReceptionDataChanged(friend: List<Friend>) {
 
     }
 
     override fun onDispatchDataChanged(friend: List<DispatchFriend>) {
         viewModelScope.launch(Dispatchers.Default) {
-            val tmp = friend.distinct().map{FriendListDataItem.DispatchProfileDataItem(it)}
+            val tmp = friend.distinct().map { FriendListDataItem.DispatchProfileDataItem(it) }
             withContext(Dispatchers.Main) {
                 _friends.value = tmp
             }
         }
 
-        Log.i(TAG,"nDispatchDataChanged : ${friend}}")
+        Log.i(TAG, "nDispatchDataChanged : ${friend}}")
     }
 
     companion object {
         const val TAG = "프렌드_디스패치_뷰모델"
+
     }
 }

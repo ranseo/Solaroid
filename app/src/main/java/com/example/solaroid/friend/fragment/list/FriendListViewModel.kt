@@ -55,13 +55,11 @@ class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyF
         }
     }
 
-    fun setValueFriendListFromTmpList(friend: Friend) {
-        viewModelScope.launch {
-            friendListRepositery.setValueFriendListFromTmpList(friend)
-            Log.i(TAG, "setValueFriendListFromTmpList")
-        }
-    }
 
+
+    /**
+     * Room Database에 DatabaseFriend 객체 insert
+     * */
     fun insertFriendToRoom(friend: Friend) {
         viewModelScope.launch {
             database.insert(friend.asDatabaseFriend())
@@ -70,6 +68,25 @@ class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyF
     }
 
 
+
+    /**
+     * 만약 내 친구요청을 상대가 받아줬다면
+     * 해당 프렌드 객체는 TmpList에 저장된다.
+     * 따라서 TmpList를 읽고 해당 프렌드 객체들을 다시 myFriendList에
+     * setValue()하는 함수.
+     * */
+    fun setValueFriendListFromTmpList(friend: Friend) {
+        viewModelScope.launch {
+            friendListRepositery.setValueFriendListFromTmpList(friend)
+            Log.i(TAG, "setValueFriendListFromTmpList")
+        }
+    }
+
+    fun deleteTmpList(friend:Friend) {
+        viewModelScope.launch {
+            friendListRepositery.deleteTmpList(convertHexStringToLongFormat(myProfile.value!!.friendCode), friend.key)
+        }
+    }
 
     // MyFriendListDataSource.OnValueListener
     override fun onValueAdded(friend: Friend) {
@@ -82,6 +99,7 @@ class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyF
 
     override fun onValueChanged(friend: Friend) {
         setValueFriendListFromTmpList(friend)
+        deleteTmpList(friend)
     }
 
     companion object {
