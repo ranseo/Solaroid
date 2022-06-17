@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="photoTicket"
+            type="com.example.solaroid.domain.PhotoTicket" />
+
+        <variable
+            name="clickListener"
+            type="com.example.solaroid.adapter.OnClickListener" />
+
+    </data>
+
+    <!--    android:layout_width="130dp"-->
+    <!--    android:layout_height="180dp"-->
+    <!--    width를 match로 해놔야 이게 딲딱맞네 포스팅해두자-->
+
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="180dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/front_layout"
+            android:onClick="@{()->clickListener.onClick(photoTicket)}"
+            android:layout_width="100dp"
+            android:layout_height="155dp"
+            android:layout_gravity="center"
+            android:elevation="12dp"
+            android:background="@color/white"
+            app:layout_constraintVertical_bias="0.412">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/side_layout"
+                android:layout_width="0dp"
+                android:layout_height="137dp"
+                android:background="@drawable/side_grey_frame"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+
+            <ImageView
+                android:id="@+id/solaroid_photo"
+                setImage="@{photoTicket.url}"
+                android:layout_width="89dp"
+                android:layout_height="120dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="6dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.489"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
+</layout>
