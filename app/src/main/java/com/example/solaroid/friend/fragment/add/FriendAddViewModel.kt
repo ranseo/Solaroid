@@ -18,7 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 
-class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(){
+class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
@@ -37,7 +37,7 @@ class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(){
         get() = _searchUser
 
     val searchProfile = Transformations.map(searchUser) {
-        it?.let{
+        it?.let {
 
         }
     }
@@ -51,10 +51,8 @@ class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(){
     private var searchFriendCode: Long = -1
 
     private val _friendRequest = MutableLiveData<Event<Any?>>()
-    val friendRequest : LiveData<Event<Any?>>
+    val friendRequest: LiveData<Event<Any?>>
         get() = _friendRequest
-
-
 
 
     fun setSearchFriendCode(text: CharSequence) {
@@ -77,20 +75,26 @@ class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(){
             if (searchFriendCode > -1L) {
                 val eventListener = object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val hashMap = snapshot.value as HashMap<*, *>
+                        try {
 
-                        val profile = FirebaseProfile(
-                            hashMap["id"]!! as String,
-                            hashMap["nickname"]!! as String,
-                            hashMap["profileImg"]!! as String,
-                            hashMap["friendCode"]!! as Long
+                            val hashMap = snapshot.value as HashMap<*, *>
 
-                        ).asDomainModel()
+                            val profile = FirebaseProfile(
+                                hashMap["id"]!! as String,
+                                hashMap["nickname"]!! as String,
+                                hashMap["profileImg"]!! as String,
+                                hashMap["friendCode"]!! as Long
 
-                        if (profile == myProfile.value) setSearchUserNull()
-                        else _searchUser.value = profile
+                            ).asDomainModel()
 
-                        Log.i(TAG, "task is Success, searchUser.value : ${searchUser.value}")
+                            if (profile == myProfile.value) setSearchUserNull()
+                            else _searchUser.value = profile
+
+                            Log.i(TAG, "task is Success, searchUser.value : ${searchUser.value}")
+                        } catch (error: Exception) {
+                            _searchUser.value = null
+                            Log.d(TAG, "task is Failure, searchUser.value : ${error.message}")
+                        }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -98,7 +102,7 @@ class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(){
                         Log.i(TAG, "task is fail")
                     }
                 }
-                friendAddRepositery.addSearchListener(searchFriendCode,eventListener)
+                friendAddRepositery.addSearchListener(searchFriendCode, eventListener)
             } else {
                 setSearchUserNull()
             }
@@ -115,13 +119,20 @@ class FriendAddViewModel(database : DatabasePhotoTicketDao) : ViewModel(){
 
     fun setValueFriendReception() {
         viewModelScope.launch {
-            friendAddRepositery.setValueToFriendReception(searchFriendCode, myProfile.value!!.asFirebaseModel())
+            friendAddRepositery.setValueToFriendReception(
+                searchFriendCode,
+                myProfile.value!!.asFirebaseModel()
+            )
         }
     }
 
     fun setValueFriendDispatch() {
         viewModelScope.launch {
-            friendAddRepositery.setValueToFriendDispatch(myProfile.value!!.asFirebaseModel() ,searchFriendCode, searchUser.value!!.asFirebaseModel())
+            friendAddRepositery.setValueToFriendDispatch(
+                myProfile.value!!.asFirebaseModel(),
+                searchFriendCode,
+                searchUser.value!!.asFirebaseModel()
+            )
         }
     }
 

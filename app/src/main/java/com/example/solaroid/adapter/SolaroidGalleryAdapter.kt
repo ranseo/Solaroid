@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.solaroid.databinding.ListItemSolaroidGalleryBinding
 import com.example.solaroid.databinding.ListItemSolaroidPhotoBinding
 import com.example.solaroid.domain.PhotoTicket
 
@@ -25,7 +26,7 @@ class SolaroidGalleryAdapter(val clickListener: OnClickListener) :
 
 
 
-    class PhotoViewHolder(val binding: ListItemSolaroidPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
+        class PhotoViewHolder(val binding: ListItemSolaroidGalleryBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PhotoTicket, clickListener: OnClickListener) {
             this.binding.photoTicket = item
@@ -35,7 +36,7 @@ class SolaroidGalleryAdapter(val clickListener: OnClickListener) :
         companion object {
             fun from(parent: ViewGroup): PhotoViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemSolaroidPhotoBinding.inflate(layoutInflater, parent, false)
+                val binding = ListItemSolaroidGalleryBinding.inflate(layoutInflater, parent, false)
                 return PhotoViewHolder(binding)
             }
         }

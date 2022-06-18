@@ -48,10 +48,6 @@ class SplashActivity : AppCompatActivity() {
         }
 
 
-        binding.introImage.playAnimation()
-
-
-
             if (allPermissionsGranted()) {
                 isCameraAvailable = true
                 splashScreen()
