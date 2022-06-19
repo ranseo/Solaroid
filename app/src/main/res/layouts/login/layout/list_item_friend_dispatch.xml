@@ -16,6 +16,12 @@
             name="statusMsg"
             type="String" />
 
+        <import type="android.view.View"/>
+
+        <variable
+            name="status"
+            type="Boolean" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -75,6 +81,7 @@
             android:id="@+id/btn_info"
             android:tooltipText="@{statusMsg}"
             android:src="@drawable/ic_baseline_help_outline_24"
+            android:visibility="@{status ? View.GONE : View.VISIBLE}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/fui_transparent"
@@ -87,7 +94,36 @@
         <ImageButton
             android:id="@+id/btn_cancel"
             android:onClick="@{()->onClickListener.onClick(friend)}"
+            android:visibility="@{status ? View.GONE : View.VISIBLE}"
             android:src="@drawable/ic_baseline_cancel_24"
+            android:background="@color/fui_transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <ImageButton
+            android:id="@+id/btn_info_confirm"
+            android:tooltipText="@{statusMsg}"
+            android:visibility="@{status ? View.VISIBLE : View.GONE}"
+            android:src="@drawable/ic_baseline_info_check_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/fui_transparent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_check"
+            android:layout_marginEnd="12dp"
+            />
+
+        <ImageButton
+            android:id="@+id/btn_check"
+            android:onClick="@{()->onClickListener.onClick(friend)}"
+            android:visibility="@{status ? View.VISIBLE : View.GONE}"
+            android:src="@drawable/ic_baseline_check_circle_outline_24"
             android:background="@color/fui_transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

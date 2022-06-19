@@ -33,15 +33,6 @@ class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(),
     val friends: LiveData<List<FriendListDataItem.DispatchProfileDataItem>>
         get() = _friends
 
-    private val _dispatchStatus = MutableLiveData<DispatchStatus>()
-    val dispatchStatus: LiveData<DispatchStatus>
-        get() = _dispatchStatus
-
-    val statusMsg = Transformations.map(dispatchStatus) { status ->
-        when (status) {
-
-        }
-    }
 
 
     init {
@@ -51,6 +42,12 @@ class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(),
     private fun refreshDispatchProfiles() {
         viewModelScope.launch {
             friendCommunicateRepositery.addValueListenerToDisptachRef(myFriendCode)
+        }
+    }
+
+    fun deleteFriendInDispatchList(friend:DispatchFriend) {
+        viewModelScope.launch {
+            friendCommunicateRepositery.deleteFriendInDispatchList(myFriendCode, convertHexStringToLongFormat(friend.friendCode))
         }
     }
 

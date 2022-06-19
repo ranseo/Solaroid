@@ -64,6 +64,17 @@ class FriendCommunicateRepositery(
 
     }
 
+
+    /**
+     * dispatchFragment에서 제거버튼을 누르면 Firebase의 dispatchList 해당  friend 객체 삭제.
+     * */
+    suspend fun deleteFriendInDispatchList(friendCode: Long, key: Long) {
+        return withContext(Dispatchers.IO) {
+            fbDatabase.reference.child("friendDispatch").child("${friendCode}").child("list")
+                .child("${key}").removeValue()
+        }
+    }
+
     /**
      * receptionFragment 또는 dispatchFragment에서 Friend객체를 Firebase/FriendList에 추가하는 함수
      * */

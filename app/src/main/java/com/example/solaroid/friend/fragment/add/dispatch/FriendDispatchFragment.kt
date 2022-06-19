@@ -62,12 +62,8 @@ class FriendDispatchFragment() : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        val adapter = FriendListAdatper(dispatchClickListener = OnDispatchClickListener { friend, click ->
-            if(click) {
-
-            } else {
-
-            }
+        val adapter = FriendListAdatper(dispatchClickListener = OnDispatchClickListener { friend ->
+            viewModel.deleteFriendInDispatchList(friend)
         })
 
         binding.recFriendDispatch.adapter = adapter

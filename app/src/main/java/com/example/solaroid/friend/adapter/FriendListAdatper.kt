@@ -113,8 +113,20 @@ class FriendListAdatper(
                     ACCEPT
                 }
             }
-            binding.statusMsg = statusMsg
+            val status = when(item.flag) {
+                DispatchStatus.UNKNOWN -> {
+                    false
+                }
+                DispatchStatus.DECLINE -> {
+                    true
+                }
+                DispatchStatus.ACCEPT -> {
+                    true
+                }
+            }
 
+            binding.statusMsg = statusMsg
+            binding.status = status
 
         }
 
@@ -170,14 +182,11 @@ class OnReceptionClickListener(val listener: (friend: Friend, flag: Boolean) -> 
     }
 }
 
-class OnDispatchClickListener(val listener: (dispatchFriend: DispatchFriend, click: Boolean) -> Unit) {
+class OnDispatchClickListener(val listener: (dispatchFriend: DispatchFriend) -> Unit) {
     fun onClick(dispatchFriend: DispatchFriend) {
-        listener(dispatchFriend, true)
+        listener(dispatchFriend)
     }
 
-    fun onLongClick(dispatchFriend: DispatchFriend) {
-        listener(dispatchFriend, false)
-    }
 
 
 }
