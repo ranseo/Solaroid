@@ -16,6 +16,7 @@
         android:layout_height="90dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:background="@drawable/border_line_only_bot"
         android:theme="@style/Theme.FriendActivity">
 
         <FrameLayout
