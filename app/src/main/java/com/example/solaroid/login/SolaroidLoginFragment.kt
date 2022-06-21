@@ -120,7 +120,7 @@ class SolaroidLoginFragment : Fragment() {
                     else {
                         Log.i(TAG, "프로필설정 또는 메인컨텐츠 이동")
                         viewModel.setSavedLoginId(auth.currentUser?.email)
-                        viewModel.isProfileSet()
+                        viewModel.isProfileAlready()
                     }
                 }
                 SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {

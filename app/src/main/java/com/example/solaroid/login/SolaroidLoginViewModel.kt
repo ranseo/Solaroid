@@ -142,6 +142,17 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
         else _naviToNext.value = Event(true)
     }
 
+    fun isProfileAlready() {
+        viewModelScope.launch {
+            profileRepositery.isProfile()
+                ?.addOnSuccessListener {
+                    val data = it.value
+                    if(data!=null) _naviToNext.value =  Event(true)
+                    else _naviToNext.value = Event(false)
+                }
+        }
+    }
+
 
 
     fun setSavedLoginId(id: String?) {

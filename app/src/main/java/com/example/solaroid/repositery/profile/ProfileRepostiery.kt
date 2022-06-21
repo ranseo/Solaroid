@@ -103,12 +103,16 @@ class ProfileRepostiery(
     }
 
 
-    suspend fun isInitProfile(): Task<DataSnapshot>? {
+    /**
+     * LoginFragment에서 첫 로그인을 할 때, 로그인이 되어있지 상태이기 때문에 fbAuth는 current user를 불러올 수 없다. 반드시 ProfileFragment로 이동
+     * 따라서 LoginFragment, 로그인에 성공하여 fbAuth에 currentUser가 설정될때 해당 아이디로 firebase realtime database / profile / user.uid .get()
+     * 해당 경로에 Profile data가 있는지 확인할 수 있는 task를 반환하는 함수.
+     * */
+    suspend fun isProfile(): Task<DataSnapshot>? {
         return withContext(Dispatchers.IO) {
-            val user = fbAuth.currentUser
-            if (user == null) null
-            else {
-                val profileRef = fbDatabase.reference.child("profile").child(user.uid)
+            val uid = fbAuth.currentUser!!.uid
+            run {
+                val profileRef = fbDatabase.reference.child("profile").child(uid)
                 val task = profileRef.get()
 
                 task

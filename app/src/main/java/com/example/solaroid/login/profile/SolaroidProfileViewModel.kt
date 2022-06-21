@@ -19,7 +19,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 
-class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: Application) : AndroidViewModel(application){
+class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Application) :
+    AndroidViewModel(application) {
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
@@ -62,7 +63,7 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
     }
 
     private val _firebaseProfile = MutableLiveData<FirebaseProfile>()
-    val firebaseProfile : LiveData<FirebaseProfile>
+    val firebaseProfile: LiveData<FirebaseProfile>
         get() = _firebaseProfile
 
     val isAlamVisible = Transformations.map(profileType) { type ->
@@ -83,26 +84,6 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
     var allUserNum: Long = 0L
 
 
-    fun getFriendCode() {
-        viewModelScope.launch {
-            usersRepositery.getAllUserNum()?.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    try {
-                        allUserNum = it.result.value as Long
-                        Log.i(TAG, "getFriendCode : ${allUserNum}")
-
-                    } catch (error: Exception) {
-                        Log.i(TAG, "getFriendCode error : ${error.message}")
-                    }
-                } else {
-                    Log.i(TAG, "getFriendCode error : ${it.exception?.message}")
-                }
-            }
-
-        }
-    }
-
-
     private val _naviToMain = MutableLiveData<Event<Any?>>()
     val naviToMain: LiveData<Event<Any?>>
         get() = _naviToMain
@@ -118,11 +99,6 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
     fun navigateToLogin() {
         _naviToLogin.value = Event(Unit)
     }
-
-    init {
-        getFriendCode()
-    }
-
 
     fun onNicknameEditTextChanged(str: CharSequence) {
         _nickname.value = str.toString()
@@ -150,7 +126,42 @@ class SolaroidProfileViewModel(database:DatabasePhotoTicketDao, application: App
         _setProfile.value = Event(Unit)
     }
 
+    init {
+//        isProfileAlready()
+        getFriendCode()
+    }
+
+
     ///////////////
+    private fun isProfileAlready() {
+        viewModelScope.launch {
+            profileRepositery.isProfile()
+                ?.addOnSuccessListener {
+                    val data = it.value
+                    if(data!=null) _naviToMain.value =  Event(Unit)
+                }
+        }
+    }
+
+
+    fun getFriendCode() {
+        viewModelScope.launch {
+            usersRepositery.getAllUserNum()?.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    try {
+                        allUserNum = it.result.value as Long
+                        Log.i(TAG, "getFriendCode : ${allUserNum}")
+
+                    } catch (error: Exception) {
+                        Log.i(TAG, "getFriendCode error : ${error.message}")
+                    }
+                } else {
+                    Log.i(TAG, "getFriendCode error : ${it.exception?.message}")
+                }
+            }
+
+        }
+    }
 
     fun insertAndUpdateProfile() {
         viewModelScope.launch {
