@@ -22,11 +22,10 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storageMetadata
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class ProfileRepostiery(
     private val fbAuth: FirebaseAuth,
@@ -42,64 +41,90 @@ class ProfileRepostiery(
     }
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun insertProfileInfo(profile: FirebaseProfile, application: Application) {
-        val user = fbAuth.currentUser ?: return
 
         withContext(Dispatchers.IO) {
+            val user = fbAuth.currentUser ?: return@withContext
+            var file: Uri? = null
+            var mimeType: String? = null
+            var storageRef: StorageReference? = null
 
-            val profileRef = fbDatabase.reference.child("profile").child(user.uid)
+            suspendCancellableCoroutine<Unit> { continuation ->
 
-            profileRef.setValue(
-                profile,
-                DatabaseReference.CompletionListener { error: DatabaseError?, _: DatabaseReference ->
-                    if (error != null) {
-                        Log.d(TAG, "Unable to Write Message to Database", error.toException())
-                        return@CompletionListener
-                    }
+                val profileRef = fbDatabase.reference.child("profile").child(user.uid)
 
-                    val file = profile.profileImg.toUri()
-                    val mimeType: String? = application.contentResolver.getType(file)
+                profileRef.setValue(
+                    profile,
+                    DatabaseReference.CompletionListener { error: DatabaseError?, _: DatabaseReference ->
+                        if (error != null) {
+                            Log.d(TAG, "Unable to Write Message to Database", error.toException())
+                            continuation.resume(Unit, null)
+                            return@CompletionListener
+                        }
 
-                    Log.i(TAG, "file : ${file}")
+                        file = profile.profileImg.toUri()
+                        mimeType = application.contentResolver.getType(file!!)
 
-                    val storageRef = fbStorage.getReference("profile")
-                        .child(user.uid)
-                        .child("${mimeType}/${file.lastPathSegment}")
+                        Log.i(TAG, "file : ${file}")
 
-                    insertProfileInStorage(storageRef, profile, file, user)
+                        storageRef = fbStorage.getReference("profile")
+                            .child(user.uid)
+                            .child("${mimeType}/${file!!.lastPathSegment}")
 
-                })
+                        continuation.resume(Unit, null)
+
+                    })
+
+            }
+
+            try {
+                insertProfileInStorage(storageRef!!, profile, file!!, user)
+            } catch (error:Exception) {
+                Log.i(TAG,"error : ${error.message}")
+            }
+
         }
+
+
     }
 
-    private fun insertProfileInStorage(
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun insertProfileInStorage(
         storageRef: StorageReference,
         profile: FirebaseProfile,
         file: Uri,
         user: FirebaseUser
     ) {
+        suspendCancellableCoroutine<Unit> { continuation ->
+            val metadata = storageMetadata {
+                contentType = "image/jpeg"
+            }
 
-        val metadata = storageMetadata {
-            contentType = "image/jpeg"
+            storageRef.putFile(file, metadata).addOnSuccessListener { taskSnapShot ->
+                taskSnapShot.metadata!!.reference!!.downloadUrl
+                    .addOnSuccessListener { url ->
+                        val new = FirebaseProfile(
+                            id = profile.id,
+                            nickname = profile.nickname,
+                            profileImg = url.toString(),
+                            friendCode = profile.friendCode
+                        )
+
+                        fbDatabase.reference.child("profile")
+                            .child(user.uid)
+                            .setValue(new)
+
+                        Log.i(TAG, "profileListener.insertRoomDatabase(new.asDatabaseModel())")
+
+                        continuation.resume(Unit, null)
+                    }
+                    .addOnFailureListener {
+                        continuation.resume(Unit, null)
+                    }
+            }
         }
 
-        storageRef.putFile(file, metadata).addOnSuccessListener { taskSnapShot ->
-            taskSnapShot.metadata!!.reference!!.downloadUrl
-                .addOnSuccessListener { url ->
-                    val new = FirebaseProfile(
-                        id = profile.id,
-                        nickname = profile.nickname,
-                        profileImg = url.toString(),
-                        friendCode = profile.friendCode
-                    )
-
-                    fbDatabase.reference.child("profile")
-                        .child(user.uid)
-                        .setValue(new)
-
-                    Log.i(TAG,"profileListener.insertRoomDatabase(new.asDatabaseModel())")
-                }
-        }
     }
 
 

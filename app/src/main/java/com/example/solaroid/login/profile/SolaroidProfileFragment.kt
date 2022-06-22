@@ -66,7 +66,7 @@ class SolaroidProfileFragment() : Fragment() {
                         SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
                     )
 
-
+                binding.progressBar.visibility = View.GONE
                 this.requireActivity().finish()
             }
         })
@@ -90,6 +90,7 @@ class SolaroidProfileFragment() : Fragment() {
         viewModel.profileType.observe(viewLifecycleOwner, Observer { type ->
             when (type) {
                 SolaroidProfileViewModel.ProfileErrorType.ISRIGHT -> {
+                    binding.progressBar.visibility = View.VISIBLE
                     viewModel.insertAndUpdateProfile()
                 }
                 else -> {}

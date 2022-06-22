@@ -190,8 +190,6 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
             )
 
             profileRepositery.insertProfileInfo(profile, getApplication())
-
-            delay(500)
         }
     }
 
@@ -217,7 +215,6 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
     suspend fun updateAllUsersNum(): Unit {
         withContext(Dispatchers.IO) {
             usersRepositery.updateAllUserNum(allUserNum + 1L)
-            delay(500)
         }
     }
 

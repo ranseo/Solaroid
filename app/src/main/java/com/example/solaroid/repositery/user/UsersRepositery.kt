@@ -8,6 +8,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 class UsersRepositery(
@@ -16,14 +18,18 @@ class UsersRepositery(
     private val fbStorage: FirebaseStorage
 ) {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun updateAllUserNum(num: Long) {
         withContext(Dispatchers.IO) {
-
-            fbDatabase.reference.child("currentUsersNum").setValue(num).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.i(TAG, "fun updateAllUserNum success")
-                } else {
-                    Log.i(TAG, "fun updateAllUserNum fail")
+            suspendCancellableCoroutine<Unit> { continuation ->
+                fbDatabase.reference.child("currentUsersNum").setValue(num).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i(TAG, "fun updateAllUserNum success")
+                        continuation.resume(Unit, null)
+                    } else {
+                        Log.i(TAG, "fun updateAllUserNum fail")
+                        continuation.resume(Unit, null)
+                    }
                 }
             }
         }
@@ -37,15 +43,20 @@ class UsersRepositery(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun insertUsersList(profile: FirebaseProfile) {
         withContext(Dispatchers.IO) {
-            val usersRef = fbDatabase.reference.child("allUsers").child("${profile.friendCode}")
+            suspendCancellableCoroutine<Unit> { continuation ->
+                val usersRef = fbDatabase.reference.child("allUsers").child("${profile.friendCode}")
 
-            usersRef.setValue(profile).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.i(TAG, "fun insertUsersList success")
-                } else {
-                    Log.i(TAG, "fun insertUsersList fail")
+                usersRef.setValue(profile).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        continuation.resume(Unit, null)
+                        Log.i(TAG, "fun insertUsersList success")
+                    } else {
+                        continuation.resume(Unit, null)
+                        Log.i(TAG, "fun insertUsersList fail")
+                    }
                 }
             }
         }
