@@ -57,6 +57,12 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     val imageSpin: LiveData<Boolean>
         get() = _imageSpin
 
+    //progressBar Visible
+    private val _isProgressBar = MutableLiveData<Boolean>(false)
+    val isProgressBar : LiveData<Boolean>
+        get() = _isProgressBar
+
+
     private val _naviToFrameFrag = MutableLiveData<Event<Any?>>()
     val naviToFrameFrag : LiveData<Event<Any?>>
         get() = _naviToFrameFrag
@@ -119,7 +125,10 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
                 )
 
             Log.i(TAG, "onImageSave()")
+
+            _isProgressBar.value = true
             photoTicketRepositery.insertPhotoTickets(new, getApplication())
+            _isProgressBar.value = false
             forReadyNewImage()
         }
     }

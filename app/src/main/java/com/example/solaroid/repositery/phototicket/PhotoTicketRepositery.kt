@@ -25,11 +25,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
+import kotlinx.coroutines.*
+import kotlin.Exception
 
 class PhotoTicketRepositery(
     private val dataSource: DatabasePhotoTicketDao,
@@ -38,11 +35,12 @@ class PhotoTicketRepositery(
     private val fbStorage: FirebaseStorage
 ) {
 
+    val user = fbAuth.currentUser!!.email!!
     /**
      * 포토티켓의 최신순 정렬.
      * */
     val photoTicketsOrderByLately: LiveData<List<PhotoTicket>> =
-        Transformations.map(dataSource.getAllPhotoTicketWithUser(fbAuth.currentUser!!.email!!)) {
+        Transformations.map(dataSource.getAllPhotoTicketWithUser(user)) {
             it?.asDomainModel()
         }
 
@@ -62,7 +60,7 @@ class PhotoTicketRepositery(
      * 화면에 띄우기 위해 firebase의 실시간 데이버테이스로 부터 FirebasePhotoTicket을 불러오고 이를 다시 room database에 insert하는
      * ValueEventListener를 등록하여 refresh하는 함수.
      * */
-    suspend fun refreshPhotoTickets(application: Application) : ValueEventListener?{
+    suspend fun refreshPhotoTickets(application: Application): ValueEventListener? {
 
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
@@ -71,9 +69,7 @@ class PhotoTicketRepositery(
                 Log.d(TAG, "Network Error")
                 Toast.makeText(application, "네트워크 연결이 동기화 되지 않았습니다.", Toast.LENGTH_SHORT).show()
                 null
-            }
-
-             else setPhotoTicketList() {
+            } else setPhotoTicketList() {
                 CoroutineScope(Dispatchers.IO).launch {
                     Log.i(TAG, "photoTicket : ${it}")
                     dataSource.insert(it.asDatabaseModel(user.email!!))
@@ -166,84 +162,106 @@ class PhotoTicketRepositery(
     suspend fun insertPhotoTickets(photoTicket: PhotoTicket, application: Application) {
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
-
-
             val insertRef = fbDatabase.reference.child("photoTicket").child(user.uid).push()
             val key = insertRef.key ?: ""
-            val new = photoTicket.asFirebaseModel(key)
-            insertRef.setValue(
-                new,
-                DatabaseReference.CompletionListener { error: DatabaseError?, _: DatabaseReference ->
-                    if (error != null) {
-                        Log.d(TAG, "Unable to write Message to database", error.toException())
-                        return@CompletionListener
-                    }
+            var new = photoTicket.asFirebaseModel(key)
+            var file: Uri? = null
+            var storageRef: StorageReference? = null
+
+            suspendCancellableCoroutine<Unit> { continuation ->
+                insertRef.setValue(
+                    new,
+                    DatabaseReference.CompletionListener { error: DatabaseError?, _: DatabaseReference ->
+                        if (error != null) {
+                            Log.d(TAG, "Unable to write Message to database", error.toException())
+                            continuation.resume(Unit, null)
+                            return@CompletionListener
+                        }
 
 
-                        val file = photoTicket.url.toUri()
-                        val mimeType: String? = application.contentResolver.getType(file)
+                        file = photoTicket.url.toUri()
+                        val mimeType: String? = application.contentResolver.getType(file!!)
 
                         Log.i(TAG, "file ${file}")
 
-                        val storageRef = fbStorage.getReference("photoTicket")
+                        storageRef = fbStorage.getReference("photoTicket")
                             .child(user.uid)
                             .child(key)
-                            .child("${mimeType?.split("/")?.get(0)}/${file.lastPathSegment}")
+                            .child("${mimeType?.split("/")?.get(0)}/${file!!.lastPathSegment}")
 
-                        insertImageInStorage(storageRef, user, file, key, new)
+                        continuation.resume(Unit, null)
+                    })
 
 
-
-
-                })
-
+            }
+            try {
+                insertImageInStorage(storageRef!!, user, file!!, key, new)
+            } catch (error: Exception) {
+                Log.i(TAG, "error : ${error.message}")
+            }
         }
     }
 
-    private fun insertImageInStorage(
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private suspend fun insertImageInStorage(
         storageRef: StorageReference,
         user: FirebaseUser,
         file: Uri,
         key: String,
         pre: FirebasePhotoTicket
     ) {
-        //metadata 지정
-        var metadata = storageMetadata {
-            contentType = "image/jpeg"
-        }
+        suspendCancellableCoroutine<Unit> { continuation ->
+            //metadata 지정
+            var metadata = storageMetadata {
+                contentType = "image/jpeg"
+            }
 
-        storageRef.putFile(file, metadata)
-            .addOnSuccessListener { taskSnapshot ->
-                Log.i(TAG, "taskSnapshot.metadata!!.reference!!.downloadUrl")
-                taskSnapshot.metadata!!.reference!!.downloadUrl
-                    .addOnSuccessListener { url ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val new = FirebasePhotoTicket(
-                                key = pre.key,
-                                url = url.toString(),
-                                frontText = pre.frontText,
-                                backText = pre.backText,
-                                date = pre.date,
-                                favorite = pre.favorite
-                            )
+            storageRef.putFile(file, metadata)
+                .addOnSuccessListener { taskSnapshot ->
+                    Log.i(TAG, "taskSnapshot.metadata!!.reference!!.downloadUrl")
+                    taskSnapshot.metadata!!.reference!!.downloadUrl
+                        .addOnSuccessListener { url ->
 
-                            fbDatabase.reference.child("photoTicket")
-                                .child(user.uid)
-                                .child(key)
-                                .setValue(new)
-                            Log.i(TAG, "Before dataSource.insert(new.asDatabaseModel(user.email!!))")
-                            dataSource.insert(new.asDatabaseModel(user.email!!))
+                                val new = FirebasePhotoTicket(
+                                    key = pre.key,
+                                    url = url.toString(),
+                                    frontText = pre.frontText,
+                                    backText = pre.backText,
+                                    date = pre.date,
+                                    favorite = pre.favorite
+                                )
+
+                                fbDatabase.reference.child("photoTicket")
+                                    .child(user.uid)
+                                    .child(key)
+                                    .setValue(new)
+                                Log.i(
+                                    TAG,
+                                    "Before dataSource.insert(new.asDatabaseModel(user.email!!))"
+                                )
+                            val async = CoroutineScope(Dispatchers.IO).async {
+                                dataSource.insert(new.asDatabaseModel(user.email!!))
+                            }
+
+                            CoroutineScope(Dispatchers.Main).launch {
+                                val unit = async.await()
+                                continuation.resume(unit , null)
+                            }
+
+
                         }
 
-                    }
+                        .addOnFailureListener { error ->
+                            Log.d(TAG, "taskSnapShot error ${error.message}")
+                            continuation.resume(Unit, null)
+                        }
+                }
+                .addOnFailureListener { error ->
+                    Log.d(TAG, "sotrageRef.putfile error ${error.message}")
+                    continuation.resume(Unit, null)
+                }
 
-                    .addOnFailureListener { error ->
-                        Log.d(TAG, "taskSnapShot error ${error.message}")
-                    }
-            }
-            .addOnFailureListener { error ->
-                Log.d(TAG, "sotrageRef.putfile error ${error.message}")
-            }
+        }
 
 
     }
