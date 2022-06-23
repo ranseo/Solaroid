@@ -79,6 +79,8 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             }
         }
 
+        registerOnPageChangeCallback(binding.viewpager, adapter)
+
 
         /**
          * viewModel의 photoTicket 프로퍼티를 관찰.
@@ -148,6 +150,26 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToAdd()
                 )
+            }
+        })
+    }
+
+
+
+    private fun registerOnPageChangeCallback(
+        viewPager: ViewPager2,
+        adapter: SolaroidFrameAdapter
+    ) {
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.i(TAG, "onPageSelected")
+                if (adapter.itemCount > 0) {
+                    viewModel.setCurrentPosition(position)
+                } else {
+                    viewModel.setCurrentPosition(-1)
+                }
             }
         })
     }

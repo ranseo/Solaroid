@@ -31,8 +31,6 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    private var valueEventListener : ValueEventListener? = null
-
     private val photoTicketRepositery: PhotoTicketRepositery =
         PhotoTicketRepositery(dataSource, fbAuth, fbDatabase, fbStorage)
 
@@ -52,7 +50,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     var initPhotoTicket : PhotoTicket? = null
 
 
-    val startPosition = Transformations.map(photoTickets) { it
+    val startPosition = Transformations.map(photoTickets) {
         it?.let{ list ->
             try {
                 list.indexOf(initPhotoTicket)
@@ -168,11 +166,6 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         get() = _naviToAddFrag
 
 
-    //갤러리 프래그먼트로 이동
-    private val _naviToGallery = MutableLiveData<Event<Boolean>>()
-    val naviToGallery: LiveData<Event<Boolean>>
-        get() = _naviToGallery
-
 
     fun navigateToCreate() {
         _naviToCreateFrag.value = Event(true)
@@ -186,21 +179,8 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         _naviToAddFrag.value = Event(true)
     }
 
-    fun navigateToGallery() {
-        _naviToGallery.value = Event(true)
-    }
-
-
     /////////////////////////////////////////////////////////////////
 
 
-    //Firebase
-    fun logout() {
-        fbAuth.signOut()
-    }
 
-    override fun onCleared() {
-        if(valueEventListener!=null) fbDatabase.reference.removeEventListener(valueEventListener!!)
-        super.onCleared()
-    }
 }

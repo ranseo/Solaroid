@@ -113,10 +113,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(binding.mainToolbar)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.fragment_solaroid_frame_container,
-                R.id.fragment_solaroid_gallery
-            ), binding.drawerLayoutMain
+            navController.graph ,binding.drawerLayoutMain
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
