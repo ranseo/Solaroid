@@ -76,27 +76,19 @@ class SolaroidPhotoCreateFragment : Fragment() {
             }
         })
 
-        viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer{
-            it.getContentIfNotHandled()?.let {
-                this.findNavController().navigate(
-                    SolaroidPhotoCreateFragmentDirections.actionCreateFragmentToFrameFragmentContainer()
-                )
-            }
-        })
-
 
         return binding.root
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        backPressCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                viewModel.navigateToFrame()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
-    }
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        backPressCallback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                viewModel.navigateToFrame()
+//            }
+//        }
+//        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
+//    }
 
     private fun startCamera(cameraConverter: Boolean) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(application)

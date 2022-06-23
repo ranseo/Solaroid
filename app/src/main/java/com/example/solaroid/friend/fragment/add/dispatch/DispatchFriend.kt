@@ -1,6 +1,5 @@
 package com.example.solaroid.friend.fragment.add.dispatch
 
-import com.example.solaroid.domain.Friend
 
 enum class DispatchStatus(val status: String) {
     UNKNOWN(status = "UNKNOWN"), DECLINE("DECLINE"), ACCEPT("ACCEPT");

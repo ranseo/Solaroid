@@ -36,24 +36,38 @@ class PhotoTicketRepositery(
 ) {
 
     val user = fbAuth.currentUser!!.email!!
+
     /**
-     * 포토티켓의 최신순 정렬.
+     * 포토티켓의 날짜기준 내림차순 정렬.
      * */
-    val photoTicketsOrderByLately: LiveData<List<PhotoTicket>> =
-        Transformations.map(dataSource.getAllPhotoTicketWithUser(user)) {
+    val photoTicketsOrderByDesc: LiveData<List<PhotoTicket>> =
+        Transformations.map(dataSource.getAllPhotoTicketWithUserDesc(user)) {
             it?.asDomainModel()
         }
 
     /**
-     * 포토티켓의 즐겨찾기 상태가 설정된 것들로만 뽑아온 리스트.
-     * Transformations.map() 에 photoTickets 를 매개변수로 넣어 만든다.
+     * 포토티켓의 날짜기준 오름차순 정렬.
      * */
-    val photoTicketsOrderByFavorte: LiveData<List<PhotoTicket>> =
-        Transformations.map(photoTicketsOrderByLately) {
-            it?.let { photoTicket ->
-                photoTicket.filter { ticket -> ticket.favorite }
-            }
+    val photoTicketsOrderByAsc: LiveData<List<PhotoTicket>> =
+        Transformations.map(dataSource.getAllPhotoTicketWithUserAsc(user)) {
+            it?.asDomainModel()
         }
+
+    /**
+     * 포토티켓의 즐겨찾기만 정렬
+     * */
+    val photoTicketsOrderByFavorite: LiveData<List<PhotoTicket>> =
+        Transformations.map(dataSource.getAllPhotoTicketWithUserFavorite(user,true)) {
+            it?.asDomainModel()
+        }
+
+
+    suspend fun getPhotoTicket(key:String) : PhotoTicket = withContext(Dispatchers.IO) {
+            dataSource.getDatabasePhotoTicket(key).asDomainModel()
+    }
+
+
+
 
     /**
      * 어플리케이션을 처음 실행할 때 또는 UI를 전환할 때(프레임컨테이너 <-> 갤러리프래그먼트) 포토티켓 리스트를
@@ -222,30 +236,30 @@ class PhotoTicketRepositery(
                     taskSnapshot.metadata!!.reference!!.downloadUrl
                         .addOnSuccessListener { url ->
 
-                                val new = FirebasePhotoTicket(
-                                    key = pre.key,
-                                    url = url.toString(),
-                                    frontText = pre.frontText,
-                                    backText = pre.backText,
-                                    date = pre.date,
-                                    favorite = pre.favorite
-                                )
+                            val new = FirebasePhotoTicket(
+                                key = pre.key,
+                                url = url.toString(),
+                                frontText = pre.frontText,
+                                backText = pre.backText,
+                                date = pre.date,
+                                favorite = pre.favorite
+                            )
 
-                                fbDatabase.reference.child("photoTicket")
-                                    .child(user.uid)
-                                    .child(key)
-                                    .setValue(new)
-                                Log.i(
-                                    TAG,
-                                    "Before dataSource.insert(new.asDatabaseModel(user.email!!))"
-                                )
+                            fbDatabase.reference.child("photoTicket")
+                                .child(user.uid)
+                                .child(key)
+                                .setValue(new)
+                            Log.i(
+                                TAG,
+                                "Before dataSource.insert(new.asDatabaseModel(user.email!!))"
+                            )
                             val async = CoroutineScope(Dispatchers.IO).async {
                                 dataSource.insert(new.asDatabaseModel(user.email!!))
                             }
 
                             CoroutineScope(Dispatchers.Main).launch {
                                 val unit = async.await()
-                                continuation.resume(unit , null)
+                                continuation.resume(unit, null)
                             }
 
 

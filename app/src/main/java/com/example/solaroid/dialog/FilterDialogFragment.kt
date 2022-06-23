@@ -18,7 +18,8 @@ class FilterDialogFragment(_listener:OnFilterDialogListener) : BottomSheetDialog
     val listener : OnFilterDialogListener = _listener
 
     interface OnFilterDialogListener {
-        fun onFilterLately()
+        fun onFilterDesc()
+        fun onFilterAsc()
         fun onFilterFavorite()
     }
 
@@ -31,16 +32,20 @@ class FilterDialogFragment(_listener:OnFilterDialogListener) : BottomSheetDialog
 
         val radioChangedLister = RadioGroup.OnCheckedChangeListener { p0, p1 ->
             when(p1) {
+                R.id.radio_date_desc -> {
+                    listener.onFilterDesc()
+                }
+                R.id.radio_date_asc -> {
+                    listener.onFilterAsc()
+                }
                 R.id.radio_favorite -> {
                     listener.onFilterFavorite()
                 }
-                R.id.radio_date -> {
-                    listener.onFilterLately()
-                }
             }
         }
+
         binding.radioGroup.setOnCheckedChangeListener(radioChangedLister)
-        binding.radioDate.isChecked=true
+        binding.radioDateDesc.isChecked=true
 
         return binding.root
     }

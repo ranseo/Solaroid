@@ -98,13 +98,13 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
             }
         })
 
-        viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer{
-            it.getContentIfNotHandled()?.let{
-                this.findNavController().navigate(
-                    SolaroidAddFragmentDirections.actionAddFragmentToFrameFragmentContainer()
-                )
-            }
-        } )
+//        viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer{
+//            it.getContentIfNotHandled()?.let{
+//                this.findNavController().navigate(
+//                    SolaroidAddFragmentDirections.actionAddToFrame()
+//                )
+//            }
+//        } )
 
         binding.saveBtn.setOnClickListener {
             showDialog()
@@ -145,20 +145,20 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         viewModel.setDate(convertTodayToFormatted(convertDateToLong(year,month,day)))
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        backPressCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                viewModel.navigateToFrame()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
-    }
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        backPressCallback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                viewModel.navigateToFrame()
+//            }
+//        }
+//        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
+//    }
 
-    override fun onDetach() {
-        super.onDetach()
-        backPressCallback.remove()
-    }
+//    override fun onDetach() {
+//        super.onDetach()
+//        backPressCallback.remove()
+//    }
 
     companion object {
         const val TAG ="애드프래그먼트"

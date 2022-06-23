@@ -17,6 +17,7 @@ data class DatabasePhotoTicket(
     var backText: String,
     @ColumnInfo(name = "photo_ticket_date")
     var date: String,
+    @ColumnInfo(name = "photo_ticket_favorite")
     var favorite: Boolean = false,
     @ColumnInfo(name = "photo_ticket_user")
     var user : String

@@ -40,10 +40,17 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_filter">
 
                 <RadioButton
-                    android:id="@+id/radio_date"
+                    android:id="@+id/radio_date_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="날짜순"
+                    android:text="날짜(내림차순)"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/radio_date_asc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="날짜(오름차순)"
                     android:textSize="16sp" />
 
 

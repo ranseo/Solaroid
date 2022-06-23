@@ -21,10 +21,6 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM photo_ticket_table ORDER BY photo_ticket_date DESC")
     fun getAllDatabasePhotoTicket() : LiveData<List<DatabasePhotoTicket>?>
 
-    //즐겨찾기 표시된 포토티켓만 정렬
-    @Query("SELECT * FROM photo_ticket_table WHERE favorite == :favorite ORDER BY  photo_ticket_date DESC")
-    fun getFavoriteDatabasePhotoTicket(favorite:Boolean) : LiveData<List<DatabasePhotoTicket>?>
-
 
     //제일 최근에 만든 포토티켓
     @Query("SELECT * FROM photo_ticket_table ORDER BY  photo_ticket_date DESC LIMIT 1")
@@ -48,7 +44,15 @@ interface DatabasePhotoTicketDao {
     fun getMyProfileInfo(user:String) : LiveData<DatabaseProfile?>
 
     @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_user == :user ORDER BY photo_ticket_date DESC")
-    fun getAllPhotoTicketWithUser(user:String) : LiveData<List<DatabasePhotoTicket>?>
+    fun getAllPhotoTicketWithUserDesc(user:String) : LiveData<List<DatabasePhotoTicket>?>
+
+    @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_user == :user ORDER BY photo_ticket_date ASC")
+    fun getAllPhotoTicketWithUserAsc(user:String) : LiveData<List<DatabasePhotoTicket>?>
+
+    @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_user == :user AND pt.photo_ticket_favorite == :favorite ORDER BY photo_ticket_date ASC")
+    fun getAllPhotoTicketWithUserFavorite(user:String, favorite: Boolean) : LiveData<List<DatabasePhotoTicket>?>
+
+
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

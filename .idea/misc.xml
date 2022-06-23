@@ -129,8 +129,8 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_detail.xml" value="0.2078125" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_edit.xml" value="0.2078125" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_frame.xml" value="0.33" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_frame_container.xml" value="0.2078125" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_gallery.xml" value="0.2078125" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_frame_container.xml" value="0.1" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_gallery.xml" value="0.22" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_photo_create.xml" value="0.5" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/list_item_solaroid_frame.xml" value="0.2078125" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/list_item_solaroid_photo.xml" value="0.28020833333333334" />
@@ -143,7 +143,8 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/menu/fragment_frame_drawer_layout_menu.xml" value="0.13055555555555556" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/menu/fragment_frame_popup_menu.xml" value="0.25" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/menu/fragment_frame_toolbar_menu.xml" value="0.1175925925925926" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/menu/fragment_gallery_toolbar_menu.xml" value="0.13055555555555556" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/menu/fragment_gallery_toolbar_menu.xml" value="0.25" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/menu/gallery_bot_navi.xml" value="0.36614583333333334" />
       </map>
     </option>
   </component>
