@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlin.Exception
 
 
-class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Application, val photoKey:String, val filter: PhotoTicketFilter) :
+class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Application,  filter: PhotoTicketFilter) :
     AndroidViewModel(application) {
 
 
@@ -47,26 +47,31 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     }
 
 
-    var initPhotoTicket : PhotoTicket? = null
+//    var initPhotoTicket : PhotoTicket? = null
 
 
-    val startPosition = Transformations.map(photoTickets) {
-        it?.let{ list ->
-            try {
-                list.indexOf(initPhotoTicket)
-            }catch (error:Exception) {
-                0
-            }
-        }
+    private val _startPosition = MutableLiveData<Int>()
+    val startPosition : LiveData<Int>
+        get() = _startPosition
+
+
+
+    /**
+     * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
+     * */
+    private val _photoTicketsSize = MutableLiveData<Int>()
+    val photoTicketsSize : LiveData<Int>
+        get() = _photoTicketsSize
+
+    fun setPhotoTicketSize(size :Int) {
+        _photoTicketsSize.value = size
     }
-
-
 
     /**
      * 현재 viewPager에서 사용자가 보고 있는 포토티켓의 위치를 나타내는 프로퍼티.
      * 해당 변수의 값을 이용하여 현재 사용자가 보고 있는 포토티켓의 값을 설정할 수 있다.
      * */
-    private val _currentPosition = MutableLiveData<Int>(startPosition.value ?: 0)
+    private val _currentPosition = MutableLiveData<Int>()
     val currentPosition: LiveData<Int>
         get() = _currentPosition
 
@@ -74,7 +79,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓
      * */
-    val currPhotoTicket: LiveData<PhotoTicket?> = Transformations.map(currentPosition) { position ->
+    val currPhotoTicket: LiveData<PhotoTicket?> = Transformations.map(_currentPosition) { position ->
         if (position >= 0) {
             val list = photoTickets.value
 
@@ -93,10 +98,17 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     val favorite: LiveData<Boolean?>
         get() = _favorite
 
+
+    init {
+        Log.i(TAG, "뷰모델 Init()")
+    }
+
+
     /**
      * 현재 포토티켓의 즐겨찾기 상태를 대입한다.
      * */
     fun setCurrentFavorite(favorite: Boolean) {
+        Log.i(TAG,"setCurrentFavorite : ${favorite}")
         _favorite.value = favorite
     }
 
@@ -111,13 +123,19 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 
 
 
-    init {
-        refreshPhotoTicket()
-    }
-
-    fun refreshPhotoTicket() {
+    fun refreshPhotoTicket(photoKey: String) {
         viewModelScope.launch {
-            initPhotoTicket = photoTicketRepositery.getPhotoTicket(photoKey)
+            var initPhotoTicket : PhotoTicket? = null
+            val job = launch {
+                initPhotoTicket = photoTicketRepositery.getPhotoTicket(photoKey)
+                Log.i(TAG,"기다려줌?")
+            }
+
+            job.join()
+
+            Log.i(TAG,"initPhotoTicket :  ${initPhotoTicket}, photoTickets: ${photoTickets.value}")
+            _startPosition.value = photoTickets.value?.indexOf(initPhotoTicket)
+            Log.i(TAG,"startPosition.value  :  ${startPosition.value}")
         }
     }
 
@@ -130,6 +148,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         viewModelScope.launch {
             currPhotoTicket.value?.let {
                 it.favorite = it.favorite != true
+                Log.i(TAG, "updatePhotoTicketFavorite() : ${it.favorite}")
                 photoTicketRepositery.updatePhotoTickets(it, getApplication())
             }
         }

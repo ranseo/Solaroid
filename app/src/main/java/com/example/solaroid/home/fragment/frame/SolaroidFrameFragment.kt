@@ -16,9 +16,7 @@ import com.example.solaroid.R
 import com.example.solaroid.adapter.OnFrameLongClickListener
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.databinding.FragmentSolaroidFrameContainerBinding
-import com.example.solaroid.dialog.FilterDialogFragment
 import com.example.solaroid.dialog.ListSetDialogFragment
-import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.home.fragment.gallery.PhotoTicketFilter
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -54,10 +52,11 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         val (photoKey, filter) = args.key
 
+        Log.i(TAG, "FrameFragment 시작")
+
         viewModelFactory = SolaroidFrameViewModelFactory(
             dataSource.photoTicketDao,
             application,
-            photoKey,
             PhotoTicketFilter.convertStringToFilter(filter)
         )
         viewModel = ViewModelProvider(
@@ -70,55 +69,124 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         })
 
 
+
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        binding.viewpager.adapter = adapter
+
+        viewModel.refreshPhotoTicket(photoKey)
+
+        viewModel.startPosition.observe(viewLifecycleOwner) { pos ->
+
+            pos?.let {
+
+                binding.viewpager.currentItem = pos
+                registerOnPageChangeCallback(binding.viewpager, adapter)
+            }
+        }
+
+
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
+                Log.i(TAG, "photoTickets : ${list}")
+                viewModel.setPhotoTicketSize(it.size)
                 adapter.submitList(list)
             }
         }
 
-        registerOnPageChangeCallback(binding.viewpager, adapter)
 
 
-        /**
-         * viewModel의 photoTicket 프로퍼티를 관찰.
-         * 현재 기능 : photoTicket 데이터 변경 시, viewModel의 setCurrentFavorite 함수 호출 후, 현재 photoTicket의 favorite 값 인자로 넘겨줌.
-         **/
-        viewModel.currPhotoTicket.observe(viewLifecycleOwner, Observer {
-            it?.let { photoTicket ->
-                viewModel.setCurrentFavorite(photoTicket.favorite)
-                //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
-                Log.i(
-                    SolaroidFrameFragment.TAG,
-                    "viewModel.currPhotoTicket.observe : ${photoTicket}"
-                )
-            }
-            if (it == null) viewModel.setCurrentFavorite(false)
-        })
 
-        /**
-         * viewModel의 favorite 프로퍼티 관찰.
-         * 1.현재 viewPager's page 내 photoTicket의 favorite 값에 따라 bottomNavi의 menuItem "즐겨찾기" 의 Icon을 변경.
-         * */
-        viewModel.favorite.observe(viewLifecycleOwner, Observer { favor ->
+        observeCurrentPhoto()
+        observeFavorite()
+        navigateToOtherFragment()
+        observeCurrentPosition(adapter)
+        refreshCurrentPosition(binding.viewpager)
+
+        setOnItemSelectedListener(binding.frameBottomNavi)
+        return binding.root
+    }
+
+    /**
+     * viewModel의 favorite 프로퍼티 관찰.
+     * 1.현재 viewPager's page 내 photoTicket의 favorite 값에 따라 bottomNavi의 menuItem "즐겨찾기" 의 Icon을 변경.
+     * */
+    private fun observeFavorite() {
+        viewModel.favorite.observe(viewLifecycleOwner){ favor ->
             favor?.let {
-                Log.d(SolaroidFrameFragment.TAG, "viewModel.favorite.observe  : ${favor}")
+                Log.d(TAG, "viewModel.favorite.observe  : ${favor}")
                 //getItem은 오류 findItem이랑 다른듯.!
                 val menuItem: MenuItem =
                     binding.frameBottomNavi.menu.findItem(R.id.favorite)
                 menuItem.setIcon(if (!it) R.drawable.ic_favorite_false else R.drawable.ic_favorite_true)
-                Log.d(SolaroidFrameFragment.TAG, "Success")
+                Log.d(TAG, "Success")
+            }
+        }
+    }
+
+
+    /**
+     * viewModel의 photoTicket 프로퍼티를 관찰.
+     * 현재 기능 : photoTicket 데이터 변경 시, viewModel의 setCurrentFavorite 함수 호출 후, 현재 photoTicket의 favorite 값 인자로 넘겨줌.
+     **/
+    private fun observeCurrentPhoto() {
+        viewModel.currPhotoTicket.observe(viewLifecycleOwner){
+            it?.let { photoTicket ->
+                viewModel.setCurrentFavorite(photoTicket.favorite)
+                //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
+                Log.i(
+                    TAG,
+                    "viewModel.currPhotoTicket.observe : ${photoTicket}"
+                )
+            }
+            if (it == null) viewModel.setCurrentFavorite(false)
+        }
+    }
+
+    /**
+     * 포토티켓의 삭제 및 [즐겨찾기 프래그먼트]에서의 즐겨찾기 해제로 인해 viewPager의 포토티켓이 사라지는 경우가 발생.
+     * 이때 viewPager의 0번째 위치에서 포토티켓이 사라진다면, 뒤에 있던 포토티켓이 0번째 위치로 이동하게 된다.
+     * viewPager의 onPagedSelected는 현재 위치가 변경되지 않았기 때문에 감지하지 못함. 따라서 현재 포토티켓을 캐치하지 못하는 문제발생.
+     * 이를 방지하기 위해 FrameViewModel에 Position이라는 변수를 만들고, "삭제 및 즐겨찾기 해제"가 발생할 때 현재 위치의
+     * 포토티켓을 캐치하여 app이 정상적으로 현 포토티켓 상황을 유저들에게 전달할 수 있도록 함.
+     * */
+    private fun observeCurrentPosition(
+        adapter: SolaroidFrameAdapter
+    ) {
+        viewModel.currentPosition.observe(viewLifecycleOwner, Observer { pos ->
+            //현재 위치가 0보다 커야한다. (음수가 되는 상황은 발생하지 않음)
+            //현재 위치가 adapter내의 전체 아이템의 크기 수보다 작아야 한다. (아이템의 크기를 넘어서 존재할 수 없음)
+            pos?.let {
+                Log.i(TAG, "currentPosition.observe pos : ${it}")
+                if (it > adapter.itemCount) {
+                    viewModel.setCurrentFavorite(false)
+                }
             }
         })
+    }
 
+    /**
+     * 포토티켓이 viewPager에서 사라졌을 때, adapter에 제공되는 PhotoTicket List의 사이즈를 담고 있는 LiveData
+     * "photoTicketsSize 변수를 관찰. -> 변경이 있을 때마다, 현재 viewpager의 위치를 새롭게 setCurrentPosition의
+     * 매개변수로 넘긴다.
+     * */
+    private fun refreshCurrentPosition(
+        viewPager: ViewPager2
+    ) {
+        viewModel.photoTicketsSize.observe(viewLifecycleOwner) { size ->
+            if (size != null) {
+                if (size > 0) {
 
+                    val position =
+                        if(size <= viewPager.currentItem) viewPager.currentItem - 1 else viewPager.currentItem
+                    Log.i(TAG, "refreshCurrentPosition photoTicket Id: ${position} : ${size}")
+                    viewModel.setCurrentPosition(position)
+                }
+            }
+        }
 
-        navigateToOtherFragment()
-
-        setOnItemSelectedListener(binding.frameBottomNavi)
-        return binding.root
     }
 
 
@@ -127,33 +195,32 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
      * 원하는 Fragment로 이동하기 위한 코드를 모아놓은 함수
      * */
     private fun navigateToOtherFragment() {
-        viewModel.naviToCreateFrag.observe(viewLifecycleOwner, Observer {
+        viewModel.naviToCreateFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToCreate()
                 )
             }
-        })
+        }
 
 
-        viewModel.naviToEditFrag.observe(viewLifecycleOwner, Observer {
+        viewModel.naviToEditFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { key ->
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToEdit(key)
                 )
             }
-        })
+        }
 
 
-        viewModel.naviToAddFrag.observe(viewLifecycleOwner, Observer {
+        viewModel.naviToAddFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToAdd()
                 )
             }
-        })
+        }
     }
-
 
 
     private fun registerOnPageChangeCallback(
@@ -182,10 +249,11 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     private fun setOnItemSelectedListener(
         botNavi: BottomNavigationView,
     ) {
-        botNavi.setOnItemSelectedListener { it ->
+        botNavi.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.favorite -> {
                     val favorite = viewModel.currPhotoTicket.value?.favorite
+                    Log.i(TAG, "favorite ${favorite}")
                     if (favorite != null) viewModel.updatePhotoTicketFavorite()
                     true
                 }

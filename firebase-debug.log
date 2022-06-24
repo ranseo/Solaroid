@@ -135,3 +135,141 @@ Issues? Report them at https://github.com/firebase/firebase-tools/issues and att
 [warn] !  emulators: Support for Java version <= 10 will be dropped soon in firebase-tools@11. Please upgrade to Java version 11 or above to continue using the emulators. 
 [warn] !  canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web. {"metadata":{"emulator":{"name":"auth"},"message":"canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web."}}
 [info] i  To verify the email address a@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=zWcuuUcaC5k-1v0rCI4dUKirigESQx3hcWS-LcuQuwLmGkdnoPcNvF&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DkxenCPDFqZNJT6JH2jZp1RVFkZZu {"metadata":{"emulator":{"name":"auth"},"message":"To verify the email address a@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=zWcuuUcaC5k-1v0rCI4dUKirigESQx3hcWS-LcuQuwLmGkdnoPcNvF&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DkxenCPDFqZNJT6JH2jZp1RVFkZZu"}}
+[debug] [2022-06-24T05:26:23.101Z] ----------------------------------------------------------------------
+[debug] [2022-06-24T05:26:23.103Z] Command:       C:\Users\aa\DOWNLO~1\firebase-tools-instant-win.exe C:\Users\aa\.cache\firebase\tools\lib\node_modules\firebase-tools\lib\bin\firebase emulators:start
+[debug] [2022-06-24T05:26:23.103Z] CLI Version:   10.5.0
+[debug] [2022-06-24T05:26:23.103Z] Platform:      win32
+[debug] [2022-06-24T05:26:23.103Z] Node Version:  v12.18.1
+[debug] [2022-06-24T05:26:23.105Z] Time:          Fri Jun 24 2022 14:26:23 GMT+0900 (GMT+09:00)
+[debug] [2022-06-24T05:26:23.105Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-06-24T05:26:23.171Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-06-24T05:26:23.171Z] > authorizing via signed-in user (slcksseo@gmail.com)
+[debug] [2022-06-24T05:26:23.576Z] openjdk version "1.8.0_282"
+
+[debug] [2022-06-24T05:26:23.576Z] OpenJDK Runtime Environment (Zulu 8.52.0.23-win64)-Microsoft-Azure-restricted (build 1.8.0_282-b08)
+OpenJDK 64-Bit Server VM (Zulu 8.52.0.23-win64)-Microsoft-Azure-restricted (build 25.282-b08, mixed mode)
+
+[debug] [2022-06-24T05:26:23.587Z] Parsed Java major version: 1
+[warn] !  emulators: Support for Java version <= 10 will be dropped soon in firebase-tools@11. Please upgrade to Java version 11 or above to continue using the emulators. 
+[info] i  emulators: Starting emulators: auth, database, storage {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, database, storage"}}
+[warn] !  emulators: It seems that you are running multiple instances of the emulator suite for project solaroid-fca9c. This may result in unexpected behavior. 
+[debug] [2022-06-24T05:26:25.637Z] [hub] writing locator at C:\Users\aa\AppData\Local\Temp\hub-solaroid-fca9c.json
+[debug] [2022-06-24T05:26:28.218Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-fca9c [none]
+[debug] [2022-06-24T05:26:28.636Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-fca9c 200
+[debug] [2022-06-24T05:26:28.636Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-fca9c {"projectId":"solaroid-fca9c","projectNumber":"1080768750285","displayName":"Solaroid","name":"projects/solaroid-fca9c","resources":{"hostingSite":"solaroid-fca9c","realtimeDatabaseInstance":"solaroid-fca9c-default-rtdb","storageBucket":"solaroid-fca9c.appspot.com","locationId":"asia-east1"},"state":"ACTIVE"}
+[debug] [2022-06-24T05:26:28.637Z] database rules config:  [{"instance":"solaroid-fca9c-default-rtdb","rules":"C:\\Users\\aa\\Downloads\\Solaroid\\database.rules.json"}]
+[debug] [2022-06-24T05:26:28.642Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2022-06-24T05:26:28.642Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-06-24T05:26:28.642Z] Ignoring unsupported arg: rules {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: rules"}}
+[debug] [2022-06-24T05:26:28.642Z] Starting Database Emulator with command {"binary":"java","args":["-Duser.language=en","-jar","C:\\Users\\aa\\.cache\\firebase\\emulators\\firebase-database-emulator-v4.7.3.jar","--host","localhost","--port",9000],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host"],"joinArgs":false} {"metadata":{"emulator":{"name":"database"},"message":"Starting Database Emulator with command {\"binary\":\"java\",\"args\":[\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\aa\\\\.cache\\\\firebase\\\\emulators\\\\firebase-database-emulator-v4.7.3.jar\",\"--host\",\"localhost\",\"--port\",9000],\"optionalArgs\":[\"port\",\"host\",\"functions_emulator_port\",\"functions_emulator_host\"],\"joinArgs\":false}"}}
+[info] i  database: Database Emulator logging to database-debug.log {"metadata":{"emulator":{"name":"database"},"message":"Database Emulator logging to \u001b[1mdatabase-debug.log\u001b[22m"}}
+[debug] [2022-06-24T05:26:31.071Z] 14:26:31.070 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+ {"metadata":{"emulator":{"name":"database"},"message":"14:26:31.070 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started\r\n"}}
+[debug] [2022-06-24T05:26:31.240Z] 14:26:31.242 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+ {"metadata":{"emulator":{"name":"database"},"message":"14:26:31.242 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000\r\n"}}
+[debug] [2022-06-24T05:26:42.736Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"storage"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2022-06-24T05:26:43.847Z] Temp file directory for storage emulator: C:\Users\aa\AppData\Local\Temp/firebase/storage/blobs {"metadata":{"emulator":{"name":"storage"},"message":"Temp file directory for storage emulator: C:\\Users\\aa\\AppData\\Local\\Temp/firebase/storage/blobs"}}
+[debug] [2022-06-24T05:26:47.967Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-06-24T05:26:47.967Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2022-06-24T05:26:47.967Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\aa\\.cache\\firebase\\emulators\\ui-v1.6.5\\server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\aa\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.6.5\\\\server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2022-06-24T05:26:48.320Z] Web / API server started at localhost:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at localhost:4000\n"}}
+[debug] [2022-06-24T05:26:48.513Z] >>> HTTP REQUEST PUT http://localhost:9000/.settings/rules.json?ns=solaroid-fca9c-default-rtdb  
+ {
+  "rules": {
+    "profile" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        ".write" : "auth != null && auth.uid == $uid"
+      }
+    },
+
+
+    "currentUsersNum" : {
+      ".read" : "auth != null",
+      ".write" : "auth != null"
+    },
+
+
+    "allUsers" : {
+      ".read" : "auth != null && root.child('profile').child(auth.uid).exists()",
+      ".write" : "auth != null && root.child('profile').child(auth.uid).exists()"
+    },
+
+
+
+
+    "myFriendList" : {
+      "$uid" : {
+        "list" : {
+          ".read" : "auth !=null && auth.uid == $uid",
+          ".write" : "auth != null && auth.uid == $uid"
+        }
+      }
+    },
+
+
+    "tmpFriendList" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth !=null",
+          ".write" : "auth != null"
+        }
+      }
+    },
+
+
+    "friendReception" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth !=null",
+          ".write" : "auth != null"
+        }
+      }
+    },
+
+    "friendDispatch" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    },
+
+
+
+    "photoTicket" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        ".write" : "auth != null && auth.uid == $uid"
+      }
+    }
+  }
+}
+[debug] [2022-06-24T05:26:49.011Z] <<< HTTP RESPONSE 200 {"content-length":"15","content-type":"application/json; charset=utf-8","access-control-allow-origin":"*","cache-control":"no-cache","x-firebase-project-id":"solaroid-fca9c-default-rtdb","x-firebase-project-number":"123456789","x-firebase-uuid":"5e43fda2-589c-48cb-b13b-4f221beb108c"}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4000                │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI            │
+├────────────────┼────────────────┼────────────────────────────────┤
+│ Authentication │ localhost:9099 │ http://localhost:4000/auth     │
+├────────────────┼────────────────┼────────────────────────────────┤
+│ Database       │ localhost:9000 │ http://localhost:4000/database │
+├────────────────┼────────────────┼────────────────────────────────┤
+│ Storage        │ localhost:9199 │ http://localhost:4000/storage  │
+└────────────────┴────────────────┴────────────────────────────────┘
+  Emulator Hub running at localhost:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[warn] !  emulators: Support for Java version <= 10 will be dropped soon in firebase-tools@11. Please upgrade to Java version 11 or above to continue using the emulators. 
+[warn] !  canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web. {"metadata":{"emulator":{"name":"auth"},"message":"canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web."}}
+[info] i  To verify the email address a@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=br7m5zeOTfm59d4m_D__gz9hieXF8pBOxnrZWV_jo_1thlePSIzZ5Q&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DPc06SdBn6dQUbIAkUqjKableEO27 {"metadata":{"emulator":{"name":"auth"},"message":"To verify the email address a@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=br7m5zeOTfm59d4m_D__gz9hieXF8pBOxnrZWV_jo_1thlePSIzZ5Q&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DPc06SdBn6dQUbIAkUqjKableEO27"}}

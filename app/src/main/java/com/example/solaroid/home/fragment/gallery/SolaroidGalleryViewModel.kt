@@ -40,6 +40,7 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
+    private val ref = fbDatabase.reference.child("photoTicket").child(fbAuth.currentUser!!.uid)
 
 
     val photoTicketRepositery = PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage)
@@ -120,6 +121,7 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
 
     companion object {
         const val TAG = "갤러리_뷰모델"
+
     }
 
 

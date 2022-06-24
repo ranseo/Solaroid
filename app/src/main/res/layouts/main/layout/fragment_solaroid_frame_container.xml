@@ -16,55 +16,53 @@
 
     </data>
 
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/soft_grey">
 
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewpager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="50dp"
-                app:layout_constraintBottom_toTopOf="@+id/fragment_frame_bottom_navi"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="@+id/frame_bottom_navi"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-            <com.example.solaroid.custom.view.CustomBottomNavigationView
-                android:id="@+id/frame_bottom_navi"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/bot_navi_color"
-                app:labelVisibilityMode="labeled"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:menu="@menu/fragment_frame_bot_navi" />
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_photo_create"
-            android:layout_width="wrap_content"
+        <com.example.solaroid.custom.view.CustomBottomNavigationView
+            android:id="@+id/frame_bottom_navi"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:clickable="true"
-            android:elevation="3dp"
-            android:focusable="true"
-            android:onClick="@{()->viewModel.navigateToCreate()}"
-            android:src="@drawable/ic_photo_create"
-            android:layout_gravity="bottom|center"/>
+            android:backgroundTint="@color/bot_navi_color"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/fragment_frame_bot_navi" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_photo_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="15dp"
+        android:clickable="true"
+        android:elevation="3dp"
+        android:focusable="true"
+        android:onClick="@{()->viewModel.navigateToCreate()}"
+        android:src="@drawable/ic_photo_create" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</layout>
+
+    </layout>

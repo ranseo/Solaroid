@@ -41,9 +41,7 @@
 
         <action
             android:id="@+id/action_gallery_to_frame"
-            app:destination="@+id/fragment_solaroid_frame"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/fragment_solaroid_gallery"/>
+            app:destination="@+id/fragment_solaroid_frame" />
 
         <action
             android:id="@+id/action_gallery_to_add"

@@ -40,7 +40,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //Firebase
     private lateinit var auth: FirebaseAuth
-    private lateinit var db : FirebaseDatabase
 
     //toolbar
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -120,10 +119,18 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.naviationViewMain.navView.setNavigationItemSelectedListener(this)
 
         //
-        navController.addOnDestinationChangedListener{_,destination,_ ->
-            val id = destination.id
-            if(id== R.id.fragment_solaroid_gallery || id== R.id.fragment_solaroid_frame_container) supportActionBar?.show()
-            else supportActionBar?.hide()
+//        navController.addOnDestinationChangedListener{_,destination,_ ->
+//            val id = destination.id
+//            if(id== R.id.fragment_solaroid_gallery || id== R.id.fragment_solaroid_frame) supportActionBar?.show()
+//            else supportActionBar?.hide()
+//        }
+
+        navController.addOnDestinationChangedListener{ _,_,arguments ->
+            if(arguments != null) {
+                if(arguments.containsKey("ShowAppBar")) supportActionBar?.show()
+                else supportActionBar?.hide()
+            } else supportActionBar?.hide()
+
         }
 
         naviViewModel.naviToLoginAct.observe(this) {
@@ -158,8 +165,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        if (binding.drawerLayoutMain.isDrawerOpen(Gravity.LEFT))
-            binding.drawerLayoutMain.closeDrawer(Gravity.LEFT)
+        if (binding.drawerLayoutMain.isDrawerOpen(GravityCompat.START))
+            binding.drawerLayoutMain.closeDrawer(GravityCompat.START)
         else  super.onBackPressed()
     }
 
