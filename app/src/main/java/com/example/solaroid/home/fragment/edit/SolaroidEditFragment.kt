@@ -53,9 +53,7 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 
         viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer {
            it.getContentIfNotHandled()?.let{
-               findNavController().navigate(
-                   SolaroidEditFragmentDirections.actionEditFragmentToFrameFragmentContainer()
-               )
+                this.requireActivity().onBackPressed()
            }
         })
 
@@ -67,16 +65,16 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
     }
 
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        backPressCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                viewModel.navigateToFrame()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
-    }
-
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        backPressCallback = object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                viewModel.navigateToFrame()
+//            }
+//        }
+//        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
+//    }
+//
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         viewModel.onUpdatePhotoTicket()

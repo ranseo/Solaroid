@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.example.solaroid.Event
+import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
@@ -30,7 +31,9 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     }
 
     val profileRepositery =
-        ProfileRepostiery(fbAuth = fbAuth, fbDatabase = fbDatabase, fbStorage = fbStorage, dataSource)
+        ProfileRepostiery(fbAuth = fbAuth, fbDatabase = fbDatabase, fbStorage = fbStorage, dataSource,
+            MyProfileDataSource()
+        )
 
     private val _SavedLoginId = MutableLiveData<String>()
     val SavedLoginId: LiveData<String>

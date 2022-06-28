@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
@@ -13,11 +14,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.Exception
 
 
-class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Application,  filter: PhotoTicketFilter) :
+class SolaroidFrameViewModel(
+    dataSource: DatabasePhotoTicketDao,
+    application: Application,
+    filter: PhotoTicketFilter
+) :
     AndroidViewModel(application) {
 
 
@@ -32,9 +37,15 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
     private val photoTicketRepositery: PhotoTicketRepositery =
-        PhotoTicketRepositery(dataSource, fbAuth, fbDatabase, fbStorage)
+        PhotoTicketRepositery(
+            dataSource,
+            fbAuth,
+            fbDatabase,
+            fbStorage,
+            PhotoTicketListenerDataSource()
+        )
 
-    val photoTickets = when(filter) {
+    val photoTickets = when (filter) {
         PhotoTicketFilter.DESC -> {
             photoTicketRepositery.photoTicketsOrderByDesc
         }
@@ -51,19 +62,18 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
 
 
     private val _startPosition = MutableLiveData<Int>()
-    val startPosition : LiveData<Int>
+    val startPosition: LiveData<Int>
         get() = _startPosition
-
 
 
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
      * */
     private val _photoTicketsSize = MutableLiveData<Int>()
-    val photoTicketsSize : LiveData<Int>
+    val photoTicketsSize: LiveData<Int>
         get() = _photoTicketsSize
 
-    fun setPhotoTicketSize(size :Int) {
+    fun setPhotoTicketSize(size: Int) {
         _photoTicketsSize.value = size
     }
 
@@ -79,15 +89,16 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     /**
      * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓
      * */
-    val currPhotoTicket: LiveData<PhotoTicket?> = Transformations.map(_currentPosition) { position ->
-        if (position >= 0) {
-            val list = photoTickets.value
+    val currPhotoTicket: LiveData<PhotoTicket?> =
+        Transformations.map(_currentPosition) { position ->
+            if (position >= 0) {
+                val list = photoTickets.value
 
-            if (!list.isNullOrEmpty()) {
-                list[position]
+                if (!list.isNullOrEmpty()) {
+                    list[position]
+                } else null
             } else null
-        } else null
-    }
+        }
 
 
     /**
@@ -108,7 +119,7 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * 현재 포토티켓의 즐겨찾기 상태를 대입한다.
      * */
     fun setCurrentFavorite(favorite: Boolean) {
-        Log.i(TAG,"setCurrentFavorite : ${favorite}")
+        Log.i(TAG, "setCurrentFavorite : ${favorite}")
         _favorite.value = favorite
     }
 
@@ -117,29 +128,38 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
      * currentPosition의 값 설정.
      * */
     fun setCurrentPosition(position: Int) {
-        Log.i(TAG,"setCurrentPosition : ${position}")
+        Log.i(TAG, "setCurrentPosition : ${position}")
         _currentPosition.value = position
     }
 
 
-
     fun refreshPhotoTicket(photoKey: String) {
         viewModelScope.launch {
-            var initPhotoTicket : PhotoTicket? = null
-            val job = launch {
-                initPhotoTicket = photoTicketRepositery.getPhotoTicket(photoKey)
-                Log.i(TAG,"기다려줌?")
+            var deferred: Deferred<PhotoTicket> = async{
+                photoTicketRepositery.getPhotoTicket(photoKey)
             }
 
-            job.join()
 
-            Log.i(TAG,"initPhotoTicket :  ${initPhotoTicket}, photoTickets: ${photoTickets.value}")
-            _startPosition.value = photoTickets.value?.indexOf(initPhotoTicket)
-            Log.i(TAG,"startPosition.value  :  ${startPosition.value}")
+            launch(Dispatchers.Default) {
+                val photoTicket= deferred.await()
+                val idx = photoTickets.value?.indexOf(photoTicket) ?: 0
+
+                withContext(Dispatchers.Main) {
+                    _startPosition.value = idx
+                }
+            }
+            Log.i(TAG, "startPosition.value  :  ${startPosition.value}")
         }
     }
 
-
+    fun refreshPhotoTicket() {
+        viewModelScope.launch(Dispatchers.Default) {
+            val idx = photoTickets.value?.indexOf(currPhotoTicket.value) ?: 0
+            withContext(Dispatchers.Main) {
+                _startPosition.value = idx
+            }
+        }
+    }
 
     /**
      * 포토티켓 즐겨찾기를 등록하거나 해제할 경우, 새로운 즐겨찾기 값으로 해당 포토티켓을 update한다.
@@ -164,7 +184,6 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     }
 
 
-
     //SolaroidCreateFragment로 이동
     private val _naviToCreateFrag = MutableLiveData<Event<Boolean>>()
     val naviToCreateFrag: LiveData<Event<Boolean>>
@@ -185,13 +204,12 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
         get() = _naviToAddFrag
 
 
-
     fun navigateToCreate() {
         _naviToCreateFrag.value = Event(true)
     }
 
     fun navigateToEdit(key: String) {
-         _naviToEditFrag.value = Event(key)
+        _naviToEditFrag.value = Event(key)
     }
 
     fun navigateToAdd() {
@@ -199,7 +217,6 @@ class SolaroidFrameViewModel(dataSource: DatabasePhotoTicketDao, application: Ap
     }
 
     /////////////////////////////////////////////////////////////////
-
 
 
 }

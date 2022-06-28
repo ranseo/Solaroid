@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.room.asDomainModel
 import com.example.solaroid.room.asFirebaseModel
@@ -32,7 +33,8 @@ class PhotoTicketRepositery(
     private val dataSource: DatabasePhotoTicketDao,
     private val fbAuth: FirebaseAuth,
     private val fbDatabase: FirebaseDatabase,
-    private val fbStorage: FirebaseStorage
+    private val fbStorage: FirebaseStorage,
+    private val photoTicketListenerDataSource: PhotoTicketListenerDataSource
 ) {
 
     val user = fbAuth.currentUser!!.email!!
@@ -57,16 +59,14 @@ class PhotoTicketRepositery(
      * 포토티켓의 즐겨찾기만 정렬
      * */
     val photoTicketsOrderByFavorite: LiveData<List<PhotoTicket>> =
-        Transformations.map(dataSource.getAllPhotoTicketWithUserFavorite(user,true)) {
+        Transformations.map(dataSource.getAllPhotoTicketWithUserFavorite(user, true)) {
             it?.asDomainModel()
         }
 
 
-    suspend fun getPhotoTicket(key:String) : PhotoTicket = withContext(Dispatchers.IO) {
-            dataSource.getDatabasePhotoTicket(key).asDomainModel()
+    suspend fun getPhotoTicket(key: String): PhotoTicket = withContext(Dispatchers.IO) {
+        dataSource.getDatabasePhotoTicket(key).asDomainModel()
     }
-
-
 
 
     /**
@@ -74,24 +74,13 @@ class PhotoTicketRepositery(
      * 화면에 띄우기 위해 firebase의 실시간 데이버테이스로 부터 FirebasePhotoTicket을 불러오고 이를 다시 room database에 insert하는
      * ValueEventListener를 등록하여 refresh하는 함수.
      * */
-    suspend fun refreshPhotoTickets(application: Application): ValueEventListener? {
-
-        return withContext(Dispatchers.IO) {
+    suspend fun refreshPhotoTickets(insertRoomDb: (List<FirebasePhotoTicket>) -> Unit) =
+        withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
+            val listener = photoTicketListenerDataSource.setPhotoTicketList(insertRoomDb)
             val ref = fbDatabase.reference.child("photoTicket").child(user.uid)
-            if (ref == fbDatabase.reference) {
-                Log.d(TAG, "Network Error")
-                Toast.makeText(application, "네트워크 연결이 동기화 되지 않았습니다.", Toast.LENGTH_SHORT).show()
-                null
-            } else setPhotoTicketList() {
-                CoroutineScope(Dispatchers.IO).launch {
-                    Log.i(TAG, "photoTicket : ${it}")
-                    dataSource.insert(it.asDatabaseModel(user.email!!))
-                }
-            }
-
+            ref.addValueEventListener(listener)
         }
-    }
 
     /**
      * 포토티켓의 업데이트 기능을 수행하는 리포지터리 함수

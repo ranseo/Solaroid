@@ -6,7 +6,10 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.example.solaroid.NavigationViewModel
+import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.domain.Profile
+import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.firebase.asDomainModel
@@ -16,22 +19,20 @@ import com.example.solaroid.room.asDomainModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
 class ProfileRepostiery(
     private val fbAuth: FirebaseAuth,
     private val fbDatabase: FirebaseDatabase,
     private val fbStorage: FirebaseStorage,
     private val database: DatabasePhotoTicketDao,
+    private val myProfileDataSource: MyProfileDataSource
 ) {
 
 
@@ -40,6 +41,11 @@ class ProfileRepostiery(
         it?.let { it.asDomainModel() }
     }
 
+
+    suspend fun insertRoomDatabase(profile: DatabaseProfile) = withContext(Dispatchers.IO) {
+        Log.i(TAG,"insertRoomDatabase : ${this}")
+        database.insert(profile)
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun insertProfileInfo(profile: FirebaseProfile, application: Application) {
@@ -80,13 +86,11 @@ class ProfileRepostiery(
 
             try {
                 insertProfileInStorage(storageRef!!, profile, file!!, user)
-            } catch (error:Exception) {
-                Log.i(TAG,"error : ${error.message}")
+            } catch (error: Exception) {
+                Log.i(TAG, "error : ${error.message}")
             }
 
         }
-
-
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -145,19 +149,57 @@ class ProfileRepostiery(
         }
     }
 
-    suspend fun getProfileInfo(): Task<DataSnapshot>? {
-        return withContext(Dispatchers.IO) {
-            val user = fbAuth.currentUser
-            if (user == null) null
-            else {
-                val profileRef: Task<DataSnapshot>? =
-                    fbDatabase.reference.child("profile").child(user!!.uid).get()
+//    suspend fun getProfileInfo(): Task<DataSnapshot>? {
+//        return withContext(Dispatchers.IO) {
+//            val user = fbAuth.currentUser
+//            if (user == null) null
+//            else {
+//                val profileRef: Task<DataSnapshot>? =
+//                    fbDatabase.reference.child("profile").child(user!!.uid).get()
+//
+//
+//                profileRef
+//
+//            }
+//        }
+//    }
 
 
-                profileRef
+//    suspend fun getProfileInfo(insertRoomDb: suspend (Profile:Profile)->Unit) {
+//
+//            val user = fbAuth.currentUser
+//            val listener = myProfileDataSource.getMyProfileListener(insertRoomDb)
+//            fbDatabase.reference.child("profile").child(user!!.uid).addListenerForSingleValueEvent(listener)
+//            Log.i(TAG," getProfileInfo()")
+//    }
 
-            }
-        }
+    fun getProfileInfo(
+        insertRoomDb: (profile: DatabaseProfile) -> Unit
+    ) {
+        val user = fbAuth.currentUser
+        fbDatabase.reference.child("profile").child(user!!.uid)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.i(TAG, " getProfileInfo() onDataChange")
+                    val hashMap = snapshot.value as HashMap<*, *>
+                    val profile = FirebaseProfile(
+                        id = hashMap["id"]!! as String,
+                        nickname = hashMap["nickname"]!! as String,
+                        profileImg = hashMap["profileImg"]!! as String,
+                        friendCode = hashMap["friendCode"]!! as Long
+                    )
+
+                    insertRoomDb(profile.asDatabaseModel())
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+
+            })
+        Log.i(TAG, " getProfileInfo()")
+
     }
 
 

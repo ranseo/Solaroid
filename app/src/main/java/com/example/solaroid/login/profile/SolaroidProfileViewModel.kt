@@ -5,6 +5,8 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.datasource.profile.MyProfileDataSource
+import com.example.solaroid.domain.Profile
 import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
@@ -28,7 +30,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
 
     private val dataSource = database
 
-    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource)
+    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource, MyProfileDataSource())
     val usersRepositery = UsersRepositery(fbAuth, fbDatabase, fbStorage)
 
     enum class ProfileErrorType {
@@ -195,20 +197,10 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
 
     suspend fun refreshProfile() {
         return withContext(Dispatchers.IO) {
-            profileRepositery.getProfileInfo()?.addOnSuccessListener {
-                try {
-                    val profile = it.value as HashMap<*, *>
-
-                    _firebaseProfile.value = FirebaseProfile(
-                        profile["id"] as String,
-                        profile["nickname"] as String,
-                        profile["profileImg"] as String,
-                        profile["friendCode"] as Long
-                    )
-                } catch (error: Exception) {
-                    Log.i(TAG, "profile value error : ${error.message}")
-                }
+            val lambda : (profile: DatabaseProfile) -> Unit = {
+                _firebaseProfile.value = it.asFirebaseModel()
             }
+            profileRepositery.getProfileInfo(lambda)
         }
     }
 

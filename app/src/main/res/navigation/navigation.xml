@@ -118,9 +118,9 @@
         tools:layout="@layout/fragment_solaroid_edit">
 
         <action
-            android:id="@+id/action_editFragment_to_frameFragmentContainer"
-            app:destination="@id/fragment_solaroid_frame_container"
-            app:popUpTo="@+id/fragment_solaroid_frame_container"
+            android:id="@+id/action_edit_to_frame"
+            app:destination="@id/fragment_solaroid_frame"
+            app:popUpTo="@+id/fragment_solaroid_frame"
             app:popUpToInclusive="true" />
 
         <argument

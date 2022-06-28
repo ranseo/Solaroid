@@ -1,10 +1,15 @@
 package com.example.solaroid
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.domain.Profile
+import com.example.solaroid.domain.asDatabaseModel
+import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebaseProfile
+import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
@@ -12,9 +17,10 @@ import com.example.solaroid.room.DatabaseProfile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(){
+class NavigationViewModel(database: DatabasePhotoTicketDao, application: Application) :
+    AndroidViewModel(application) {
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
@@ -23,7 +29,9 @@ class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(){
 
     private val dataSource = database
 
-    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource)
+    val profileRepositery =
+        ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource, MyProfileDataSource())
+
 
     val myProfile = profileRepositery.myProfile
 
@@ -41,27 +49,37 @@ class NavigationViewModel(database:DatabasePhotoTicketDao) : ViewModel(){
         get() = _naviToFriendAct
 
 
-    private val _profile = MutableLiveData<Profile>()
-    val profile: LiveData<Profile>
-        get() = _profile
-
-
-    val emailId = Transformations.map(profile) {
+    val emailId = Transformations.map(myProfile) {
         it.id
     }
-    val nickName = Transformations.map(profile) {
+    val nickName = Transformations.map(myProfile) {
         it.nickname
     }
-    val url = Transformations.map(profile) {
+    val url = Transformations.map(myProfile) {
         it.profileImg
     }
-    val friendCode = Transformations.map(profile) {
+    val friendCode = Transformations.map(myProfile) {
         it.friendCode
     }
 
     init {
+
     }
 
+
+    fun insertProfileRoomDatabase() {
+        viewModelScope.launch {
+            Log.i(TAG, "profileRepositery.getProfileInfo : coroutine : ${this}")
+            profileRepositery.getProfileInfo() { profile ->
+                Log.i(TAG,"profileRepositery : ${this}")
+                viewModelScope.launch {
+                    Log.i(TAG,"profileRepositery.getProfileInfo() : ${this}")
+                    profileRepositery.insertRoomDatabase(profile)
+                }
+
+            }
+        }
+    }
 
 
     fun navigateToLoginAct() {

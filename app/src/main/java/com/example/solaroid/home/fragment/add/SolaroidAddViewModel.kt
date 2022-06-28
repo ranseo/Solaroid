@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertTodayToFormatted
+import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
@@ -27,7 +28,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     private val fbStorage = FirebaseManager.getStorageInstance()
 
     private val photoTicketRepositery =
-        PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage)
+        PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage, PhotoTicketListenerDataSource())
 
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()

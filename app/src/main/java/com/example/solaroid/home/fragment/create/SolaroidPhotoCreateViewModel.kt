@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertTodayToFormatted
+import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
@@ -21,7 +22,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage = FirebaseManager.getStorageInstance()
 
-    private val photoTicketRepositery = PhotoTicketRepositery(dataSource = database, fbAuth , fbDatabase ,fbStorage)
+    private val photoTicketRepositery = PhotoTicketRepositery(dataSource = database, fbAuth , fbDatabase ,fbStorage, PhotoTicketListenerDataSource())
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>

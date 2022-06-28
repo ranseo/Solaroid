@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.room.asDomainModel
 import com.example.solaroid.domain.PhotoTicket
@@ -23,7 +24,7 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage : FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    private val photoTicketRepositery : PhotoTicketRepositery = PhotoTicketRepositery(dataSource,fbAuth,fbDatabase, fbStorage)
+    private val photoTicketRepositery : PhotoTicketRepositery = PhotoTicketRepositery(dataSource,fbAuth,fbDatabase, fbStorage, PhotoTicketListenerDataSource())
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket : LiveData<PhotoTicket?>

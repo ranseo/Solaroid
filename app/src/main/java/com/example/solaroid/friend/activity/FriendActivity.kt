@@ -48,8 +48,9 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         binding = ActivityFriendBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         val dataSource = SolaroidDatabase.getInstance(this).photoTicketDao
-        navigationViewModelFactory = NavigationViewModelFactory(dataSource)
+        navigationViewModelFactory = NavigationViewModelFactory(dataSource, this.application )
         naviViewModel = ViewModelProvider(this, navigationViewModelFactory)[NavigationViewModel::class.java]
 
         binding.naviViewModel = naviViewModel

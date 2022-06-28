@@ -49,7 +49,7 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
 
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
-                Log.i(TAG, "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list}")
+                Log.i(TAG, "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list} }")
                 adapter.submitList(list)
             }
         }

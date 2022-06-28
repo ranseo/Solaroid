@@ -4,27 +4,30 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.firebase.FirebasePhotoTicket
+import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-enum class PhotoTicketFilter(val filter:String) {
+enum class PhotoTicketFilter(val filter: String) {
     DESC(filter = "DESC"),
     ASC(filter = "ASC"),
     FAVORTIE(filter = "FAVORITE");
 
     companion object {
-        fun convertStringToFilter(filter: String):PhotoTicketFilter {
+        fun convertStringToFilter(filter: String): PhotoTicketFilter {
             return when (filter) {
                 "DESC" -> PhotoTicketFilter.DESC
-                "ASC" ->  PhotoTicketFilter.ASC
-                "FAVORITE" ->  PhotoTicketFilter.FAVORTIE
+                "ASC" -> PhotoTicketFilter.ASC
+                "FAVORITE" -> PhotoTicketFilter.FAVORTIE
                 else -> throw IllegalArgumentException("UNDEFINED_STATUS")
             }
         }
@@ -43,10 +46,13 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     private val ref = fbDatabase.reference.child("photoTicket").child(fbAuth.currentUser!!.uid)
 
 
-    val photoTicketRepositery = PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage)
+    val photoTicketRepositery = PhotoTicketRepositery(
+        database, fbAuth, fbDatabase, fbStorage,
+        PhotoTicketListenerDataSource()
+    )
 
     private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
-    val photoTicketSetting : LiveData<Event<List<PhotoTicket>>>
+    val photoTicketSetting: LiveData<Event<List<PhotoTicket>>>
         get() = _photoTicketsSetting
 
 
@@ -55,7 +61,7 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
         get() = _naviToFrame
 
     private val _naviToAdd = MutableLiveData<Event<Any?>>()
-    val naviToAdd : LiveData<Event<Any?>>
+    val naviToAdd: LiveData<Event<Any?>>
         get() = _naviToAdd
 
     private val _naviToCreate = MutableLiveData<Event<Any?>>()
@@ -73,8 +79,8 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
         getPhotoTickets(filter)
     }
 
-    private fun getPhotoTickets(filter:PhotoTicketFilter) : LiveData<List<PhotoTicket>> {
-        return when(filter) {
+    private fun getPhotoTickets(filter: PhotoTicketFilter): LiveData<List<PhotoTicket>> {
+        return when (filter) {
             PhotoTicketFilter.DESC -> {
                 Log.i(TAG, "photoTicketsOrderByDesc.value")
                 photoTicketRepositery.photoTicketsOrderByDesc
@@ -89,8 +95,6 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
             }
         }
     }
-//
-//    val photoTickets = photoTicketRepositery.photoTicketsOrderByAsc
 
     init {
         refreshFirebaseListener()
@@ -98,15 +102,27 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
 
     fun refreshFirebaseListener() {
         viewModelScope.launch {
-            photoTicketRepositery.refreshPhotoTickets(getApplication())
+            try {
+                val user = fbAuth.currentUser!!
+                photoTicketRepositery.refreshPhotoTickets { firebasePhotoTickets ->
+                    viewModelScope.launch(Dispatchers.Default) {
+                        Log.i(TAG,"viewModelScope.launch(Dispatchers.IO) : ${this}")
+                        insert(firebasePhotoTickets, user.email!!)
+                    }
+                }
+            } catch (error: Exception) {
+                Log.d(TAG, "error : ${error.message}")
+            }
         }
     }
-    fun setFilter(filter:String) {
+
+
+    fun setFilter(filter: String) {
         _filter.value = PhotoTicketFilter.convertStringToFilter(filter)
     }
 
 
-    fun navigateToFrame(key:String) {
+    fun navigateToFrame(key: String) {
         _naviToFrame.value = Event(key)
     }
 
@@ -117,6 +133,22 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     fun navigateToCreate() {
         _naviToCreate.value = Event(Unit)
     }
+
+    suspend fun insert(firebasePhotoTickets: List<FirebasePhotoTicket>, user: String) =
+        coroutineScope {
+
+            val deferred = async {
+                firebasePhotoTickets.map {
+                    it.asDatabaseModel(user)
+                }
+            }
+
+            withContext(Dispatchers.IO) {
+                val databasePhotoTickets = deferred.await()
+                database.insertAll(databasePhotoTickets)
+            }
+
+        }
 
 
     companion object {

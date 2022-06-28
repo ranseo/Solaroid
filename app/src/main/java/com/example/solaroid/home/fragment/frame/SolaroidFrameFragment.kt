@@ -60,7 +60,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             PhotoTicketFilter.convertStringToFilter(filter)
         )
         viewModel = ViewModelProvider(
-            this.requireActivity(),
+            this,
             viewModelFactory
         )[SolaroidFrameViewModel::class.java]
 
@@ -79,9 +79,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         viewModel.refreshPhotoTicket(photoKey)
 
         viewModel.startPosition.observe(viewLifecycleOwner) { pos ->
-
             pos?.let {
-
                 binding.viewpager.currentItem = pos
                 registerOnPageChangeCallback(binding.viewpager, adapter)
             }
@@ -106,6 +104,8 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         refreshCurrentPosition(binding.viewpager)
 
         setOnItemSelectedListener(binding.frameBottomNavi)
+
+
         return binding.root
     }
 
@@ -209,6 +209,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToEdit(key)
                 )
+                viewModel.refreshPhotoTicket()
             }
         }
 

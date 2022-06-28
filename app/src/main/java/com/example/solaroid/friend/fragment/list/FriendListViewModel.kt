@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.datasource.friend.MyFriendListDataSource
+import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.domain.Friend
 import com.example.solaroid.domain.Profile
 import com.example.solaroid.domain.asDatabaseFriend
@@ -34,7 +35,9 @@ class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyF
 
     //repositery
     private val friendListRepositery : FriendListRepositery = FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(this),  database)
-    private val profileRepostiery : ProfileRepostiery = ProfileRepostiery(fbAuth,fbDatabase, fbStorage, dataSource)
+    private val profileRepostiery : ProfileRepostiery = ProfileRepostiery(fbAuth,fbDatabase, fbStorage, dataSource,
+        MyProfileDataSource()
+    )
 
     //data
     val friendList = Transformations.map(friendListRepositery.friendList){

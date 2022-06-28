@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertHexStringToLongFormat
+import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.domain.Profile
 import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
@@ -30,7 +31,9 @@ class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
 
     //repositery
     private val friendAddRepositery = FriendAddRepositery(fbAuth, fbDatabase)
-    private val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource)
+    private val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource,
+        MyProfileDataSource()
+    )
 
     private val _searchUser = MutableLiveData<Profile?>(null)
     val searchUser: LiveData<Profile?>

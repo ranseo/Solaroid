@@ -69,7 +69,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         viewModel = ViewModelProvider(this,viewModelFactory)[SolaroidLoginViewModel::class.java]
 
         //NavigationViewModel
-        navigationViewModelFactory = NavigationViewModelFactory(dataSource)
+        navigationViewModelFactory = NavigationViewModelFactory(dataSource, this.application)
         naviViewModel = ViewModelProvider(this,navigationViewModelFactory)[NavigationViewModel::class.java]
         binding.naviViewModel = naviViewModel
         binding.lifecycleOwner = this
@@ -147,6 +147,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 this.finish()
             }
         }
+
+        naviViewModel.myProfile.observe(this) {
+            if(it==null) {
+                Log.i(TAG,"naviViewModel.myProfile.observe")
+                naviViewModel.insertProfileRoomDatabase()
+            }
+        }
+
 
     }
 
