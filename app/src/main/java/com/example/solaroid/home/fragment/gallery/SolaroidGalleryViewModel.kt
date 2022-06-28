@@ -56,8 +56,8 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
         get() = _photoTicketsSetting
 
 
-    private val _naviToFrame = MutableLiveData<Event<String>>()
-    val naviToFrame: LiveData<Event<String>>
+    private val _naviToFrame = MutableLiveData<Event<PhotoTicket>>()
+    val naviToFrame: LiveData<Event<PhotoTicket>>
         get() = _naviToFrame
 
     private val _naviToAdd = MutableLiveData<Event<Any?>>()
@@ -122,8 +122,8 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     }
 
 
-    fun navigateToFrame(key: String) {
-        _naviToFrame.value = Event(key)
+    fun navigateToFrame(photoTicket: PhotoTicket) {
+        _naviToFrame.value = Event(photoTicket)
     }
 
     fun navigateToAdd() {

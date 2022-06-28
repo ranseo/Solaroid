@@ -21,7 +21,8 @@ import kotlin.Exception
 class SolaroidFrameViewModel(
     dataSource: DatabasePhotoTicketDao,
     application: Application,
-    filter: PhotoTicketFilter
+    filter: PhotoTicketFilter,
+    photoTicket:PhotoTicket
 ) :
     AndroidViewModel(application) {
 

@@ -107,8 +107,12 @@
             android:defaultValue="true"/>
 
         <argument
-            android:name="key"
-            app:argType="string[]"/>
+            android:name="filter"
+            app:argType="string"/>
+
+        <argument
+            android:name="photoTicket"
+            app:argType="com.example.solaroid.domain.PhotoTicket"/>
 
     </fragment>
     <fragment

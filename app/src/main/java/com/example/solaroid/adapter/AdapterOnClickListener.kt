@@ -4,9 +4,9 @@ import android.net.Uri
 import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.domain.MediaStoreData
 
-class OnClickListener(val clickListener: (photoTicketKey:String)->Unit) {
+class OnClickListener(val clickListener: (photoTicket:PhotoTicket)->Unit) {
     fun onClick(photoTicket: PhotoTicket) {
-        clickListener(photoTicket.id)
+        clickListener(photoTicket)
     }
 }
 

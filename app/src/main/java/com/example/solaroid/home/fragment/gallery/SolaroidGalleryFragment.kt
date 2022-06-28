@@ -12,6 +12,7 @@ import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.databinding.FragmentSolaroidGalleryBinding
 import com.example.solaroid.dialog.FilterDialogFragment
+import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -37,8 +38,8 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         viewModelFactory = SolaroidGalleryViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidGalleryViewModel::class.java]
 
-        val adapter = SolaroidGalleryAdapter(OnClickListener { key ->
-            viewModel.navigateToFrame(key)
+        val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->
+            viewModel.navigateToFrame(photoTicket)
         })
 
         binding.photoTicketRec.adapter = adapter
@@ -69,10 +70,10 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
      * */
     private fun navgiateToOtherFragment() {
         viewModel.naviToFrame.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { key ->
+            it.getContentIfNotHandled()?.let { photoTicket->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
                 findNavController().navigate(
-                    SolaroidGalleryFragmentDirections.actionGalleryToFrame(arrayOf(key, filter))
+                    SolaroidGalleryFragmentDirections.actionGalleryToFrame(filter, photoTicket)
                 )
             }
         }

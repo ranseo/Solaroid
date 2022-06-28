@@ -34,6 +34,16 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
     private val args by navArgs<SolaroidFrameFragmentArgs>()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        val args = requireArguments()
+//        val filter = SolaroidFrameFragmentArgs.fromBundle(args).filter
+//        val photoTicket =  SolaroidFrameFragmentArgs.fromBundle(args).photoTicket
+//
+
+        val filter = args.filter
+        val photoTicket = args.photoTicket
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,7 +60,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        val (photoKey, filter) = args.key
+        val filter = args.filter
 
         Log.i(TAG, "FrameFragment 시작")
 
@@ -76,11 +86,10 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         binding.viewpager.adapter = adapter
 
-        viewModel.refreshPhotoTicket(photoKey)
 
         viewModel.startPosition.observe(viewLifecycleOwner) { pos ->
             pos?.let {
-                binding.viewpager.currentItem = pos
+                binding.viewpager.setCurrentItem(pos,false)
                 registerOnPageChangeCallback(binding.viewpager, adapter)
             }
         }
