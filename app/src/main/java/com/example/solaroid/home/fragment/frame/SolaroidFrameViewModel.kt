@@ -58,20 +58,6 @@ class SolaroidFrameViewModel(
         }
     }
 
-
-//    var initPhotoTicket : PhotoTicket? = null
-
-
-
-    private val _startPhotoTicket = MutableLiveData<PhotoTicket>()
-    val startPhotoTicket: LiveData<PhotoTicket>
-        get() = _startPhotoTicket
-
-    private val _startPosition = MutableLiveData<Int>()
-    val startPosition: LiveData<Int>
-        get() = _startPosition
-
-
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
      * */
@@ -87,6 +73,22 @@ class SolaroidFrameViewModel(
      * 현재 viewPager에서 사용자가 보고 있는 포토티켓의 위치를 나타내는 프로퍼티.
      * 해당 변수의 값을 이용하여 현재 사용자가 보고 있는 포토티켓의 값을 설정할 수 있다.
      * */
+    private val _startPosition = MutableLiveData<Event<Int>>()
+    val startPosition: LiveData<Event<Int>>
+        get() = _startPosition
+
+
+    /** n
+     * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓
+     * */
+    private val _startPhotoTicket = MutableLiveData<PhotoTicket>()
+    val startPhotoTicket: LiveData<PhotoTicket>
+        get() = _startPhotoTicket
+
+    /**
+     * 현재 viewPager에서 사용자가 보고 있는 포토티켓의 위치를 나타내는 프로퍼티.
+     * 해당 변수의 값을 이용하여 현재 사용자가 보고 있는 포토티켓의 값을 설정할 수 있다.
+     * */
     private val _currentPosition = MutableLiveData<Int>()
     val currentPosition: LiveData<Int>
         get() = _currentPosition
@@ -95,17 +97,9 @@ class SolaroidFrameViewModel(
     /** n
      * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓
      * */
-    val currPhotoTicket: LiveData<PhotoTicket?> =
-        Transformations.map(_currentPosition) { position ->
-            if (position >= 0) {
-                val list = photoTickets.value
-
-                if (!list.isNullOrEmpty()) {
-                    list[position]
-                } else null
-            } else null
-        }
-
+    private val _currPhotoTicket = MutableLiveData<PhotoTicket?>()
+    val currPhotoTicket: LiveData<PhotoTicket?>
+        get() = _currPhotoTicket
 
     /**
      * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓의 즐겨찾기 상태를 나타내는 프로퍼티
@@ -119,12 +113,13 @@ class SolaroidFrameViewModel(
     init {
         Log.i(TAG, "뷰모델 Init()")
         _startPhotoTicket.value = photoTicket
+
     }
 
-
-    fun setStartPhotoTicket(photoTicket: PhotoTicket) {
-        _startPhotoTicket.value = photoTicket
+    fun setStartPhotoTicket(photo:PhotoTicket) {
+        _startPhotoTicket.value = photo
     }
+
 
     /**
      * 현재 포토티켓의 즐겨찾기 상태를 대입한다.
@@ -138,20 +133,31 @@ class SolaroidFrameViewModel(
     /**
      * currentPosition의 값 설정.
      * */
-    fun setCurrentPosition(position: Int) {
-        Log.i(TAG, "setCurrentPosition : ${position}")
-        _currentPosition.value = position
+    fun setCurrentPosition(pos: Int) {
+        if (pos > -1) {
+            Log.i(TAG, "setCurrentPosition : ${pos}")
+            _currentPosition.value = pos
+        }
+        else {
+            _favorite.value = false
+        }
     }
 
 
-    fun refreshPhotoTicket(photoTicket: PhotoTicket) {
+
+    fun setCurrentPhotoTicket(pos: Int) {
+        val list = photoTickets.value
+        _currPhotoTicket.value = list?.get(pos)
+    }
+
+    fun refreshPhotoTicket() {
         viewModelScope.launch(Dispatchers.Default) {
 
-            val idx = photoTickets.value?.indexOf(photoTicket) ?: 0
+            val idx = photoTickets.value?.indexOf(_startPhotoTicket.value) ?: 0
             withContext(Dispatchers.Main) {
-                _startPosition.value = idx
+                _startPosition.value = Event(idx)
             }
-            Log.i(TAG, "startPosition.value  :  ${startPosition.value}")
+            Log.i(TAG, "startPositin.value  :  ${_startPosition.value}")
         }
     }
 

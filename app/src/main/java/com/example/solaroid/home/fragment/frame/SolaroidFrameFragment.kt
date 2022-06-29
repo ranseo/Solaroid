@@ -32,6 +32,9 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
     private lateinit var binding: FragmentSolaroidFrameContainerBinding
 
+    private lateinit var viewPager: ViewPager2
+    private lateinit var onPageChangeCallback: ViewPager2.OnPageChangeCallback
+
     private val args by navArgs<SolaroidFrameFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +77,8 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         setHasOptionsMenu(true)
 
+        viewPager = binding.viewpager
+
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog(viewModel)
         })
@@ -82,14 +87,18 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.startPosition.observe(viewLifecycleOwner) { pos ->
-            pos?.let {
-                binding.viewpager.setCurrentItem(it,false)
-                registerOnPageChangeCallback(binding.viewpager, adapter)
-                viewModel.setCurrentPosition(it)
 
+
+        registerOnPageChangeCallback(adapter)
+
+        viewModel.startPosition.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { pos ->
+                Log.i(TAG,"startPosition : ${pos}")
+                binding.viewpager.setCurrentItem(pos, false)
             }
         }
+
+
 
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
@@ -98,9 +107,10 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 adapter.submitList(list)
                 binding.viewpager.adapter = adapter
 
-                viewModel.startPhotoTicket.observe(viewLifecycleOwner) { photo ->
-                    viewModel.refreshPhotoTicket(photo)
-                }
+
+                viewModel.refreshPhotoTicket()
+
+
 
 
             }
@@ -108,12 +118,13 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
 
 
-
+        observeCurrentPosition()
         observeCurrentPhoto()
         observeFavorite()
+
         navigateToOtherFragment()
-        observeCurrentPosition(adapter)
-        refreshCurrentPosition(binding.viewpager)
+
+
 
         setOnItemSelectedListener(binding.frameBottomNavi)
 
@@ -122,13 +133,12 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     }
 
 
-
     /**
      * viewModel의 favorite 프로퍼티 관찰.
      * 1.현재 viewPager's page 내 photoTicket의 favorite 값에 따라 bottomNavi의 menuItem "즐겨찾기" 의 Icon을 변경.
      * */
     private fun observeFavorite() {
-        viewModel.favorite.observe(viewLifecycleOwner){ favor ->
+        viewModel.favorite.observe(viewLifecycleOwner) { favor ->
             favor?.let {
                 Log.d(TAG, "viewModel.favorite.observe  : ${favor}")
                 //getItem은 오류 findItem이랑 다른듯.!
@@ -140,26 +150,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         }
     }
 
-
-    /**
-     * viewModel의 photoTicket 프로퍼티를 관찰.
-     * 현재 기능 : photoTicket 데이터 변경 시, viewModel의 setCurrentFavorite 함수 호출 후, 현재 photoTicket의 favorite 값 인자로 넘겨줌.
-     **/
-    private fun observeCurrentPhoto() {
-        viewModel.currPhotoTicket.observe(viewLifecycleOwner){
-            it?.let { photoTicket ->
-                viewModel.setCurrentFavorite(photoTicket.favorite)
-                viewModel.setStartPhotoTicket(photoTicket)
-                //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
-                Log.i(
-                    TAG,
-                    "viewModel.currPhotoTicket.observe : ${photoTicket}"
-                )
-            }
-            if (it == null) viewModel.setCurrentFavorite(false)
-        }
-    }
-
     /**
      * 포토티켓의 삭제 및 [즐겨찾기 프래그먼트]에서의 즐겨찾기 해제로 인해 viewPager의 포토티켓이 사라지는 경우가 발생.
      * 이때 viewPager의 0번째 위치에서 포토티켓이 사라진다면, 뒤에 있던 포토티켓이 0번째 위치로 이동하게 된다.
@@ -167,42 +157,37 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
      * 이를 방지하기 위해 FrameViewModel에 Position이라는 변수를 만들고, "삭제 및 즐겨찾기 해제"가 발생할 때 현재 위치의
      * 포토티켓을 캐치하여 app이 정상적으로 현 포토티켓 상황을 유저들에게 전달할 수 있도록 함.
      * */
-    private fun observeCurrentPosition(
-        adapter: SolaroidFrameAdapter
-    ) {
+    private fun observeCurrentPosition() {
         viewModel.currentPosition.observe(viewLifecycleOwner, Observer { pos ->
-            //현재 위치가 0보다 커야한다. (음수가 되는 상황은 발생하지 않음)
-            //현재 위치가 adapter내의 전체 아이템의 크기 수보다 작아야 한다. (아이템의 크기를 넘어서 존재할 수 없음)
             pos?.let {
                 Log.i(TAG, "currentPosition.observe pos : ${it}")
-                if (it > adapter.itemCount) {
-                    viewModel.setCurrentFavorite(false)
-                }
+                viewModel.setCurrentPhotoTicket(pos)
             }
         })
     }
 
     /**
-     * 포토티켓이 viewPager에서 사라졌을 때, adapter에 제공되는 PhotoTicket List의 사이즈를 담고 있는 LiveData
-     * "photoTicketsSize 변수를 관찰. -> 변경이 있을 때마다, 현재 viewpager의 위치를 새롭게 setCurrentPosition의
-     * 매개변수로 넘긴다.
-     * */
-    private fun refreshCurrentPosition(
-        viewPager: ViewPager2
-    ) {
-        viewModel.photoTicketsSize.observe(viewLifecycleOwner) { size ->
-            if (size != null) {
-                if (size > 0) {
-
-                    val position =
-                        if(size <= viewPager.currentItem) viewPager.currentItem - 1 else viewPager.currentItem
-                    Log.i(TAG, "refreshCurrentPosition photoTicket Id: ${position} : ${size}")
-                    viewModel.setCurrentPosition(position)
-                }
+     * viewModel의 photoTicket 프로퍼티를 관찰.
+     * 현재 기능 : photoTicket 데이터 변경 시, viewModel의 setCurrentFavorite 함수 호출 후, 현재 photoTicket의 favorite 값 인자로 넘겨줌.
+     **/
+    private fun observeCurrentPhoto() {
+        viewModel.currPhotoTicket.observe(viewLifecycleOwner) {
+            it?.let { photoTicket ->
+                viewModel.setCurrentFavorite(photoTicket.favorite)
+                viewModel.setStartPhotoTicket(photoTicket)
+                //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
+                Log.i(
+                    TAG,
+                    "observeCurrentPhoto()  : ${photoTicket}"
+                )
             }
+            if (it == null) viewModel.setCurrentFavorite(false)
         }
-
     }
+
+
+
+
 
 
     /**
@@ -239,11 +224,11 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
 
     private fun registerOnPageChangeCallback(
-        viewPager: ViewPager2,
         adapter: SolaroidFrameAdapter
     ) {
 
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
+        onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Log.i(TAG, "onPageSelected")
@@ -253,7 +238,10 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                     viewModel.setCurrentPosition(-1)
                 }
             }
-        })
+        }
+        viewPager.registerOnPageChangeCallback(onPageChangeCallback)
+        Log.i(TAG, "registerOnPageChangeCallback : 등록")
+
     }
 
 
@@ -274,7 +262,10 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 }
                 R.id.edit -> {
                     val id = viewModel.currPhotoTicket.value?.id
-                    if (id != null) viewModel.navigateToEdit(id)
+                    if (id != null) {
+                        viewModel.navigateToEdit(id)
+
+                    }
                     true
 
                 }
@@ -320,5 +311,22 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         newDialogFragment.show(parentFragmentManager, "ListDialog")
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.i(TAG, "onPause : 등록 해제")
+        viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(TAG, "onStop : 등록 해제")
+        viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "onDestroy : 등록 해제")
+        viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+    }
 
 }

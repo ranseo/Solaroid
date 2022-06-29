@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.solaroid.databinding.ListItemSolaroidFrameBinding
 import com.example.solaroid.domain.PhotoTicket
+import com.example.solaroid.home.fragment.frame.SolaroidFrameFragment
 
 class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListener) :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
@@ -21,6 +23,7 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item, onFrameLongClickListener)
+
         //holder.binding.executePendingBindings()
     }
 
@@ -34,6 +37,8 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
 
     class PhotoViewHolder(val binding: ListItemSolaroidFrameBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+
 
         fun bind(item: PhotoTicket?, onLongClickListener:OnFrameLongClickListener) {
             this.binding.photoTicket = item

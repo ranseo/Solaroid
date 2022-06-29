@@ -124,7 +124,7 @@
         <action
             android:id="@+id/action_edit_to_frame"
             app:destination="@id/fragment_solaroid_frame"
-            app:popUpTo="@+id/fragment_solaroid_frame"
+            app:popUpTo="@+id/fragment_solaroid_edit"
             app:popUpToInclusive="true" />
 
         <argument
