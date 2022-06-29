@@ -1,8 +1,11 @@
 package com.example.solaroid.domain
 
+import android.os.Parcelable
 import com.example.solaroid.room.DatabasePhotoTicket
 import com.example.solaroid.firebase.FirebasePhotoTicket
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class PhotoTicket(
     val id: String,
     val url: String,
@@ -10,7 +13,7 @@ data class PhotoTicket(
     var backText: String,
     var date : String,
     var favorite : Boolean = false
-) {
+) : Parcelable {
 
 }
 

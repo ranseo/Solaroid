@@ -22,7 +22,7 @@ class SolaroidFrameViewModel(
     dataSource: DatabasePhotoTicketDao,
     application: Application,
     filter: PhotoTicketFilter,
-    photoTicket:PhotoTicket
+    photoTicket: PhotoTicket
 ) :
     AndroidViewModel(application) {
 
@@ -62,6 +62,11 @@ class SolaroidFrameViewModel(
 //    var initPhotoTicket : PhotoTicket? = null
 
 
+
+    private val _startPhotoTicket = MutableLiveData<PhotoTicket>()
+    val startPhotoTicket: LiveData<PhotoTicket>
+        get() = _startPhotoTicket
+
     private val _startPosition = MutableLiveData<Int>()
     val startPosition: LiveData<Int>
         get() = _startPosition
@@ -87,7 +92,7 @@ class SolaroidFrameViewModel(
         get() = _currentPosition
 
 
-    /**
+    /** n
      * 현재 viewPager에서 사용자가 보고 있는 페이지에 속한 포토티켓
      * */
     val currPhotoTicket: LiveData<PhotoTicket?> =
@@ -113,8 +118,13 @@ class SolaroidFrameViewModel(
 
     init {
         Log.i(TAG, "뷰모델 Init()")
+        _startPhotoTicket.value = photoTicket
     }
 
+
+    fun setStartPhotoTicket(photoTicket: PhotoTicket) {
+        _startPhotoTicket.value = photoTicket
+    }
 
     /**
      * 현재 포토티켓의 즐겨찾기 상태를 대입한다.
@@ -134,31 +144,14 @@ class SolaroidFrameViewModel(
     }
 
 
-    fun refreshPhotoTicket(photoKey: String) {
-        viewModelScope.launch {
-            var deferred: Deferred<PhotoTicket> = async{
-                photoTicketRepositery.getPhotoTicket(photoKey)
-            }
-
-
-            launch(Dispatchers.Default) {
-                val photoTicket= deferred.await()
-                val idx = photoTickets.value?.indexOf(photoTicket) ?: 0
-
-                withContext(Dispatchers.Main) {
-                    _startPosition.value = idx
-                }
-            }
-            Log.i(TAG, "startPosition.value  :  ${startPosition.value}")
-        }
-    }
-
-    fun refreshPhotoTicket() {
+    fun refreshPhotoTicket(photoTicket: PhotoTicket) {
         viewModelScope.launch(Dispatchers.Default) {
-            val idx = photoTickets.value?.indexOf(currPhotoTicket.value) ?: 0
+
+            val idx = photoTickets.value?.indexOf(photoTicket) ?: 0
             withContext(Dispatchers.Main) {
                 _startPosition.value = idx
             }
+            Log.i(TAG, "startPosition.value  :  ${startPosition.value}")
         }
     }
 

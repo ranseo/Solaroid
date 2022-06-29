@@ -40,10 +40,26 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 //        val filter = SolaroidFrameFragmentArgs.fromBundle(args).filter
 //        val photoTicket =  SolaroidFrameFragmentArgs.fromBundle(args).photoTicket
 //
+        val application = requireNotNull(this.activity).application
+        val dataSource = SolaroidDatabase.getInstance(application)
 
         val filter = args.filter
         val photoTicket = args.photoTicket
+
+        viewModelFactory = SolaroidFrameViewModelFactory(
+            dataSource.photoTicketDao,
+            application,
+            PhotoTicketFilter.convertStringToFilter(filter),
+            photoTicket
+        )
+
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[SolaroidFrameViewModel::class.java]
     }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,51 +71,38 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             container,
             false
         )
+
         setHasOptionsMenu(true)
-
-        val application = requireNotNull(this.activity).application
-        val dataSource = SolaroidDatabase.getInstance(application)
-
-        val filter = args.filter
-
-        Log.i(TAG, "FrameFragment 시작")
-
-        viewModelFactory = SolaroidFrameViewModelFactory(
-            dataSource.photoTicketDao,
-            application,
-            PhotoTicketFilter.convertStringToFilter(filter)
-        )
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[SolaroidFrameViewModel::class.java]
 
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog(viewModel)
         })
 
 
-
-
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.viewpager.adapter = adapter
-
-
         viewModel.startPosition.observe(viewLifecycleOwner) { pos ->
             pos?.let {
-                binding.viewpager.setCurrentItem(pos,false)
+                binding.viewpager.setCurrentItem(it,false)
                 registerOnPageChangeCallback(binding.viewpager, adapter)
+                viewModel.setCurrentPosition(it)
+
             }
         }
-
 
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
                 Log.i(TAG, "photoTickets : ${list}")
                 viewModel.setPhotoTicketSize(it.size)
                 adapter.submitList(list)
+                binding.viewpager.adapter = adapter
+
+                viewModel.startPhotoTicket.observe(viewLifecycleOwner) { photo ->
+                    viewModel.refreshPhotoTicket(photo)
+                }
+
+
             }
         }
 
@@ -117,6 +120,8 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         return binding.root
     }
+
+
 
     /**
      * viewModel의 favorite 프로퍼티 관찰.
@@ -144,6 +149,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         viewModel.currPhotoTicket.observe(viewLifecycleOwner){
             it?.let { photoTicket ->
                 viewModel.setCurrentFavorite(photoTicket.favorite)
+                viewModel.setStartPhotoTicket(photoTicket)
                 //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
                 Log.i(
                     TAG,
@@ -218,7 +224,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToEdit(key)
                 )
-                viewModel.refreshPhotoTicket()
             }
         }
 
