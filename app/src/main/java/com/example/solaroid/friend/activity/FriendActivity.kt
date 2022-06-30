@@ -85,6 +85,24 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
         }
 
+        naviViewModel.naviToAlbumAct.observe(this) {
+            it.getContentIfNotHandled()?.let{
+                navController.navigate(
+                    R.id.global_action_friendActivity_to_albumActivity
+                )
+                this.finish()
+            }
+        }
+
+        naviViewModel.naviToFriendAct.observe(this) {
+            it.getContentIfNotHandled()?.let{
+                navController.navigate(
+                    R.id.action_friend_self
+                )
+                this.finish()
+            }
+        }
+
 
         binding.bottomNaviFriend.setupWithNavController(navController)
 

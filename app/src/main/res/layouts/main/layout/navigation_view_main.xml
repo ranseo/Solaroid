@@ -99,6 +99,7 @@
             <TextView
                 android:id="@+id/album_list"
                 android:text="사진첩"
+                android:onClick="@{()->viewModel.navigateToAlbumAct()}"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:layout_marginTop="12dp"

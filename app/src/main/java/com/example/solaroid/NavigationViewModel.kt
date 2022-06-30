@@ -48,6 +48,10 @@ class NavigationViewModel(database: DatabasePhotoTicketDao, application: Applica
     val naviToFriendAct: LiveData<Event<Any?>>
         get() = _naviToFriendAct
 
+    private val _naviToAlbumAct = MutableLiveData<Event<Any?>>()
+    val naviToAlbumAct: LiveData<Event<Any?>>
+        get() = _naviToAlbumAct
+
 
     val emailId = Transformations.map(myProfile) {
         it.id
@@ -92,6 +96,10 @@ class NavigationViewModel(database: DatabasePhotoTicketDao, application: Applica
 
     fun navigateToFriendAct() {
         _naviToFriendAct.value = Event(Unit)
+    }
+
+    fun navigateToAlbumAct() {
+        _naviToAlbumAct.value = Event(Unit)
     }
 
     companion object {

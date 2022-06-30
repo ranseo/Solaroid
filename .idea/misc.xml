@@ -67,6 +67,7 @@
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/menu/fragment_gallery_toolbar_menu.xml" value="0.33" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/menu/gallery_bot_navi.xml" value="0.30055579307396324" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable-xxxhdpi/edit_text_shadow.xml" value="0.2255" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_account_circle_18.xml" value="0.1825" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_change_circle_20.xml" value="0.196" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_change_circle_24.xml" value="0.196" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/drawable/baseline_edit_24.xml" value="0.1875" />
@@ -109,7 +110,10 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/drawable/solaroid_background_gradient.xml" value="0.304" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/font-v26/noto_sans_kr.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/font/noto_sans_kr.xml" value="0.23425925925925925" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/activity_album.xml" value="0.1" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/activity_friend.xml" value="0.1" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/activity_login.xml" value="0.2078125" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album.xml" value="0.22" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_filter_dialog.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_add.xml" value="0.3770833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_dispatch.xml" value="0.3770833333333333" />
@@ -120,11 +124,13 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_login.xml" value="0.33" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_profile.xml" value="0.2" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_signup.xml" value="0.22" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_album.xml" value="0.2" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_dispatch.xml" value="0.3770833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_reception.xml" value="0.3770833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_solaroid_friend.xml" value="0.3770833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/menu_item_login_info.xml" value="0.2078125" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/single_friend.xml" value="0.33" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/activity_home.xml" value="0.1" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/activity_main.xml" value="0.18" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_add_choice.xml" value="0.18" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_detail.xml" value="0.2078125" />

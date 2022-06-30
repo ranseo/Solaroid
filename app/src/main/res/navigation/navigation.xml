@@ -18,7 +18,23 @@
         app:popUpTo="@+id/friend_activity"
         app:popUpToInclusive="true"/>
 
+    <action
+        android:id="@+id/global_action_homeActivity_to_albumActivity"
+        app:destination="@+id/album_activity"
+        app:popUpTo="@+id/album_activity"
+        app:popUpToInclusive="true"/>
 
+    <action
+        android:id="@+id/action_home_self"
+        app:destination="@+id/home_activity"
+        />
+
+    <!---->
+    <activity
+        android:id="@+id/home_activity"
+        android:name="com.example.solaroid.home.activity.HomeActivity"
+        tools:layout="@layout/activity_home"
+        />
     <activity
         android:id="@+id/login_activity"
         android:name="com.example.solaroid.login.LoginActivity"
@@ -28,6 +44,11 @@
         android:id="@+id/friend_activity"
         android:name="com.example.solaroid.friend.activity.FriendActivity"
         tools:layout="@layout/activity_friend"
+        android:label=""/>
+    <activity
+        android:id="@+id/album_activity"
+        android:name="com.example.solaroid.album.activity.AlbumActivity"
+        tools:layout="@layout/activity_album"
         android:label=""/>
 
 

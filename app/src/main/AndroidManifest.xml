@@ -22,8 +22,11 @@
         android:theme="@style/Theme.Solaroid"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".album.activity.AlbumActivity"
+            android:exported="false" />
+        <activity
             android:name=".SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,9 +44,7 @@
         <activity
             android:name=".home.activity.HomeActivity"
             android:exported="false"
-            android:label="솔라로이드">
-
-        </activity>
+            android:label="솔라로이드"></activity>
 
         <meta-data
             android:name="preloaded_fonts"
