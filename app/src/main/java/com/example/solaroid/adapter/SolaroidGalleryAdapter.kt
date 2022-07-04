@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.solaroid.data.domain.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidGalleryBinding
-import com.example.solaroid.databinding.ListItemSolaroidPhotoBinding
-import com.example.solaroid.domain.PhotoTicket
+
 
 class SolaroidGalleryAdapter(val clickListener: OnClickListener) :
     ListAdapter<PhotoTicket, SolaroidGalleryAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {

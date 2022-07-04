@@ -1,10 +1,10 @@
-package com.example.solaroid.domain
+package com.example.solaroid.data.domain
 
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.firebase.FirebaseProfile
-import com.example.solaroid.room.DatabaseProfile
+import com.example.solaroid.data.firebase.FirebaseProfile
+import com.example.solaroid.data.room.DatabaseProfile
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

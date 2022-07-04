@@ -1,11 +1,11 @@
-package com.example.solaroid.login.profile
+package com.example.solaroid.login
 
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.example.solaroid.databinding.FragmentSolaroidProfileBinding
+import com.example.solaroid.login.viewmodel.SolaroidProfileViewModel
 
 class ProfileObserver(val registry: ActivityResultRegistry, val viewModel: SolaroidProfileViewModel) : DefaultLifecycleObserver {
     lateinit var getContent: ActivityResultLauncher<String>

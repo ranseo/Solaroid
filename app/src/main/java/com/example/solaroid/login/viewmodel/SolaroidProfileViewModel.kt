@@ -1,21 +1,20 @@
-package com.example.solaroid.login.profile
+package com.example.solaroid.login.viewmodel
 
 import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.data.firebase.FirebaseProfile
+import com.example.solaroid.data.firebase.asDatabaseModel
+import com.example.solaroid.data.room.DatabaseProfile
+import com.example.solaroid.data.room.asFirebaseModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
-import com.example.solaroid.domain.Profile
-import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.firebase.FirebaseProfile
 import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.repositery.user.UsersRepositery
 import com.example.solaroid.room.DatabasePhotoTicketDao
-import com.example.solaroid.room.DatabaseProfile
-import com.example.solaroid.room.asFirebaseModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage

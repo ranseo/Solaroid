@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.login.profile.SolaroidProfileViewModel" />
+            type="com.example.solaroid.login.viewmodel.SolaroidProfileViewModel" />
 
         <import type="android.view.View" />
 
@@ -17,7 +17,7 @@
         style="@style/Theme.LoginActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".login.profile.SolaroidProfileFragment">
+        tools:context=".login.fragment.SolaroidProfileFragment">
 
         <TextView
             android:text="프로필 설정"

@@ -6,22 +6,20 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.data.domain.asDatabaseFriend
 import com.example.solaroid.datasource.friend.MyFriendListDataSource
 import com.example.solaroid.datasource.profile.MyProfileDataSource
-import com.example.solaroid.domain.Friend
-import com.example.solaroid.domain.Profile
-import com.example.solaroid.domain.asDatabaseFriend
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.friend.adapter.FriendListDataItem
 import com.example.solaroid.repositery.friend.FriendListRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
+import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyFriendListDataSource.OnValueListener  {
 

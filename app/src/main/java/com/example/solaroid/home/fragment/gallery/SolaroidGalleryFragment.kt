@@ -12,7 +12,6 @@ import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.databinding.FragmentSolaroidGalleryBinding
 import com.example.solaroid.dialog.FilterDialogFragment
-import com.example.solaroid.domain.PhotoTicket
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

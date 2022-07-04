@@ -2,12 +2,11 @@ package com.example.solaroid.repositery.friend
 
 import android.util.Log
 import com.example.solaroid.convertHexStringToLongFormat
+import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.data.domain.asFirebaseModel
+import com.example.solaroid.data.domain.asFriend
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
-import com.example.solaroid.domain.Friend
-import com.example.solaroid.domain.Profile
-import com.example.solaroid.domain.asFirebaseModel
-import com.example.solaroid.domain.asFriend
-import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.firebase.asFirebaseDispatchFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
@@ -78,7 +77,7 @@ class FriendCommunicateRepositery(
     /**
      * receptionFragment 또는 dispatchFragment에서 Friend객체를 Firebase/FriendList에 추가하는 함수
      * */
-    suspend fun setValueMyFriendList(_friend:Friend) {
+    suspend fun setValueMyFriendList(_friend: Friend) {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
 
@@ -100,7 +99,7 @@ class FriendCommunicateRepositery(
     /**
      * receptionFragment에서 친구추가가 되었음을 상대에게도 알리기 위해 Firebase/tmpFriendList 경로에 Friend객체를 쓰는 함수.
      * */
-    suspend fun setValueTmpList(friendCode:Long, myProfile:Profile) {
+    suspend fun setValueTmpList(friendCode:Long, myProfile: Profile) {
         return withContext(Dispatchers.IO) {
 
             val ref = fbDatabase.reference.child("tmpFriendList").child("${friendCode}").child("list").push()

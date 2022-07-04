@@ -5,17 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.solaroid.data.domain.Friend
 import com.example.solaroid.databinding.ListItemFriendDispatchBinding
 import com.example.solaroid.databinding.ListItemFriendReceptionBinding
 import com.example.solaroid.databinding.ListItemSolaroidFriendBinding
-import com.example.solaroid.domain.Friend
-import com.example.solaroid.domain.Profile
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 import com.example.solaroid.friend.fragment.add.reception.ReceptionFriend
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.lang.ClassCastException
 
 private val VIEW_TYPE_NORMAL_PROFILE = 0

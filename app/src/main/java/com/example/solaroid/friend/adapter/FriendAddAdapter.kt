@@ -6,9 +6,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.solaroid.domain.Profile
-import com.example.solaroid.friend.fragment.add.dispatch.FriendDispatchFragment
-import com.example.solaroid.friend.fragment.add.reception.FriendReceptionFragment
+import com.example.solaroid.data.domain.Profile
+
 
 class FriendAddAdapter(fm: FragmentManager, lifecycle:Lifecycle) : FragmentStateAdapter(fm, lifecycle) {
     var list : List<Fragment> = listOf()

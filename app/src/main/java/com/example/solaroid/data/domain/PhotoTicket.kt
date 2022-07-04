@@ -1,7 +1,7 @@
-package com.example.solaroid.domain
+package com.example.solaroid.data.domain
 
 import android.os.Parcelable
-import com.example.solaroid.room.DatabasePhotoTicket
+import com.example.solaroid.data.room.DatabasePhotoTicket
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import kotlinx.parcelize.Parcelize
 

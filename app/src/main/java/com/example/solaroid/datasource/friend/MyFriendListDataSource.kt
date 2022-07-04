@@ -1,7 +1,7 @@
 package com.example.solaroid.datasource.friend
 
 import android.util.Log
-import com.example.solaroid.domain.Friend
+import com.example.solaroid.data.domain.Friend
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.firebase.asDomainModel
 import com.google.firebase.database.*
@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MyFriendListDataSource(
     private var listener: OnValueListener

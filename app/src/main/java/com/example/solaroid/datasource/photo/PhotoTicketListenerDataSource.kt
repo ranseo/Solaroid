@@ -1,16 +1,10 @@
 package com.example.solaroid.datasource.photo
 
 import android.util.Log
-import com.example.solaroid.domain.Friend
 import com.example.solaroid.firebase.FirebasePhotoTicket
-import com.example.solaroid.firebase.asDatabaseModel
-import com.example.solaroid.room.DatabasePhotoTicket
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlin.coroutines.coroutineContext
 
 class PhotoTicketListenerDataSource {
 

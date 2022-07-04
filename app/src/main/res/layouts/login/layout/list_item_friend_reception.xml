@@ -6,7 +6,7 @@
     <data>
         <variable
             name="friend"
-            type="com.example.solaroid.domain.Friend" />
+            type="com.example.solaroid.data.domain.Friend" />
 
         <variable
             name="onClickListener"

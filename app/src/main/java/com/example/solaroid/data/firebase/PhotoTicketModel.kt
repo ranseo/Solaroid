@@ -1,6 +1,6 @@
 package com.example.solaroid.firebase
 
-import com.example.solaroid.room.DatabasePhotoTicket
+import com.example.solaroid.data.room.DatabasePhotoTicket
 
 
 data class FirebasePhotoTicket(

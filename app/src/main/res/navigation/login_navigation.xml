@@ -15,7 +15,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_login"
         android:label="로그인"
-        android:name="com.example.solaroid.login.SolaroidLoginFragment"
+        android:name="com.example.solaroid.login.fragment.SolaroidLoginFragment"
         tools:layout="@layout/fragment_solaroid_login">
 
 
@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_signup"
         android:label="회원가입"
-        android:name="com.example.solaroid.login.signup.SolaroidSignUpFragment"
+        android:name="com.example.solaroid.login.fragment.SolaroidSignUpFragment"
         tools:layout="@layout/fragment_solaroid_signup">
 
         <action
@@ -59,7 +59,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_profile"
         android:label="프로필 설정"
-        android:name="com.example.solaroid.login.profile.SolaroidProfileFragment"
+        android:name="com.example.solaroid.login.fragment.SolaroidProfileFragment"
         tools:layout="@layout/fragment_solaroid_profile">
 
         <action

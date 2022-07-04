@@ -1,4 +1,4 @@
-package com.example.solaroid.domain
+package com.example.solaroid.data.domain
 
 data class Album(
     val id:String,

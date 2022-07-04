@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.databinding.ListItemSolaroidAddChoiceBinding
-import com.example.solaroid.domain.MediaStoreData
+import com.example.solaroid.data.domain.MediaStoreData
 
 class SolaroidChoiceAdapter(val onClickListener: OnChoiceClickListener) :
     ListAdapter<MediaStoreData, SolaroidChoiceAdapter.ViewHolder>(MediaStoreData.itemCallback()) {

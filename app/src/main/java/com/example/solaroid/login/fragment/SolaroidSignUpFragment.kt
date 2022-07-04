@@ -1,4 +1,4 @@
-package com.example.solaroid.login.signup
+package com.example.solaroid.login.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentSolaroidSignupBinding
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.login.viewmodel.SolaroidSignUpViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseUser

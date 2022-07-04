@@ -38,7 +38,7 @@
             android:exported="false"
             android:theme="@style/Theme.FriendActivity" />
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".login.activity.LoginActivity"
             android:exported="false"
             android:label="@string/Solaroid" />
         <activity

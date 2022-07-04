@@ -1,16 +1,12 @@
 package com.example.solaroid.datasource.profile
 
-import android.util.Log
-import com.example.solaroid.datasource.friend.MyFriendListDataSource
-import com.example.solaroid.domain.Profile
-import com.example.solaroid.firebase.FirebaseFriend
-import com.example.solaroid.firebase.FirebaseProfile
-import com.example.solaroid.firebase.asDomainModel
+
+import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.data.firebase.FirebaseProfile
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.callbackFlow
 
 class MyProfileDataSource() {
 

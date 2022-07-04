@@ -14,9 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.databinding.ActivitySplashBinding
 import com.example.solaroid.home.activity.HomeActivity
-import com.example.solaroid.login.LoginActivity
-import com.example.solaroid.login.LoginViewModelFactory
-import com.example.solaroid.login.SolaroidLoginViewModel
+import com.example.solaroid.login.activity.LoginActivity
+import com.example.solaroid.login.viewmodel.LoginViewModelFactory
+import com.example.solaroid.login.viewmodel.SolaroidLoginViewModel
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -78,7 +78,7 @@ class SplashActivity : AppCompatActivity() {
                         finish()
                     }
                     else -> {
-                        startActivity(Intent(this,LoginActivity::class.java))
+                        startActivity(Intent(this, LoginActivity::class.java))
                         finish()
                     }
                 }

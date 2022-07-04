@@ -2,8 +2,7 @@ package com.example.solaroid
 
 
 import android.content.res.Resources
-import com.example.solaroid.domain.PhotoTicket
-import java.text.DecimalFormat
+import com.example.solaroid.data.domain.PhotoTicket
 import java.text.SimpleDateFormat
 import java.util.*
 

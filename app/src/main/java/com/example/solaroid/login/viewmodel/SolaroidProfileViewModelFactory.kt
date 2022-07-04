@@ -1,4 +1,4 @@
-package com.example.solaroid.login.profile
+package com.example.solaroid.login.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

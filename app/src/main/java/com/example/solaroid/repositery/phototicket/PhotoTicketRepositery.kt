@@ -7,27 +7,24 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.data.domain.asDatabaseModel
+import com.example.solaroid.data.domain.asFirebaseModel
+import com.example.solaroid.data.room.asDomainModel
+import com.example.solaroid.data.room.asFirebaseModel
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
-import com.example.solaroid.room.DatabasePhotoTicketDao
-import com.example.solaroid.room.asDomainModel
-import com.example.solaroid.room.asFirebaseModel
-import com.example.solaroid.domain.PhotoTicket
-import com.example.solaroid.domain.asDatabaseModel
-import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
-import com.example.solaroid.firebase.setPhotoTicketList
+import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.coroutines.*
-import kotlin.Exception
 
 class PhotoTicketRepositery(
     private val dataSource: DatabasePhotoTicketDao,

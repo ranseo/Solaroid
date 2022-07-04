@@ -2,11 +2,11 @@ package com.example.solaroid.repositery.friend
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.data.domain.asFirebaseModel
+import com.example.solaroid.data.room.asDomainModel
 import com.example.solaroid.room.DatabasePhotoTicketDao
-import com.example.solaroid.room.asDomainModel
 import com.example.solaroid.datasource.friend.MyFriendListDataSource
-import com.example.solaroid.domain.Friend
-import com.example.solaroid.domain.asFirebaseModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers

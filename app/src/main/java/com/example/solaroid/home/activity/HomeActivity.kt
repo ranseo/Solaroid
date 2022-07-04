@@ -2,7 +2,6 @@ package com.example.solaroid.home.activity
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -18,12 +17,11 @@ import com.example.solaroid.NavigationViewModelFactory
 import com.example.solaroid.R
 import com.example.solaroid.databinding.ActivityHomeBinding
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.login.LoginViewModelFactory
-import com.example.solaroid.login.SolaroidLoginViewModel
+import com.example.solaroid.login.viewmodel.LoginViewModelFactory
+import com.example.solaroid.login.viewmodel.SolaroidLoginViewModel
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     var isCameraAvailable: Boolean = false

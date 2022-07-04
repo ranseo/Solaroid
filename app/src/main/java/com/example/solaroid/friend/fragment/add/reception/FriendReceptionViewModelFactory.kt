@@ -2,7 +2,8 @@ package com.example.solaroid.friend.fragment.add.reception
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.solaroid.domain.Profile
+import com.example.solaroid.data.domain.Profile
+
 
 class FriendReceptionViewModelFactory(val myProfile: Profile): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

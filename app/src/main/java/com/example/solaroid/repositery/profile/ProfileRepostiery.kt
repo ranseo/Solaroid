@@ -6,16 +6,13 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.solaroid.NavigationViewModel
+import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.data.firebase.FirebaseProfile
+import com.example.solaroid.data.firebase.asDatabaseModel
+import com.example.solaroid.data.room.DatabaseProfile
+import com.example.solaroid.data.room.asDomainModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
-import com.example.solaroid.domain.Profile
-import com.example.solaroid.firebase.FirebasePhotoTicket
-import com.example.solaroid.firebase.FirebaseProfile
-import com.example.solaroid.firebase.asDatabaseModel
-import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.room.DatabasePhotoTicketDao
-import com.example.solaroid.room.DatabaseProfile
-import com.example.solaroid.room.asDomainModel
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -23,9 +20,11 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+
 
 class ProfileRepostiery(
     private val fbAuth: FirebaseAuth,

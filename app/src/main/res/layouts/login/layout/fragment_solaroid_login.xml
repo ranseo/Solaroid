@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.login.SolaroidLoginViewModel" />
+            type="com.example.solaroid.login.viewmodel.SolaroidLoginViewModel" />
 
         <import type="android.view.View" />
 
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            tools:context=".login.SolaroidLoginFragment">
+            tools:context=".login.fragment.SolaroidLoginFragment">
 
             <TextView
                 android:layout_width="match_parent"

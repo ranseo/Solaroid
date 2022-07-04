@@ -2,11 +2,14 @@ package com.example.solaroid.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.solaroid.data.room.DatabaseFriend
+import com.example.solaroid.data.room.DatabasePhotoTicket
+import com.example.solaroid.data.room.DatabaseProfile
 
 @Dao
 interface DatabasePhotoTicketDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(DatabasePhotoTicket:DatabasePhotoTicket)
+    suspend fun insert(DatabasePhotoTicket: DatabasePhotoTicket)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(DatabasePhotoTickets: List<DatabasePhotoTicket>)

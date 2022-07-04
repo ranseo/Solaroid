@@ -3,13 +3,10 @@ package com.example.solaroid.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
+import com.example.solaroid.data.domain.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidFrameBinding
-import com.example.solaroid.domain.PhotoTicket
-import com.example.solaroid.home.fragment.frame.SolaroidFrameFragment
 
 class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListener) :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {

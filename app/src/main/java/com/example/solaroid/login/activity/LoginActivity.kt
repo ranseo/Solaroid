@@ -1,4 +1,4 @@
-package com.example.solaroid.login
+package com.example.solaroid.login.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

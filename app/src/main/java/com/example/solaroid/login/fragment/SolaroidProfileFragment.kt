@@ -1,6 +1,5 @@
-package com.example.solaroid.login.profile
+package com.example.solaroid.login.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,16 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentSolaroidProfileBinding
-import com.example.solaroid.domain.asDatabaseModel
-import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.login.ProfileObserver
+import com.example.solaroid.login.viewmodel.SolaroidProfileViewModel
+import com.example.solaroid.login.viewmodel.SolaroidProfileViewModelFactory
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*

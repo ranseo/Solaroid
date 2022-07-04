@@ -4,10 +4,9 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertHexStringToLongFormat
+import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.data.domain.Profile
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
-import com.example.solaroid.domain.Friend
-import com.example.solaroid.domain.Profile
-import com.example.solaroid.domain.asFirebaseModel
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.friend.adapter.FriendListDataItem
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend

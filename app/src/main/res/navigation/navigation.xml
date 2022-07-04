@@ -37,7 +37,7 @@
         />
     <activity
         android:id="@+id/login_activity"
-        android:name="com.example.solaroid.login.LoginActivity"
+        android:name="com.example.solaroid.login.activity.LoginActivity"
         tools:layout="@layout/activity_login"
         android:label="로그인 활동"/>
     <activity
@@ -133,7 +133,7 @@
 
         <argument
             android:name="photoTicket"
-            app:argType="com.example.solaroid.domain.PhotoTicket"/>
+            app:argType="com.example.solaroid.data.domain.PhotoTicket"/>
 
     </fragment>
     <fragment
