@@ -4,8 +4,16 @@ data class Album(
     val id:String,
     var name: String,
     var participants: List<Profile>,
-    val photoTickets : MutableList<PhotoTicket>,
+    val photoTickets : List<PhotoTicket>,
     val key : String
+) {
+
+}
+
+data class RequestAlbum(
+    val id : String,
+    val participants: List<Profile>,
+
 ) {
 
 }

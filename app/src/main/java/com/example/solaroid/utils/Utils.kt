@@ -27,3 +27,6 @@ fun convertHexStringToLongFormat(str:String) : Long {
     return str.substring(1..4).toLong(16)
 }
 
+
+
+

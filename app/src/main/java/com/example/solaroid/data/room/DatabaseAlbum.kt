@@ -9,10 +9,10 @@ import com.example.solaroid.data.domain.Profile
 @Entity(tableName = "album_table")
 class DatabaseAlbum(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    val id: String,
     var name: String,
     var participants: List<Profile>,
-    val photoTickets : MutableList<PhotoTicket>,
+    val photoTickets : List<PhotoTicket>,
     var isHome : Boolean,
     val key: String
 ) {
