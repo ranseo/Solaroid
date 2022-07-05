@@ -20,6 +20,12 @@ fun FirebaseProfile.asDomainModel() : Profile {
     )
 }
 
+fun List<FirebaseProfile>.asDomainModel() : List<Profile> {
+    return this.map {
+        it.asDomainModel()
+    }
+}
+
 fun FirebaseProfile.asDatabaseModel() : DatabaseProfile {
     return DatabaseProfile(
         id = id,
@@ -27,5 +33,11 @@ fun FirebaseProfile.asDatabaseModel() : DatabaseProfile {
         profileImg,
         convertLongToHexStringFormat(friendCode)
     )
+}
+
+fun List<FirebaseProfile>.asDatabaseModel() : List<DatabaseProfile> {
+    return this.map {
+        it.asDatabaseModel()
+    }
 }
 

@@ -42,6 +42,12 @@ fun Profile.asFirebaseModel() : FirebaseProfile {
     )
 }
 
+fun List<Profile>.asFirebaseModel() : List<FirebaseProfile> {
+    return this.map {
+        it.asFirebaseModel()
+    }
+}
+
 fun Profile.asFriend(key:String) : Friend {
     return Friend(
         id=id,

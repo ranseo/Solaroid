@@ -28,6 +28,12 @@ fun DatabaseProfile.asDomainModel() : Profile {
     )
 }
 
+fun List<DatabaseProfile>.asDomainModel() : List<Profile> {
+    return this.map {
+        it.asDomainModel()
+    }
+}
+
 fun DatabaseProfile.asFirebaseModel() : FirebaseProfile {
     return FirebaseProfile(
         id=id,

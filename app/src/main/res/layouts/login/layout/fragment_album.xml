@@ -4,6 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.example.solaroid.album.viewmodel.AlbumViewModel" />
 
     </data>
 
@@ -13,6 +16,7 @@
         tools:context=".album.fragment.AlbumFragment">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_album"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"

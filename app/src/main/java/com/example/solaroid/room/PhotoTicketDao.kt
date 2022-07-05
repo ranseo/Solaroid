@@ -2,6 +2,7 @@ package com.example.solaroid.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.solaroid.data.room.DatabaseAlbum
 import com.example.solaroid.data.room.DatabaseFriend
 import com.example.solaroid.data.room.DatabasePhotoTicket
 import com.example.solaroid.data.room.DatabaseProfile
@@ -67,6 +68,13 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM friend_table ORDER BY friend_nickname DESC")
     fun getAllFriends() : LiveData<List<DatabaseFriend>>
 
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(databaseAlbum: DatabaseAlbum)
+
+    @Query("SELECT * FROM album_table ORDER BY album_name DESC")
+    fun getAllAlbum() : LiveData<List<DatabaseAlbum>>
 
 
 }

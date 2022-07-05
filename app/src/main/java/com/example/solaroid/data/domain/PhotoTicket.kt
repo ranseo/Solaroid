@@ -39,3 +39,9 @@ fun PhotoTicket.asFirebaseModel(key:String) : FirebasePhotoTicket {
         favorite = this.favorite,
     )
 }
+
+//fun List<PhotoTicket>.asFirebaseModel() : List<FirebasePhotoTicket> {
+//    return this.map{
+//        it.asFirebaseModel()
+//    }
+//}

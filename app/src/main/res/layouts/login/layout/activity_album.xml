@@ -41,11 +41,12 @@
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginTop="12dp"
                 app:defaultNavHost="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/album_toolbar"
                 app:navGraph="@navigation/album_navigation" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -53,6 +54,7 @@
         <include
             android:id="@+id/navigation_view_album"
             layout="@layout/navigation_view_main"
+            tools:visibility="gone"
             bind:viewModel="@{naviViewModel}"/>
 
     </androidx.drawerlayout.widget.DrawerLayout>

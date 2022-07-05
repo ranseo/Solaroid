@@ -1,5 +1,6 @@
 package com.example.solaroid.firebase
 
+import com.example.solaroid.data.domain.PhotoTicket
 import com.example.solaroid.data.room.DatabasePhotoTicket
 
 
@@ -24,6 +25,29 @@ fun FirebasePhotoTicket.asDatabaseModel(user:String) : DatabasePhotoTicket {
         key = this.key,
         user = user
     )
+}
+
+fun List<FirebasePhotoTicket>.asDatabaseModel(user:String) : List<DatabasePhotoTicket> {
+    return this.map {
+        it.asDatabaseModel(user)
+    }
+}
+
+fun FirebasePhotoTicket.asDomainModel() : PhotoTicket {
+    return PhotoTicket(
+        key,
+        url,
+        frontText,
+        backText,
+        date,
+        favorite
+    )
+}
+
+fun List<FirebasePhotoTicket>.asDomainModel() : List<PhotoTicket> {
+    return this.map {
+        it.asDomainModel()
+    }
 }
 
 
