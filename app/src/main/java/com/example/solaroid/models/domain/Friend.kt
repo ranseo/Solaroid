@@ -1,8 +1,8 @@
-package com.example.solaroid.data.domain
+package com.example.solaroid.models.domain
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.data.room.DatabaseFriend
+import com.example.solaroid.models.room.DatabaseFriend
 import com.example.solaroid.firebase.FirebaseFriend
 
 

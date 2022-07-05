@@ -7,11 +7,11 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.solaroid.data.domain.PhotoTicket
-import com.example.solaroid.data.domain.asDatabaseModel
-import com.example.solaroid.data.domain.asFirebaseModel
-import com.example.solaroid.data.room.asDomainModel
-import com.example.solaroid.data.room.asFirebaseModel
+import com.example.solaroid.models.domain.PhotoTicket
+import com.example.solaroid.models.domain.asDatabaseModel
+import com.example.solaroid.models.domain.asFirebaseModel
+import com.example.solaroid.models.room.asDomainModel
+import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel

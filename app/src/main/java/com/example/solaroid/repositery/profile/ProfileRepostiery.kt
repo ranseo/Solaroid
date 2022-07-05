@@ -6,11 +6,11 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.solaroid.data.domain.Profile
-import com.example.solaroid.data.firebase.FirebaseProfile
-import com.example.solaroid.data.firebase.asDatabaseModel
-import com.example.solaroid.data.room.DatabaseProfile
-import com.example.solaroid.data.room.asDomainModel
+import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.firebase.FirebaseProfile
+import com.example.solaroid.models.firebase.asDatabaseModel
+import com.example.solaroid.models.room.DatabaseProfile
+import com.example.solaroid.models.room.asDomainModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.google.android.gms.tasks.Task

@@ -1,12 +1,9 @@
-package com.example.solaroid.data.room
+package com.example.solaroid.models.room
 
-import android.graphics.Bitmap
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.solaroid.data.domain.Album
-import com.example.solaroid.data.domain.PhotoTicket
-import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.models.domain.Album
 import com.example.solaroid.utils.BitmapUtils
 
 
@@ -17,8 +14,7 @@ class DatabaseAlbum(
     @ColumnInfo(name = "album_name")
     var name: String,
     var thumbnail: ByteArray,
-    var participants: List<DatabaseProfile>,
-    val photoTickets : List<DatabasePhotoTicket>,
+    val participants:String,
     val key: String
 ) {
 
@@ -28,9 +24,7 @@ fun DatabaseAlbum.asDomainModel() : Album {
     return Album(
         id,
         name,
-        BitmapUtils.convertByteArrayToBitmap(thumbnail),
-        participants.asDomainModel(),
-        photoTickets.asDomainModel(),
+        BitmapUtils.convertByteArrayToBitmap(thumbnail)
     )
 }
 
@@ -43,7 +37,7 @@ fun List<DatabaseAlbum>.asDomainModel() : List<Album> {
 @Entity(tableName = "home_table")
 class DatabaseHome(
     @PrimaryKey(autoGenerate = true)
-    val id: Long = 0L,
+    val albumId: String
 
 )
 

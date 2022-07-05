@@ -1,7 +1,7 @@
 package com.example.solaroid.firebase
 
-import com.example.solaroid.data.domain.PhotoTicket
-import com.example.solaroid.data.room.DatabasePhotoTicket
+import com.example.solaroid.models.domain.PhotoTicket
+import com.example.solaroid.models.room.DatabasePhotoTicket
 
 
 data class FirebasePhotoTicket(

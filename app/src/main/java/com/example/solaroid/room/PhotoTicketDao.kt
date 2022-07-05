@@ -2,10 +2,10 @@ package com.example.solaroid.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.solaroid.data.room.DatabaseAlbum
-import com.example.solaroid.data.room.DatabaseFriend
-import com.example.solaroid.data.room.DatabasePhotoTicket
-import com.example.solaroid.data.room.DatabaseProfile
+import com.example.solaroid.models.room.DatabaseAlbum
+import com.example.solaroid.models.room.DatabaseFriend
+import com.example.solaroid.models.room.DatabasePhotoTicket
+import com.example.solaroid.models.room.DatabaseProfile
 
 @Dao
 interface DatabasePhotoTicketDao {
@@ -38,15 +38,6 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM photo_ticket_table WHERE :key == photo_ticket_key")
     suspend fun getDatabasePhotoTicket(key:String) : DatabasePhotoTicket
 
-
-
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(DatabaseProfile: DatabaseProfile)
-
-    @Query("SELECT * FROM profile_table AS pt WHERE pt.profile_user == :user")
-    fun getMyProfileInfo(user:String) : LiveData<DatabaseProfile?>
-
     @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_user == :user ORDER BY photo_ticket_date DESC")
     fun getAllPhotoTicketWithUserDesc(user:String) : LiveData<List<DatabasePhotoTicket>?>
 
@@ -59,6 +50,18 @@ interface DatabasePhotoTicketDao {
 
 
 
+    //Profile
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(DatabaseProfile: DatabaseProfile)
+
+    @Query("SELECT * FROM profile_table AS pt WHERE pt.profile_user == :user")
+    fun getMyProfileInfo(user:String) : LiveData<DatabaseProfile?>
+
+
+
+
+
+    //friend
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(databaseFriend: DatabaseFriend)
 
@@ -69,7 +72,7 @@ interface DatabasePhotoTicketDao {
     fun getAllFriends() : LiveData<List<DatabaseFriend>>
 
 
-
+    //album
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(databaseAlbum: DatabaseAlbum)
 

@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.solaroid.data.domain.Album
-import com.example.solaroid.data.domain.RequestAlbum
+import com.example.solaroid.models.domain.Album
+import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.databinding.ListItemAlbumBinding
 import com.example.solaroid.databinding.ListItemRequestAlbumBinding
 import kotlinx.coroutines.CoroutineScope

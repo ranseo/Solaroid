@@ -3,8 +3,8 @@ package com.example.solaroid.friend.fragment.add.dispatch
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.data.domain.Friend
-import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.models.domain.Friend
+import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.friend.adapter.FriendListDataItem

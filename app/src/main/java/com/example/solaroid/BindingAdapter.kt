@@ -12,7 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
-import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.friend.adapter.FriendListAdatper
 import com.example.solaroid.friend.adapter.FriendListDataItem
 

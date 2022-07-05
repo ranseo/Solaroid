@@ -3,7 +3,7 @@ package com.example.solaroid.home.fragment.frame
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.home.fragment.gallery.PhotoTicketFilter
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import java.lang.IllegalArgumentException

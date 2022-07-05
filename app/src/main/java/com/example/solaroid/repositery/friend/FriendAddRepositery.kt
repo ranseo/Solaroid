@@ -1,6 +1,6 @@
 package com.example.solaroid.repositery.friend
 
-import com.example.solaroid.data.firebase.FirebaseProfile
+import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus

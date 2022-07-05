@@ -5,13 +5,12 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
-import com.example.solaroid.data.firebase.FirebaseProfile
-import com.example.solaroid.data.firebase.asDatabaseModel
-import com.example.solaroid.data.room.DatabaseProfile
-import com.example.solaroid.data.room.asFirebaseModel
+import com.example.solaroid.models.firebase.FirebaseProfile
+import com.example.solaroid.models.firebase.asDatabaseModel
+import com.example.solaroid.models.room.DatabaseProfile
+import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.repositery.user.UsersRepositery
 import com.example.solaroid.room.DatabasePhotoTicketDao

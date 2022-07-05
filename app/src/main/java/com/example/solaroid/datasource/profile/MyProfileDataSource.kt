@@ -1,12 +1,11 @@
 package com.example.solaroid.datasource.profile
 
 
-import com.example.solaroid.data.domain.Profile
-import com.example.solaroid.data.firebase.FirebaseProfile
+import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.firebase.FirebaseProfile
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.*
 
 class MyProfileDataSource() {
 

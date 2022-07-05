@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertTodayToFormatted
-import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.databinding.ListItemFriendDispatchBinding
 import com.example.solaroid.databinding.ListItemFriendReceptionBinding
 import com.example.solaroid.databinding.ListItemSolaroidFriendBinding

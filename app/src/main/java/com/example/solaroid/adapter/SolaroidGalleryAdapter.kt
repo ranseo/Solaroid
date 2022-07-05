@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.databinding.ListItemSolaroidGalleryBinding
 
 

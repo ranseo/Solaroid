@@ -1,11 +1,11 @@
-package com.example.solaroid.data.room
+package com.example.solaroid.models.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.data.domain.Profile
-import com.example.solaroid.data.firebase.FirebaseProfile
+import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.firebase.FirebaseProfile
 
 @Entity(tableName = "profile_table")
 data class DatabaseProfile(

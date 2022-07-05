@@ -2,10 +2,10 @@ package com.example.solaroid.repositery.friend
 
 import android.util.Log
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.data.domain.Friend
-import com.example.solaroid.data.domain.Profile
-import com.example.solaroid.data.domain.asFirebaseModel
-import com.example.solaroid.data.domain.asFriend
+import com.example.solaroid.models.domain.Friend
+import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.domain.asFirebaseModel
+import com.example.solaroid.models.domain.asFriend
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.firebase.asFirebaseDispatchFriend

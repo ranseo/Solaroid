@@ -1,9 +1,9 @@
-package com.example.solaroid.data.room
+package com.example.solaroid.models.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebasePhotoTicket
 
 //변수 photo는 임시로 설정

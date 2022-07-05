@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.data.domain.Profile
-import com.example.solaroid.data.domain.asFirebaseModel
-import com.example.solaroid.data.firebase.FirebaseProfile
-import com.example.solaroid.data.firebase.asDomainModel
+import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.domain.asFirebaseModel
+import com.example.solaroid.models.firebase.FirebaseProfile
+import com.example.solaroid.models.firebase.asDomainModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.firebase.asDomainModel
 import com.example.solaroid.repositery.friend.FriendAddRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao

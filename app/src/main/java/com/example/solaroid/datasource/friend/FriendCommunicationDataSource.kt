@@ -1,7 +1,7 @@
 package com.example.solaroid.datasource.friend
 
 import android.util.Log
-import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.firebase.asDomainModel

@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
-import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.databinding.FragmentFriendDispatchBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
 import com.example.solaroid.friend.adapter.OnDispatchClickListener

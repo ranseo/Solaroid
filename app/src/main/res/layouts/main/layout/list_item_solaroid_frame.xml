@@ -6,7 +6,7 @@
     <data>
         <variable
             name="photoTicket"
-            type="com.example.solaroid.data.domain.PhotoTicket" />
+            type="com.example.solaroid.models.domain.PhotoTicket" />
 
         <variable
             name="imageSpin"

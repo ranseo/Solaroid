@@ -1,8 +1,8 @@
-package com.example.solaroid.data.firebase
+package com.example.solaroid.models.firebase
 
 import com.example.solaroid.convertLongToHexStringFormat
-import com.example.solaroid.data.domain.Profile
-import com.example.solaroid.data.room.DatabaseProfile
+import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.room.DatabaseProfile
 
 data class FirebaseProfile(
     val id: String,

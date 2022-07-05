@@ -1,7 +1,7 @@
 package com.example.solaroid.firebase
 
 import com.example.solaroid.convertLongToHexStringFormat
-import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
 import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
 

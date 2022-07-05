@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.data.domain.Profile
+import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.databinding.FragmentFriendReceptionBinding
 import com.example.solaroid.friend.adapter.FriendListAdatper
 import com.example.solaroid.friend.adapter.OnReceptionClickListener

@@ -1,9 +1,9 @@
-package com.example.solaroid.data.room
+package com.example.solaroid.models.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.solaroid.data.domain.Friend
+import com.example.solaroid.models.domain.Friend
 
 @Entity(tableName = "friend_table")
 data class DatabaseFriend(

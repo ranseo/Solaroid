@@ -1,4 +1,4 @@
-package com.example.solaroid.data.domain
+package com.example.solaroid.models.domain
 
 import android.net.Uri
 import androidx.recyclerview.widget.DiffUtil

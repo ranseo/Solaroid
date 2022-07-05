@@ -11,8 +11,8 @@ import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
-import com.example.solaroid.data.domain.MediaStoreData
-import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.models.domain.MediaStoreData
+import com.example.solaroid.models.domain.PhotoTicket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

@@ -23,4 +23,5 @@ object BitmapUtils {
     fun convertByteArrayToBitmap(byteArray: ByteArray) : Bitmap {
         return BitmapFactory.decodeByteArray(byteArray,0,byteArray.size)
     }
+
 }

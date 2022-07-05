@@ -1,7 +1,7 @@
 package com.example.solaroid.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.solaroid.data.domain.PhotoTicket
+import com.example.solaroid.models.domain.PhotoTicket
 
 class PhotoTicketDiffCallback : DiffUtil.ItemCallback<PhotoTicket>() {
     override fun areItemsTheSame(oldItem: PhotoTicket, newItem: PhotoTicket): Boolean {
