@@ -20,8 +20,10 @@ class FriendListRepositery(
 
 ) {
 
+    val user = fbAuth.currentUser!!.email ?: ""
+
     val friendList: LiveData<List<Friend>> =
-        Transformations.map(roomDatabase.getAllFriends()) { list ->
+        Transformations.map(roomDatabase.getAllFriends(user)) { list ->
             list.asDomainModel()
         }
 

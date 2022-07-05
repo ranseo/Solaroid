@@ -68,8 +68,8 @@ interface DatabasePhotoTicketDao {
     @Query("DELETE FROM friend_table WHERE friend_code == :friendCode")
     suspend fun delete(friendCode:Long)
 
-    @Query("SELECT * FROM friend_table ORDER BY friend_nickname DESC")
-    fun getAllFriends() : LiveData<List<DatabaseFriend>>
+    @Query("SELECT * FROM friend_table WHERE friend_my_email == :user ORDER BY friend_nickname DESC")
+    fun getAllFriends(user:String) : LiveData<List<DatabaseFriend>>
 
 
     //album

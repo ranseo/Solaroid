@@ -63,7 +63,8 @@ class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyF
      * */
     fun insertFriendToRoom(friend: Friend) {
         viewModelScope.launch {
-            database.insert(friend.asDatabaseFriend())
+            val userEmail = fbAuth.currentUser!!.email ?: return@launch
+            database.insert(friend.asDatabaseFriend(userEmail))
             Log.i(TAG, "insertFriendToRoom")
         }
     }

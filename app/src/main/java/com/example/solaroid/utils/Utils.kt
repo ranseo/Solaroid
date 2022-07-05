@@ -27,6 +27,12 @@ fun convertHexStringToLongFormat(str:String) : Long {
     return str.substring(1..4).toLong(16)
 }
 
+fun getAlbumIdWithFriendCodes(friendCodes:List<String>) : String {
+    return friendCodes.fold("") { acc, v ->
+        acc + v
+    }
+}
+
 
 
 

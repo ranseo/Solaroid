@@ -22,9 +22,9 @@ class AlbumRepositery(
     private val albumDataSource: AlbumDataSource
 ) {
 
-    val album : LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum()) {
-        it.asDomainModel()
-    }
+//    val album : LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum()) {
+//        it.asDomainModel()
+//    }
 
 
     /**
@@ -62,6 +62,7 @@ class AlbumRepositery(
             ref.addValueEventListener(listener)
         }
     }
+
 
 
     /**

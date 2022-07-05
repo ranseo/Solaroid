@@ -23,13 +23,14 @@ data class Friend(
 
 }
 
-fun Friend.asDatabaseFriend() : DatabaseFriend {
+fun Friend.asDatabaseFriend(user:String) : DatabaseFriend {
     return DatabaseFriend(
         user = id,
         nickname = nickname,
         profileImage =  profileImg,
         friendCode = friendCode,
-        key=key
+        key = key,
+        myEmail = user
     )
 }
 

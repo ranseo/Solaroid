@@ -14,7 +14,9 @@ data class DatabaseFriend(
     @ColumnInfo(name = "friend_nickname")
     var nickname: String,
     var profileImage: String,
-    val key: String
+    val key: String,
+    @ColumnInfo(name = "friend_my_email")
+    val myEmail : String
 ) {
 
 }
