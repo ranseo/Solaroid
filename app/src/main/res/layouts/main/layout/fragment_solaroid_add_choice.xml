@@ -6,14 +6,14 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.solaroid.home.fragment.add.SolaroidAddViewModel" />
+            type="com.example.solaroid.ui.home.fragment.add.SolaroidAddViewModel" />
 
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".home.fragment.add.SolaroidAddChoiceFragment">
+        tools:context=".ui.home.fragment.add.SolaroidAddChoiceFragment">
 
 
         <androidx.recyclerview.widget.RecyclerView

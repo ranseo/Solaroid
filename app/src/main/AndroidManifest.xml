@@ -22,7 +22,7 @@
         android:theme="@style/Theme.Solaroid"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".album.activity.AlbumActivity"
+            android:name=".ui.album.activity.AlbumActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"
@@ -34,15 +34,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".friend.activity.FriendActivity"
+            android:name=".ui.friend.activity.FriendActivity"
             android:exported="false"
             android:theme="@style/Theme.FriendActivity" />
         <activity
-            android:name=".login.activity.LoginActivity"
+            android:name=".ui.login.activity.LoginActivity"
             android:exported="false"
             android:label="@string/Solaroid" />
         <activity
-            android:name=".home.activity.HomeActivity"
+            android:name=".ui.home.activity.HomeActivity"
             android:exported="false"
             android:label="솔라로이드"></activity>
 

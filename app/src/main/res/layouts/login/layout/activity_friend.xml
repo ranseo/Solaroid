@@ -20,7 +20,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".friend.activity.FriendActivity">
+            tools:context=".ui.friend.activity.FriendActivity">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/friend_toolbar"

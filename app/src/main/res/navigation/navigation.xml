@@ -32,22 +32,22 @@
     <!---->
     <activity
         android:id="@+id/home_activity"
-        android:name="com.example.solaroid.home.activity.HomeActivity"
+        android:name="com.example.solaroid.ui.home.activity.HomeActivity"
         tools:layout="@layout/activity_home"
         />
     <activity
         android:id="@+id/login_activity"
-        android:name="com.example.solaroid.login.activity.LoginActivity"
+        android:name="com.example.solaroid.ui.login.activity.LoginActivity"
         tools:layout="@layout/activity_login"
         android:label="로그인 활동"/>
     <activity
         android:id="@+id/friend_activity"
-        android:name="com.example.solaroid.friend.activity.FriendActivity"
+        android:name="com.example.solaroid.ui.friend.activity.FriendActivity"
         tools:layout="@layout/activity_friend"
         android:label=""/>
     <activity
         android:id="@+id/album_activity"
-        android:name="com.example.solaroid.album.activity.AlbumActivity"
+        android:name="com.example.solaroid.ui.album.activity.AlbumActivity"
         tools:layout="@layout/activity_album"
         android:label=""/>
 
@@ -55,7 +55,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_gallery"
-        android:name="com.example.solaroid.home.fragment.gallery.SolaroidGalleryFragment"
+        android:name="com.example.solaroid.ui.home.fragment.gallery.SolaroidGalleryFragment"
         android:label="갤러리"
         tools:layout="@layout/fragment_solaroid_gallery">
 
@@ -85,7 +85,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_create"
-        android:name="com.example.solaroid.home.fragment.create.SolaroidPhotoCreateFragment"
+        android:name="com.example.solaroid.ui.home.fragment.create.SolaroidPhotoCreateFragment"
         android:label="카메라 촬영"
         tools:layout="@layout/fragment_solaroid_photo_create">
 
@@ -100,7 +100,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_frame"
-        android:name="com.example.solaroid.home.fragment.frame.SolaroidFrameFragment"
+        android:name="com.example.solaroid.ui.home.fragment.frame.SolaroidFrameFragment"
         android:label=""
         tools:layout="@layout/fragment_solaroid_frame">
 
@@ -133,12 +133,12 @@
 
         <argument
             android:name="photoTicket"
-            app:argType="com.example.solaroid.data.domain.PhotoTicket"/>
+            app:argType="com.example.solaroid.models.domain.PhotoTicket"/>
 
     </fragment>
     <fragment
         android:id="@+id/fragment_solaroid_edit"
-        android:name="com.example.solaroid.home.fragment.edit.SolaroidEditFragment"
+        android:name="com.example.solaroid.ui.home.fragment.edit.SolaroidEditFragment"
         android:label="수정"
         tools:layout="@layout/fragment_solaroid_edit">
 
@@ -156,7 +156,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_add"
-        android:name="com.example.solaroid.home.fragment.add.SolaroidAddFragment"
+        android:name="com.example.solaroid.ui.home.fragment.add.SolaroidAddFragment"
         android:label=""
         tools:layout="@layout/fragment_solaroid_add">
 

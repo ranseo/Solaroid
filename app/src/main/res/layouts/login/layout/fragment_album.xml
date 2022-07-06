@@ -6,14 +6,14 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.solaroid.album.viewmodel.AlbumViewModel" />
+            type="com.example.solaroid.ui.album.viewmodel.AlbumViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".album.fragment.AlbumFragment">
+        tools:context=".ui.album.fragment.AlbumFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rec_album"
@@ -31,6 +31,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_set_profile"
+            android:onClick="@{()->viewModel.onCreateAlbum()}"
             style="@style/Theme.LoginActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

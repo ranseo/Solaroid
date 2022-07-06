@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.home.fragment.frame.SolaroidFrameViewModel" />
+            type="com.example.solaroid.ui.home.fragment.frame.SolaroidFrameViewModel" />
 
         <variable
             name="naviViewModel"

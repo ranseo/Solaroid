@@ -9,7 +9,7 @@ import com.example.solaroid.models.domain.asFriend
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.firebase.asFirebaseDispatchFriend
-import com.example.solaroid.friend.fragment.add.dispatch.DispatchStatus
+import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchStatus
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
@@ -116,7 +116,7 @@ class FriendCommunicateRepositery(
      * receptionFragment에서 친구추가 또는 거절을 했을 때 상대의 DispatchFragment에 수신여부를 전달하기 위해
      * Firebase/DispatchList 에 새로운 DispatchFragment 객체를 쓰는 함수.
      * */
-    suspend fun setValueFriendDispatch(friendCode: Long, myProfile: Profile, flag:DispatchStatus,myFriendCode:Long) {
+    suspend fun setValueFriendDispatch(friendCode: Long, myProfile: Profile, flag: DispatchStatus, myFriendCode:Long) {
         return withContext(Dispatchers.IO) {
 
             val ref = fbDatabase.reference.child("friendDispatch").child("${friendCode}").child("list").child("${myFriendCode}")

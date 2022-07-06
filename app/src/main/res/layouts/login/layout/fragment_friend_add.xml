@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.solaroid.friend.fragment.add.FriendAddViewModel" />
+            type="com.example.solaroid.ui.friend.fragment.add.FriendAddViewModel" />
 
         <import type="android.view.View"/>
 
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/Theme.FriendActivity"
-        tools:context=".friend.fragment.list.FriendListFragment"
+        tools:context=".ui.friend.fragment.list.FriendListFragment"
         android:layout_marginBottom="?attr/actionBarSize"
         android:background="@color/soft_grey">
 

@@ -5,7 +5,7 @@ import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.firebase.asDomainModel
-import com.example.solaroid.friend.fragment.add.dispatch.DispatchFriend
+import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchFriend
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

@@ -10,7 +10,7 @@
 
         <variable
             name="onClickListener"
-            type="com.example.solaroid.friend.adapter.OnReceptionClickListener" />
+            type="com.example.solaroid.ui.friend.adapter.OnReceptionClickListener" />
 
     </data>
 

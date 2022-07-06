@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.solaroid.friend.fragment.add.reception.FriendReceptionViewModel" />
+            type="com.example.solaroid.ui.friend.fragment.add.reception.FriendReceptionViewModel" />
 
     </data>
 

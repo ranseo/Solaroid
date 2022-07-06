@@ -13,8 +13,8 @@ import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.models.domain.PhotoTicket
-import com.example.solaroid.friend.adapter.FriendListAdatper
-import com.example.solaroid.friend.adapter.FriendListDataItem
+import com.example.solaroid.ui.friend.adapter.FriendListAdatper
+import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 
 @BindingAdapter("submitList")
 fun bindViewPager(viewPager: ViewPager2, photoTickets: List<PhotoTicket>?) {

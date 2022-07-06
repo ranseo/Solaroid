@@ -6,7 +6,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.solaroid.R
-import com.example.solaroid.home.fragment.frame.SolaroidFrameViewModel
+import com.example.solaroid.ui.home.fragment.frame.SolaroidFrameViewModel
 
 class ListSetDialogFragment(_listener: ListSetDialogListener, val viewModel: SolaroidFrameViewModel) : DialogFragment() {
     internal var listener: ListSetDialogListener = _listener

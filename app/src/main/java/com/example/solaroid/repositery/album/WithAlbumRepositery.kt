@@ -1,6 +1,7 @@
 package com.example.solaroid.repositery.album
 
 import com.example.solaroid.datasource.album.WithAlbumDataSource
+import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase

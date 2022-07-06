@@ -1,6 +1,7 @@
 package com.example.solaroid.datasource.album
 
 import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.models.firebase.asDomainModel
 import com.google.firebase.database.DataSnapshot
@@ -23,6 +24,7 @@ class WithAlbumDataSource {
                     ).asDomainModel()
 
                     profiles.add(profile)
+
                 }
 
 

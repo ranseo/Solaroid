@@ -7,7 +7,7 @@
 
     <activity
         android:id="@+id/main_activity"
-        android:name="com.example.solaroid.home.activity.HomeActivity"
+        android:name="com.example.solaroid.ui.home.activity.HomeActivity"
         android:label="메인화면"
         tools:layout="@layout/activity_home"
         />
@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_signup"
         android:label="회원가입"
-        android:name="com.example.solaroid.login.fragment.SolaroidSignUpFragment"
+        android:name="com.example.solaroid.ui.login.fragment.SolaroidSignUpFragment"
         tools:layout="@layout/fragment_solaroid_signup">
 
         <action
@@ -59,7 +59,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_profile"
         android:label="프로필 설정"
-        android:name="com.example.solaroid.login.fragment.SolaroidProfileFragment"
+        android:name="com.example.solaroid.ui.login.fragment.SolaroidProfileFragment"
         tools:layout="@layout/fragment_solaroid_profile">
 
         <action

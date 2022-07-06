@@ -6,7 +6,7 @@ data class Album(
     val id:String,
     var name: String,
     var thumbnail: Bitmap,
-    val participant: List<Profile>
+    val participant: String
 ) {
 
 }
@@ -15,8 +15,8 @@ data class Album(
 
 data class RequestAlbum(
     val id : String,
-    val name :String
-
+    val name :String,
+    val participant: String
 ) {
 
 }

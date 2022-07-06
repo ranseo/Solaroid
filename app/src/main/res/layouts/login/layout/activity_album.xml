@@ -23,7 +23,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".album.activity.AlbumActivity">
+            tools:context=".ui.album.activity.AlbumActivity">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/album_toolbar"

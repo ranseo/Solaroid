@@ -36,28 +36,28 @@
 
     <activity
         android:id="@+id/home_activity"
-        android:name="com.example.solaroid.home.activity.HomeActivity"
+        android:name="com.example.solaroid.ui.home.activity.HomeActivity"
         tools:layout="@layout/activity_home"/>
 
     <activity
         android:id="@+id/login_activity"
-        android:name="com.example.solaroid.login.activity.LoginActivity"
+        android:name="com.example.solaroid.ui.login.activity.LoginActivity"
         tools:layout="@layout/activity_login"/>
     <activity
         android:id="@+id/friend_activity"
-        android:name="com.example.solaroid.friend.activity.FriendActivity"
+        android:name="com.example.solaroid.ui.friend.activity.FriendActivity"
         tools:layout="@layout/activity_friend"/>
 
     <activity
         android:id="@+id/album_activity"
-        android:name="com.example.solaroid.album.activity.AlbumActivity"
+        android:name="com.example.solaroid.ui.album.activity.AlbumActivity"
         tools:layout="@layout/activity_album"/>
 
 
 
     <fragment
         android:id="@+id/fragment_album"
-        android:name="com.example.solaroid.album.fragment.AlbumFragment"
+        android:name="com.example.solaroid.ui.album.fragment.AlbumFragment"
         tools:layout="@layout/fragment_album"
         android:label="사진첩">
 

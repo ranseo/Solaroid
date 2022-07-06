@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
@@ -34,6 +35,7 @@ class PhotoTicketRepositery(
     private val photoTicketListenerDataSource: PhotoTicketListenerDataSource
 ) {
 
+    private var listener : ValueEventListener? = null
     val user = fbAuth.currentUser!!.email!!
 
     /**
@@ -74,9 +76,9 @@ class PhotoTicketRepositery(
     suspend fun refreshPhotoTickets(insertRoomDb: (List<FirebasePhotoTicket>) -> Unit) =
         withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
-            val listener = photoTicketListenerDataSource.setPhotoTicketList(insertRoomDb)
+            listener = photoTicketListenerDataSource.setPhotoTicketList(insertRoomDb)
             val ref = fbDatabase.reference.child("photoTicket").child(user.uid)
-            ref.addValueEventListener(listener)
+            ref.addValueEventListener(listener!!)
         }
 
     /**
@@ -264,6 +266,12 @@ class PhotoTicketRepositery(
         }
 
 
+    }
+
+    fun removeListener() {
+        val userUID = fbAuth.currentUser!!.uid
+        val ref = fbDatabase.reference.child("photoTicket").child(userUID)
+        ref.removeEventListener(listener!!)
     }
 
     companion object {

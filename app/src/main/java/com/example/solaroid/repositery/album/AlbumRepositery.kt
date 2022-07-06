@@ -11,6 +11,7 @@ import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.utils.BitmapUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,18 +23,21 @@ class AlbumRepositery(
     private val albumDataSource: AlbumDataSource
 ) {
 
-//    val album : LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum()) {
-//        it.asDomainModel()
-//    }
+    private var listener : ValueEventListener? = null
+
+    val album : LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum()) {
+        it.asDomainModel()
+    }
 
 
     /**
-     * firebase .child("album").child("${album.id}") 경로에
+     * firebase .child("album").child("$uid").child("${album.id}") 경로에
      * FirebaseAlbum객체 write - setValue()
      * */
-    suspend fun setValue(album:FirebaseAlbum,albumId:String) {
+    suspend fun setValue(album:FirebaseAlbum, albumId:String) {
         withContext(Dispatchers.IO) {
-            val ref = fbDatabase.reference.child("album").child("${albumId}").push()
+            val user = fbAuth.currentUser!!
+            val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
             val key = ref.key ?: return@withContext
 
             val new = FirebaseAlbum(
@@ -50,16 +54,16 @@ class AlbumRepositery(
 
 
     /**
-     * firebase .child("album").child("${album.id}") 경로에
+     * firebase .child("album").child("$uid"). child("${album.id}") 경로에
      * ValueEventListener 추가 - addValueEvnetListener
      * */
 
-    suspend fun addValueEventListener(albumId:String, insertAlbum: (album: DatabaseAlbum)->Unit) {
+    suspend fun addValueEventListener(insertAlbum: (album: DatabaseAlbum)->Unit) {
         withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
-            val ref = fbDatabase.reference.child("album").child("${albumId}")
-            val listener = albumDataSource.getValueEventListener(insertAlbum)
-            ref.addValueEventListener(listener)
+            val ref = fbDatabase.reference.child("album").child(user.uid)
+            listener = albumDataSource.getValueEventListener(insertAlbum)
+            ref.addValueEventListener(listener!!)
         }
     }
 
@@ -74,10 +78,11 @@ class AlbumRepositery(
         }
     }
 
-
-
-
-
-
-
+    /**
+     * remove Listener
+     * */
+    fun removeListener(albumId:String) {
+        val ref = fbDatabase.reference.child("album").child("${albumId}")
+        ref.removeEventListener(listener!!)
+    }
 }

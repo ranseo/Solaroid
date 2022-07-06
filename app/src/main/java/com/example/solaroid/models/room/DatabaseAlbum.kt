@@ -20,6 +20,24 @@ class DatabaseAlbum(
 
 }
 
+fun DatabaseAlbum.asDomainModel() : Album {
+    return Album(
+        id,
+        name,
+        BitmapUtils.convertByteArrayToBitmap(thumbnail),
+        participants
+    )
+}
+
+fun List<DatabaseAlbum>.asDomainModel() : List<Album> {
+    return this.map{
+        it.asDomainModel()
+    }
+
+}
+
+
+
 @Entity(tableName = "home_table")
 class DatabaseHome(
     @PrimaryKey(autoGenerate = true)

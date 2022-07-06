@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.home.fragment.gallery.SolaroidGalleryViewModel" />
+            type="com.example.solaroid.ui.home.fragment.gallery.SolaroidGalleryViewModel" />
 
     </data>
 
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/soft_grey"
-            tools:context=".home.fragment.gallery.SolaroidGalleryFragment">
+            tools:context=".ui.home.fragment.gallery.SolaroidGalleryFragment">
 
             <Toolbar
                 android:id="@+id/toolbar"
