@@ -35,4 +35,19 @@ class AlbumDataSource  {
 
         }
     }
+
+    fun getNumberOfAlbumValueEventListener(insertCount : (count:Int)->Unit) : ValueEventListener {
+        return object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                 val cnt = snapshot.childrenCount
+
+                insertCount(cnt.toInt())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        }
+    }
 }

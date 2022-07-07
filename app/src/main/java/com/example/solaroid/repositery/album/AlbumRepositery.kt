@@ -14,6 +14,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 class AlbumRepositery(
@@ -34,11 +36,11 @@ class AlbumRepositery(
      * firebase .child("album").child("$uid").child("${album.id}") 경로에
      * FirebaseAlbum객체 write - setValue()
      * */
-    suspend fun setValue(album:FirebaseAlbum, albumId:String) {
-        withContext(Dispatchers.IO) {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun setValue(album:FirebaseAlbum, albumId:String) = suspendCancellableCoroutine<Unit>{ continuation ->
             val user = fbAuth.currentUser!!
             val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
-            val key = ref.key ?: return@withContext
+            val key = ref.key ?: return@suspendCancellableCoroutine
 
             val new = FirebaseAlbum(
                 album.id,
@@ -48,8 +50,10 @@ class AlbumRepositery(
                 key
             )
 
-            ref.setValue(new)
-        }
+            ref.setValue(new).addOnCompleteListener {
+                continuation.resume(Unit,null)
+            }
+
     }
 
 
@@ -75,6 +79,20 @@ class AlbumRepositery(
     suspend fun insertRoomAlbum(album:DatabaseAlbum) {
         withContext(Dispatchers.IO) {
             roomDB.insert(album)
+        }
+    }
+
+
+    /**
+     * 앨범이 한개라도 있는지 확인.
+     * */
+    suspend fun addGetAlbumCountSingleValueEventListener(insertCount:(count:Int)->Unit) : Boolean {
+        return withContext(Dispatchers.IO) {
+            val user = fbAuth.currentUser!!
+            val listener = albumDataSource.getNumberOfAlbumValueEventListener(insertCount)
+            val ref = fbDatabase.reference.child("album").child(user.uid)
+            ref.addListenerForSingleValueEvent(listener)
+            false
         }
     }
 

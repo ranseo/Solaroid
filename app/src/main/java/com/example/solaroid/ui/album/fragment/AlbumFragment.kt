@@ -14,6 +14,7 @@ import com.example.solaroid.ui.album.adapter.AlbumListAdapter
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModelFactory
 import com.example.solaroid.databinding.FragmentAlbumBinding
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.viewmodel.AlbumType
 
 class AlbumFragment :Fragment() {
@@ -30,7 +31,10 @@ class AlbumFragment :Fragment() {
     ): View? {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_album,container,false)
 
-        viewModelFactory = AlbumViewModelFactory()
+        val application = requireNotNull(activity).application
+        val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
+
+        viewModelFactory = AlbumViewModelFactory(dataSource)
         viewModel = ViewModelProvider(this, viewModelFactory)[AlbumViewModel::class.java]
 
         binding.viewModel = viewModel

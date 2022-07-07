@@ -62,7 +62,7 @@ class SolaroidProfileFragment() : Fragment() {
                     Log.i(TAG, "메인액티비티 이동")
 
                     findNavController().navigate(
-                        com.example.solaroid.login.fragment.SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
+                        SolaroidProfileFragmentDirections.actionProfileFragmentToMainActivity()
                     )
 
                 binding.progressBar.visibility = View.GONE
@@ -105,7 +105,7 @@ class SolaroidProfileFragment() : Fragment() {
         viewModel.naviToLogin.observe(viewLifecycleOwner){
             it.getContentIfNotHandled()?.let{
                 findNavController().navigate(
-                    com.example.solaroid.login.fragment.SolaroidProfileFragmentDirections.actionProfileFragmentToLoginFragment()
+                    SolaroidProfileFragmentDirections.actionProfileFragmentToLoginFragment()
                 )
             }
         }

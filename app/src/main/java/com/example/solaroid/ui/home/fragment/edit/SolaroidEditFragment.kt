@@ -37,7 +37,7 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        val key = com.example.solaroid.home.fragment.edit.SolaroidEditFragmentArgs.fromBundle(
+        val key = SolaroidEditFragmentArgs.fromBundle(
             requireArguments()
         ).photoTicketKey
 

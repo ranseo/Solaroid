@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentSolaroidSignupBinding
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.login.viewmodel.SolaroidSignUpViewModel
+import com.example.solaroid.ui.login.viewmodel.SolaroidSignUpViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseUser
@@ -73,7 +73,7 @@ class SolaroidSignUpFragment : Fragment() {
         viewModel.naviToLogin.observe(viewLifecycleOwner, Observer{
             it.getContentIfNotHandled()?.let{
                 findNavController().navigate(
-                    com.example.solaroid.login.fragment.SolaroidSignUpFragmentDirections.actionSignupFragmentToLoginFragment()
+                    SolaroidSignUpFragmentDirections.actionSignupFragmentToLoginFragment()
                 )
             }
         })

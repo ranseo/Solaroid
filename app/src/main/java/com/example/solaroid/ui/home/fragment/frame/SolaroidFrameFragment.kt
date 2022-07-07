@@ -35,7 +35,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     private lateinit var viewPager: ViewPager2
     private lateinit var onPageChangeCallback: ViewPager2.OnPageChangeCallback
 
-    private val args by navArgs<com.example.solaroid.home.fragment.frame.SolaroidFrameFragmentArgs>()
+    private val args by navArgs<SolaroidFrameFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,7 +198,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         viewModel.naviToCreateFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    com.example.solaroid.home.fragment.frame.SolaroidFrameFragmentDirections.actionFrameToCreate()
+                    SolaroidFrameFragmentDirections.actionFrameToCreate()
                 )
             }
         }
@@ -207,7 +207,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         viewModel.naviToEditFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { key ->
                 findNavController().navigate(
-                    com.example.solaroid.home.fragment.frame.SolaroidFrameFragmentDirections.actionFrameToEdit(
+                    SolaroidFrameFragmentDirections.actionFrameToEdit(
                         key
                     )
                 )
@@ -218,7 +218,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         viewModel.naviToAddFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    com.example.solaroid.home.fragment.frame.SolaroidFrameFragmentDirections.actionFrameToAdd()
+                    SolaroidFrameFragmentDirections.actionFrameToAdd()
                 )
             }
         }

@@ -72,7 +72,7 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
             it.getContentIfNotHandled()?.let { photoTicket->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
                 findNavController().navigate(
-                    com.example.solaroid.home.fragment.gallery.SolaroidGalleryFragmentDirections.actionGalleryToFrame(
+                    SolaroidGalleryFragmentDirections.actionGalleryToFrame(
                         filter,
                         photoTicket
                     )
@@ -83,7 +83,7 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         viewModel.naviToAdd.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    com.example.solaroid.home.fragment.gallery.SolaroidGalleryFragmentDirections.actionGalleryToAdd()
+                    SolaroidGalleryFragmentDirections.actionGalleryToAdd()
                 )
             }
         }
@@ -91,7 +91,7 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    com.example.solaroid.home.fragment.gallery.SolaroidGalleryFragmentDirections.actionGalleryToCreate()
+                    SolaroidGalleryFragmentDirections.actionGalleryToCreate()
                 )
             }
         }

@@ -15,8 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.databinding.ActivitySplashBinding
 import com.example.solaroid.ui.home.activity.HomeActivity
 import com.example.solaroid.ui.login.activity.LoginActivity
-import com.example.solaroid.login.viewmodel.LoginViewModelFactory
-import com.example.solaroid.login.viewmodel.SolaroidLoginViewModel
+import com.example.solaroid.ui.login.viewmodel.LoginViewModelFactory
+import com.example.solaroid.ui.login.viewmodel.SolaroidLoginViewModel
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth

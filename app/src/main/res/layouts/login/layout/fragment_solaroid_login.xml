@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.login.viewmodel.SolaroidLoginViewModel" />
+            type="com.example.solaroid.ui.login.viewmodel.SolaroidLoginViewModel" />
 
         <import type="android.view.View" />
 

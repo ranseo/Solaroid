@@ -3,17 +3,22 @@ package com.example.solaroid.ui.login.viewmodel
 import android.app.Application
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.*
-import com.example.solaroid.Event
+import com.example.solaroid.*
+import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.models.firebase.asDatabaseModel
 import com.example.solaroid.models.room.DatabaseProfile
 import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.models.firebase.FirebaseAlbum
+import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.repositery.user.UsersRepositery
 import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.utils.BitmapUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -28,8 +33,10 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
 
     private val dataSource = database
 
-    val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource, MyProfileDataSource())
+    val profileRepositery =
+        ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource, MyProfileDataSource())
     val usersRepositery = UsersRepositery(fbAuth, fbDatabase, fbStorage)
+    val albumRepostiery = AlbumRepositery(dataSource, fbAuth, fbDatabase, AlbumDataSource())
 
     enum class ProfileErrorType {
         IMAGEERROR, NICKNAMEERROR, ISRIGHT, EMPTY
@@ -83,6 +90,10 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
 
     var allUserNum: Long = 0L
 
+    private val _isAlbum = MutableLiveData<Boolean>()
+    val isAlbum: LiveData<Boolean>
+        get() = _isAlbum
+
 
     private val _naviToMain = MutableLiveData<Event<Any?>>()
     val naviToMain: LiveData<Event<Any?>>
@@ -95,6 +106,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
     private val _naviToLogin = MutableLiveData<Event<Any?>>()
     val naviToLogin: LiveData<Event<Any?>>
         get() = _naviToLogin
+
 
     fun navigateToLogin() {
         _naviToLogin.value = Event(Unit)
@@ -138,7 +150,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
             profileRepositery.isProfile()
                 ?.addOnSuccessListener {
                     val data = it.value
-                    if(data!=null) _naviToMain.value =  Event(Unit)
+                    if (data != null) _naviToMain.value = Event(Unit)
                 }
         }
     }
@@ -165,6 +177,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
 
     fun insertAndUpdateProfile() {
         viewModelScope.launch {
+            getAlbumCount()
             insertProfileFirebase()
             updateAllUsersNum()
             refreshProfile()
@@ -179,6 +192,9 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
         }
     }
 
+    /**
+     * firebase profile 경로에 FirebaseProfile 객체 삽입.
+     * */
     suspend fun insertProfileFirebase() {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
@@ -193,27 +209,68 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
         }
     }
 
+    /**
+     * Download Url을 얻은 firebaseProfile을 얻기.
+     * */
     suspend fun refreshProfile() {
         return withContext(Dispatchers.IO) {
-            val lambda : (profile: DatabaseProfile) -> Unit = {
+            val lambda: (profile: DatabaseProfile) -> Unit = {
                 _firebaseProfile.value = it.asFirebaseModel()
             }
             profileRepositery.getProfileInfo(lambda)
         }
     }
 
+    /**
+     * allUserNum 의 수를 1 증가 ->동시 접근 하지 않도록 Transaction 추가해야 함.
+     * */
     suspend fun updateAllUsersNum(): Unit {
         withContext(Dispatchers.IO) {
             usersRepositery.updateAllUserNum(allUserNum + 1L)
         }
     }
 
+    /**
+     * Firebase allUsers에 profile 등록.
+     * */
     suspend fun insertUserList(profile: FirebaseProfile) {
         withContext(Dispatchers.IO) {
             usersRepositery.insertUsersList(profile)
         }
     }
 
+    /**
+     * isAlbum 초기화
+     * */
+    suspend fun getAlbumCount() {
+        albumRepostiery.addGetAlbumCountSingleValueEventListener { cnt ->
+            _isAlbum.value = when (cnt) {
+                0 -> false
+                else -> true
+            }
+        }
+    }
+
+    /**
+     * 만약 isAlbum의 값이 false일 경우, 아직 아무런 album이 생성되어있지 않다는 뜻이므로
+     * 새로운 앨범을 만들고 해당 앨범을 홈 앨범으로 만든다.
+     * */
+    suspend fun setValueFirstAlbum(profile: FirebaseProfile) {
+        val friendCode = convertLongToHexStringFormat(profile.friendCode)
+        val albumId = getAlbumIdWithFriendCodes(listOf(friendCode), 0)
+        val albumName = getAlbumNameWithFriendsNickname(listOf(profile.nickname))
+        val participants = getAlbumPariticipantsWithFriendCodes(listOf(friendCode))
+        val byteArray = BitmapUtils.convertUrlToByteArray(profile.profileImg.toUri(),getApplication())
+        val firebaseAlbum = FirebaseAlbum(
+            albumId,
+            albumName,
+            byteArray!!,
+            participants,
+            ""
+        )
+
+        albumRepostiery.setValue(firebaseAlbum, albumId)
+    }
 
     companion object {
         const val TAG = "프로필 뷰모델"
