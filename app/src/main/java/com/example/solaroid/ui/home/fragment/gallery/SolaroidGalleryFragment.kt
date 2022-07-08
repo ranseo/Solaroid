@@ -47,6 +47,9 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         binding.lifecycleOwner = viewLifecycleOwner
 
 
+        viewModel.homeAlbum.observe(viewLifecycleOwner) { album ->
+            viewModel.refreshFirebaseListener(album.id)
+        }
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
                 Log.i(TAG, "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list} }")

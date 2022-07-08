@@ -10,6 +10,7 @@ import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
+import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -42,13 +43,15 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    private val ref = fbDatabase.reference.child("photoTicket").child(fbAuth.currentUser!!.uid)
+    private val homeAlbumRepositery = HomeAlbumRepositery(database)
 
 
     val photoTicketRepositery = PhotoTicketRepositery(
         database, fbAuth, fbDatabase, fbStorage,
         PhotoTicketListenerDataSource()
     )
+
+    val homeAlbum = homeAlbumRepositery.album
 
     private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
     val photoTicketSetting: LiveData<Event<List<PhotoTicket>>>
@@ -96,14 +99,14 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     }
 
     init {
-        refreshFirebaseListener()
+       //refreshFirebaseListener()
     }
 
-    fun refreshFirebaseListener() {
+    fun refreshFirebaseListener(albumId:String) {
         viewModelScope.launch {
             try {
                 val user = fbAuth.currentUser!!
-                photoTicketRepositery.refreshPhotoTickets { firebasePhotoTickets ->
+                photoTicketRepositery.refreshPhotoTickets(albumId) { firebasePhotoTickets ->
                     viewModelScope.launch(Dispatchers.Default) {
                         Log.i(TAG,"viewModelScope.launch(Dispatchers.IO) : ${this}")
                         insert(firebasePhotoTickets, user.email!!)

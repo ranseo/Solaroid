@@ -13,12 +13,13 @@ import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.example.solaroid.models.domain.MediaStoreData
 import com.example.solaroid.models.domain.PhotoTicket
+import com.example.solaroid.repositery.album.AlbumRepositery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
+class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application, albumId:String) :
     AndroidViewModel(application) {
 
     private val database = dataSource
@@ -30,6 +31,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     private val photoTicketRepositery =
         PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage, PhotoTicketListenerDataSource())
 
+    private val albumId = albumId
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
@@ -157,7 +159,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
                 favorite = false
             )
 
-            photoTicketRepositery.insertPhotoTickets(new, getApplication())
+            photoTicketRepositery.insertPhotoTickets(albumId, new, getApplication())
             clearAddPhotoTicket()
         }
     }

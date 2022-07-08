@@ -4,12 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.solaroid.models.room.DatabaseAlbum
-import com.example.solaroid.models.room.DatabaseFriend
-import com.example.solaroid.models.room.DatabasePhotoTicket
-import com.example.solaroid.models.room.DatabaseProfile
+import com.example.solaroid.models.room.*
 
-@Database(entities = [DatabasePhotoTicket::class, DatabaseProfile::class, DatabaseFriend::class, DatabaseAlbum::class], version = 12, exportSchema = false)
+@Database(entities = [DatabasePhotoTicket::class, DatabaseProfile::class, DatabaseFriend::class, DatabaseAlbum::class, DatabaseHomeAlbum::class], version = 12, exportSchema = false)
 abstract class SolaroidDatabase : RoomDatabase() {
     abstract val photoTicketDao : DatabasePhotoTicketDao
 

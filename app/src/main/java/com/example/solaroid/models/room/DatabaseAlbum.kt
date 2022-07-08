@@ -8,7 +8,7 @@ import com.example.solaroid.utils.BitmapUtils
 
 
 @Entity(tableName = "album_table")
-class DatabaseAlbum(
+data class DatabaseAlbum(
     @PrimaryKey
     val id: String,
     @ColumnInfo(name = "album_name")
@@ -37,11 +37,4 @@ fun List<DatabaseAlbum>.asDomainModel() : List<Album> {
 }
 
 
-
-@Entity(tableName = "home_table")
-class DatabaseHome(
-    @PrimaryKey(autoGenerate = true)
-    val albumId: String
-
-)
 

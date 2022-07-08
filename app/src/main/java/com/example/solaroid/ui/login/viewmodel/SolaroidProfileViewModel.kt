@@ -186,6 +186,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
 
     fun insertAndNavigateMain(profile: FirebaseProfile) {
         viewModelScope.launch {
+            setValueFirstAlbum(profile)
             insertProfile(profile.asDatabaseModel())
             insertUserList(profile)
             navigateToMain()

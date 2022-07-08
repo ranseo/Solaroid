@@ -13,7 +13,7 @@ import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import kotlinx.coroutines.launch
 
-class SolaroidPhotoCreateViewModel(application: Application, dataSource: DatabasePhotoTicketDao) :
+class SolaroidPhotoCreateViewModel(application: Application, dataSource: DatabasePhotoTicketDao, albumId:String) :
     AndroidViewModel(application) {
 
     private val database = dataSource
@@ -23,6 +23,8 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     private val fbStorage = FirebaseManager.getStorageInstance()
 
     private val photoTicketRepositery = PhotoTicketRepositery(dataSource = database, fbAuth , fbDatabase ,fbStorage, PhotoTicketListenerDataSource())
+
+    private val albumId = albumId
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
@@ -128,7 +130,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
             Log.i(TAG, "onImageSave()")
 
             _isProgressBar.value = true
-            photoTicketRepositery.insertPhotoTickets(new, getApplication())
+            photoTicketRepositery.insertPhotoTickets(albumId, new, getApplication())
             _isProgressBar.value = false
             forReadyNewImage()
         }
