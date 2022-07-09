@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.solaroid.R
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
@@ -39,6 +40,8 @@ class SolaroidPhotoCreateFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private var CameraProvider :  ProcessCameraProvider? = null
 
+    private val args by navArgs<SolaroidPhotoCreateFragmentArgs>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,9 +56,10 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
         application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
+        val albumId = args.albumId
 
         viewModelFactory =
-            SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application)
+            SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application, albumId)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[SolaroidPhotoCreateViewModel::class.java]
 

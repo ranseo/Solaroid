@@ -84,17 +84,17 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         }
 
         viewModel.naviToAdd.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {
+            it.getContentIfNotHandled()?.let { id ->
                 findNavController().navigate(
-                    SolaroidGalleryFragmentDirections.actionGalleryToAdd()
+                    SolaroidGalleryFragmentDirections.actionGalleryToAdd(id)
                 )
             }
         }
 
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {
+            it.getContentIfNotHandled()?.let { id ->
                 findNavController().navigate(
-                    SolaroidGalleryFragmentDirections.actionGalleryToCreate()
+                    SolaroidGalleryFragmentDirections.actionGalleryToCreate(id)
                 )
             }
         }

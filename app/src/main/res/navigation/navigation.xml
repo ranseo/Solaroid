@@ -5,6 +5,11 @@
     android:id="@+id/navigation"
     app:startDestination="@+id/fragment_solaroid_gallery">
 
+<!--    <navigation-->
+<!--        android:id="@+id/album_navigation"-->
+<!--        -->
+<!--        />-->
+
 
     <action
         android:id="@+id/global_action_homeActivity_to_loginActivity"
@@ -94,6 +99,12 @@
             app:destination="@+id/fragment_solaroid_gallery"
             app:popUpTo="@+id/fragment_solaroid_gallery"
             app:popUpToInclusive="true"/>
+
+
+        <argument
+            android:name="albumId"
+            app:argType="string"
+            />
     </fragment>
 
 
@@ -171,6 +182,11 @@
             app:destination="@+id/fragment_solaroid_gallery"
             app:popUpTo="@+id/fragment_solaroid_gallery"
             app:popUpToInclusive="true"/>
+
+        <argument
+            android:name="albumId"
+            app:argType="string"
+            />
     </fragment>
 
 

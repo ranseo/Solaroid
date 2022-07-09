@@ -16,6 +16,7 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.solaroid.R
 import com.example.solaroid.convertDateToLong
 import com.example.solaroid.convertTodayToFormatted
@@ -38,6 +39,8 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
 
     private lateinit var backPressCallback : OnBackPressedCallback
 
+    private val args by navArgs<SolaroidAddFragmentArgs>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,10 +55,11 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         )
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
+        val albumId = args.albumId
 
         auth = FirebaseAuth.getInstance()
 
-        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
+        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application, albumId)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
 
         binding.viewmodel = viewModel

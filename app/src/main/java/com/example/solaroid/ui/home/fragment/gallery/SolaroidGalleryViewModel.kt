@@ -53,6 +53,12 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
 
     val homeAlbum = homeAlbumRepositery.album
 
+    val homeAlbumId = Transformations.map(homeAlbum) {
+        it?.let{
+            it.id
+        }
+    }
+
     private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
     val photoTicketSetting: LiveData<Event<List<PhotoTicket>>>
         get() = _photoTicketsSetting
@@ -62,12 +68,12 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     val naviToFrame: LiveData<Event<PhotoTicket>>
         get() = _naviToFrame
 
-    private val _naviToAdd = MutableLiveData<Event<Any?>>()
-    val naviToAdd: LiveData<Event<Any?>>
+    private val _naviToAdd = MutableLiveData<Event<String?>>()
+    val naviToAdd: LiveData<Event<String?>>
         get() = _naviToAdd
 
-    private val _naviToCreate = MutableLiveData<Event<Any?>>()
-    val naviToCreate: LiveData<Event<Any?>>
+    private val _naviToCreate = MutableLiveData<Event<String?>>()
+    val naviToCreate: LiveData<Event<String?>>
         get() = _naviToCreate
 
 
@@ -129,11 +135,11 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     }
 
     fun navigateToAdd() {
-        _naviToAdd.value = Event(Unit)
+        _naviToAdd.value = Event(homeAlbumId.value)
     }
 
     fun navigateToCreate() {
-        _naviToCreate.value = Event(Unit)
+        _naviToCreate.value = Event(homeAlbumId.value)
     }
 
     suspend fun insert(firebasePhotoTickets: List<FirebasePhotoTicket>, user: String) =
