@@ -78,10 +78,12 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         viewModel.naviToFrame.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { photoTicket->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
+                val albumId = viewModel.albumId
                 findNavController().navigate(
                     GalleryFragmentDirections.actionGalleryToFrame(
                         filter,
-                        photoTicket
+                        photoTicket,
+                        albumId
                     )
                 )
             }
@@ -106,7 +108,7 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         viewModel.naviToHome.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let{
                 findNavController().navigate(
-                    GalleryFragmentDirections.actionGalleryToHome()
+                    GalleryFragmentDirections.actionGalleryToHomeGallery()
                 )
             }
         }

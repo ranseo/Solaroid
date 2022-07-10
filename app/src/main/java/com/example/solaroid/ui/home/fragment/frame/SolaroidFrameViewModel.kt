@@ -20,7 +20,8 @@ class SolaroidFrameViewModel(
     dataSource: DatabasePhotoTicketDao,
     application: Application,
     filter: PhotoTicketFilter,
-    photoTicket: PhotoTicket
+    photoTicket: PhotoTicket,
+    _albumId:String
 ) :
     AndroidViewModel(application) {
 
@@ -56,16 +57,18 @@ class SolaroidFrameViewModel(
         }
     }
 
+    val albumId : String
+
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
      * */
-    private val _photoTicketsSize = MutableLiveData<Int>()
-    val photoTicketsSize: LiveData<Int>
-        get() = _photoTicketsSize
-
-    fun setPhotoTicketSize(size: Int) {
-        _photoTicketsSize.value = size
-    }
+//    private val _photoTicketsSize = MutableLiveData<Int>()
+//    val photoTicketsSize: LiveData<Int>
+//        get() = _photoTicketsSize
+//
+//    fun setPhotoTicketSize(size: Int) {
+//        _photoTicketsSize.value = size
+//    }
 
     /**
      * 현재 viewPager에서 사용자가 보고 있는 포토티켓의 위치를 나타내는 프로퍼티.
@@ -110,8 +113,8 @@ class SolaroidFrameViewModel(
 
     init {
         Log.i(TAG, "뷰모델 Init()")
+        albumId = _albumId
         _startPhotoTicket.value = photoTicket
-
     }
 
     fun setStartPhotoTicket(photo:PhotoTicket) {
@@ -167,7 +170,7 @@ class SolaroidFrameViewModel(
             currPhotoTicket.value?.let {
                 it.favorite = it.favorite != true
                 Log.i(TAG, "updatePhotoTicketFavorite() : ${it.favorite}")
-                photoTicketRepositery.updatePhotoTickets(it, getApplication())
+                photoTicketRepositery.updatePhotoTickets(albumId, it, getApplication())
             }
         }
     }
@@ -177,16 +180,9 @@ class SolaroidFrameViewModel(
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            photoTicketRepositery.deletePhotoTickets(key, getApplication())
+            photoTicketRepositery.deletePhotoTickets(albumId,key, getApplication())
         }
     }
-
-
-    //SolaroidCreateFragment로 이동
-    private val _naviToCreateFrag = MutableLiveData<Event<Boolean>>()
-    val naviToCreateFrag: LiveData<Event<Boolean>>
-        get() = _naviToCreateFrag
-
 
     //SolaroidEditFragment로 이동
     private val _naviToEditFrag = MutableLiveData<Event<String>>()
@@ -194,25 +190,11 @@ class SolaroidFrameViewModel(
         get() = _naviToEditFrag
 
 
-    /**
-     * trigger for navigate to SolaroidAddFragment
-     * */
-    private val _naviToAddFrag = MutableLiveData<Event<Boolean>>()
-    val naviToAddFrag: LiveData<Event<Boolean>>
-        get() = _naviToAddFrag
-
-
-    fun navigateToCreate() {
-        _naviToCreateFrag.value = Event(true)
-    }
-
     fun navigateToEdit(key: String) {
         _naviToEditFrag.value = Event(key)
     }
 
-    fun navigateToAdd() {
-        _naviToAddFrag.value = Event(true)
-    }
+
 
     /////////////////////////////////////////////////////////////////
 

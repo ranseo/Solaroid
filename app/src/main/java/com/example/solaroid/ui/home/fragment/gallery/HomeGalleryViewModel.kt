@@ -75,6 +75,9 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val naviToCreate: LiveData<Event<String?>>
         get() = _naviToCreate
 
+    private val _naviToAlbum = MutableLiveData<Event<Any?>>()
+    val naviToAlbum : LiveData<Event<Any?>>
+        get() = _naviToAlbum
 
     private val _filter = MutableLiveData(PhotoTicketFilter.DESC)
     val filter: LiveData<PhotoTicketFilter>
@@ -138,6 +141,10 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
 
     fun navigateToCreate() {
         _naviToCreate.value = Event(homeAlbumId.value)
+    }
+
+    fun navigateToAlbum() {
+        _naviToAlbum.value = Event(Unit)
     }
 
     suspend fun insert(firebasePhotoTickets: List<FirebasePhotoTicket>, user: String) =

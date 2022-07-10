@@ -30,6 +30,7 @@ class AlbumCreateDialog(_listener:AlbumCreateDialogListener) : DialogFragment() 
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_album_create,container,false)
+        
 
 
 

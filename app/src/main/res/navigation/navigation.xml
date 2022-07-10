@@ -101,6 +101,8 @@
             android:name="albumId"
             app:argType="string"
             />
+
+
     </fragment>
 
 
@@ -112,23 +114,11 @@
         tools:layout="@layout/fragment_solaroid_frame">
 
         <action
-            android:id="@+id/action_frame_to_create"
-            app:destination="@+id/fragment_solaroid_create"
-            app:popUpTo="@+id/fragment_solaroid_create"
-            app:popUpToInclusive="true"
-            />
-
-        <action
             android:id="@+id/action_frame_to_edit"
             app:destination="@+id/fragment_solaroid_edit"
             app:popUpTo="@+id/fragment_solaroid_edit"
             app:popUpToInclusive="true"/>
 
-        <action
-            android:id="@+id/action_frame_to_add"
-            app:destination="@+id/fragment_solaroid_add"
-            app:popUpTo="@+id/fragment_solaroid_add"
-            app:popUpToInclusive="true"/>
 
         <argument
             android:name="ShowAppBar"
@@ -141,6 +131,10 @@
         <argument
             android:name="photoTicket"
             app:argType="com.example.solaroid.models.domain.PhotoTicket"/>
+
+        <argument
+            android:name="albumId"
+            app:argType="string"/>
 
     </fragment>
     <fragment
@@ -158,6 +152,10 @@
         <argument
             android:name="photo_ticket_key"
             app:argType="string"/>
+
+        <argument
+            android:name="albumId"
+            app:argType="string"/>
     </fragment>
 
 
@@ -167,17 +165,13 @@
         android:label=""
         tools:layout="@layout/fragment_solaroid_add">
 
-        <action
-            android:id="@+id/action_add_to_frame"
-            app:destination="@+id/fragment_solaroid_frame"
-            app:popUpTo="@+id/fragment_solaroid_frame"
-            app:popUpToInclusive="true"/>
 
         <action
             android:id="@+id/action_add_to_gallery"
             app:destination="@+id/fragment_home_gallery"
             app:popUpTo="@+id/fragment_home_gallery"
             app:popUpToInclusive="true"/>
+
 
         <argument
             android:name="albumId"
@@ -191,6 +185,23 @@
         android:name="com.example.solaroid.ui.home.fragment.album.AlbumFragment"
         tools:layout="@layout/fragment_album"
         >
+
+        <action
+            android:id="@+id/action_album_to_gallery"
+            app:destination="@+id/fragment_gallery"
+            />
+
+        <action
+            android:id="@+id/action_album_to_homeGallery"
+            app:destination="@+id/fragment_home_gallery"
+            app:popUpTo="@layout/fragment_album"
+            app:popUpToInclusive="true"
+            />
+
+        <argument
+            android:name="ShowAppBar"
+            android:defaultValue="true"/>
+
     </fragment>
 
     <fragment
@@ -220,10 +231,15 @@
             app:popUpToInclusive="true"/>
 
         <action
-            android:id="@+id/action_gallery_to_home"
+            android:id="@+id/action_gallery_to_homeGallery"
             app:destination="@+id/fragment_home_gallery"
             app:popUpTo="@+id/fragment_gallery"
             app:popUpToInclusive="true"/>
+
+
+        <argument
+            android:name="ShowAppBar"
+            android:defaultValue="true"/>
 
 
     </fragment>

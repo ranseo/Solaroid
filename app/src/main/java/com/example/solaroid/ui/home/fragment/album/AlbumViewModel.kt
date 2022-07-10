@@ -1,6 +1,8 @@
 package com.example.solaroid.ui.album.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.*
+import com.example.solaroid.Event
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.album.RequestAlbumDataSource
@@ -49,6 +51,20 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     val albumDataItem : LiveData<AlbumType>
         get() = _albumDataItem
 
+    //album을 생서(create) 할 때 사용되는 프로퍼티들
+
+    private val _createAlbum = MutableLiveData<Event<Any?>>()
+    val createAlbum : LiveData<Event<Any?>>
+        get() = _createAlbum
+
+    var createId : String = ""
+    var createName : String = ""
+    var createThumbnail : Bitmap? = null
+    var createParticipants : String = ""
+
+
+
+
 
     private fun checkAlbumType(normal:LiveData<List<Album>>, request:LiveData<List<RequestAlbum>>) {
         _albumDataItem.value =
@@ -89,7 +105,9 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
     fun onCreateAlbum() {
-
+        viewModelScope.launch {
+            _createAlbum.value = Event(Unit)
+        }
     }
 
 

@@ -63,9 +63,9 @@ class PhotoTicketRepositery(
         }
 
 
-    suspend fun getPhotoTicket(key: String): PhotoTicket = withContext(Dispatchers.IO) {
-        dataSource.getDatabasePhotoTicket(key).asDomainModel()
-    }
+//    suspend fun getPhotoTicket(key: String): PhotoTicket = withContext(Dispatchers.IO) {
+//        dataSource.getDatabasePhotoTicket(key).asDomainModel()
+//    }
 
 
     /**

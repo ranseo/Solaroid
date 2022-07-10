@@ -89,11 +89,6 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val uriChoiceFromMediaStore: LiveData<Event<Uri?>>
         get() = _uriChoiceFromMediaStore
 
-    //navi
-    private val _naviToFrameFrag = MutableLiveData<Event<Any?>>()
-    val naviToFrameFrag: LiveData<Event<Any?>>
-        get() = _naviToFrameFrag
-
     private val _date = MutableLiveData<String>(convertTodayToFormatted(System.currentTimeMillis()))
     val date : LiveData<String>
         get() = _date
@@ -175,12 +170,6 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     fun navigateToAddChoice() {
         _naviToAddChoice.value = Event(Unit)
     }
-
-    fun navigateToFrame() {
-        _naviToFrameFrag.value = Event(Unit)
-    }
-
-
 
 
 

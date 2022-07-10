@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.solaroid.R
 import com.example.solaroid.convertDateToLong
 import com.example.solaroid.convertTodayToFormatted
@@ -27,6 +28,8 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 
     private lateinit var backPressCallback: OnBackPressedCallback
 
+    private val args by navArgs<SolaroidEditFragmentArgs>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,12 +39,16 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
+//
+//        val key = SolaroidEditFragmentArgs.fromBundle(
+//            requireArguments()
+//        ).photoTicketKey
+//
+//
+        val key = args.photoTicketKey
+        val albumId = args.albumId
 
-        val key = SolaroidEditFragmentArgs.fromBundle(
-            requireArguments()
-        ).photoTicketKey
-
-        viewModelFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao, application)
+        viewModelFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao, application, albumId)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidEditFragmentViewModel::class.java]
 
         binding.viewmodel = viewModel

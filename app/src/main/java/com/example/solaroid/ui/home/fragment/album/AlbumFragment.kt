@@ -6,16 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.example.solaroid.databinding.FragmentAlbumBinding
+import com.example.solaroid.dialog.AlbumCreateDialog
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.viewmodel.AlbumType
 
-class AlbumFragment :Fragment() {
+class AlbumFragment :Fragment(), AlbumCreateDialog.AlbumCreateDialogListener {
 
     private lateinit var binding:FragmentAlbumBinding
 
@@ -67,7 +69,28 @@ class AlbumFragment :Fragment() {
             }
         }
 
+        viewModel.createAlbum.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{
+                showCreateDialog()
+            }
+        }
+
+
+
 
         return binding.root
+    }
+
+    fun showCreateDialog() {
+        val new = AlbumCreateDialog(this)
+        new.show(parentFragmentManager, "AlbumCreate")
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+
     }
 }

@@ -48,12 +48,14 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         val filter = args.filter
         val photoTicket = args.photoTicket
+        val albumId = args.albumId
 
         viewModelFactory = SolaroidFrameViewModelFactory(
             dataSource.photoTicketDao,
             application,
             PhotoTicketFilter.convertStringToFilter(filter),
-            photoTicket
+            photoTicket,
+            albumId
         )
 
         viewModel = ViewModelProvider(
@@ -99,14 +101,12 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         }
 
 
-
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
                 Log.i(TAG, "photoTickets : ${list}")
-                viewModel.setPhotoTicketSize(it.size)
+//                viewModel.setPhotoTicketSize(it.size)
                 adapter.submitList(list)
                 binding.viewpager.adapter = adapter
-
 
                 viewModel.refreshPhotoTicket()
 
@@ -115,7 +115,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
             }
         }
-
 
 
         observeCurrentPosition()
@@ -195,33 +194,22 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
      * 원하는 Fragment로 이동하기 위한 코드를 모아놓은 함수
      * */
     private fun navigateToOtherFragment() {
-        viewModel.naviToCreateFrag.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {
-                findNavController().navigate(
-                    SolaroidFrameFragmentDirections.actionFrameToCreate()
-                )
-            }
-        }
 
 
         viewModel.naviToEditFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { key ->
+                val albumId = viewModel.albumId
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToEdit(
-                        key
+                        key,
+                        albumId
                     )
                 )
             }
         }
 
 
-        viewModel.naviToAddFrag.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {
-                findNavController().navigate(
-                    SolaroidFrameFragmentDirections.actionFrameToAdd()
-                )
-            }
-        }
+
     }
 
 
@@ -268,12 +256,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                         viewModel.navigateToEdit(id)
 
                     }
-                    true
-
-                }
-
-                R.id.add -> {
-                    viewModel.navigateToAdd()
                     true
 
                 }

@@ -15,7 +15,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
-class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabasePhotoTicketDao,application: Application) : AndroidViewModel(application) {
+class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabasePhotoTicketDao,application: Application, _albumId:String) : AndroidViewModel(application) {
 
     val database = dataSource
 
@@ -25,6 +25,8 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     private val fbStorage : FirebaseStorage = FirebaseManager.getStorageInstance()
 
     private val photoTicketRepositery : PhotoTicketRepositery = PhotoTicketRepositery(dataSource,fbAuth,fbDatabase, fbStorage, PhotoTicketListenerDataSource())
+
+    val albumId = _albumId
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket : LiveData<PhotoTicket?>
@@ -88,7 +90,7 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
             val curr = _photoTicket.value!!
             Log.i(TAG,"${frontText}, ${_backText.value!!}")
             val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, date.value!!, curr.favorite)
-            photoTicketRepositery.updatePhotoTickets(new,getApplication())
+            photoTicketRepositery.updatePhotoTickets(albumId, new,getApplication())
         }
     }
 

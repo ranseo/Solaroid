@@ -74,10 +74,12 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         viewModel.naviToFrame.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { photoTicket->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
+                val albumId = viewModel.homeAlbumId.value
                 findNavController().navigate(
                     HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
                         filter,
-                        photoTicket
+                        photoTicket,
+                        albumId
                     )
                 )
             }
@@ -98,6 +100,16 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
                 )
             }
         }
+
+        viewModel.naviToAlbum.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{
+                findNavController().navigate(
+                    HomeGalleryFragmentDirections.actionHomeGalleryToAlbum()
+                )
+            }
+        }
+
+
     }
 
 
@@ -132,6 +144,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
                     true
                 }
                 R.id.album -> {
+                    viewModel.navigateToAlbum()
                     true
                 }
 
