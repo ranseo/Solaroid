@@ -10,6 +10,7 @@ import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
+import com.example.solaroid.models.domain.Album
 import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
@@ -34,7 +35,7 @@ enum class PhotoTicketFilter(val filter: String) {
     }
 }
 
-class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
+class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
     AndroidViewModel(application) {
 
     private val database = dataSource
@@ -54,9 +55,7 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     val homeAlbum = homeAlbumRepositery.album
 
     val homeAlbumId = Transformations.map(homeAlbum) {
-        it?.let{
-            it.id
-        }
+        it?.id
     }
 
     private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
@@ -105,7 +104,6 @@ class SolaroidGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: 
     }
 
     init {
-       //refreshFirebaseListener()
     }
 
     fun refreshFirebaseListener(albumId:String) {

@@ -15,10 +15,10 @@ import com.example.solaroid.dialog.FilterDialogFragment
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener {
+class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener {
 
-    private lateinit var viewModelFactory: SolaroidGalleryViewModelFactory
-    private lateinit var viewModel: SolaroidGalleryViewModel
+    private lateinit var viewModelFactory: HomeGalleryViewModelFactory
+    private lateinit var viewModel: HomeGalleryViewModel
     private lateinit var binding: FragmentSolaroidGalleryBinding
 
     private lateinit var filterDialogFragment: FilterDialogFragment
@@ -34,8 +34,8 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        viewModelFactory = SolaroidGalleryViewModelFactory(dataSource.photoTicketDao, application)
-        viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidGalleryViewModel::class.java]
+        viewModelFactory = HomeGalleryViewModelFactory(dataSource.photoTicketDao, application)
+        viewModel = ViewModelProvider(this, viewModelFactory)[HomeGalleryViewModel::class.java]
 
         val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->
             viewModel.navigateToFrame(photoTicket)
@@ -75,7 +75,7 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
             it.getContentIfNotHandled()?.let { photoTicket->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
                 findNavController().navigate(
-                    SolaroidGalleryFragmentDirections.actionGalleryToFrame(
+                    HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
                         filter,
                         photoTicket
                     )
@@ -86,7 +86,7 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         viewModel.naviToAdd.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { id ->
                 findNavController().navigate(
-                    SolaroidGalleryFragmentDirections.actionGalleryToAdd(id)
+                    HomeGalleryFragmentDirections.actionHomeGalleryToAdd(id)
                 )
             }
         }
@@ -94,7 +94,7 @@ class SolaroidGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogL
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { id ->
                 findNavController().navigate(
-                    SolaroidGalleryFragmentDirections.actionGalleryToCreate(id)
+                    HomeGalleryFragmentDirections.actionHomeGalleryToCreate(id)
                 )
             }
         }

@@ -15,7 +15,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_login"
         android:label="로그인"
-        android:name="com.example.solaroid.login.fragment.SolaroidLoginFragment"
+        android:name="com.example.solaroid.ui.login.fragment.SolaroidLoginFragment"
         tools:layout="@layout/fragment_solaroid_login">
 
 

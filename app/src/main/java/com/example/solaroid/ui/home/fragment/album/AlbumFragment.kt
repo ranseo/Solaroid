@@ -1,4 +1,4 @@
-package com.example.solaroid.ui.album.fragment
+package com.example.solaroid.ui.home.fragment.album
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
-import com.example.solaroid.ui.album.viewmodel.AlbumViewModelFactory
 import com.example.solaroid.databinding.FragmentAlbumBinding
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.viewmodel.AlbumType

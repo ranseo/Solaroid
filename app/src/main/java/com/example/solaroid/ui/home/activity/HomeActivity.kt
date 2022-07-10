@@ -146,14 +146,14 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        naviViewModel.naviToAlbumAct.observe(this) {
-            it.getContentIfNotHandled()?.let{
-                navController.navigate(
-                    R.id.global_action_homeActivity_to_albumActivity
-                )
-                this.finish()
-            }
-        }
+//        naviViewModel.naviToAlbumAct.observe(this) {
+//            it.getContentIfNotHandled()?.let{
+//                navController.navigate(
+//                    R.id.global_action_homeActivity_to_albumActivity
+//                )
+//                this.finish()
+//            }
+//        }
 
         naviViewModel.naviToHomeAct.observe(this){
             it.getContentIfNotHandled()?.let{

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@+id/fragment_solaroid_gallery">
+    app:startDestination="@+id/fragment_home_gallery">
 
 <!--    <navigation-->
 <!--        android:id="@+id/album_navigation"-->
@@ -21,12 +21,6 @@
         android:id="@+id/global_action_homeActivity_to_friendActivity"
         app:destination="@+id/friend_activity"
         app:popUpTo="@+id/friend_activity"
-        app:popUpToInclusive="true"/>
-
-    <action
-        android:id="@+id/global_action_homeActivity_to_albumActivity"
-        app:destination="@+id/album_activity"
-        app:popUpTo="@+id/album_activity"
         app:popUpToInclusive="true"/>
 
     <action
@@ -50,35 +44,37 @@
         android:name="com.example.solaroid.ui.friend.activity.FriendActivity"
         tools:layout="@layout/activity_friend"
         android:label=""/>
-    <activity
-        android:id="@+id/album_activity"
-        android:name="com.example.solaroid.ui.album.activity.AlbumActivity"
-        tools:layout="@layout/activity_album"
-        android:label=""/>
-
 
 
     <fragment
-        android:id="@+id/fragment_solaroid_gallery"
-        android:name="com.example.solaroid.ui.home.fragment.gallery.SolaroidGalleryFragment"
+        android:id="@+id/fragment_home_gallery"
+        android:name="com.example.solaroid.ui.home.fragment.gallery.HomeGalleryFragment"
         android:label="갤러리"
         tools:layout="@layout/fragment_solaroid_gallery">
 
 
         <action
-            android:id="@+id/action_gallery_to_frame"
+            android:id="@+id/action_homeGallery_to_frame"
             app:destination="@+id/fragment_solaroid_frame" />
 
         <action
-            android:id="@+id/action_gallery_to_add"
+            android:id="@+id/action_homeGallery_to_add"
             app:destination="@+id/fragment_solaroid_add"
             app:popUpTo="@+id/fragment_solaroid_add"
             app:popUpToInclusive="true"/>
 
         <action
-            android:id="@+id/action_gallery_to_create"
+            android:id="@+id/action_homeGallery_to_create"
             app:destination="@+id/fragment_solaroid_create"
             app:popUpTo="@+id/fragment_solaroid_create"
+            app:popUpToInclusive="true"
+            />
+
+
+        <action
+            android:id="@+id/action_homeGallery_to_album"
+            app:destination="@+id/fragment_album"
+            app:popUpTo="@layout/fragment_album"
             app:popUpToInclusive="true"
             />
 
@@ -96,7 +92,7 @@
 
         <action
             android:id="@+id/action_create_to_gallery"
-            app:destination="@+id/fragment_solaroid_gallery"
+            app:destination="@+id/fragment_home_gallery"
             app:popUpTo="@+id/fragment_solaroid_gallery"
             app:popUpToInclusive="true"/>
 
@@ -179,8 +175,8 @@
 
         <action
             android:id="@+id/action_add_to_gallery"
-            app:destination="@+id/fragment_solaroid_gallery"
-            app:popUpTo="@+id/fragment_solaroid_gallery"
+            app:destination="@+id/fragment_home_gallery"
+            app:popUpTo="@+id/fragment_home_gallery"
             app:popUpToInclusive="true"/>
 
         <argument
@@ -188,6 +184,50 @@
             app:argType="string"
             />
     </fragment>
+
+
+    <fragment
+        android:id="@+id/fragment_album"
+        android:name="com.example.solaroid.ui.home.fragment.album.AlbumFragment"
+        tools:layout="@layout/fragment_album"
+        >
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_gallery"
+        android:name="com.example.solaroid.ui.home.fragment.gallery.GalleryFragment"
+        tools:layout="@layout/fragment_solaroid_gallery">
+
+        <argument
+            app:argType="string"
+            android:name="albumId"/>
+
+        <action
+            android:id="@+id/action_gallery_to_frame"
+            app:destination="@+id/fragment_solaroid_frame"
+            />
+
+        <action
+            android:id="@+id/action_gallery_to_add"
+            app:destination="@+id/fragment_solaroid_add"
+            app:popUpTo="@+id/fragment_solaroid_add"
+            app:popUpToInclusive="true"/>
+
+        <action
+            android:id="@+id/action_gallery_to_create"
+            app:destination="@+id/fragment_solaroid_create"
+            app:popUpTo="@+id/fragment_solaroid_create"
+            app:popUpToInclusive="true"/>
+
+        <action
+            android:id="@+id/action_gallery_to_home"
+            app:destination="@+id/fragment_home_gallery"
+            app:popUpTo="@+id/fragment_gallery"
+            app:popUpToInclusive="true"/>
+
+
+    </fragment>
+
 
 
 </navigation>
