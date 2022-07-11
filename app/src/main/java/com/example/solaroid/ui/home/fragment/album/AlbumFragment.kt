@@ -13,11 +13,13 @@ import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.example.solaroid.databinding.FragmentAlbumBinding
-import com.example.solaroid.dialog.AlbumCreateDialog
+import com.example.solaroid.dialog.AlbumCreateParticipantsDialog
+import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.viewmodel.AlbumType
+import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 
-class AlbumFragment :Fragment(), AlbumCreateDialog.AlbumCreateDialogListener {
+class AlbumFragment :Fragment(), AlbumCreateParticipantsDialog.AlbumCreateDialogListener {
 
     private lateinit var binding:FragmentAlbumBinding
 
@@ -69,28 +71,29 @@ class AlbumFragment :Fragment(), AlbumCreateDialog.AlbumCreateDialogListener {
             }
         }
 
+
         viewModel.createAlbum.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{
-                showCreateDialog()
+            it.getContentIfNotHandled()?.let{ list ->
+                showCreateDialog(list)
             }
         }
-
-
 
 
         return binding.root
     }
 
-    fun showCreateDialog() {
-        val new = AlbumCreateDialog(this)
+    fun showCreateDialog(list: List<FriendListDataItem.DialogProfileDataItem>) {
+        val new = AlbumCreateParticipantsDialog(this, list)
         new.show(parentFragmentManager, "AlbumCreate")
     }
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
 
+    override fun onDialogPositiveClick(friends:List<Friend>, dialog: DialogFragment) {
+        viewModel.addParticipants(friends)
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
-
+        viewModel.setNullCreateProperty()
+        dialog.dismiss()
     }
 }

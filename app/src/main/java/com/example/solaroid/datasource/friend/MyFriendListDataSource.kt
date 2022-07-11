@@ -11,7 +11,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class MyFriendListDataSource(
-    private var listener: OnValueListener
+    private var listener : OnValueListener? =null
 ) {
     interface OnValueListener {
         fun onValueAdded(friend: Friend)
@@ -32,7 +32,7 @@ class MyFriendListDataSource(
                     key = hashMap["key"] as String
                 ).asDomainModel()
 
-                listener.onValueAdded(friend)
+                listener!!.onValueAdded(friend)
 
             } catch (error: Exception) {
                 Log.i(TAG, "friendListListener error : ${error.message}")
@@ -73,7 +73,7 @@ class MyFriendListDataSource(
                         key = hashMap["key"] as String
                     ).asDomainModel()
 
-                    listener.onValueChanged(friend)
+                    listener!!.onValueChanged(friend)
 
                 } catch (error: Exception) {
                     Log.i(TAG, "tmpListListener  error : ${error.message}")

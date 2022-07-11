@@ -1,12 +1,15 @@
 package com.example.solaroid.ui.friend.adapter
 
+import android.app.Application
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.solaroid.R
 import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.databinding.ListItemFriendDispatchBinding
+import com.example.solaroid.databinding.ListItemFriendPartyListBinding
 import com.example.solaroid.databinding.ListItemFriendReceptionBinding
 import com.example.solaroid.databinding.ListItemSolaroidFriendBinding
 import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchFriend
@@ -19,10 +22,13 @@ import java.lang.ClassCastException
 private val VIEW_TYPE_NORMAL_PROFILE = 0
 private val VIEW_TYPE_RECEPTION_PROFILE = 1
 private val VIEW_TYPE_DISPATCH_PROFILE = 2
+private val VIEW_TYPE_DIALOG_PROFILE = 3
 
 class FriendListAdatper(
+    val application: Application? = null,
     val receptionClickListener: OnReceptionClickListener? = null,
-    val dispatchClickListener: OnDispatchClickListener? = null
+    val dispatchClickListener: OnDispatchClickListener? = null,
+    val dialogClickListener: OnDialogClickListener? = null
 ) : ListAdapter<FriendListDataItem, RecyclerView.ViewHolder>(FriendListDataItemCallback()) {
     val adapterScope = CoroutineScope(Dispatchers.Default)
 
@@ -32,6 +38,7 @@ class FriendListAdatper(
             is FriendListDataItem.NormalProfileDataItem -> VIEW_TYPE_NORMAL_PROFILE
             is FriendListDataItem.ReceptionProfileDataItem -> VIEW_TYPE_RECEPTION_PROFILE
             is FriendListDataItem.DispatchProfileDataItem -> VIEW_TYPE_DISPATCH_PROFILE
+            is FriendListDataItem.DialogProfileDataItem -> VIEW_TYPE_DIALOG_PROFILE
         }
     }
 
@@ -40,6 +47,7 @@ class FriendListAdatper(
             VIEW_TYPE_NORMAL_PROFILE -> FriendListViewHolder.from(parent)
             VIEW_TYPE_RECEPTION_PROFILE -> FriendReceptionViewHolder.from(parent)
             VIEW_TYPE_DISPATCH_PROFILE -> FriendDispatchViewHolder.from(parent)
+            VIEW_TYPE_DIALOG_PROFILE -> FriendDialogViewHolder.from(parent)
             else -> throw ClassCastException("UNKNOWN_VIEWTYPE_${viewType}")
         }
     }
@@ -57,6 +65,10 @@ class FriendListAdatper(
             is FriendDispatchViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.DispatchProfileDataItem
                 holder.bind(item.friend, dispatchClickListener!!)
+            }
+            is FriendDialogViewHolder -> {
+                val item = getItem(position) as FriendListDataItem.DialogProfileDataItem
+                holder.bind(item.friend, dialogClickListener!!, application)
             }
         }
     }
@@ -111,7 +123,7 @@ class FriendListAdatper(
                     ACCEPT
                 }
             }
-            val status = when(item.flag) {
+            val status = when (item.flag) {
                 DispatchStatus.UNKNOWN -> {
                     false
                 }
@@ -134,10 +146,45 @@ class FriendListAdatper(
                 val binding = ListItemFriendDispatchBinding.inflate(layoutInflater, parent, false)
                 return FriendDispatchViewHolder(binding)
             }
+
             const val UNKNOWN = "아직 상대가 요청을 확인하지 않았습니다."
             const val DECLINE = "상대가 요청을 거절하였습니다."
             const val ACCEPT = "상대가 요청을 수락하였습니다."
 
+        }
+    }
+
+
+    class FriendDialogViewHolder(private val binding: ListItemFriendPartyListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Friend, onClickListener: OnDialogClickListener, application: Application?) {
+            binding.friend = item
+            binding.flag = false
+            binding.layoutListItem.setOnClickListener {
+                try {
+                    binding.flag = !binding.flag
+                    if (binding.flag) {
+                        binding.layoutListItem.background =
+                            application!!.getDrawable(R.drawable.border_line_yellow)
+                    } else {
+                        binding.layoutListItem.background =
+                            application!!.getDrawable(R.drawable.border_line_grey)
+                    }
+                    onClickListener.listener(item)
+                } catch (error:Exception){
+
+                }
+            }
+
+
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): FriendDialogViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ListItemFriendPartyListBinding.inflate(layoutInflater, parent, false)
+                return FriendDialogViewHolder(binding)
+            }
         }
     }
 }
@@ -146,7 +193,7 @@ class FriendListDataItemCallback() : DiffUtil.ItemCallback<FriendListDataItem>()
     override fun areItemsTheSame(
         oldItem: FriendListDataItem,
         newItem: FriendListDataItem
-    ): Boolean = oldItem == newItem
+    ): Boolean = oldItem.id == newItem.id
 
 
     override fun areContentsTheSame(
@@ -157,16 +204,26 @@ class FriendListDataItemCallback() : DiffUtil.ItemCallback<FriendListDataItem>()
 
 
 sealed class FriendListDataItem() {
-    class NormalProfileDataItem(val friend: Friend) : FriendListDataItem() {
+    abstract val id: String
 
+    class NormalProfileDataItem(val friend: Friend) : FriendListDataItem() {
+        override val id: String
+            get() = friend.id
     }
 
     class ReceptionProfileDataItem(val friend: ReceptionFriend) : FriendListDataItem() {
-
+        override val id: String
+            get() = friend.friend.id
     }
 
     class DispatchProfileDataItem(val friend: DispatchFriend) : FriendListDataItem() {
+        override val id: String
+            get() = friend.id
+    }
 
+    class DialogProfileDataItem(val friend: Friend) : FriendListDataItem() {
+        override val id: String
+            get() = friend.id
     }
 }
 
@@ -184,7 +241,10 @@ class OnDispatchClickListener(val listener: (dispatchFriend: DispatchFriend) -> 
     fun onClick(dispatchFriend: DispatchFriend) {
         listener(dispatchFriend)
     }
+}
 
-
-
+class OnDialogClickListener(val listener: (dialogFriend: Friend) -> Unit) {
+    fun onClick(dialogFriend: Friend) {
+        listener(dialogFriend)
+    }
 }
