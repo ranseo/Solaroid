@@ -84,7 +84,7 @@ class AlbumRepositery(
 
 
     /**
-     * 앨범이 한개라도 있는지 확인.
+     * 앨범이 몇개 있는지 확인.
      * */
     suspend fun addGetAlbumCountSingleValueEventListener(insertCount:(count:Int)->Unit) : Boolean {
         return withContext(Dispatchers.IO) {

@@ -59,6 +59,8 @@ class AlbumCreateParticipantsDialog(_listener:AlbumCreateParticipantsDialogListe
         return binding.root
     }
 
+
+
     fun addParticipants(friend:Friend) {
         if(participants.contains(friend)) {
             participants.remove(friend)
