@@ -84,6 +84,8 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     var createThumbnail: Bitmap? = null
     var createParticipants: String = ""
 
+    //
+    var albumNumbering = 0
 
     private fun checkAlbumType(
         normal: LiveData<List<Album>>,
@@ -145,6 +147,12 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         createId = ""
         createName = ""
         createThumbnail = null
+    }
+
+    fun setCreateProperty(_albumId: String, _albumName:String, _thumbnail:Bitmap) {
+        createId = _albumId
+        createName = _albumName
+        createThumbnail = _thumbnail
     }
 
 

@@ -73,6 +73,11 @@ class AlbumThumbnailView @JvmOverloads constructor(
             2 -> 1.1f
             else -> 1f
         }
+
+        for(i in 0..participants) {
+            thumbnailList[i] = Bitmap.createScaledBitmap(thumbnailList[i], w,h,true)
+        }
+
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -84,8 +89,19 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
             for(i in 0..participants) {
                 pointPosition.computeXYForThumbnail(computationList[participants][i])
-                thumbnailList[i].getCircledBitmap()
-                canvas!!.drawCircle(pointPosition.x,pointPosition.y,radius,paint)
+
+                val rect = Rect(
+                    (pointPosition.x - length/2 ).toInt(),
+                    (pointPosition.y - length/2 ).toInt(),
+                    (pointPosition.x + length/2 ).toInt(),
+                    (pointPosition.y + length/2 ).toInt()
+                )
+
+                //canvas!!.drawRect(rect,paint)
+
+                //canvas!!.drawBitmap(bitmap!!, null, rect, paint)
+                Log.i(TAG, "width: ${width}, height : ${height}")
+                canvas!!.drawBitmap(thumbnailList[i].getCircledBitmap(), null ,rect, paint)
             }
 
 
@@ -94,15 +110,22 @@ class AlbumThumbnailView @JvmOverloads constructor(
         }
     }
 
-    fun Bitmap.getCircledBitmap(x:Float, y:Float, radius:Float): Bitmap {
+    fun Bitmap.getCircledBitmap(): Bitmap {
+        Log.i(TAG, "Bitmap.getCircledBitmap() = width: ${this.width}, height : ${this.height}")
         val output = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
         val rect = Rect(0, 0, this.width, this.height)
-        canvas.drawARGB(0, 0, 0, 0)
-        canvas.drawCircle(x, y, radius, paint)
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        //canvas.drawARGB(0xFF, 0xFF, 0xFF, 0xFF)
+        //canvas.drawARGB(255, 139, 197, 186)
+
+        paint.color = Color.WHITE
+
+        canvas.drawCircle((this.width/2).toFloat(),(this.height/2).toFloat(), (this.width/2).toFloat(), paint)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
+        paint.color = Color.BLUE
         canvas.drawBitmap(this, rect, rect, paint)
+        paint.xfermode = null
         return output
     }
 

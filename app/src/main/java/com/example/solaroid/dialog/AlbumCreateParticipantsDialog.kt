@@ -13,17 +13,17 @@ import com.example.solaroid.ui.friend.adapter.FriendListAdatper
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 import com.example.solaroid.ui.friend.adapter.OnDialogClickListener
 
-class AlbumCreateParticipantsDialog(_listener:AlbumCreateDialogListener, val friendList:List<FriendListDataItem.DialogProfileDataItem>) : DialogFragment() {
-    internal var listener: AlbumCreateDialogListener = _listener
+class AlbumCreateParticipantsDialog(_listener:AlbumCreateParticipantsDialogListener, val friendList:List<FriendListDataItem.DialogProfileDataItem>) : DialogFragment() {
+    internal var listener: AlbumCreateParticipantsDialogListener = _listener
 
     private lateinit var binding : FragmentAlbumCreateParticipantsBinding
 
     private lateinit var adapter : FriendListAdatper
     private val participants = mutableListOf<Friend>()
 
-    interface AlbumCreateDialogListener {
-        fun onDialogPositiveClick(friends: List<Friend>, dialog: DialogFragment)
-        fun onDialogNegativeClick(dialog: DialogFragment)
+    interface AlbumCreateParticipantsDialogListener {
+        fun onParticipantsDialogPositiveClick(friends: List<Friend>, dialog: DialogFragment)
+        fun onParticipantsDialogNegativeClick(dialog: DialogFragment)
     }
 
 
@@ -48,11 +48,11 @@ class AlbumCreateParticipantsDialog(_listener:AlbumCreateDialogListener, val fri
 
 
         binding.btnAccept.setOnClickListener {
-            listener.onDialogPositiveClick(participants, this)
+            listener.onParticipantsDialogPositiveClick(participants, this)
         }
 
         binding.btnCancel.setOnClickListener {
-            listener.onDialogNegativeClick(this)
+            listener.onParticipantsDialogNegativeClick(this)
         }
 
 
