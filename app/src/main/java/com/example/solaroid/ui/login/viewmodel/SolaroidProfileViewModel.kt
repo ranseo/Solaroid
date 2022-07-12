@@ -261,7 +261,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
         val albumId = getAlbumIdWithFriendCodes(listOf(friendCode), 0)
         val albumName = getAlbumNameWithFriendsNickname(listOf(profile.nickname))
         val participants = getAlbumPariticipantsWithFriendCodes(listOf(friendCode))
-        val byteArray = BitmapUtils.convertUrlToByteArray(profile.profileImg.toUri(),getApplication())
+        val byteArray = BitmapUtils.convertUriToByteArray(profile.profileImg.toUri(),getApplication())
         val firebaseAlbum = FirebaseAlbum(
             albumId,
             albumName,

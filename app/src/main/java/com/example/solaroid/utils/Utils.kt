@@ -45,6 +45,11 @@ fun getAlbumPariticipantsWithFriendCodes(friendCodes:List<String>) : String {
     }
 }
 
+fun parseProfileImgStringToList(profiles : String) : List<String> {
+    return profiles.split("||")
+}
+
+
 
 
 

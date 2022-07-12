@@ -2,6 +2,8 @@
 <resources>
     <declare-styleable name="AlbumThumbnailView">
         <attr name="participants" format="integer"/>
+        <attr name="thumbnail" format="string"/>
+
 
     </declare-styleable>
 
