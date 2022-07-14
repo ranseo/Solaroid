@@ -39,8 +39,9 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         val dataSource = SolaroidDatabase.getInstance(application)
 
         val albumId = args.albumId
+        val albumKey = args.albumKey
 
-        viewModelFactory = GalleryViewModelFactory(dataSource.photoTicketDao, application, albumId)
+        viewModelFactory = GalleryViewModelFactory(dataSource.photoTicketDao, application, albumId, albumKey)
         viewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
         val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->
@@ -64,7 +65,9 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         navgiateToOtherFragment()
 
 
-        setOnItemSelectedListener(binding.galleryBottomNavi)
+
+
+        //setOnItemSelectedListener(binding.galleryBottomNavi)
         filterDialogFragment = FilterDialogFragment(this)
         return binding.root
 
@@ -79,28 +82,30 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
             it.getContentIfNotHandled()?.let { photoTicket->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
                 val albumId = viewModel.albumId
+                val albumKey = viewModel.albumKey
                 findNavController().navigate(
                     GalleryFragmentDirections.actionGalleryToFrame(
                         filter,
                         photoTicket,
-                        albumId
+                        albumId,
+                        albumKey
                     )
                 )
             }
         }
 
         viewModel.naviToAdd.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { id ->
+            it.getContentIfNotHandled()?.let { aiak ->
                 findNavController().navigate(
-                    GalleryFragmentDirections.actionGalleryToAdd(id)
+                    GalleryFragmentDirections.actionGalleryToAdd(aiak.first, aiak.second)
                 )
             }
         }
 
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { id ->
+            it.getContentIfNotHandled()?.let { aiak ->
                 findNavController().navigate(
-                    GalleryFragmentDirections.actionGalleryToCreate(id)
+                    GalleryFragmentDirections.actionGalleryToCreate(aiak.first, aiak.second)
                 )
             }
         }
@@ -137,29 +142,28 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
     }
 
 
-    private fun setOnItemSelectedListener(
-        botNavi: BottomNavigationView
-    ) {
-        botNavi.setOnItemSelectedListener { it ->
-            when (it.itemId) {
-                R.id.home -> {
-                    viewModel.navigateToHome()
-                    true
-                }
-                R.id.album -> {
-                    true
-                }
-
-                R.id.add -> {
-                    viewModel.navigateToAdd()
-                    true
-
-                }
-                else -> false
-            }
-
-        }
-    }
+//    private fun setOnItemSelectedListener(
+//        botNavi: BottomNavigationView
+//    ) {
+//        botNavi.setOnItemSelectedListener { it ->
+//            when (it.itemId) {
+//                R.id.home -> {
+//                    viewModel.navigateToHome()
+//                    true
+//                }
+//                R.id.album -> {
+//                    true
+//                }
+//
+//                R.id.add -> {
+//                    viewModel.navigateToAdd()
+//                    true
+//
+//                }
+//                else -> false
+//            }
+//        }
+//    }
 
     override fun onFilterDesc() {
         viewModel.setFilter("DESC")

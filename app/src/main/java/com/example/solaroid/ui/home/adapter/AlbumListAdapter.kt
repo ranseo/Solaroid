@@ -74,7 +74,7 @@ class AlbumListAdapter() :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: RequestAlbum) {
-
+            binding.album = item
         }
 
         companion object {
@@ -91,6 +91,8 @@ class AlbumListAdapter() :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Album) {
+            binding.album = item
+            binding.ivAlbum.setImageBitmap(item.thumbnail)
 
         }
 

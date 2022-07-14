@@ -47,8 +47,9 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 //
         val key = args.photoTicketKey
         val albumId = args.albumId
+        val albumKey = args.albumKey
 
-        viewModelFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao, application, albumId)
+        viewModelFactory = SolaroidEditFragmentViewModelFactory(key, dataSource.photoTicketDao, application, albumId, albumKey)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidEditFragmentViewModel::class.java]
 
         binding.viewmodel = viewModel

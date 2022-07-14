@@ -9,7 +9,7 @@ import com.example.solaroid.models.domain.RequestAlbum
 data class FirebaseAlbum(
     val id: String,
     val name: String,
-    val thumbnail: ByteArray,
+    val thumbnail: String,
     val participants:String,
     val key: String
 ) {

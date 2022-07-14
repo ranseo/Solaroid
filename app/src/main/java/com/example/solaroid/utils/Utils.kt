@@ -28,10 +28,10 @@ fun convertHexStringToLongFormat(str: String): Long {
     return str.substring(1..4).toLong(16)
 }
 
-fun getAlbumIdWithFriendCodes(friendCodes: List<String>, albumNumbering: Int): String {
+fun getAlbumIdWithFriendCodes(friendCodes: List<String>): String {
     return friendCodes.fold("") { acc, v ->
-        acc + v
-    } + "N.${albumNumbering}"
+        acc + v.drop(1) + "|"
+    }.dropLast(1)
 }
 
 fun getAlbumNameWithFriendsNickname(nickname: List<String>): String {

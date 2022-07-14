@@ -3,7 +3,6 @@ package com.example.solaroid.ui.album.viewmodel
 import android.graphics.Bitmap
 import androidx.lifecycle.*
 import com.example.solaroid.Event
-import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.album.RequestAlbumDataSource
 import com.example.solaroid.datasource.album.WithAlbumDataSource
@@ -14,7 +13,7 @@ import com.example.solaroid.getAlbumPariticipantsWithFriendCodes
 import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.models.domain.RequestAlbum
-import com.example.solaroid.models.room.DatabaseAlbum
+import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.album.AlbumRequestRepositery
 import com.example.solaroid.repositery.album.WithAlbumRepositery
@@ -22,9 +21,8 @@ import com.example.solaroid.repositery.friend.FriendListRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
-import kotlinx.coroutines.Dispatchers
+import com.example.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 enum class AlbumType {
     ALL,
@@ -74,18 +72,20 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     //album을 생서(create) 할 때 사용되는 프로퍼티들
 
-    private val _createAlbum =
+    private val _startCreateAlbum =
         MutableLiveData<Event<List<FriendListDataItem.DialogProfileDataItem>>>()
-    val createAlbum: LiveData<Event<List<FriendListDataItem.DialogProfileDataItem>>>
-        get() = _createAlbum
+    val startCreateAlbum: LiveData<Event<List<FriendListDataItem.DialogProfileDataItem>>>
+        get() = _startCreateAlbum
 
     var createId: String = ""
     var createName: String = ""
     var createThumbnail: Bitmap? = null
     var createParticipants: String = ""
 
-    //
-    var albumNumbering = 0
+    private val _createReady = MutableLiveData<Event<Unit?>>()
+    val createReady : LiveData<Event<Unit?>>
+        get() = _createReady
+
 
     private fun checkAlbumType(
         normal: LiveData<List<Album>>,
@@ -129,17 +129,18 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         }
     }
 
-    fun onCreateAlbum() {
+    fun onCreateAlbumBtn() {
         viewModelScope.launch {
             val list = myFriendList.value ?: listOf()
-            _createAlbum.value = Event(list)
+            _startCreateAlbum.value = Event(list)
         }
     }
 
     fun addParticipants(participants: List<Friend>) {
+
         createParticipants = getAlbumPariticipantsWithFriendCodes(participants.map {
             it.friendCode
-        })
+        }+ myProfile.value!!.friendCode)
     }
 
     fun setNullCreateProperty() {
@@ -153,6 +154,39 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         createId = _albumId
         createName = _albumName
         createThumbnail = _thumbnail
+    }
+
+    fun setCreateReady() {
+        _createReady.value = Event(Unit)
+    }
+
+
+    fun createAlbum() {
+        viewModelScope.launch {
+            val firebaseAlbum = FirebaseAlbum(
+                id = createId,
+                name = createName,
+                participants = createParticipants,
+                thumbnail = BitmapUtils.bitmapToString(createThumbnail!!),
+                key = ""
+            )
+
+
+            albumRepostiery.setValue(firebaseAlbum, createId)
+
+            val requestAlbum = RequestAlbum(
+                id = createId,
+                name = createName,
+                participant = createParticipants
+            )
+
+            albumRequestRepositery.setValueToParticipants(requestAlbum)
+        }
+    }
+
+    fun removeListener() {
+        albumRequestRepositery.removeListener(myProfile.value!!.friendCode.drop(1))
+        albumRepostiery.removeListener()
     }
 
 

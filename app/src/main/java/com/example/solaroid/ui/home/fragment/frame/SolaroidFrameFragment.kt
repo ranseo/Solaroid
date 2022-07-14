@@ -49,13 +49,15 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         val filter = args.filter
         val photoTicket = args.photoTicket
         val albumId = args.albumId
+        val albumKey = args.albumKey
 
         viewModelFactory = SolaroidFrameViewModelFactory(
             dataSource.photoTicketDao,
             application,
             PhotoTicketFilter.convertStringToFilter(filter),
             photoTicket,
-            albumId
+            albumId,
+            albumKey
         )
 
         viewModel = ViewModelProvider(
@@ -199,10 +201,12 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         viewModel.naviToEditFrag.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { key ->
                 val albumId = viewModel.albumId
+                val albumKey = viewModel.albumKey
                 findNavController().navigate(
                     SolaroidFrameFragmentDirections.actionFrameToEdit(
                         key,
-                        albumId
+                        albumId,
+                        albumKey
                     )
                 )
             }

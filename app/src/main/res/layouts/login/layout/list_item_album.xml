@@ -4,6 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="album"
+            type="com.example.solaroid.models.domain.Album" />
 
     </data>
 
@@ -23,6 +26,7 @@
 
         <TextView
             android:id="@+id/tv_album"
+            android:text="@{album.name}"
             tools:text="란서's 사진첩"
             android:textColor="@color/black"
             android:layout_width="match_parent"

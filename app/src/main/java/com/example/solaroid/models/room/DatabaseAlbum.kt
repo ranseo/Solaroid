@@ -13,7 +13,7 @@ data class DatabaseAlbum(
     val id: String,
     @ColumnInfo(name = "album_name")
     var name: String,
-    var thumbnail: ByteArray,
+    var thumbnail: String,
     val participants:String,
     val key: String
 ) {
@@ -24,8 +24,15 @@ fun DatabaseAlbum.asDomainModel() : Album {
     return Album(
         id,
         name,
-        BitmapUtils.convertByteArrayToBitmap(thumbnail),
-        participants
+        BitmapUtils.stringToBitmap(thumbnail),
+        participants,
+    )
+}
+
+fun DatabaseAlbum.asHomeAlbum() : DatabaseHomeAlbum {
+    return DatabaseHomeAlbum(
+        true,
+        id
     )
 }
 

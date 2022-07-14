@@ -77,7 +77,7 @@ interface DatabasePhotoTicketDao {
     fun getAllAlbum() : LiveData<List<DatabaseAlbum>>
 
     @Query("SELECT * FROM album_table WHERE id == :id")
-    fun getAlbum(id:String) : LiveData<DatabaseAlbum>
+    suspend fun getAlbum(id:String) : DatabaseAlbum
 
     //home Album
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -101,6 +101,9 @@
             android:name="albumId"
             app:argType="string"
             />
+        <argument
+            app:argType="string"
+            android:name="albumKey"/>
 
 
     </fragment>
@@ -135,6 +138,9 @@
         <argument
             android:name="albumId"
             app:argType="string"/>
+        <argument
+            app:argType="string"
+            android:name="albumKey"/>
 
     </fragment>
     <fragment
@@ -156,6 +162,9 @@
         <argument
             android:name="albumId"
             app:argType="string"/>
+        <argument
+            app:argType="string"
+            android:name="albumKey"/>
     </fragment>
 
 
@@ -177,6 +186,9 @@
             android:name="albumId"
             app:argType="string"
             />
+        <argument
+            app:argType="string"
+            android:name="albumKey"/>
     </fragment>
 
 
@@ -209,9 +221,7 @@
         android:name="com.example.solaroid.ui.home.fragment.gallery.GalleryFragment"
         tools:layout="@layout/fragment_solaroid_gallery">
 
-        <argument
-            app:argType="string"
-            android:name="albumId"/>
+
 
         <action
             android:id="@+id/action_gallery_to_frame"
@@ -240,7 +250,12 @@
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>
-
+        <argument
+            app:argType="string"
+            android:name="albumId"/>
+        <argument
+            app:argType="string"
+            android:name="albumKey"/>
 
     </fragment>
 

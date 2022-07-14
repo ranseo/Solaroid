@@ -116,6 +116,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.naviationViewMain.navView.setNavigationItemSelectedListener(this)
 
+
         //
 //        navController.addOnDestinationChangedListener{_,destination,_ ->
 //            val id = destination.id

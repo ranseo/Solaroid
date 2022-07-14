@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="album"
+            type="com.example.solaroid.models.domain.RequestAlbum" />
+
 
     </data>
 
@@ -15,7 +19,7 @@
             android:id="@+id/iv_album"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            tools:src="@drawable/ic_baseline_photo_album_24"
+            android:src="@drawable/ic_baseline_photo_album_24"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -23,6 +27,7 @@
 
         <TextView
             android:id="@+id/tv_album"
+            android:text="@{album.name}"
             tools:text="란서's 사진첩"
             android:textColor="@color/black"
             android:layout_width="match_parent"

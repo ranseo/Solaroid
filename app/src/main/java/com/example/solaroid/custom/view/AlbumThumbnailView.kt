@@ -13,6 +13,9 @@ import androidx.core.net.toUri
 import com.example.solaroid.R
 import com.example.solaroid.parseProfileImgStringToList
 import com.example.solaroid.utils.BitmapUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 //Coordinator Compute
 typealias CC = Pair<Float, Float>
@@ -23,6 +26,7 @@ class AlbumThumbnailView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val TAG = "AlbumThumbnailView"
 
     private var radius = 0.0f
@@ -37,9 +41,9 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
     private val pointPosition: PointF = PointF(0.0f, 0.0f)
 
-    private var participants = 0
+    var participants = 0
 
-    private var thumbnailString : String = ""
+    var thumbnailString : String = ""
     private var thumbnailList : MutableList<Bitmap> = mutableListOf()
     private var thumbnailUri : Uri? = null
 
@@ -49,13 +53,14 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
 
     init {
-        context.withStyledAttributes(attrs, R.styleable.AlbumThumbnailView) {
-            participants = getInteger(R.styleable.AlbumThumbnailView_participants, 1) - 1
-            thumbnailString = getString(R.styleable.AlbumThumbnailView_thumbnail).toString()
-            for(str in parseProfileImgStringToList(thumbnailString)) {
-                thumbnailList.add(BitmapUtils.convertUriToBitmap(str.toUri(), context))
-            }
-        }
+//        context.withStyledAttributes(attrs, R.styleable.AlbumThumbnailView) {
+////            participants = (getString(R.styleable.AlbumThumbnailView_participants)?.toInt() ?: 1) - 1
+////            thumbnailString = getString(R.styleable.AlbumThumbnailView_thumbnail).toString()
+//            for(str in parseProfileImgStringToList(thumbnailString)) {
+//                thumbnailList.add(BitmapUtils.convertUriToBitmap(str.toUri(), context))
+//            }
+//        }
+
 
 
     }
@@ -73,6 +78,13 @@ class AlbumThumbnailView @JvmOverloads constructor(
             2 -> 1.1f
             else -> 1f
         }
+
+        for(str in parseProfileImgStringToList(thumbnailString)) {
+            coroutineScope.launch {
+                thumbnailList.add(BitmapUtils.loadImage(str)!!)
+            }
+        }
+
 
         for(i in 0..participants) {
             thumbnailList[i] = Bitmap.createScaledBitmap(thumbnailList[i], w,h,true)

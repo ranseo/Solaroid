@@ -13,7 +13,12 @@ import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import kotlinx.coroutines.launch
 
-class SolaroidPhotoCreateViewModel(application: Application, dataSource: DatabasePhotoTicketDao, albumId:String) :
+class SolaroidPhotoCreateViewModel(
+    application: Application,
+    dataSource: DatabasePhotoTicketDao,
+    albumId: String,
+    albumKey: String
+) :
     AndroidViewModel(application) {
 
     private val database = dataSource
@@ -22,9 +27,16 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage = FirebaseManager.getStorageInstance()
 
-    private val photoTicketRepositery = PhotoTicketRepositery(dataSource = database, fbAuth , fbDatabase ,fbStorage, PhotoTicketListenerDataSource())
+    private val photoTicketRepositery = PhotoTicketRepositery(
+        dataSource = database,
+        fbAuth,
+        fbDatabase,
+        fbStorage,
+        PhotoTicketListenerDataSource()
+    )
 
     private val albumId = albumId
+    private val albumKey = albumKey
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
@@ -56,18 +68,18 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
 
 
     //image_spin 버튼 클릭 시, 포토티켓의 반대면을 보여주는 프로퍼티티
-   private val _imageSpin = MutableLiveData(false)
+    private val _imageSpin = MutableLiveData(false)
     val imageSpin: LiveData<Boolean>
         get() = _imageSpin
 
     //progressBar Visible
     private val _isProgressBar = MutableLiveData<Boolean>(false)
-    val isProgressBar : LiveData<Boolean>
+    val isProgressBar: LiveData<Boolean>
         get() = _isProgressBar
 
 
     private val _naviToFrameFrag = MutableLiveData<Event<Any?>>()
-    val naviToFrameFrag : LiveData<Event<Any?>>
+    val naviToFrameFrag: LiveData<Event<Any?>>
         get() = _naviToFrameFrag
 
 
@@ -90,12 +102,13 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
     }
 
 
-    val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0,13)
+    val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0, 13)
 
 
     fun onTextChangedFront(s: CharSequence) {
         frontText = s.toString()
     }
+
     fun onTextChangedBack(s: CharSequence) {
         _backText.value = s.toString()
     }
@@ -130,7 +143,7 @@ class SolaroidPhotoCreateViewModel(application: Application, dataSource: Databas
             Log.i(TAG, "onImageSave()")
 
             _isProgressBar.value = true
-            photoTicketRepositery.insertPhotoTickets(albumId, new, getApplication())
+            photoTicketRepositery.insertPhotoTickets(albumId, albumKey, new, getApplication())
             _isProgressBar.value = false
             forReadyNewImage()
         }

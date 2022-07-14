@@ -35,8 +35,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/photoTicket_rec"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="55dp"
+                android:layout_height="0dp"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:layout_constraintBottom_toTopOf="@id/gallery_bottom_navi"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +50,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/bot_navi_color"
-                app:labelVisibilityMode="labeled"
+                app:labelVisibilityMode="selected"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

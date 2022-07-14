@@ -15,7 +15,7 @@ import com.example.solaroid.getAlbumNameWithFriendsNickname
 import com.example.solaroid.joinProfileImgListToString
 import com.example.solaroid.models.domain.Friend
 
-class AlbumCreateDialog(val listener : AlbumCreateDialogListener ,val participants : List<Friend>, val albumNumbering:Int) : DialogFragment() {
+class AlbumCreateDialog(val listener : AlbumCreateDialogListener ,val participants : List<Friend>) : DialogFragment() {
 
     private lateinit var binding : FragmentAlbumCreateBinding
 
@@ -36,10 +36,12 @@ class AlbumCreateDialog(val listener : AlbumCreateDialogListener ,val participan
     ): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_album_create, container, false)
         albumName = getAlbumNameWithFriendsNickname(participants.map { it.nickname })
-        albumId = getAlbumIdWithFriendCodes(participants.map{it.friendCode}, albumNumbering)
+        albumId = getAlbumIdWithFriendCodes(participants.map{it.friendCode})
 
-        binding.participants = participants.size
+
+
         binding.thumbnail = joinProfileImgListToString(participants)
+        binding.participants = participants.size
         binding.tvAlbumName.text = albumName
 
 

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application, albumId:String) :
+class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application, albumId:String, albumKey:String) :
     AndroidViewModel(application) {
 
     private val database = dataSource
@@ -32,6 +32,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage, PhotoTicketListenerDataSource())
 
     private val albumId = albumId
+    private val albumKey = albumKey
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
@@ -154,7 +155,7 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
                 favorite = false
             )
 
-            photoTicketRepositery.insertPhotoTickets(albumId, new, getApplication())
+            photoTicketRepositery.insertPhotoTickets(albumId, albumKey, new, getApplication())
             clearAddPhotoTicket()
         }
     }

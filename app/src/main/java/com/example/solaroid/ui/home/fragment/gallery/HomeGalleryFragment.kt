@@ -7,6 +7,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.example.solaroid.R
 import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
@@ -47,9 +49,21 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        viewModel.homeAlbum.observe(viewLifecycleOwner) { album ->
-            viewModel.refreshFirebaseListener(album.id)
+        viewModel.albumId.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                Log.i(TAG,"viewModel.albumId.observe : ${it}")
+                viewModel.setAlbum(it)
+            }
+
         }
+
+        viewModel.album.observe(viewLifecycleOwner) { it ->
+            it?.let { album ->
+                Log.i(TAG, "homeAlbum -> id : ${album.id}, key : ${album.key}")
+                viewModel.refreshFirebaseListener(album.id, album.key)
+            }
+        }
+
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
                 Log.i(TAG, "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list} }")
@@ -59,11 +73,18 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
         navgiateToOtherFragment()
 
-
+        //binding.galleryBottomNavi.setupWithNavController(findNavController())
         setOnItemSelectedListener(binding.galleryBottomNavi)
+        binding.galleryBottomNavi.itemIconTintList = null
+
         filterDialogFragment = FilterDialogFragment(this)
         return binding.root
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.galleryBottomNavi.menu.findItem(R.id.home).isChecked = true
     }
 
     /**
@@ -72,37 +93,41 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
      * */
     private fun navgiateToOtherFragment() {
         viewModel.naviToFrame.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { photoTicket->
+            it.getContentIfNotHandled()?.let { photoTicket ->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
-                val albumId = viewModel.homeAlbumId.value
-                findNavController().navigate(
+                val album = viewModel.album.value
+                val albumId = album?.id
+                val albumKey = album?.key
+
+                if (albumId != null && albumKey != null) findNavController().navigate(
                     HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
                         filter,
                         photoTicket,
-                        albumId
+                        albumId,
+                        albumKey
                     )
                 )
             }
         }
 
         viewModel.naviToAdd.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { id ->
+            it.getContentIfNotHandled()?.let { aiak ->
                 findNavController().navigate(
-                    HomeGalleryFragmentDirections.actionHomeGalleryToAdd(id)
+                    HomeGalleryFragmentDirections.actionHomeGalleryToAdd(aiak.first, aiak.second)
                 )
             }
         }
 
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { id ->
+            it.getContentIfNotHandled()?.let { aiak ->
                 findNavController().navigate(
-                    HomeGalleryFragmentDirections.actionHomeGalleryToCreate(id)
+                    HomeGalleryFragmentDirections.actionHomeGalleryToCreate(aiak.first, aiak.second)
                 )
             }
         }
 
         viewModel.naviToAlbum.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     HomeGalleryFragmentDirections.actionHomeGalleryToAlbum()
                 )
@@ -141,6 +166,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         botNavi.setOnItemSelectedListener { it ->
             when (it.itemId) {
                 R.id.home -> {
+
                     true
                 }
                 R.id.album -> {
@@ -155,7 +181,6 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
                 }
                 else -> false
             }
-
         }
     }
 
@@ -172,8 +197,10 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+
         viewModel.removeListener()
+        super.onDestroy()
+
     }
 
 

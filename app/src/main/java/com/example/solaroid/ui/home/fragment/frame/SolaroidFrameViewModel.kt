@@ -21,7 +21,8 @@ class SolaroidFrameViewModel(
     application: Application,
     filter: PhotoTicketFilter,
     photoTicket: PhotoTicket,
-    _albumId:String
+    _albumId:String,
+    _albumKey:String
 ) :
     AndroidViewModel(application) {
 
@@ -58,6 +59,7 @@ class SolaroidFrameViewModel(
     }
 
     val albumId : String
+    val albumKey: String
 
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
@@ -114,6 +116,7 @@ class SolaroidFrameViewModel(
     init {
         Log.i(TAG, "뷰모델 Init()")
         albumId = _albumId
+        albumKey = _albumKey
         _startPhotoTicket.value = photoTicket
     }
 
@@ -170,7 +173,7 @@ class SolaroidFrameViewModel(
             currPhotoTicket.value?.let {
                 it.favorite = it.favorite != true
                 Log.i(TAG, "updatePhotoTicketFavorite() : ${it.favorite}")
-                photoTicketRepositery.updatePhotoTickets(albumId, it, getApplication())
+                photoTicketRepositery.updatePhotoTickets(albumId, albumKey, it, getApplication())
             }
         }
     }
@@ -180,7 +183,7 @@ class SolaroidFrameViewModel(
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            photoTicketRepositery.deletePhotoTickets(albumId,key, getApplication())
+            photoTicketRepositery.deletePhotoTickets(albumId,albumKey,key, getApplication())
         }
     }
 

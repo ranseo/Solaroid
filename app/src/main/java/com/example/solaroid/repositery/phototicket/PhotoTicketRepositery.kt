@@ -73,11 +73,10 @@ class PhotoTicketRepositery(
      * 화면에 띄우기 위해 firebase의 실시간 데이버테이스로 부터 FirebasePhotoTicket을 불러오고 이를 다시 room database에 insert하는
      * ValueEventListener를 등록하여 refresh하는 함수.
      * */
-    suspend fun refreshPhotoTickets(albumId:String, insertRoomDb: (List<FirebasePhotoTicket>) -> Unit) =
+    suspend fun refreshPhotoTickets(albumId:String, albumKey:String , insertRoomDb: (List<FirebasePhotoTicket>) -> Unit) =
         withContext(Dispatchers.IO) {
-            val user = fbAuth.currentUser!!
             listener = photoTicketListenerDataSource.setPhotoTicketList(insertRoomDb)
-            val ref = fbDatabase.reference.child("photoTicket").child(albumId)
+            val ref = fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey)
             ref.addValueEventListener(listener!!)
         }
 
@@ -86,7 +85,7 @@ class PhotoTicketRepositery(
      * 해당 함수에서는 업데이트할 포토티켓(Domaain Model)을 매개변수로 전달 받아 RoomDatabase와 Firebase의 실시간데이터베이스 및 storaage(url업데이트 시) 내에
      * 포토티켓 정보를 업데이트 한다.
      * */
-    suspend fun updatePhotoTickets(albumId:String ,photoTicket: PhotoTicket, application: Application) {
+    suspend fun updatePhotoTickets(albumId:String, albumKey:String ,photoTicket: PhotoTicket, application: Application) {
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
             val key = photoTicket.id
@@ -96,7 +95,7 @@ class PhotoTicketRepositery(
             dataSource.update(new)
 
             //firebase database update
-            val ref = fbDatabase.reference.child("photoTicket").child(albumId).child(key)
+            val ref = fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey).child(key)
 
             ref.setValue(new.asFirebaseModel()).addOnFailureListener {
                 Log.d(TAG, "Network Connection Error : ${it.message}")
@@ -113,7 +112,7 @@ class PhotoTicketRepositery(
      * 해당 함수에서는 삭제할 포토티켓을 매개변수로 전달 받아 RoomDatabase와 Firebase 실시간 데이터 베이스 및 Storage 내에
      * 포토티켓 정보를 삭제한다.
      * */
-    suspend fun deletePhotoTickets(albumId:String ,key: String, application: Application) {
+    suspend fun deletePhotoTickets(albumId:String, albumKey:String ,key: String, application: Application) {
         withContext(Dispatchers.IO) {
 
             //room delete
@@ -126,7 +125,7 @@ class PhotoTicketRepositery(
 
             //firebase database delete
             val ref =
-                fbDatabase.reference.child("photoTicket").child(albumId).child(key)
+                fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey).child(key)
             ref.removeValue().addOnFailureListener {
                 Log.d(TAG, "Network Connection Error : ${it.message}")
                 //Toast -> SnackBar 로 변경
@@ -160,10 +159,10 @@ class PhotoTicketRepositery(
      * 해당 함수에서는 삽입할 포토티켓을 매개변수로 전달 받아 RoomDatabase 및 Realtime database
      * 내에 포토티켓 정보를 삽입한다. Firebase Storage 내에는 파일 (URL) 정보를 입력한다.
      * */
-    suspend fun insertPhotoTickets(albumId:String, photoTicket: PhotoTicket, application: Application) {
+    suspend fun insertPhotoTickets(albumId:String, albumKey:String, photoTicket: PhotoTicket, application: Application) {
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
-            val insertRef = fbDatabase.reference.child("photoTicket").child(albumId).push()
+            val insertRef = fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey).push()
             val key = insertRef.key ?: ""
             var new = photoTicket.asFirebaseModel(key)
             var file: Uri? = null
@@ -267,9 +266,8 @@ class PhotoTicketRepositery(
 
     }
 
-    fun removeListener() {
-        val userUID = fbAuth.currentUser!!.uid
-        val ref = fbDatabase.reference.child("photoTicket").child(userUID)
+    fun removeListener(albumId:String, albumKey:String) {
+        val ref = fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey)
         ref.removeEventListener(listener!!)
     }
 

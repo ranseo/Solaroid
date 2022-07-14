@@ -2,11 +2,14 @@ package com.example.solaroid.ui.login.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.lifecycle.*
 import com.example.solaroid.*
 import com.example.solaroid.datasource.album.AlbumDataSource
+import com.example.solaroid.datasource.album.WithAlbumDataSource
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.models.firebase.asDatabaseModel
 import com.example.solaroid.models.room.DatabaseProfile
@@ -14,7 +17,10 @@ import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.models.firebase.FirebaseAlbum
+import com.example.solaroid.models.room.asHomeAlbum
 import com.example.solaroid.repositery.album.AlbumRepositery
+import com.example.solaroid.repositery.album.HomeAlbumRepositery
+import com.example.solaroid.repositery.album.WithAlbumRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.repositery.user.UsersRepositery
 import com.example.solaroid.room.DatabasePhotoTicketDao
@@ -37,6 +43,8 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
         ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource, MyProfileDataSource())
     val usersRepositery = UsersRepositery(fbAuth, fbDatabase, fbStorage)
     val albumRepostiery = AlbumRepositery(dataSource, fbAuth, fbDatabase, AlbumDataSource())
+    val withAlbumRepositery = WithAlbumRepositery(fbAuth, fbDatabase, WithAlbumDataSource())
+    val homeAlbumRepositery = HomeAlbumRepositery(dataSource)
 
     enum class ProfileErrorType {
         IMAGEERROR, NICKNAMEERROR, ISRIGHT, EMPTY
@@ -184,6 +192,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     fun insertAndNavigateMain(profile: FirebaseProfile) {
         viewModelScope.launch {
             setValueFirstAlbum(profile)
@@ -256,21 +265,40 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
      * 만약 isAlbum의 값이 false일 경우, 아직 아무런 album이 생성되어있지 않다는 뜻이므로
      * 새로운 앨범을 만들고 해당 앨범을 홈 앨범으로 만든다.
      * */
+    @RequiresApi(Build.VERSION_CODES.P)
     suspend fun setValueFirstAlbum(profile: FirebaseProfile) {
-        val friendCode = convertLongToHexStringFormat(profile.friendCode)
-        val albumId = getAlbumIdWithFriendCodes(listOf(friendCode), 0)
-        val albumName = getAlbumNameWithFriendsNickname(listOf(profile.nickname))
-        val participants = getAlbumPariticipantsWithFriendCodes(listOf(friendCode))
-        val byteArray = BitmapUtils.convertUriToByteArray(profile.profileImg.toUri(),getApplication())
-        val firebaseAlbum = FirebaseAlbum(
-            albumId,
-            albumName,
-            byteArray!!,
-            participants,
-            ""
-        )
+        withContext(Dispatchers.IO) {
+            val friendCode = convertLongToHexStringFormat(profile.friendCode)
+            val albumId = getAlbumIdWithFriendCodes(listOf(friendCode))
+            val albumName = getAlbumNameWithFriendsNickname(listOf(profile.nickname))
+            val participants = getAlbumPariticipantsWithFriendCodes(listOf(friendCode))
+            val loadImageBitmap = BitmapUtils.loadImage(profile.profileImg)
+            val bitmapString = BitmapUtils.bitmapToString(loadImageBitmap!!)
+            //Log.i(TAG, "albumId : ${albumId}, albumName : ${albumName}, participants: ${participants}, bitmapString  : ${bitmapString}")
 
-        albumRepostiery.setValue(firebaseAlbum, albumId)
+
+
+            val firebaseAlbum = FirebaseAlbum(
+                albumId,
+                albumName,
+                bitmapString,
+                participants,
+                ""
+            )
+            launch {
+                withAlbumRepositery.setValue(profile, albumId)
+            }.join()
+            launch {
+                albumRepostiery.setValueInProfile(firebaseAlbum, albumId) {
+                    viewModelScope.launch {
+                        albumRepostiery.insertRoomAlbum(it)
+                    }
+                }
+                homeAlbumRepositery.insertRoomHomeAlbum(firebaseAlbum.asDatabaseModel().asHomeAlbum())
+            }.join()
+
+
+        }
     }
 
     companion object {
@@ -281,6 +309,8 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
     suspend fun insertProfile(profile: DatabaseProfile) {
         dataSource.insert(profile)
     }
+
+
 
 
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -18,12 +19,21 @@ import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidAddChoiceBinding
 import com.example.solaroid.dialog.ChoiceDialogFragment
 
-class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogListener {
+class SolaroidAddChoiceFragment() : Fragment(), ChoiceDialogFragment.ChoiceDialogListener {
 
     private lateinit var viewModel: SolaroidAddViewModel
     private lateinit var viewModelFactory: SolaroidAddViewModelFactory
 
     private lateinit var backPressCallback :OnBackPressedCallback
+
+    private lateinit var albumId : String
+    private lateinit var albumKey : String
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,10 +46,10 @@ class SolaroidAddChoiceFragment : Fragment(), ChoiceDialogFragment.ChoiceDialogL
             container,
             false
         )
-
+        val albumArgs = arguments?.getString("albumArgs")?.split("|")!!
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
-        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
+        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application,albumArgs[0],albumArgs[1])
         viewModel = ViewModelProvider(
             requireParentFragment(),
             viewModelFactory

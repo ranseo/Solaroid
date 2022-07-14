@@ -1,8 +1,10 @@
 package com.example.solaroid.solaroidframe
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.solaroid.R
 import com.example.solaroid.adapter.SolaroidFrameAdapter
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
+import com.example.solaroid.custom.view.AlbumThumbnailView
 import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.ui.friend.adapter.FriendListAdatper
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
@@ -49,7 +52,6 @@ fun bindRecycler(recyclerView: RecyclerView, profiles: List<FriendListDataItem>?
 @BindingAdapter("setImage")
 fun bindImage(imageView: ImageView, imgUri: String?) {
     imgUri?.let {
-
         val uri = imgUri.toUri()
         Glide.with(imageView.context)
             .load(uri).apply(
@@ -74,3 +76,17 @@ fun bindImage (imageView: ImageView, imgUri: Uri?) {
             .into(imageView)
     }
 }
+
+
+@RequiresApi(Build.VERSION_CODES.P)
+@BindingAdapter("participants")
+fun setParticipants(albumThumbnailView: AlbumThumbnailView, participants:Int) {
+    albumThumbnailView.participants = participants
+}
+
+@RequiresApi(Build.VERSION_CODES.P)
+@BindingAdapter("thumbnail")
+fun setThumbnail(albumThumbnailView: AlbumThumbnailView, thumbnail:String) {
+    albumThumbnailView.thumbnailString = thumbnail
+}
+

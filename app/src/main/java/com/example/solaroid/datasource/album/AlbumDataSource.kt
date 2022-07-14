@@ -20,7 +20,7 @@ class AlbumDataSource  {
                     val album = FirebaseAlbum(
                         id = hashMap["id"] as String,
                         name = hashMap["name"] as String,
-                        thumbnail= hashMap["thumbnail"] as ByteArray,
+                        thumbnail= hashMap["thumbnail"] as String,
                         participants = hashMap["participants"] as String,
                         key = hashMap["key"] as String
                     ).asDatabaseModel()

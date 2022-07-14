@@ -57,9 +57,10 @@ class SolaroidPhotoCreateFragment : Fragment() {
         application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
         val albumId = args.albumId
+        val albumKey = args.albumKey
 
         viewModelFactory =
-            SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application, albumId)
+            SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application, albumId, albumKey)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[SolaroidPhotoCreateViewModel::class.java]
 

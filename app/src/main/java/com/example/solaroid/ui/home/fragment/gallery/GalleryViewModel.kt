@@ -22,7 +22,8 @@ import kotlinx.coroutines.*
 class GalleryViewModel(
     dataSource: DatabasePhotoTicketDao,
     application: Application,
-    _albumId: String
+    _albumId: String,
+    _albumKey: String
 ) :
     AndroidViewModel(application) {
 
@@ -38,6 +39,7 @@ class GalleryViewModel(
     )
 
     val albumId = _albumId
+    val albumKey = _albumKey
 
 
     private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
@@ -49,12 +51,12 @@ class GalleryViewModel(
     val naviToFrame: LiveData<Event<PhotoTicket>>
         get() = _naviToFrame
 
-    private val _naviToAdd = MutableLiveData<Event<String?>>()
-    val naviToAdd: LiveData<Event<String?>>
+    private val _naviToAdd = MutableLiveData<Event<AIAK>>()
+    val naviToAdd: LiveData<Event<AIAK>>
         get() = _naviToAdd
 
-    private val _naviToCreate = MutableLiveData<Event<String?>>()
-    val naviToCreate: LiveData<Event<String?>>
+    private val _naviToCreate = MutableLiveData<Event<AIAK>>()
+    val naviToCreate: LiveData<Event<AIAK>>
         get() = _naviToCreate
 
     private val _naviToHome = MutableLiveData<Event<Any?>>()
@@ -97,7 +99,7 @@ class GalleryViewModel(
         viewModelScope.launch {
             try {
                 val user = fbAuth.currentUser!!
-                photoTicketRepositery.refreshPhotoTickets(albumId) { firebasePhotoTickets ->
+                photoTicketRepositery.refreshPhotoTickets(albumId, albumKey) { firebasePhotoTickets ->
                     viewModelScope.launch(Dispatchers.Default) {
                         Log.i(TAG, "viewModelScope.launch(Dispatchers.IO) : ${this}")
                         insert(firebasePhotoTickets, user.email!!)
@@ -120,11 +122,11 @@ class GalleryViewModel(
     }
 
     fun navigateToAdd() {
-        _naviToAdd.value = Event(albumId)
+        _naviToAdd.value = Event(AIAK(albumId,albumKey))
     }
 
     fun navigateToCreate() {
-        _naviToCreate.value = Event(albumId)
+        _naviToCreate.value = Event(AIAK(albumId,albumKey))
     }
 
     fun navigateToHome() {
@@ -149,7 +151,7 @@ class GalleryViewModel(
 
 
     fun removeListener() {
-        photoTicketRepositery.removeListener()
+        photoTicketRepositery.removeListener(albumId, albumKey)
     }
 
 

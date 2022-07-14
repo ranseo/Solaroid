@@ -8,11 +8,9 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
+import androidx.fragment.app.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -24,6 +22,7 @@ import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidAddBinding
 import com.example.solaroid.dialog.DatePickerDialogFragment
 import com.example.solaroid.dialog.SaveDialogFragment
+import com.example.solaroid.ui.home.fragment.gallery.AIAK
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -56,23 +55,23 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
         val albumId = args.albumId
-
+        val albumKey= args.albumKey
         auth = FirebaseAuth.getInstance()
 
-        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application, albumId)
+        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application, albumId, albumKey)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-
-
-
         viewModel.naviToAddChoice.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
+
                 childFragmentManager.commit {
-                    add<SolaroidAddChoiceFragment>(R.id.fragment_add_container_view, TAG_ADD_CHOICE)
+                    add<SolaroidAddChoiceFragment>(R.id.fragment_add_container_view, TAG_ADD_CHOICE,
+                        bundleOf("albumArgs" to "$albumId|$albumKey"))
                 }
+
                 binding.addChoiceFragmentLayout.visibility = VISIBLE
             }
         })
