@@ -13,7 +13,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="500dp"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
@@ -25,7 +25,7 @@
             android:textAlignment="center"
             android:textStyle="bold"
             android:layout_marginTop="3dp"
-            android:layout_width="match_parent"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="20sp"
@@ -36,9 +36,9 @@
 
         <com.example.solaroid.custom.view.AlbumThumbnailView
             android:id="@+id/album_thumbnail"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="100dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            tools:participants="1"
             app:thumbnail="@{thumbnail.toString()}"
             app:participants="@{participants}"
             app:layout_constraintTop_toBottomOf="@id/tv_text"
@@ -52,10 +52,10 @@
             android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/album_thumbnail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/layout_group_btn"
             />
 
         <LinearLayout

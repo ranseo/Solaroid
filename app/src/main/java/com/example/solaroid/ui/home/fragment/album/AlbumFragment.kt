@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
@@ -18,6 +19,8 @@ import com.example.solaroid.databinding.FragmentAlbumBinding
 import com.example.solaroid.dialog.AlbumCreateDialog
 import com.example.solaroid.dialog.AlbumCreateParticipantsDialog
 import com.example.solaroid.models.domain.Friend
+import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.models.domain.asFriend
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.viewmodel.AlbumType
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
@@ -96,6 +99,14 @@ class AlbumFragment : Fragment(),
             }
         }
 
+        viewModel.naviToHome.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{
+                findNavController().navigate(
+                    AlbumFragmentDirections.actionAlbumToHomeGallery()
+                )
+            }
+        }
+
 
         setOnItemSelectedListener(binding.albumBottomNavi)
         binding.albumBottomNavi.itemIconTintList = null
@@ -109,12 +120,12 @@ class AlbumFragment : Fragment(),
     }
 
     fun showCreateParticipantsDialog(list: List<FriendListDataItem.DialogProfileDataItem>) {
-        val new = AlbumCreateParticipantsDialog(this, list)
+        val new = AlbumCreateParticipantsDialog(this, list, viewModel.myProfile.value!!)
         new.show(parentFragmentManager, "AlbumCreateParticipants")
     }
 
     fun showCreateDialog(list: List<Friend>) {
-        val new = AlbumCreateDialog(this, list)
+        val new = AlbumCreateDialog(this, list, viewModel.myProfile.value!!.asFriend(""))
         new.show(parentFragmentManager, "AlbumCreate")
     }
 
@@ -158,16 +169,17 @@ class AlbumFragment : Fragment(),
         botNavi.setOnItemSelectedListener { it ->
             when (it.itemId) {
                 R.id.home -> {
+                    viewModel.navigateToHome()
                     true
                 }
                 R.id.album -> {
                     true
                 }
-
                 R.id.add -> {
+                    viewModel.onCreateAlbumBtn()
                     true
-
                 }
+
                 else -> false
             }
         }

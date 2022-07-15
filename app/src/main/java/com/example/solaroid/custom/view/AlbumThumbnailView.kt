@@ -43,9 +43,9 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
     var participants = 0
 
-    var thumbnailString : String = ""
-    private var thumbnailList : MutableList<Bitmap> = mutableListOf()
-    private var thumbnailUri : Uri? = null
+    var thumbnailString: String = ""
+    private var thumbnailList: MutableList<Bitmap> = mutableListOf()
+    private var thumbnailUri: Uri? = null
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -62,34 +62,45 @@ class AlbumThumbnailView @JvmOverloads constructor(
 //        }
 
 
-
     }
 
-    private fun PointF.computeXYForThumbnail(cc:CC) {
+
+    private fun PointF.computeXYForThumbnail(cc: CC) {
         x = width * cc.first
         y = width * cc.second
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         length = (w / 2).toFloat()
-        radius = (StrictMath.min(w, h) / 4).toFloat() * when(participants) {
+        radius = (StrictMath.min(w, h) / 4).toFloat() * when (participants) {
             0 -> 1.5f
             1 -> 1.3f
             2 -> 1.1f
             else -> 1f
         }
 
-        for(str in parseProfileImgStringToList(thumbnailString)) {
+
+        if (!thumbnailString.isNullOrEmpty()) {
             coroutineScope.launch {
-                thumbnailList.add(BitmapUtils.loadImage(str)!!)
+                Log.i(TAG, "thumbnnailString :${thumbnailString}")
+
+                for (str in parseProfileImgStringToList(thumbnailString)) {
+                    launch(Dispatchers.IO) {
+                        thumbnailList.add(BitmapUtils.loadImage(str)!!)
+                    }.join()
+                }
+
+                Log.i(TAG, "thumbnailList :${thumbnailList}")
+
+                for (i in 0..participants) {
+                    launch {
+                        thumbnailList[i] = Bitmap.createScaledBitmap(thumbnailList[i], w, h, true)
+                    }.join()
+
+                }
+                invalidate()
             }
         }
-
-
-        for(i in 0..participants) {
-            thumbnailList[i] = Bitmap.createScaledBitmap(thumbnailList[i], w,h,true)
-        }
-
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -99,21 +110,21 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
             paint.color = Color.BLACK
 
-            for(i in 0..participants) {
+            for (i in 0..participants) {
                 pointPosition.computeXYForThumbnail(computationList[participants][i])
 
                 val rect = Rect(
-                    (pointPosition.x - length/2 ).toInt(),
-                    (pointPosition.y - length/2 ).toInt(),
-                    (pointPosition.x + length/2 ).toInt(),
-                    (pointPosition.y + length/2 ).toInt()
+                    (pointPosition.x - length / 2).toInt(),
+                    (pointPosition.y - length / 2).toInt(),
+                    (pointPosition.x + length / 2).toInt(),
+                    (pointPosition.y + length / 2).toInt()
                 )
 
                 //canvas!!.drawRect(rect,paint)
 
                 //canvas!!.drawBitmap(bitmap!!, null, rect, paint)
                 Log.i(TAG, "width: ${width}, height : ${height}")
-                canvas!!.drawBitmap(thumbnailList[i].getCircledBitmap(), null ,rect, paint)
+                canvas!!.drawBitmap(thumbnailList[i].getCircledBitmap(), null, rect, paint)
             }
 
 
@@ -133,7 +144,12 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
         paint.color = Color.WHITE
 
-        canvas.drawCircle((this.width/2).toFloat(),(this.height/2).toFloat(), (this.width/2).toFloat(), paint)
+        canvas.drawCircle(
+            (this.width / 2).toFloat(),
+            (this.height / 2).toFloat(),
+            (this.width / 2).toFloat(),
+            paint
+        )
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP)
         paint.color = Color.BLUE
         canvas.drawBitmap(this, rect, rect, paint)
@@ -141,5 +157,11 @@ class AlbumThumbnailView @JvmOverloads constructor(
         return output
     }
 
+}
 
+fun AlbumThumbnailView.getBitmapFromView(): Bitmap {
+    val bitmap = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    this.draw(canvas)
+    return bitmap
 }

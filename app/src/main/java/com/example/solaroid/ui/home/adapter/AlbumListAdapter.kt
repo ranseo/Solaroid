@@ -1,5 +1,6 @@
 package com.example.solaroid.ui.album.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,6 +10,7 @@ import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.databinding.ListItemAlbumBinding
 import com.example.solaroid.databinding.ListItemRequestAlbumBinding
+import com.example.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -93,10 +95,10 @@ class AlbumListAdapter() :
         fun bind(item: Album) {
             binding.album = item
             binding.ivAlbum.setImageBitmap(item.thumbnail)
-
         }
 
         companion object {
+            private val TAG = "NormalAlbumViewHolder"
             fun from(parent: ViewGroup): NormalAlbumViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemAlbumBinding.inflate(layoutInflater, parent, false)

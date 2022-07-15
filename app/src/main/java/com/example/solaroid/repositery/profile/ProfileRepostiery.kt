@@ -181,7 +181,8 @@ class ProfileRepostiery(
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     Log.i(TAG, " getProfileInfo() onDataChange")
-                    val hashMap = snapshot.value as HashMap<*, *>
+                    val hashMap = snapshot.value as HashMap<*, *>? ?: return
+
                     val profile = FirebaseProfile(
                         id = hashMap["id"]!! as String,
                         nickname = hashMap["nickname"]!! as String,

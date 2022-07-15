@@ -34,8 +34,8 @@ fun getAlbumIdWithFriendCodes(friendCodes: List<String>): String {
     }.dropLast(1)
 }
 
-fun getAlbumNameWithFriendsNickname(nickname: List<String>): String {
-    return nickname.fold("") { acc, v ->
+fun getAlbumNameWithFriendsNickname(nickname: List<String>, myNickname:String): String {
+    return nickname.fold("$myNickname, ") { acc, v ->
         "$acc\'$v\'님, "
     }.dropLast(2) + "의 앨범"
 }

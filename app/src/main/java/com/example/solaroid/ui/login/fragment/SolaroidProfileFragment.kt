@@ -1,5 +1,6 @@
 package com.example.solaroid.ui.login.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
+import com.example.solaroid.custom.view.getBitmapFromView
 import com.example.solaroid.databinding.FragmentSolaroidProfileBinding
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.ui.login.ProfileObserver
@@ -31,6 +34,7 @@ class SolaroidProfileFragment() : Fragment() {
 
     private lateinit var auth: FirebaseAuth
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,6 +111,14 @@ class SolaroidProfileFragment() : Fragment() {
                 findNavController().navigate(
                     SolaroidProfileFragmentDirections.actionProfileFragmentToLoginFragment()
                 )
+            }
+        }
+
+        viewModel.thumbnail.observe(viewLifecycleOwner) {
+            if(!it.isNullOrEmpty()){
+
+                val bitmap = binding.albumThumbnail.getBitmapFromView()
+                viewModel.insertAlbumAndNavigateMain(bitmap)
             }
         }
 

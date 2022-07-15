@@ -11,8 +11,11 @@ class HomeAlbumRepositery(
     val roomDB: DatabasePhotoTicketDao
 ) {
 
-     val homeAlbumId = Transformations.map(roomDB.getHomeAlbum()) {
-        it.albumId
+    val homeAlbumId = Transformations.map(roomDB.getHomeAlbum()) {
+        it?.let {
+
+            it.albumId
+        }
     }
 //
 //    val albumKey = Transformations.map(homeAlbum) {
@@ -28,8 +31,6 @@ class HomeAlbumRepositery(
             roomDB.insert(homeAlbum)
         }
     }
-
-
 
 
 }

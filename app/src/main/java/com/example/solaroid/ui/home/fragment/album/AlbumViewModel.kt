@@ -1,6 +1,7 @@
 package com.example.solaroid.ui.album.viewmodel
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.datasource.album.AlbumDataSource
@@ -13,6 +14,7 @@ import com.example.solaroid.getAlbumPariticipantsWithFriendCodes
 import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.models.domain.RequestAlbum
+import com.example.solaroid.models.domain.asFriend
 import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.album.AlbumRequestRepositery
@@ -21,6 +23,7 @@ import com.example.solaroid.repositery.friend.FriendListRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
+import com.example.solaroid.ui.home.fragment.gallery.AIAK
 import com.example.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.launch
 
@@ -37,6 +40,8 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     private val fbStorage = FirebaseManager.getStorageInstance()
 
     private val roomDB = dataSource
+
+    private val TAG = "AlbumViewModel"
 
     private val profileRepostiery =
         ProfileRepostiery(fbAuth, fbDatabase, fbStorage, roomDB, MyProfileDataSource())
@@ -87,17 +92,10 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         get() = _createReady
 
 
-    private fun checkAlbumType(
-        normal: LiveData<List<Album>>,
-        request: LiveData<List<RequestAlbum>>
-    ) {
-        _albumDataItem.value =
-            if (normal.value.isNullOrEmpty() && request.value.isNullOrEmpty()) AlbumType.NONE
-            else if (normal.value.isNullOrEmpty()) AlbumType.REQUEST
-            else if (request.value.isNullOrEmpty()) AlbumType.NORMAL
-            else AlbumType.ALL
+    private val _naviToHome = MutableLiveData<Event<Unit>>()
+    val naviToHome : LiveData<Event<Unit>>
+        get() = _naviToHome
 
-    }
 
     init {
         with(_albumDataItem) {
@@ -111,6 +109,17 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         }
     }
 
+    private fun checkAlbumType(
+        normal: LiveData<List<Album>>,
+        request: LiveData<List<RequestAlbum>>
+    ) {
+        _albumDataItem.value =
+            if (normal.value.isNullOrEmpty() && request.value.isNullOrEmpty()) AlbumType.NONE
+            else if (normal.value.isNullOrEmpty()) AlbumType.REQUEST
+            else if (request.value.isNullOrEmpty()) AlbumType.NORMAL
+            else AlbumType.ALL
+
+    }
 
     fun refreshAlubm(myFriendCode: Long) {
         viewModelScope.launch {
@@ -137,7 +146,6 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
     fun addParticipants(participants: List<Friend>) {
-
         createParticipants = getAlbumPariticipantsWithFriendCodes(participants.map {
             it.friendCode
         }+ myProfile.value!!.friendCode)
@@ -187,6 +195,11 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     fun removeListener() {
         albumRequestRepositery.removeListener(myProfile.value!!.friendCode.drop(1))
         albumRepostiery.removeListener()
+    }
+
+    //navigate
+    fun navigateToHome() {
+        _naviToHome.value = Event(Unit)
     }
 
 

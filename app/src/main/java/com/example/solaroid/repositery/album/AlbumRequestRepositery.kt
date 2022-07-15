@@ -28,7 +28,7 @@ class AlbumRequestRepositery(
         withContext(Dispatchers.IO) {
             val list = parseProfileImgStringToList(request.participant)
             for (friendCode in list) {
-                val ref = fbDatabase.reference.child("albumRequest").child("$friendCode").push()
+                val ref = fbDatabase.reference.child("albumRequest").child("${friendCode.drop(1)}").push()
                 val key = ref.key!!
 
                 val firebaseRequestAlbum = FirebaseRequestAlbum(

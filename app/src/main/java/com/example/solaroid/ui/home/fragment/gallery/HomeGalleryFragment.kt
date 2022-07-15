@@ -50,7 +50,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
 
         viewModel.albumId.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
+            if (!it.isNullOrEmpty()) {
                 Log.i(TAG,"viewModel.albumId.observe : ${it}")
                 viewModel.setAlbum(it)
             }

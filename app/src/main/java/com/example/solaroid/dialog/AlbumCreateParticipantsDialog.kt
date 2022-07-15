@@ -9,11 +9,12 @@ import androidx.fragment.app.DialogFragment
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentAlbumCreateParticipantsBinding
 import com.example.solaroid.models.domain.Friend
+import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.ui.friend.adapter.FriendListAdatper
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 import com.example.solaroid.ui.friend.adapter.OnDialogClickListener
 
-class AlbumCreateParticipantsDialog(_listener:AlbumCreateParticipantsDialogListener, val friendList:List<FriendListDataItem.DialogProfileDataItem>) : DialogFragment() {
+class AlbumCreateParticipantsDialog(_listener:AlbumCreateParticipantsDialogListener, val friendList:List<FriendListDataItem.DialogProfileDataItem>, val myProfile:Profile) : DialogFragment() {
     internal var listener: AlbumCreateParticipantsDialogListener = _listener
 
     private lateinit var binding : FragmentAlbumCreateParticipantsBinding
@@ -38,10 +39,12 @@ class AlbumCreateParticipantsDialog(_listener:AlbumCreateParticipantsDialogListe
 
         val application = requireNotNull(this.activity).application
 
+        binding.profile = myProfile
         adapter = FriendListAdatper(application = application, dialogClickListener = OnDialogClickListener { friend ->
             addParticipants(friend)
         })
 
+        setTextViewParticipants(participants, myProfile)
 
         binding.recDialogFriend.adapter = adapter
         adapter.submitList(friendList)
@@ -67,11 +70,11 @@ class AlbumCreateParticipantsDialog(_listener:AlbumCreateParticipantsDialogListe
         } else {
             participants.add(friend)
         }
-        setTextViewParticipants(participants)
+        setTextViewParticipants(participants, myProfile)
     }
 
-    fun setTextViewParticipants(participants:List<Friend>) {
-        val text = "참여자 : " + participants.fold("") { acc, v ->
+    fun setTextViewParticipants(participants:List<Friend>, myProfile: Profile) {
+        val text = "참여자 : " + participants.fold("${myProfile.nickname}, ") { acc, v ->
             acc + v.nickname + ", "
         }.dropLast(2)
 
