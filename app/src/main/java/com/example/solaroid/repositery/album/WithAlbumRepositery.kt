@@ -6,6 +6,8 @@ import com.example.solaroid.models.firebase.FirebaseProfile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 
 class WithAlbumRepositery(
@@ -19,13 +21,15 @@ class WithAlbumRepositery(
      * firebase .child("withAlbum").child("${album.id}").child("${fbAuth.currentUser.uid}") 경로에 write
      *  setValue(FirebaseProfile())
      * */
-    suspend fun setValue(myProfile:FirebaseProfile, albumId:String) {
-        withContext(Dispatchers.IO) {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun setValue(myProfile:FirebaseProfile, albumId:String) = suspendCancellableCoroutine<Unit>{ continuation ->
             val user = fbAuth.currentUser!!
             val ref = fbDatabase.reference.child("withAlbum").child("$albumId").child(user.uid)
 
-            ref.setValue(myProfile)
-        }
+            ref.setValue(myProfile).addOnCompleteListener {
+                if(it.isSuccessful) continuation.resume(Unit, null)
+            }
+
     }
 
 

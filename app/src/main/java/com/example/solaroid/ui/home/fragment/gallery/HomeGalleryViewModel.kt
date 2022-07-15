@@ -22,6 +22,11 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
 
+
+/**
+ * PhotoTicket을 즐겨찾기 전용 또는 날짜순(오름차순, 내림차순) 으로 정렬하기 위해
+ * enum class 를 만들어 활용.
+ * */
 enum class PhotoTicketFilter(val filter: String) {
     DESC(filter = "DESC"),
     ASC(filter = "ASC"),
@@ -39,8 +44,14 @@ enum class PhotoTicketFilter(val filter: String) {
     }
 }
 
-//AlbumId, AlbumKey
+/**
+ * AlbumId, AlbumKey 를 받기 위해 만들어진 Pair<String,String> 유형을 AIAK로 따로 지정하였다.
+ * AIAK 유형은 주로 Gallery에서 CreateFragment, AddFragment, FrameFragment로 이동할 때
+ * Album의 Key와 ID를 전달해줘야 하기 때문에 간편하게 AIAK타입의 변수로 만들어 전달할 수 있다.
+ * */
 typealias AIAK = Pair<String,String>
+
+
 class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
     AndroidViewModel(application) {
 
@@ -145,31 +156,6 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         _filter.value = PhotoTicketFilter.convertStringToFilter(filter)
     }
 
-
-    fun navigateToFrame(photoTicket: PhotoTicket) {
-        _naviToFrame.value = Event(photoTicket)
-    }
-
-    fun navigateToAdd() {
-        val albumId = album.value?.id
-        val albumKey = album.value?.key
-
-        if(albumId != null && albumKey != null)
-        _naviToAdd.value = Event(AIAK(albumId, albumKey))
-    }
-
-    fun navigateToCreate() {
-        val albumId = album.value?.id
-        val albumKey = album.value?.key
-
-        if(albumId != null && albumKey != null)
-        _naviToCreate.value = Event(AIAK(albumId,albumKey))
-    }
-
-    fun navigateToAlbum() {
-        _naviToAlbum.value = Event(Unit)
-    }
-
     suspend fun insert(firebasePhotoTickets: List<FirebasePhotoTicket>, user: String) =
         coroutineScope {
 
@@ -201,6 +187,33 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
             //Log.i(TAG,"tmp : ${tmp}")
             _album.value =  tmp
         }
+    }
+
+
+
+
+    fun navigateToFrame(photoTicket: PhotoTicket) {
+        _naviToFrame.value = Event(photoTicket)
+    }
+
+    fun navigateToAdd() {
+        val albumId = album.value?.id
+        val albumKey = album.value?.key
+
+        if(albumId != null && albumKey != null)
+            _naviToAdd.value = Event(AIAK(albumId, albumKey))
+    }
+
+    fun navigateToCreate() {
+        val albumId = album.value?.id
+        val albumKey = album.value?.key
+
+        if(albumId != null && albumKey != null)
+            _naviToCreate.value = Event(AIAK(albumId,albumKey))
+    }
+
+    fun navigateToAlbum() {
+        _naviToAlbum.value = Event(Unit)
     }
 
 

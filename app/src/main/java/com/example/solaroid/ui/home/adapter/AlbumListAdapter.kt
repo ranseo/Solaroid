@@ -10,6 +10,7 @@ import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.databinding.ListItemAlbumBinding
 import com.example.solaroid.databinding.ListItemRequestAlbumBinding
+import com.example.solaroid.ui.home.adapter.AlbumListClickListener
 import com.example.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +20,7 @@ import kotlinx.coroutines.withContext
 private val VIEW_TYPE_NORMAL_ALBUM = 0
 private val VIEW_TYPE_REQUEST_ALBUM = 1
 
-class AlbumListAdapter() :
+class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
     ListAdapter<AlbumListDataItem, RecyclerView.ViewHolder>(AlbumListItemCallback()) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
@@ -63,11 +64,11 @@ class AlbumListAdapter() :
         when (holder) {
             is NormalAlbumViewHolder -> {
                 val item = getItem(position) as AlbumListDataItem.NormalAlbumDataItem
-                holder.bind(item.album)
+                holder.bind(item.album, albumListClickListener)
             }
             is RequestAlbumViewHolder -> {
                 val item = getItem(position) as AlbumListDataItem.RequestAlbumDataItem
-                holder.bind(item.album)
+                holder.bind(item.album, albumListClickListener)
             }
         }
     }
@@ -75,7 +76,8 @@ class AlbumListAdapter() :
     class RequestAlbumViewHolder(val binding: ListItemRequestAlbumBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: RequestAlbum) {
+        fun bind(item: RequestAlbum, onClickListener: AlbumListClickListener) {
+
             binding.album = item
         }
 
@@ -92,7 +94,7 @@ class AlbumListAdapter() :
     class NormalAlbumViewHolder(val binding: ListItemAlbumBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Album) {
+        fun bind(item: Album, onClickListener: AlbumListClickListener) {
             binding.album = item
             binding.ivAlbum.setImageBitmap(item.thumbnail)
         }

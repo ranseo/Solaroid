@@ -7,13 +7,17 @@
         <variable
             name="album"
             type="com.example.solaroid.models.domain.RequestAlbum" />
+        <variable
+            name="onClickListener"
+            type="com.example.solaroid.ui.home.adapter.AlbumListClickListener" />
 
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:onClick="@{()->onClickListener.onClick(album)}">
 
         <ImageView
             android:id="@+id/iv_album"

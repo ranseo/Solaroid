@@ -8,6 +8,9 @@
         <variable
             name="album"
             type="com.example.solaroid.models.domain.Album" />
+        <variable
+            name="onClickListener"
+            type="com.example.solaroid.ui.home.adapter.AlbumListClickListener" />
 
     </data>
 
@@ -24,7 +27,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:elevation="12dp">
+            android:elevation="12dp"
+            android:onClick="@{()->onClickListener.onClick(album)}">
 
             <ImageView
                 android:id="@+id/iv_album"

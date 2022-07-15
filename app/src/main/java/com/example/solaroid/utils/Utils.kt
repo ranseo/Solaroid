@@ -40,10 +40,10 @@ fun getAlbumNameWithFriendsNickname(nickname: List<String>, myNickname:String): 
     }.dropLast(2) + "의 앨범"
 }
 
-fun getAlbumPariticipantsWithFriendCodes(friendCodes: List<String>): String {
-    return friendCodes.fold("") { acc, v ->
-        acc + v
-    }
+fun getAlbumPariticipantsWithFriendCodes(myFriendCode:String,friendCodes: List<String>): String {
+    return friendCodes.fold("$myFriendCode||") { acc, v ->
+        "$acc$v||"
+    }.dropLast(2)
 }
 
 fun parseProfileImgStringToList(profiles: String): List<String> {

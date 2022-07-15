@@ -298,7 +298,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
             val friendCode = convertLongToHexStringFormat(firebaseProfile.value!!.friendCode)
             val albumId = getAlbumIdWithFriendCodes(listOf(friendCode))
             val albumName = getAlbumNameWithFriendsNickname(listOf(), firebaseProfile.value!!.nickname)
-            val participants = getAlbumPariticipantsWithFriendCodes(listOf(friendCode))
+            val participants = getAlbumPariticipantsWithFriendCodes(friendCode,listOf())
             val bitmapString = BitmapUtils.bitmapToString(bitmap)
             //Log.i(TAG, "albumId : ${albumId}, albumName : ${albumName}, participants: ${participants}, bitmapString  : ${bitmapString}")
 
