@@ -13,6 +13,7 @@ import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.databinding.FragmentGalleryBinding
 import com.example.solaroid.dialog.FilterDialogFragment
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -41,7 +42,7 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         val albumId = args.albumId
         val albumKey = args.albumKey
 
-        viewModelFactory = GalleryViewModelFactory(dataSource.photoTicketDao, application, albumId, albumKey)
+        viewModelFactory = GalleryViewModelFactory(dataSource.photoTicketDao, application, parseAlbumIdDomainToFirebase(albumId,albumKey), albumKey)
         viewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
         val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->

@@ -10,6 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -27,7 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class SolaroidPhotoCreateFragment : Fragment() {
+class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private lateinit var viewModelFactory: SolaroidPhotoCreateViewModelFactory
     private lateinit var viewModel: SolaroidPhotoCreateViewModel
 
@@ -67,6 +69,21 @@ class SolaroidPhotoCreateFragment : Fragment() {
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+
+        //albumNameList의 값이 관찰되면 해당 값을 이용해 Spinner 만들기
+        viewModel.albumNameList.observe(viewLifecycleOwner) { list ->
+            if(!list.isNullOrEmpty()) {
+                ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    list
+                ).also{ adapter ->
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.spinnerAlbum.adapter = adapter
+                }
+            }
+        }
 
 
 
@@ -182,5 +199,14 @@ class SolaroidPhotoCreateFragment : Fragment() {
     companion object {
         private const val TAG = "생성프래그먼트"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+    }
+
+    //Spinner ItemSelected
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        viewModel.setWhichAlbum(p2)
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+
     }
 }

@@ -143,6 +143,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_back"
+                tools:visibility="gone"
                 android:visibility="@{viewmodel.imageSpin ? View.VISIBLE : View.GONE }"
                 android:layout_width="@dimen/polaroid_film_larger_width"
                 android:layout_height="@dimen/polaroid_film_larger_height"
@@ -185,8 +186,50 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_album_spinner"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@color/white"
+                android:layout_marginTop="520dp"
+                android:elevation="12dp"
+                android:padding="12dp"
+                >
+
+                <TextView
+                    android:text="사진첩 :"
+                    android:textSize="24dp"
+                    android:textColor="@color/black"
+                    android:id="@+id/tv_spinner_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+                <Spinner
+                    android:id="@+id/spinner_album"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="24dp"
+                    app:layout_constraintStart_toEndOf="@+id/tv_spinner_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
             <FrameLayout
+                android:id="@+id/bottom_option"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintBottom_toBottomOf="parent"

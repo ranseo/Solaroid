@@ -24,9 +24,9 @@ class AlbumRequestRepositery(
      * firebase .child("albumRequest").child("${friendCode}") 경로에 write
      *  setValue("${Album().Id}")
      * */
-    suspend fun setValueToParticipants(request: RequestAlbum) {
+    suspend fun setValueToParticipants(request: FirebaseRequestAlbum) {
         withContext(Dispatchers.IO) {
-            val list = parseProfileImgStringToList(request.participant)
+            val list = parseProfileImgStringToList(request.participants)
             for (friendCode in list) {
                 val ref = fbDatabase.reference.child("albumRequest").child(friendCode.drop(1)).push()
                 val key = ref.key!!
@@ -34,7 +34,8 @@ class AlbumRequestRepositery(
                 val firebaseRequestAlbum = FirebaseRequestAlbum(
                     request.id,
                     request.name,
-                    request.participant,
+                    request.thumbnail,
+                    request.participants,
                     key
                 )
 
@@ -52,6 +53,15 @@ class AlbumRequestRepositery(
         listener = requestAlbumDataSource.getValueEventListener(insert)
         val ref = fbDatabase.reference.child("albumRequest").child("$myFriendCode")
         ref.addValueEventListener(listener!!)
+    }
+
+    /**
+     * firebase.child("albumRequest").child("${my.friendCode}") 경로 상의 데이터 delete
+     * removeValue() 호출
+     * */
+    fun deleteValue(myFriendCode: Long, key:String) {
+        val ref = fbDatabase.reference.child("albumRequest").child("${myFriendCode}").child(key)
+        ref.removeValue()
     }
 
 

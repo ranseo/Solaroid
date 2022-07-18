@@ -5,6 +5,7 @@ import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.models.domain.RequestAlbum
+import com.example.solaroid.utils.BitmapUtils
 
 data class FirebaseAlbum(
     val id: String,
@@ -19,7 +20,7 @@ data class FirebaseAlbum(
 
 fun FirebaseAlbum.asDatabaseModel() : DatabaseAlbum {
     return DatabaseAlbum(
-        id,
+        "$id||$key",
         name,
         thumbnail,
         participants,
@@ -32,6 +33,7 @@ fun FirebaseAlbum.asDatabaseModel() : DatabaseAlbum {
 data class FirebaseRequestAlbum(
     val id : String,
     val name: String,
+    val thumbnail: String,
     val participants: String,
     val key: String
     ) {
@@ -42,6 +44,8 @@ fun FirebaseRequestAlbum.asDomainModel() : RequestAlbum {
     return RequestAlbum(
         id,
         name,
-        participants
+        BitmapUtils.stringToBitmap(thumbnail),
+        participants,
+        key
     )
 }

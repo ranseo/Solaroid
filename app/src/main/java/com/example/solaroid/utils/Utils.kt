@@ -52,6 +52,11 @@ fun parseProfileImgStringToList(profiles: String): List<String> {
 
 fun joinProfileImgListToString(participants: List<Friend>) : String{
     return participants.fold("") { acc, v -> "$acc${v.profileImg}||"}.dropLast(2)
+}
+
+
+fun parseAlbumIdDomainToFirebase(albumId:String, key:String) : String {
+    return albumId.removeSuffix(key).dropLast(2)
 
 }
 

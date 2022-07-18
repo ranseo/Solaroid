@@ -6,10 +6,14 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertTodayToFormatted
+import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.models.domain.Album
+import com.example.solaroid.models.room.DatabaseAlbum
+import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import kotlinx.coroutines.launch
 
@@ -34,6 +38,12 @@ class SolaroidPhotoCreateViewModel(
         fbStorage,
         PhotoTicketListenerDataSource()
     )
+    private val albumRepositery = AlbumRepositery(
+        database,
+        fbAuth,
+        fbDatabase,
+        AlbumDataSource()
+    )
 
     private val albumId = albumId
     private val albumKey = albumKey
@@ -41,6 +51,14 @@ class SolaroidPhotoCreateViewModel(
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
         get() = _photoTicket
+
+    private val albums = albumRepositery.album
+
+    val albumNameList = Transformations.map(albumRepositery.album) { list ->
+        list.map {
+            it.name
+        }
+    }
 
 
     //카메라 촬영 및 캡쳐를 시작하는 프로퍼티
@@ -100,6 +118,8 @@ class SolaroidPhotoCreateViewModel(
     val currBackTextLen = Transformations.map(backText) {
         "${it.length}/100"
     }
+
+    private var whichAlbum : DatabaseAlbum? = null
 
 
     val today = convertTodayToFormatted(System.currentTimeMillis()).substring(0, 13)
@@ -174,8 +194,17 @@ class SolaroidPhotoCreateViewModel(
         _imageSpin.value = !toggle
     }
 
-    fun navigateToFrame() {
-        _naviToFrameFrag.value = Event(Unit)
+    /**
+     * spinner를 통해 포토티켓이 소유될 사진첩을 골랐을 때
+     * spinner의 선택 목록의 pos를 이용하여 어떤 album이 선택되었는지
+     * 확인하고 해당 DatabaseAlbum객체를 whichAlbum 할당하는 함수.
+     * */
+    fun setWhichAlbum(pos:Int) {
+        viewModelScope.launch {
+            val album = albums.value?.get(pos) ?: return@launch
+            whichAlbum = database.getAlbum(album.id)
+        }
+
     }
 
     companion object {

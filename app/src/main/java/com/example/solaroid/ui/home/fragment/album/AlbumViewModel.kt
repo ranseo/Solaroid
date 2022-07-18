@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.album.RequestAlbumDataSource
 import com.example.solaroid.datasource.album.WithAlbumDataSource
@@ -13,6 +14,7 @@ import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.getAlbumPariticipantsWithFriendCodes
 import com.example.solaroid.models.domain.*
 import com.example.solaroid.models.firebase.FirebaseAlbum
+import com.example.solaroid.models.firebase.FirebaseRequestAlbum
 import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.album.AlbumRequestRepositery
@@ -258,12 +260,12 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun createAlbum() {
         viewModelScope.launch {
-
+            val thumbnail = BitmapUtils.bitmapToString(createThumbnail!!)
             val firebaseAlbum = FirebaseAlbum(
                 id = createId,
                 name = createName,
                 participants = createParticipants,
-                thumbnail = BitmapUtils.bitmapToString(createThumbnail!!),
+                thumbnail = thumbnail,
                 key = ""
             )
 
@@ -271,10 +273,12 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
             albumRepostiery.setValue(firebaseAlbum, createId)
 
-            val requestAlbum = RequestAlbum(
+            val requestAlbum = FirebaseRequestAlbum(
                 id = createId,
                 name = createName,
-                participant = createParticipants
+                thumbnail = thumbnail,
+                participants = createParticipants,
+                key=""
             )
 
             albumRequestRepositery.setValueToParticipants(requestAlbum)
@@ -284,8 +288,8 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
     /**
-     * RequestAlbum 요청을 수락하면 해당 RequestAlbum 객체를
-     * 이용하여 withAlbumRepositery에 setValue().
+     * RequestAlbum 요청을 수락.
+     * 1. 해당 RequestAlbum 객체를 이용하여 withAlbumRepositery에 setValue().
      * firebase - withAlbum - albumId 경로에 내 계정 uid를 write해야
      * album에 접근 및 photoTicket에 접근할 수 있다.
      * */
@@ -293,6 +297,35 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         viewModelScope.launch {
             val albumId = reqAlbum.id
             withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(),albumId)
+        }
+    }
+
+    /**
+     * RequestAlbum 요청을 수락.
+     * 2.albumRepositery에 setValue()
+     * firebase - album - uid - albumId 경로에 requestAlbum객체를
+     * Album객체로 전환하여 write
+     * */
+    fun setValueInAlbum(album:Album) {
+        viewModelScope.launch {
+            val new = FirebaseAlbum(
+                album.id,
+                album.name,
+                BitmapUtils.bitmapToString(album.thumbnail),
+                album.participant,
+                ""
+            )
+            albumRepostiery.setValue(new, album.id)
+        }
+    }
+
+    /**
+     * RequestAlbum 요청을 수락 및 거절한 뒤
+     * firebase/RequestAlbum/$friendCode 경로에 있는 data 삭제.
+     * */
+    fun deleteRequestAlbumInFirebase(album:RequestAlbum){
+        viewModelScope.launch {
+            albumRequestRepositery.deleteValue(convertHexStringToLongFormat(myProfile.value!!.friendCode), album.key)
         }
     }
 

@@ -16,7 +16,18 @@ data class Album(
 data class RequestAlbum(
     val id : String,
     val name :String,
-    val participant: String
+    val thumbnail: Bitmap,
+    val participant: String,
+    val key: String
 ) {
 
+}
+
+fun RequestAlbum.asDomainModel() : Album {
+    return Album(
+        id,
+        name,
+        thumbnail,
+        participant
+    )
 }

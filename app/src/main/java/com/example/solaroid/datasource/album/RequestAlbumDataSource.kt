@@ -18,6 +18,7 @@ class RequestAlbumDataSource {
                     val requestAlbum = FirebaseRequestAlbum(
                         id = hashMap["id"] as String,
                         name = hashMap["name"] as String,
+                        thumbnail = hashMap["thumbnail"] as String,
                         participants = hashMap["participants"] as String,
                         key = hashMap["key"] as String
                     ).asDomainModel()
