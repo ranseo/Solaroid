@@ -1,4 +1,4 @@
-package com.example.solaroid.dialog
+package com.example.solaroid.ui.home.fragment.album.create
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -9,29 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import com.example.solaroid.R
 import com.example.solaroid.custom.view.AlbumThumbnailView
 import com.example.solaroid.custom.view.getBitmapFromView
 import com.example.solaroid.databinding.FragmentAlbumCreateBinding
+import com.example.solaroid.databinding.FragmentAlbumCreateFinalBinding
 import com.example.solaroid.getAlbumIdWithFriendCodes
 import com.example.solaroid.getAlbumNameWithFriendsNickname
 import com.example.solaroid.joinProfileImgListToString
 import com.example.solaroid.models.domain.Friend
 
-class AlbumCreateDialog(val listener : AlbumCreateDialogListener ,val participants : List<Friend>, val myProfile: Friend) : DialogFragment() {
+class AlbumCreateFinal( val participants : List<Friend>, val myProfile: Friend) : Fragment() {
 
-    private lateinit var binding : FragmentAlbumCreateBinding
+    private lateinit var binding : FragmentAlbumCreateFinalBinding
 
     private lateinit var thumbnail : Bitmap
     private lateinit var albumId : String
     private lateinit var albumName : String
 
 
-    interface AlbumCreateDialogListener {
-        fun onCreateDialogPositiveClick(albumId:String, albumName:String, thumbnail:Bitmap, dialog: DialogFragment)
-        fun onCreateDialogNegativeClick(dialog: DialogFragment)
-    }
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreateView(
@@ -39,6 +36,7 @@ class AlbumCreateDialog(val listener : AlbumCreateDialogListener ,val participan
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_album_create_final, container, false)
         albumName = getAlbumNameWithFriendsNickname(participants.map { it.nickname }, myProfile.nickname)
         albumId = getAlbumIdWithFriendCodes(participants.map{it.friendCode})
@@ -59,11 +57,9 @@ class AlbumCreateDialog(val listener : AlbumCreateDialogListener ,val participan
 
 
         binding.btnAccept.setOnClickListener {
-            listener.onCreateDialogPositiveClick(albumId, albumName, thumbnail, this)
         }
 
         binding.btnCancel.setOnClickListener {
-            listener.onCreateDialogNegativeClick(this)
         }
 
         return binding.root

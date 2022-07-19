@@ -243,5 +243,51 @@
     </fragment>
 
 
+    <fragment
+        android:id="@+id/fragment_album_create"
+        android:name="com.example.solaroid.ui.home.fragment.album.create.AlbumCreateFragment"
+        tools:layout="@layout/fragment_album_create">
+
+        <action
+            android:id="@+id/action_create_to_createNavigation"
+            app:destination="@+id/album_create_navigation"
+            />
+
+
+    </fragment>
+
+    <navigation
+        android:id="@+id/album_create_navigation"
+        app:startDestination="@id/create_start"
+        >
+
+        <fragment
+            android:id="@+id/create_start"
+            android:name="com.example.solaroid.ui.home.fragment.album.create.AlbumCreateStart"
+            tools:layout="@layout/fragment_album_create_start">
+
+            <action
+                android:id="@+id/action_start_to_final"
+                app:destination="@+id/create_final"
+                />
+        </fragment>
+
+        <fragment
+            android:id="@+id/create_final"
+            android:name="com.example.solaroid.ui.home.fragment.album.create.AlbumCreateFinal"
+            tools:layout="@layout/fragment_album_create_final">
+
+            <action
+                android:id="@+id/actin_final_to_create"
+                app:destination="@id/fragment_album"
+                app:popUpToInclusive="true"
+                app:popUpTo="@id/fragment_album"/>
+
+
+        </fragment>
+
+    </navigation>
+
+
 
 </navigation>
