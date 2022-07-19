@@ -79,15 +79,15 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
 
     private val _album = MutableLiveData<Event<Album>>()
-    val album : LiveData<Event<Album>>
+    val album: LiveData<Event<Album>>
         get() = _album
 
     private val _roomAlbum = MutableLiveData<Event<DatabaseAlbum>>()
-    val roomAlbum : LiveData<Event<DatabaseAlbum>>
+    val roomAlbum: LiveData<Event<DatabaseAlbum>>
         get() = _roomAlbum
 
     private val _requestAlbum = MutableLiveData<Event<RequestAlbum>>()
-    val requestAlbum : LiveData<Event<RequestAlbum>>
+    val requestAlbum: LiveData<Event<RequestAlbum>>
         get() = _requestAlbum
 
 
@@ -108,19 +108,21 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     var createParticipants: String = ""
 
     private val _createReady = MutableLiveData<Event<Unit?>>()
-    val createReady : LiveData<Event<Unit?>>
+    val createReady: LiveData<Event<Unit?>>
         get() = _createReady
 
 
     private val _naviToHome = MutableLiveData<Event<Unit>>()
-    val naviToHome : LiveData<Event<Unit>>
+    val naviToHome: LiveData<Event<Unit>>
         get() = _naviToHome
 
     private val _naviToGallery = MutableLiveData<Event<Album>>()
-    val navlToGallery : LiveData<Event<Album>>
+    val navlToGallery: LiveData<Event<Album>>
         get() = _naviToGallery
 
-
+    private val _naviToCreate = MutableLiveData<Event<Any?>>()
+    val naviToCreate: LiveData<Event<Any?>>
+        get() = _naviToCreate
 
 
     init {
@@ -153,7 +155,6 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     fun setRequestAlbum(album: RequestAlbum) {
         _requestAlbum.value = Event(album)
     }
-
 
 
     /**
@@ -216,9 +217,10 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * 타입으로 엮어 반환한 값을 할당한다.
      * */
     fun addParticipants(participants: List<Friend>) {
-        createParticipants = getAlbumPariticipantsWithFriendCodes(myProfile.value!!.friendCode, participants.map {
-            it.friendCode
-        })
+        createParticipants =
+            getAlbumPariticipantsWithFriendCodes(myProfile.value!!.friendCode, participants.map {
+                it.friendCode
+            })
     }
 
     /**
@@ -237,7 +239,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * 해당 Dialog로 부터 얻은 앨범 값들을 viewModel 내 create 프로퍼티에 할당한다.
      * createId, createName, createThumbnail 등이 있다.
      * */
-    fun setCreateProperty(_albumId: String, _albumName:String, _thumbnail:Bitmap) {
+    fun setCreateProperty(_albumId: String, _albumName: String, _thumbnail: Bitmap) {
         createId = _albumId
         createName = _albumName
         createThumbnail = _thumbnail
@@ -268,7 +270,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                 thumbnail = thumbnail,
                 key = ""
             )
-
+            Log.i(TAG,"myProfile.value : ${myProfile.value!!.asFirebaseModel()}, createId : ${createId}")
             withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId)
 
             albumRepostiery.setValue(firebaseAlbum, createId)
@@ -278,7 +280,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                 name = createName,
                 thumbnail = thumbnail,
                 participants = createParticipants,
-                key=""
+                key = ""
             )
 
             albumRequestRepositery.setValueToParticipants(requestAlbum)
@@ -296,7 +298,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     fun setValueInWithAlbum(reqAlbum: RequestAlbum) {
         viewModelScope.launch {
             val albumId = reqAlbum.id
-            withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(),albumId)
+            withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), albumId)
         }
     }
 
@@ -306,7 +308,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * firebase - album - uid - albumId 경로에 requestAlbum객체를
      * Album객체로 전환하여 write
      * */
-    fun setValueInAlbum(album:Album) {
+    fun setValueInAlbum(album: Album) {
         viewModelScope.launch {
             val new = FirebaseAlbum(
                 album.id,
@@ -323,9 +325,12 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * RequestAlbum 요청을 수락 및 거절한 뒤
      * firebase/RequestAlbum/$friendCode 경로에 있는 data 삭제.
      * */
-    fun deleteRequestAlbumInFirebase(album:RequestAlbum){
+    fun deleteRequestAlbumInFirebase(album: RequestAlbum) {
         viewModelScope.launch {
-            albumRequestRepositery.deleteValue(convertHexStringToLongFormat(myProfile.value!!.friendCode), album.key)
+            albumRequestRepositery.deleteValue(
+                convertHexStringToLongFormat(myProfile.value!!.friendCode),
+                album.key
+            )
         }
     }
 
@@ -334,7 +339,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * List_Item의 Album객체를 클릭 했을 때 해당 Album객체의 key를 이용해
      * Room Database Album 객체를 get()하는 함수
      * */
-    fun getRoomDatabaseAlbum(albumId:String) {
+    fun getRoomDatabaseAlbum(albumId: String) {
         viewModelScope.launch {
             _roomAlbum.value = Event(roomDB.getAlbum(albumId))
         }
@@ -348,6 +353,10 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     //navigate
     fun navigateToHome() {
         _naviToHome.value = Event(Unit)
+    }
+
+    fun navigateToCreate() {
+        _naviToCreate.value = Event(Unit)
     }
 
 

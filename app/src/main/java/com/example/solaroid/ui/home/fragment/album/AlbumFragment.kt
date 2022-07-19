@@ -123,6 +123,15 @@ class AlbumFragment : Fragment(),
             }
         }
 
+        viewModel.naviToCreate.observe(viewLifecycleOwner){
+            it.getContentIfNotHandled()?.let{
+                findNavController().navigate(
+                    AlbumFragmentDirections.actionAlbumToCreate()
+                )
+            }
+
+        }
+
         viewModel.album.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { album ->
                 viewModel.getRoomDatabaseAlbum(album.id)

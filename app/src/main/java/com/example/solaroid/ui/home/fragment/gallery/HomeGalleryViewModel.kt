@@ -49,7 +49,7 @@ enum class PhotoTicketFilter(val filter: String) {
  * AIAK 유형은 주로 Gallery에서 CreateFragment, AddFragment, FrameFragment로 이동할 때
  * Album의 Key와 ID를 전달해줘야 하기 때문에 간편하게 AIAK타입의 변수로 만들어 전달할 수 있다.
  * */
-typealias AIAK = Pair<String,String>
+typealias AIAK = Pair<String, String>
 
 
 class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
@@ -61,7 +61,7 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    private val albumRepositery = AlbumRepositery(database,fbAuth, fbDatabase, AlbumDataSource())
+    private val albumRepositery = AlbumRepositery(database, fbAuth, fbDatabase, AlbumDataSource())
     private val homeAlbumRepositery = HomeAlbumRepositery(database)
 
 
@@ -73,7 +73,7 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     var albumId = homeAlbumRepositery.homeAlbumId
 
     private val _album = MutableLiveData<DatabaseAlbum>()
-    val album : LiveData<DatabaseAlbum>
+    val album: LiveData<DatabaseAlbum>
         get() = _album
 
 //    val homeAlbumKey = T
@@ -88,23 +88,21 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val naviToFrame: LiveData<Event<PhotoTicket>>
         get() = _naviToFrame
 
-    private val _naviToAdd = MutableLiveData<Event<AIAK>>()
-    val naviToAdd: LiveData<Event<AIAK>>
+    private val _naviToAdd = MutableLiveData<Event<Any?>>()
+    val naviToAdd: LiveData<Event<Any?>>
         get() = _naviToAdd
 
-    private val _naviToCreate = MutableLiveData<Event<AIAK>>()
-    val naviToCreate: LiveData<Event<AIAK>>
+    private val _naviToCreate = MutableLiveData<Event<Any?>>()
+    val naviToCreate: LiveData<Event<Any?>>
         get() = _naviToCreate
 
     private val _naviToAlbum = MutableLiveData<Event<Any?>>()
-    val naviToAlbum : LiveData<Event<Any?>>
+    val naviToAlbum: LiveData<Event<Any?>>
         get() = _naviToAlbum
 
     private val _filter = MutableLiveData(PhotoTicketFilter.DESC)
     val filter: LiveData<PhotoTicketFilter>
         get() = _filter
-
-
 
 
     val photoTickets = Transformations.switchMap(filter) { filter ->
@@ -134,14 +132,16 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     }
 
 
-
-    fun refreshFirebaseListener(albumId:String, albumKey:String) {
+    fun refreshFirebaseListener(albumId: String, albumKey: String) {
         viewModelScope.launch {
             try {
                 val user = fbAuth.currentUser!!
-                photoTicketRepositery.refreshPhotoTickets(albumId,albumKey) { firebasePhotoTickets ->
+                photoTicketRepositery.refreshPhotoTickets(
+                    albumId,
+                    albumKey
+                ) { firebasePhotoTickets ->
                     viewModelScope.launch(Dispatchers.Default) {
-                        Log.i(TAG,"viewModelScope.launch(Dispatchers.IO) : ${this}")
+                        Log.i(TAG, "viewModelScope.launch(Dispatchers.IO) : ${this}")
                         insert(firebasePhotoTickets, user.email!!)
                     }
                 }
@@ -177,19 +177,17 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         val albumId = album.value?.id
         val albumKey = album.value?.key
 
-        if(albumId != null && albumKey != null)
-        photoTicketRepositery.removeListener(albumId, albumKey)
+        if (albumId != null && albumKey != null)
+            photoTicketRepositery.removeListener(albumId, albumKey)
     }
 
     fun setAlbum(albumId: String) {
         viewModelScope.launch {
             val tmp = albumRepositery.getAlbum(albumId)
             //Log.i(TAG,"tmp : ${tmp}")
-            _album.value =  tmp
+            _album.value = tmp
         }
     }
-
-
 
 
     fun navigateToFrame(photoTicket: PhotoTicket) {
@@ -197,19 +195,11 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     }
 
     fun navigateToAdd() {
-        val albumId = album.value?.id
-        val albumKey = album.value?.key
-
-        if(albumId != null && albumKey != null)
-            _naviToAdd.value = Event(AIAK(albumId, albumKey))
+        _naviToAdd.value = Event(Unit)
     }
 
     fun navigateToCreate() {
-        val albumId = album.value?.id
-        val albumKey = album.value?.key
-
-        if(albumId != null && albumKey != null)
-            _naviToCreate.value = Event(AIAK(albumId,albumKey))
+        _naviToCreate.value = Event(Unit)
     }
 
     fun navigateToAlbum() {

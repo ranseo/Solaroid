@@ -95,6 +95,7 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Album, onClickListener: AlbumListClickListener) {
+            Log.i(TAG,"NormalAlbumViewHolder : ${item.id}, ${item.thumbnail}, ${item.name}")
             binding.album = item
             binding.ivAlbum.setImageBitmap(item.thumbnail)
         }

@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import java.lang.IllegalArgumentException
 
-class SolaroidAddViewModelFactory(val dataSource: DatabasePhotoTicketDao, val application: Application, val albumId:String, val albumKey: String) : ViewModelProvider.Factory {
+class SolaroidAddViewModelFactory(val dataSource: DatabasePhotoTicketDao, val application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         if(modelClass.isAssignableFrom(SolaroidAddViewModel::class.java)) {
-            return SolaroidAddViewModel(dataSource, application, albumId, albumKey) as T
+            return SolaroidAddViewModel(dataSource, application) as T
         }
         throw IllegalArgumentException("UNKNOWN_CLASS")
     }

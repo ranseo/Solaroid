@@ -15,6 +15,7 @@ import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
+import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -159,10 +160,10 @@ class PhotoTicketRepositery(
      * 해당 함수에서는 삽입할 포토티켓을 매개변수로 전달 받아 RoomDatabase 및 Realtime database
      * 내에 포토티켓 정보를 삽입한다. Firebase Storage 내에는 파일 (URL) 정보를 입력한다.
      * */
-    suspend fun insertPhotoTickets(albumId:String, albumKey:String, photoTicket: PhotoTicket, application: Application) {
+    suspend fun insertPhotoTickets(album: FirebaseAlbum, photoTicket: PhotoTicket, application: Application) {
         val user = fbAuth.currentUser!!
         withContext(Dispatchers.IO) {
-            val insertRef = fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey).push()
+            val insertRef = fbDatabase.reference.child("photoTicket").child(album.id).child(album.key).push()
             val key = insertRef.key ?: ""
             var new = photoTicket.asFirebaseModel(key)
             var file: Uri? = null
@@ -185,7 +186,7 @@ class PhotoTicketRepositery(
                         Log.i(TAG, "file ${file}")
 
                         storageRef = fbStorage.getReference("photoTicket")
-                            .child(albumId)
+                            .child(album.id)
                             .child(key)
                             .child("${mimeType?.split("/")?.get(0)}/${file!!.lastPathSegment}")
 

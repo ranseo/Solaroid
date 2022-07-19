@@ -7,19 +7,29 @@ import android.provider.MediaStore
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertTodayToFormatted
+import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.example.solaroid.models.domain.MediaStoreData
 import com.example.solaroid.models.domain.PhotoTicket
+import com.example.solaroid.models.room.DatabaseAlbum
+import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.repositery.album.AlbumRepositery
+import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.IOException
+import java.lang.NullPointerException
 import java.util.concurrent.TimeUnit
 
-class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Application, albumId:String, albumKey:String) :
+class SolaroidAddViewModel(
+    dataSource: DatabasePhotoTicketDao,
+    application: Application,
+) :
     AndroidViewModel(application) {
 
     private val database = dataSource
@@ -29,14 +39,35 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     private val fbStorage = FirebaseManager.getStorageInstance()
 
     private val photoTicketRepositery =
-        PhotoTicketRepositery(database, fbAuth, fbDatabase, fbStorage, PhotoTicketListenerDataSource())
+        PhotoTicketRepositery(
+            database,
+            fbAuth,
+            fbDatabase,
+            fbStorage,
+            PhotoTicketListenerDataSource()
+        )
 
-    private val albumId = albumId
-    private val albumKey = albumKey
+    private val albumRepositery = AlbumRepositery(
+        database,
+        fbAuth,
+        fbDatabase,
+        AlbumDataSource()
+    )
+
+    private val homeAlbumRepositery = HomeAlbumRepositery(database)
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
         get() = _photoTicket
+
+    private val albums = albumRepositery.album
+
+    var albumName : String = ""
+    val albumNameList = Transformations.map(albumRepositery.album) { list ->
+        list.map {
+            it.name
+        }
+    }
 
     //AddChoiceFragment, recyclerView에 보여질 data들을 담는 프로퍼티로써 loadImage() 메서드를 통해 초기화된다.
     private val _imagesFromMediaStore = MutableLiveData<List<MediaStoreData>>()
@@ -91,14 +122,17 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         get() = _uriChoiceFromMediaStore
 
     private val _date = MutableLiveData<String>(convertTodayToFormatted(System.currentTimeMillis()))
-    val date : LiveData<String>
+    val date: LiveData<String>
         get() = _date
 
-    fun setDate(date:String) {
+    fun setDate(date: String) {
         _date.value = date
     }
 
+    private var whichAlbum: DatabaseAlbum? = null
+
     init {
+        setHomeAlbumName()
         loadImage()
     }
 
@@ -146,17 +180,29 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     fun insertPhotoTicket() {
         if (image.value.isNullOrEmpty()) return
         viewModelScope.launch {
-            val new = PhotoTicket(
-                id = "",
-                url = image.value!!,
-                date = date.value!!,
-                frontText = frontText,
-                backText = backText.value!!,
-                favorite = false
-            )
 
-            photoTicketRepositery.insertPhotoTickets(albumId, albumKey, new, getApplication())
-            clearAddPhotoTicket()
+            try {
+                val new = PhotoTicket(
+                    id = "",
+                    url = image.value!!,
+                    date = date.value!!,
+                    frontText = frontText,
+                    backText = backText.value!!,
+                    favorite = false
+                )
+
+                photoTicketRepositery.insertPhotoTickets(
+                    whichAlbum!!.asFirebaseModel(),
+                    new,
+                    getApplication()
+                )
+                clearAddPhotoTicket()
+            } catch (error: IOException) {
+                error.printStackTrace()
+            } catch (error: NullPointerException) {
+                error.printStackTrace()
+            }
+
         }
     }
 
@@ -171,7 +217,6 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     fun navigateToAddChoice() {
         _naviToAddChoice.value = Event(Unit)
     }
-
 
 
     //backPress 버튼 처리
@@ -243,5 +288,26 @@ class SolaroidAddViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         }
 
         return images
+    }
+
+    /**
+     * spinner를 통해 포토티켓이 소유될 사진첩을 골랐을 때
+     * spinner의 선택 목록의 pos를 이용하여 어떤 album이 선택되었는지
+     * 확인하고 해당 DatabaseAlbum객체를 whichAlbum 할당하는 함수.
+     * */
+    fun setWhichAlbum(pos: Int) {
+        viewModelScope.launch {
+            val album = albums.value?.get(pos) ?: return@launch
+            whichAlbum = database.getAlbum(album.id)
+        }
+    }
+
+    /**
+     * HomeAlbumRepositery로 부터 HomeAlbum의 name 반환
+     * */
+    fun setHomeAlbumName() {
+        runBlocking {
+            albumName = homeAlbumRepositery.getHomeAlbumName()
+        }
     }
 }

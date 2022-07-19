@@ -14,6 +14,7 @@ import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.databinding.FragmentSolaroidGalleryBinding
 import com.example.solaroid.dialog.FilterDialogFragment
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -51,7 +52,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
         viewModel.albumId.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
-                Log.i(TAG,"viewModel.albumId.observe : ${it}")
+                Log.i(TAG,"viewModel.albumId.observe : ${id}")
                 viewModel.setAlbum(it)
             }
 
@@ -60,7 +61,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         viewModel.album.observe(viewLifecycleOwner) { it ->
             it?.let { album ->
                 Log.i(TAG, "homeAlbum -> id : ${album.id}, key : ${album.key}")
-                viewModel.refreshFirebaseListener(album.id, album.key)
+                viewModel.refreshFirebaseListener(parseAlbumIdDomainToFirebase(album.id, album.key), album.key)
             }
         }
 
@@ -111,17 +112,17 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         }
 
         viewModel.naviToAdd.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { aiak ->
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    HomeGalleryFragmentDirections.actionHomeGalleryToAdd(aiak.first, aiak.second)
+                    HomeGalleryFragmentDirections.actionHomeGalleryToAdd()
                 )
             }
         }
 
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { aiak ->
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    HomeGalleryFragmentDirections.actionHomeGalleryToCreate(aiak.first, aiak.second)
+                    HomeGalleryFragmentDirections.actionHomeGalleryToCreate()
                 )
             }
         }

@@ -42,8 +42,6 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
     private var imageCapture: ImageCapture? = null
     private var CameraProvider :  ProcessCameraProvider? = null
 
-    private val args by navArgs<SolaroidPhotoCreateFragmentArgs>()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,11 +56,10 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
 
         application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
-        val albumId = args.albumId
-        val albumKey = args.albumKey
+
 
         viewModelFactory =
-            SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application, albumId, albumKey)
+            SolaroidPhotoCreateViewModelFactory(dataSource.photoTicketDao, application)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[SolaroidPhotoCreateViewModel::class.java]
 
@@ -74,6 +71,7 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
         //albumNameList의 값이 관찰되면 해당 값을 이용해 Spinner 만들기
         viewModel.albumNameList.observe(viewLifecycleOwner) { list ->
             if(!list.isNullOrEmpty()) {
+                val defaultIdx=  list.indexOf(viewModel.albumName)
                 ArrayAdapter(
                     requireContext(),
                     android.R.layout.simple_spinner_item,
@@ -81,6 +79,8 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
                 ).also{ adapter ->
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     binding.spinnerAlbum.adapter = adapter
+                    binding.spinnerAlbum.onItemSelectedListener = this
+                    binding.spinnerAlbum.setSelection(defaultIdx)
                 }
             }
         }

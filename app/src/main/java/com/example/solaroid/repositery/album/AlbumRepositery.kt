@@ -9,6 +9,8 @@ import com.example.solaroid.models.room.asDomainModel
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.models.firebase.asDatabaseModel
+import com.example.solaroid.models.room.DatabaseHomeAlbum
+import com.example.solaroid.models.room.asHomeAlbum
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.utils.BitmapUtils
 import com.google.firebase.auth.FirebaseAuth
@@ -69,7 +71,7 @@ class AlbumRepositery(
      * FirebaseAlbum객체 write - setValue()
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun setValueInProfile(album:FirebaseAlbum, albumId:String, insertRoom : (databaseAlbum:DatabaseAlbum)->Unit) = suspendCancellableCoroutine<Unit>{ continuation ->
+    suspend fun setValueInProfile(album:FirebaseAlbum, albumId:String, insertAlbumRoom : (album:DatabaseAlbum)->Unit,insertHomeAlbumRoom : (homeAlbum: DatabaseHomeAlbum)->Unit ) = suspendCancellableCoroutine<Unit>{ continuation ->
         val user = fbAuth.currentUser!!
         val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
         val key = ref.key ?: return@suspendCancellableCoroutine
@@ -84,7 +86,8 @@ class AlbumRepositery(
 
         ref.setValue(new).addOnCompleteListener {
             if(it.isSuccessful) {
-                insertRoom(new.asDatabaseModel())
+                insertAlbumRoom(new.asDatabaseModel())
+                insertHomeAlbumRoom(new.asDatabaseModel().asHomeAlbum())
                 Log.i(TAG,"ref.setValue(new) Successful")
             } else {
                 Log.i(TAG,"ref.setValue(new) fail :${it.exception?.message}")
@@ -104,6 +107,7 @@ class AlbumRepositery(
             val user = fbAuth.currentUser!!
             val ref = fbDatabase.reference.child("album").child(user.uid)
             listener = albumDataSource.getValueEventListener(insertAlbum)
+            Log.i(TAG, "addValueEventListener : ref.add~")
             ref.addValueEventListener(listener!!)
         }
     }
@@ -118,6 +122,16 @@ class AlbumRepositery(
             roomDB.insert(album)
         }
     }
+
+    /**
+     * room database에 DatabaseHomeAlbum insert
+     * */
+    suspend fun insertRoomAlbum(album:DatabaseHomeAlbum) {
+        withContext(Dispatchers.IO) {
+            roomDB.insert(album)
+        }
+    }
+
 
 
     /**

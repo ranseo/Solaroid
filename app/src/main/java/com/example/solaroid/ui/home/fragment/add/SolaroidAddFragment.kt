@@ -7,6 +7,8 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
@@ -29,7 +31,10 @@ import com.google.firebase.auth.FirebaseAuth
 /**
  * mediaCollection을 열어 사진을 골라 새로운 포토티켓을 만드는 프래그먼트.
  * */
-class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListener, DatePickerDialogFragment.OnDatePickerDialogListener {
+class SolaroidAddFragment : Fragment(),
+    SaveDialogFragment.EditSaveDialogListener,
+    DatePickerDialogFragment.OnDatePickerDialogListener,
+    AdapterView.OnItemSelectedListener {
 
     private lateinit var viewModel: SolaroidAddViewModel
     private lateinit var viewModelFactory: SolaroidAddViewModelFactory
@@ -37,9 +42,6 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
     private lateinit var auth: FirebaseAuth
 
     private lateinit var backPressCallback : OnBackPressedCallback
-
-    private val args by navArgs<SolaroidAddFragmentArgs>()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,22 +56,35 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         )
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
-        val albumId = args.albumId
-        val albumKey= args.albumKey
         auth = FirebaseAuth.getInstance()
 
-        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application, albumId, albumKey)
+        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[SolaroidAddViewModel::class.java]
 
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.albumNameList.observe(viewLifecycleOwner) { list ->
+            if(!list.isNullOrEmpty()) {
+                val defaultIdx=  list.indexOf(viewModel.albumName)
+                ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    list
+                ).also{ adapter ->
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.spinnerAlbum.adapter = adapter
+                    binding.spinnerAlbum.onItemSelectedListener = this
+                    binding.spinnerAlbum.setSelection(defaultIdx)
+                }
+            }
+        }
+
         viewModel.naviToAddChoice.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
 
                 childFragmentManager.commit {
-                    add<SolaroidAddChoiceFragment>(R.id.fragment_add_container_view, TAG_ADD_CHOICE,
-                        bundleOf("albumArgs" to "$albumId|$albumKey"))
+                    add<SolaroidAddChoiceFragment>(R.id.fragment_add_container_view, TAG_ADD_CHOICE)
                 }
 
                 binding.addChoiceFragmentLayout.visibility = VISIBLE
@@ -169,5 +184,12 @@ class SolaroidAddFragment : Fragment(), SaveDialogFragment.EditSaveDialogListene
         const val TAG_ADD_SAVE = "ADD_SAVE"
     }
 
+    //Spinner ItemSelected
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        viewModel.setWhichAlbum(p2)
+    }
 
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+
+    }
 }

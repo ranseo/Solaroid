@@ -4,6 +4,7 @@ import androidx.lifecycle.Transformations
 import com.example.solaroid.models.room.DatabaseHomeAlbum
 import com.example.solaroid.models.room.asDomainModel
 import com.example.solaroid.room.DatabasePhotoTicketDao
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -13,10 +14,15 @@ class HomeAlbumRepositery(
 
     val homeAlbumId = Transformations.map(roomDB.getHomeAlbum()) {
         it?.let {
-
             it.albumId
         }
     }
+
+    suspend fun getHomeAlbumName() : String = withContext(Dispatchers.IO) {roomDB.getHomeAlbumName()}
+
+
+
+
 //
 //    val albumKey = Transformations.map(homeAlbum) {
 //        it.key

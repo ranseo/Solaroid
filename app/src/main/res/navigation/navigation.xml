@@ -90,21 +90,6 @@
         android:label="카메라 촬영"
         tools:layout="@layout/fragment_solaroid_photo_create">
 
-        <action
-            android:id="@+id/action_create_to_gallery"
-            app:destination="@+id/fragment_home_gallery"
-            app:popUpTo="@+id/fragment_solaroid_gallery"
-            app:popUpToInclusive="true"/>
-
-
-        <argument
-            android:name="albumId"
-            app:argType="string"
-            />
-        <argument
-            app:argType="string"
-            android:name="albumKey"/>
-
 
     </fragment>
 
@@ -182,13 +167,6 @@
             app:popUpToInclusive="true"/>
 
 
-        <argument
-            android:name="albumId"
-            app:argType="string"
-            />
-        <argument
-            app:argType="string"
-            android:name="albumKey"/>
     </fragment>
 
 
@@ -208,6 +186,11 @@
             app:destination="@+id/fragment_home_gallery"
             app:popUpTo="@layout/fragment_album"
             app:popUpToInclusive="true"
+            />
+
+        <action
+            android:id="@+id/action_album_to_create"
+            app:destination="@+id/fragment_solaroid_create"
             />
 
         <argument

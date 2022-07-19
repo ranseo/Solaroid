@@ -96,17 +96,17 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         }
 
         viewModel.naviToAdd.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { aiak ->
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    GalleryFragmentDirections.actionGalleryToAdd(aiak.first, aiak.second)
+                    GalleryFragmentDirections.actionGalleryToAdd()
                 )
             }
         }
 
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { aiak ->
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
-                    GalleryFragmentDirections.actionGalleryToCreate(aiak.first, aiak.second)
+                    GalleryFragmentDirections.actionGalleryToCreate()
                 )
             }
         }

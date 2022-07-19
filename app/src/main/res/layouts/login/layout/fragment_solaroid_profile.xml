@@ -180,7 +180,7 @@
             android:id="@+id/album_thumbnail"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:participants="@{viewModel.participants}"
             app:thumbnail="@{viewModel.thumbnail}"
             app:layout_constraintTop_toTopOf="parent"

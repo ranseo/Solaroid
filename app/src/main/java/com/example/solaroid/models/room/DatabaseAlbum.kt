@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.solaroid.models.domain.Album
+import com.example.solaroid.models.firebase.FirebaseAlbum
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.utils.BitmapUtils
 
 
@@ -29,9 +31,19 @@ fun DatabaseAlbum.asDomainModel() : Album {
     )
 }
 
+fun DatabaseAlbum.asFirebaseModel() : FirebaseAlbum =
+    FirebaseAlbum(
+        parseAlbumIdDomainToFirebase(id,key),
+        name,
+        thumbnail,
+        participants,
+        key
+    )
+
 fun DatabaseAlbum.asHomeAlbum() : DatabaseHomeAlbum {
     return DatabaseHomeAlbum(
         true,
+        name,
         id
     )
 }

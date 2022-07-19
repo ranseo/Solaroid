@@ -26,9 +26,6 @@ class SolaroidAddChoiceFragment() : Fragment(), ChoiceDialogFragment.ChoiceDialo
 
     private lateinit var backPressCallback :OnBackPressedCallback
 
-    private lateinit var albumId : String
-    private lateinit var albumKey : String
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +43,9 @@ class SolaroidAddChoiceFragment() : Fragment(), ChoiceDialogFragment.ChoiceDialo
             container,
             false
         )
-        val albumArgs = arguments?.getString("albumArgs")?.split("|")!!
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
-        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application,albumArgs[0],albumArgs[1])
+        viewModelFactory = SolaroidAddViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(
             requireParentFragment(),
             viewModelFactory

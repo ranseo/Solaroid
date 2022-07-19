@@ -86,5 +86,8 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM home_table")
     fun getHomeAlbum() : LiveData<DatabaseHomeAlbum>
 
+    @Query("SELECT home_album_name FROM home_table")
+    suspend fun getHomeAlbumName() : String
+
 
 }

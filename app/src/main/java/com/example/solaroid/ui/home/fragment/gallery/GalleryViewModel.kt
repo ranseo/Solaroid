@@ -51,12 +51,12 @@ class GalleryViewModel(
     val naviToFrame: LiveData<Event<PhotoTicket>>
         get() = _naviToFrame
 
-    private val _naviToAdd = MutableLiveData<Event<AIAK>>()
-    val naviToAdd: LiveData<Event<AIAK>>
+    private val _naviToAdd = MutableLiveData<Event<Any?>>()
+    val naviToAdd: LiveData<Event<Any?>>
         get() = _naviToAdd
 
-    private val _naviToCreate = MutableLiveData<Event<AIAK>>()
-    val naviToCreate: LiveData<Event<AIAK>>
+    private val _naviToCreate = MutableLiveData<Event<Any?>>()
+    val naviToCreate: LiveData<Event<Any?>>
         get() = _naviToCreate
 
     private val _naviToHome = MutableLiveData<Event<Any?>>()
@@ -122,11 +122,11 @@ class GalleryViewModel(
     }
 
     fun navigateToAdd() {
-        _naviToAdd.value = Event(AIAK(albumId,albumKey))
+        _naviToAdd.value = Event(Unit)
     }
 
     fun navigateToCreate() {
-        _naviToCreate.value = Event(AIAK(albumId,albumKey))
+        _naviToCreate.value = Event(Unit)
     }
 
     fun navigateToHome() {

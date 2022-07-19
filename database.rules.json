@@ -73,7 +73,7 @@
     "album" : {
       "$uid" : {
         "$albumId" : {
-          ".read" : "auth != null && auth.uid == $uid && root.child('withAlbum').child($albumId).child(auth.uid).exists()",
+          ".read" : "auth != null && auth.uid == $uid",
           ".write" : "auth != null && auth.uid == $uid && root.child('withAlbum').child($albumId).child(auth.uid).exists()"
         }
       }

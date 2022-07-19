@@ -13,14 +13,12 @@ import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.album.WithAlbumDataSource
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.models.firebase.asDatabaseModel
-import com.example.solaroid.models.room.DatabaseProfile
-import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.models.domain.asFriend
 import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.models.firebase.asDomainModel
-import com.example.solaroid.models.room.asHomeAlbum
+import com.example.solaroid.models.room.*
 import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import com.example.solaroid.repositery.album.WithAlbumRepositery
@@ -297,8 +295,9 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
         withContext(Dispatchers.IO) {
             val friendCode = convertLongToHexStringFormat(firebaseProfile.value!!.friendCode)
             val albumId = getAlbumIdWithFriendCodes(listOf(friendCode))
-            val albumName = getAlbumNameWithFriendsNickname(listOf(), firebaseProfile.value!!.nickname)
-            val participants = getAlbumPariticipantsWithFriendCodes(friendCode,listOf())
+            val albumName =
+                getAlbumNameWithFriendsNickname(listOf(), firebaseProfile.value!!.nickname)
+            val participants = getAlbumPariticipantsWithFriendCodes(friendCode, listOf())
             val bitmapString = BitmapUtils.bitmapToString(bitmap)
             //Log.i(TAG, "albumId : ${albumId}, albumName : ${albumName}, participants: ${participants}, bitmapString  : ${bitmapString}")
 
@@ -315,14 +314,20 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
             }.join()
 
             launch {
-                albumRepostiery.setValueInProfile(firebaseAlbum, albumId) {
+                val insertAlbum : (album:DatabaseAlbum) ->Unit = {
                     viewModelScope.launch {
                         albumRepostiery.insertRoomAlbum(it)
                     }
                 }
-                homeAlbumRepositery.insertRoomHomeAlbum(
-                    firebaseAlbum.asDatabaseModel().asHomeAlbum()
-                )
+                val insertHomeAlbum : (album: DatabaseHomeAlbum) ->Unit = {
+                    viewModelScope.launch {
+                        albumRepostiery.insertRoomAlbum(it)
+                    }
+                }
+
+                albumRepostiery.setValueInProfile(firebaseAlbum, albumId, insertAlbum, insertHomeAlbum)
+
+
             }.join()
 
 
