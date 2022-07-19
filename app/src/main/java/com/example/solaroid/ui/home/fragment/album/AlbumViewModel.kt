@@ -210,84 +210,11 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         }
     }
 
-    /**
-     * AlbumCreateParticipants 로부터 앨범 참여자들의 list 값를 받아
-     * viewModel 내 createParticipants 프로퍼티에 할당한다.
-     * 할당할 때 uitls.kt 의 getAlbumParticiapntsWithFriendCodes 함수를 이용하여 해당 list의 friendCode들을 String
-     * 타입으로 엮어 반환한 값을 할당한다.
-     * */
-    fun addParticipants(participants: List<Friend>) {
-        createParticipants =
-            getAlbumPariticipantsWithFriendCodes(myProfile.value!!.friendCode, participants.map {
-                it.friendCode
-            })
-    }
-
-    /**
-     * 앨범을 만들다가 취소할 경우,
-     * 관련 create 프로퍼티 값들을 모두 "" 또는 null 로 초기화한다.
-     * */
-    fun setNullCreateProperty() {
-        createParticipants = ""
-        createId = ""
-        createName = ""
-        createThumbnail = null
-    }
-
-    /**
-     * AlbumCreateDialog에서 앨범 생성을 완료하면
-     * 해당 Dialog로 부터 얻은 앨범 값들을 viewModel 내 create 프로퍼티에 할당한다.
-     * createId, createName, createThumbnail 등이 있다.
-     * */
-    fun setCreateProperty(_albumId: String, _albumName: String, _thumbnail: Bitmap) {
-        createId = _albumId
-        createName = _albumName
-        createThumbnail = _thumbnail
-    }
-
-    /**
-     * AlbumCreateDialog를 완료하고, 모든 create 값을 지정하고 난 뒤,
-     * album을 최종적으로 생성하기 전 모든 준비가 끝마쳤음을 알리는 함수
-     * */
-    fun setCreateReady() {
-        _createReady.value = Event(Unit)
-    }
 
 
-    /**
-     * Album 및 FirebaseAlbum 객체를 만들고 해당 객체를
-     * Album과 관련된 Repositery의 setValue() 메서드에 전달하여
-     * firebase 경로와 Room Database에 앨범을 생성하는 함수.
-     * 앨범의 참여자들에게 RequsetAlbum 객체를 전달할 수 있도록 만든다.
-     * */
-    fun createAlbum() {
-        viewModelScope.launch {
-            val thumbnail = BitmapUtils.bitmapToString(createThumbnail!!)
-            val firebaseAlbum = FirebaseAlbum(
-                id = createId,
-                name = createName,
-                participants = createParticipants,
-                thumbnail = thumbnail,
-                key = ""
-            )
-            Log.i(TAG,"myProfile.value : ${myProfile.value!!.asFirebaseModel()}, createId : ${createId}")
-            withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId)
-
-            albumRepostiery.setValue(firebaseAlbum, createId)
-
-            val requestAlbum = FirebaseRequestAlbum(
-                id = createId,
-                name = createName,
-                thumbnail = thumbnail,
-                participants = createParticipants,
-                key = ""
-            )
-
-            albumRequestRepositery.setValueToParticipants(requestAlbum)
 
 
-        }
-    }
+
 
     /**
      * RequestAlbum 요청을 수락.

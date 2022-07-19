@@ -10,19 +10,23 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
 import com.example.solaroid.custom.view.AlbumThumbnailView
 import com.example.solaroid.custom.view.getBitmapFromView
-import com.example.solaroid.databinding.FragmentAlbumCreateBinding
 import com.example.solaroid.databinding.FragmentAlbumCreateFinalBinding
 import com.example.solaroid.getAlbumIdWithFriendCodes
 import com.example.solaroid.getAlbumNameWithFriendsNickname
 import com.example.solaroid.joinProfileImgListToString
 import com.example.solaroid.models.domain.Friend
+import com.example.solaroid.room.SolaroidDatabase
 
 class AlbumCreateFinal( val participants : List<Friend>, val myProfile: Friend) : Fragment() {
 
     private lateinit var binding : FragmentAlbumCreateFinalBinding
+
+    private lateinit var viewModel : AlbumCreateViewModel
+    private lateinit var viewModelFactory: AlbumCreateViewModelFactory
 
     private lateinit var thumbnail : Bitmap
     private lateinit var albumId : String
@@ -36,6 +40,15 @@ class AlbumCreateFinal( val participants : List<Friend>, val myProfile: Friend) 
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
+        val application = requireNotNull(this.activity).application
+        val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
+
+        viewModelFactory = AlbumCreateViewModelFactory(dataSource)
+        viewModel = ViewModelProvider(requireActivity(),viewModelFactory)[AlbumCreateViewModel::class.java]
+
+
 
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_album_create_final, container, false)
         albumName = getAlbumNameWithFriendsNickname(participants.map { it.nickname }, myProfile.nickname)

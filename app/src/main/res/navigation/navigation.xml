@@ -190,8 +190,9 @@
 
         <action
             android:id="@+id/action_album_to_create"
-            app:destination="@+id/fragment_solaroid_create"
+            app:destination="@+id/album_create_navigation"
             />
+
 
         <argument
             android:name="ShowAppBar"
@@ -242,19 +243,6 @@
 
     </fragment>
 
-
-    <fragment
-        android:id="@+id/fragment_album_create"
-        android:name="com.example.solaroid.ui.home.fragment.album.create.AlbumCreateFragment"
-        tools:layout="@layout/fragment_album_create">
-
-        <action
-            android:id="@+id/action_create_to_createNavigation"
-            app:destination="@+id/album_create_navigation"
-            />
-
-
-    </fragment>
 
     <navigation
         android:id="@+id/album_create_navigation"

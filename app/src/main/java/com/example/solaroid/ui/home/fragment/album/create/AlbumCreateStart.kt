@@ -6,17 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.example.solaroid.R
-import com.example.solaroid.databinding.FragmentAlbumCreateParticipantsBinding
+import com.example.solaroid.databinding.FragmentAlbumCreateStartBinding
 import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.models.domain.Profile
+import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.friend.adapter.FriendListAdatper
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 import com.example.solaroid.ui.friend.adapter.OnDialogClickListener
 
-class AlbumCreateStart(val friendList:List<FriendListDataItem.DialogProfileDataItem>, val myProfile:Profile) : Fragment() {
+class AlbumCreateStart(val friendList:List<FriendListDataItem.DialogProfileDataItem>) : Fragment() {
 
-    private lateinit var binding : FragmentAlbumCreateParticipantsBinding
+    private lateinit var binding : FragmentAlbumCreateStartBinding
+
+    private lateinit var viewModel : AlbumCreateViewModel
+    private lateinit var viewModelFactory: AlbumCreateViewModelFactory
 
     private lateinit var adapter : FriendListAdatper
     private val participants = mutableListOf<Friend>()
@@ -30,13 +35,18 @@ class AlbumCreateStart(val friendList:List<FriendListDataItem.DialogProfileDataI
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_album_create_start,container,false)
 
         val application = requireNotNull(this.activity).application
+        val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
 
-        binding.profile = myProfile
+        viewModelFactory = AlbumCreateViewModelFactory(dataSource)
+        viewModel = ViewModelProvider(requireActivity(),viewModelFactory)[AlbumCreateViewModel::class.java]
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         adapter = FriendListAdatper(application = application, dialogClickListener = OnDialogClickListener { friend ->
             addParticipants(friend)
         })
 
-        setTextViewParticipants(participants, myProfile)
 
         binding.recDialogFriend.adapter = adapter
         adapter.submitList(friendList)
@@ -62,16 +72,10 @@ class AlbumCreateStart(val friendList:List<FriendListDataItem.DialogProfileDataI
         } else {
             participants.add(friend)
         }
-        setTextViewParticipants(participants, myProfile)
+        viewModel.setParticipants(participants)
     }
 
-    fun setTextViewParticipants(participants:List<Friend>, myProfile: Profile) {
-        val text = "참여자 : " + participants.fold("${myProfile.nickname}, ") { acc, v ->
-            acc + v.nickname + ", "
-        }.dropLast(2)
 
-        binding.tvParticipants.text = text
-    }
 
 
 }
