@@ -3,28 +3,31 @@ package com.example.solaroid.ui.home.fragment.album.create
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.solaroid.Event
+import com.example.solaroid.*
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.album.RequestAlbumDataSource
 import com.example.solaroid.datasource.album.WithAlbumDataSource
+import com.example.solaroid.datasource.friend.MyFriendListDataSource
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.getAlbumPariticipantsWithFriendCodes
-import com.example.solaroid.models.domain.Album
-import com.example.solaroid.models.domain.Friend
-import com.example.solaroid.models.domain.RequestAlbum
-import com.example.solaroid.models.domain.asFirebaseModel
+import com.example.solaroid.models.domain.*
 import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.models.firebase.FirebaseRequestAlbum
 import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.album.AlbumRequestRepositery
 import com.example.solaroid.repositery.album.WithAlbumRepositery
+import com.example.solaroid.repositery.friend.FriendListRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 import com.example.solaroid.utils.BitmapUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import java.io.IOException
+import java.lang.NullPointerException
 
 class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     private val TAG = "AlbumCreateViewModel"
@@ -43,7 +46,17 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     private val albumRequestRepositery =
         AlbumRequestRepositery(fbAuth, fbDatabase, RequestAlbumDataSource())
 
-    val myProfile = profileRepostiery.myProfile
+    private val friendListRepositery =
+        FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(), roomDB)
+
+
+    lateinit var myProfile : LiveData<Profile>
+    lateinit var myFriendList : LiveData<List<FriendListDataItem.DialogProfileDataItem>>
+    private fun convertFriendToDialogFriend(list: List<Friend>): List<FriendListDataItem.DialogProfileDataItem> {
+        return list.map {
+            FriendListDataItem.DialogProfileDataItem(it)
+        }
+    }
 
 
     private val _album = MutableLiveData<Event<Album>>()
@@ -59,9 +72,6 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         get() = _requestAlbum
 
     //album을 생성(create) 할 때 사용되는 프로퍼티들
-
-    var createId: String = ""
-    var createName: String = ""
     var createThumbnail: Bitmap? = null
 
     private val _participants = MutableLiveData<List<Friend>>()
@@ -69,25 +79,64 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         get() = _participants
 
 
+
+    //Final에서 쓰일 프로퍼티
+    val createId = Transformations.map(participants) {
+        if (!it.isNullOrEmpty()) {
+            getAlbumIdWithFriendCodes(it.map { v -> v.friendCode })
+        } else ""
+    }
+
+    val createName = Transformations.map(participants) {
+        if (!it.isNullOrEmpty()) {
+            getAlbumNameWithFriendsNickname(it.map { v -> v.nickname }, myProfile!!.value!!.nickname)
+        } else ""
+    }
+
+    val createBitmap = Transformations.map(participants) {
+        if (!it.isNullOrEmpty()) {
+            joinProfileImgListToString(listOf(myProfile!!.value!!.profileImg) + it.map { v -> v.profileImg })
+        } else "acac"
+    }
+    ///
+
+
     val participantsListString = Transformations.map(participants) {
-        "참여자 : " + it.fold("${myProfile.value!!.nickname}, ") { acc, v ->
+        "참여자 : " + it.fold("${myProfile!! .value!!.nickname}, ") { acc, v ->
             acc + v.nickname + ", "
         }.dropLast(2)
     }
 
-
-    private val _createReady = MutableLiveData<Event<Unit?>>()
-    val createReady: LiveData<Event<Unit?>>
-        get() = _createReady
-
-
     private val _naviToAlbum = MutableLiveData<Event<Any?>>()
-    val naviToCreate: LiveData<Event<Any?>>
+    val naviToAlbum: LiveData<Event<Any?>>
         get() = _naviToAlbum
 
 
     init {
+        viewModelScope.launch {
+            myProfile = profileRepostiery.myProfile
 
+            Log.i(TAG, "init() myProfile : ${myProfile?.value?.nickname}}")
+
+            myFriendList = Transformations.map(friendListRepositery.friendList) {
+                convertFriendToDialogFriend(it)
+            }
+
+            Log.i(TAG, "init() myFriendList : ${myFriendList?.value}")
+        }
+    }
+
+    /**
+     * createAlbum()을 호출하고 완료한 뒤에
+     * navigateToAlbum()호출
+     * */
+    fun createAndNavigate() {
+        viewModelScope.launch {
+            createAlbum()
+            withContext(Dispatchers.Main) {
+                navigateToAlbum()
+            }
+        }
     }
 
     /**
@@ -96,34 +145,41 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * firebase 경로와 Room Database에 앨범을 생성하는 함수.
      * 앨범의 참여자들에게 RequsetAlbum 객체를 전달할 수 있도록 만든다.
      * */
-    fun createAlbum() {
-        viewModelScope.launch {
-            val thumbnail = BitmapUtils.bitmapToString(createThumbnail!!)
-            val firebaseAlbum = FirebaseAlbum(
-                id = createId,
-                name = createName,
-                participants = convertFriendListToString(),
-                thumbnail = thumbnail,
-                key = ""
-            )
-            Log.i(
-                TAG,
-                "myProfile.value : ${myProfile.value!!.asFirebaseModel()}, createId : ${createId}"
-            )
-            withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId)
+    suspend private fun createAlbum() {
+        withContext(Dispatchers.IO){
+            try {
+                val thumbnail = BitmapUtils.bitmapToString(createThumbnail!!)
+                val firebaseAlbum = FirebaseAlbum(
+                    id = createId.value!!,
+                    name = createName.value!!,
+                    participants = convertFriendListToString(),
+                    thumbnail = thumbnail,
+                    key = ""
+                )
+                Log.i(
+                    TAG,
+                    "myProfile.value : ${myProfile!!.value!!.asFirebaseModel()}, createId : ${createId}"
+                )
+                withAlbumRepositery.setValue(myProfile!!.value!!.asFirebaseModel(), createId.value!!)
 
-            albumRepostiery.setValue(firebaseAlbum, createId)
+                albumRepostiery.setValue(firebaseAlbum, createId.value!!)
 
-            val requestAlbum = FirebaseRequestAlbum(
-                id = createId,
-                name = createName,
-                thumbnail = thumbnail,
-                participants = convertFriendListToString(),
-                key = ""
-            )
+                val requestAlbum = FirebaseRequestAlbum(
+                    id = createId.value!!,
+                    name = createName.value!!,
+                    thumbnail = thumbnail,
+                    participants = convertFriendListToString(),
+                    key = ""
+                )
 
-            albumRequestRepositery.setValueToParticipants(requestAlbum)
+                albumRequestRepositery.setValueToParticipants(requestAlbum)
 
+
+            } catch (error: IOException) {
+                error.printStackTrace()
+            } catch (error: NullPointerException) {
+                error.printStackTrace()
+            }
 
         }
     }
@@ -137,6 +193,13 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
     /**
+     * viewModel - createThumbnail 프로퍼티의 값을 설정하는 메서드
+     * */
+    fun setThumbnail(bitmap: Bitmap) {
+        createThumbnail = bitmap
+    }
+
+    /**
      * AlbumCreateStart 로부터 앨범 참여자들의 list 값를 받아
      * viewModel 내 createParticipants 프로퍼티에 할당한다.
      * 할당할 때 uitls.kt 의 getAlbumParticiapntsWithFriendCodes 함수를 이용하여 해당 list의 friendCode들을 String
@@ -144,20 +207,9 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     private fun convertFriendListToString(): String {
         val list = participants.value ?: listOf()
-        return getAlbumPariticipantsWithFriendCodes(myProfile.value!!.friendCode, list.map {
+        return getAlbumPariticipantsWithFriendCodes(myProfile!!.value!!.friendCode, list.map {
             it.friendCode
         })
-    }
-
-    /**
-     * AlbumCreateFinal 에서 앨범 생성을 클릭하면
-     * 해당 Fragment로 부터 얻은 앨범 값들을 viewModel 내 create 프로퍼티에 할당한다.
-     * createId, createName, createThumbnail 등이 있다.
-     * */
-    fun setCreateProperty(_albumId: String, _albumName: String, _thumbnail: Bitmap) {
-        createId = _albumId
-        createName = _albumName
-        createThumbnail = _thumbnail
     }
 
     /**
@@ -166,24 +218,29 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun setNullCreateProperty() {
         _participants.value = listOf()
-        createId = ""
-        createName = ""
         createThumbnail = null
     }
 
-
     /**
-     * AlbumCreateFinal에서 생성버튼을 누르고, viewModel.setCreateProperty()가 호출되어 모든 create 값을 지정하고 나면
-     * viewModel.createAlbum()를 호출하기 위해 _createReady 프로퍼티 값을 할당하는 메서드
+     * AlbumCreateart 프래그먼트에서 "다음" 버튼을 누르면
+     * ViewModel - participants 프로퍼티의 값이 null 이라면 (아무 친구도 선택하지 않아서)
+     * listOf() 를 할당. 그렇지 않다면 그대로
      * */
-    fun setCreateReady() {
-        _createReady.value = Event(Unit)
+    fun checkParticipants() {
+        if(_participants.value==null) {
+            _participants.value= listOf()
+        }
     }
 
 
     fun removeListener() {
-        albumRequestRepositery.removeListener(myProfile.value!!.friendCode.drop(1))
+        albumRequestRepositery.removeListener(myProfile!!.value!!.friendCode.drop(1))
         albumRepostiery.removeListener()
+    }
+
+    //navigate
+    fun navigateToAlbum() {
+        _naviToAlbum.value = Event(Unit)
     }
 
 }

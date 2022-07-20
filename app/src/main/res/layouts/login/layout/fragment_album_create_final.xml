@@ -10,13 +10,6 @@
             name="viewModel"
             type="com.example.solaroid.ui.home.fragment.album.create.AlbumCreateViewModel" />
 
-        <variable
-            name="participants"
-            type="Integer" />
-
-        <variable
-            name="thumbnail"
-            type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -54,13 +47,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_text"
-                app:participants="@{participants}"
-                app:thumbnail="@{thumbnail.toString()}"
+                app:participants="@{viewModel.participants.size()}"
+                app:thumbnail="@{viewModel.createBitmap}"
                 android:layout_marginTop="32dp"
                 tools:participants="1" />
 
             <TextView
                 android:id="@+id/tv_album_name"
+                android:text="@{viewModel.createName}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"

@@ -89,8 +89,9 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     fun onUpdatePhotoTicket() {
         viewModelScope.launch {
             val curr = _photoTicket.value!!
-            Log.i(TAG,"${frontText}, ${_backText.value!!}")
+            Log.i(TAG,"onUpdatePhotoTicket() : ${frontText}, ${_backText.value!!}")
             val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, date.value!!, curr.favorite)
+            Log.i(TAG,"onUpdatePhotoTicket() : album.Id : ${albumId}, album.key : ${albumKey}")
             photoTicketRepositery.updatePhotoTickets(albumId, albumKey,new,getApplication())
         }
     }

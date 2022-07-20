@@ -50,8 +50,8 @@ fun parseProfileImgStringToList(profiles: String): List<String> {
     return profiles.split("||")
 }
 
-fun joinProfileImgListToString(participants: List<Friend>) : String{
-    return participants.fold("") { acc, v -> "$acc${v.profileImg}||"}.dropLast(2)
+fun joinProfileImgListToString(participants: List<String>) : String{
+    return participants.fold("") { acc, v -> "$acc$v||"}.dropLast(2)
 }
 
 

@@ -86,7 +86,11 @@ fun setParticipants(albumThumbnailView: AlbumThumbnailView, participants:Int) {
 
 @RequiresApi(Build.VERSION_CODES.P)
 @BindingAdapter("thumbnail")
-fun setThumbnail(albumThumbnailView: AlbumThumbnailView, thumbnail:String) {
-    albumThumbnailView.thumbnailString = thumbnail
+fun setThumbnail(albumThumbnailView: AlbumThumbnailView, thumbnail:String?) {
+    thumbnail?.let{
+        Log.i("setThumbnail", "thumbnail : ${thumbnail}")
+        albumThumbnailView.thumbnailString = thumbnail
+    }
+    Log.i("setThumbnail", "thumbnail : ${thumbnail}")
 }
 

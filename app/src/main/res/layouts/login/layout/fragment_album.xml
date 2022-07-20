@@ -67,7 +67,7 @@
             android:clickable="true"
             android:elevation="3dp"
             android:focusable="true"
-            android:onClick="@{()->viewModel.navigateToCreate()}"
+            android:onClick="@{()->viewModel.navigateToPhotoCreate()}"
             android:src="@drawable/ic_photo_create" />
 
 

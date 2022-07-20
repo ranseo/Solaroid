@@ -97,17 +97,19 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
             it.getContentIfNotHandled()?.let { photoTicket ->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
                 val album = viewModel.album.value
-                val albumId = album?.id
+                val albumId = album?.getAlbumIdForFirebase()
                 val albumKey = album?.key
 
-                if (albumId != null && albumKey != null) findNavController().navigate(
-                    HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
-                        filter,
-                        photoTicket,
-                        albumId,
-                        albumKey
+                if (albumId != null && albumKey != null) {
+                    findNavController().navigate(
+                        HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
+                            filter,
+                            photoTicket,
+                            albumId,
+                            albumKey
+                        )
                     )
-                )
+                }
             }
         }
 

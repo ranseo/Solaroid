@@ -1,6 +1,5 @@
 package com.example.solaroid.ui.home.fragment.album
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,21 +15,14 @@ import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.example.solaroid.databinding.FragmentAlbumBinding
-import com.example.solaroid.dialog.AlbumCreateDialog
-import com.example.solaroid.dialog.AlbumCreateParticipantsDialog
-import com.example.solaroid.dialog.NormalDialogFragment
 import com.example.solaroid.dialog.RequestAlbumAcceptDialogFragment
 import com.example.solaroid.models.domain.*
-import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.viewmodel.AlbumType
-import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 import com.example.solaroid.ui.home.adapter.AlbumListClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class AlbumFragment : Fragment(),
-    AlbumCreateParticipantsDialog.AlbumCreateParticipantsDialogListener,
-    AlbumCreateDialog.AlbumCreateDialogListener,
     RequestAlbumAcceptDialogFragment.RequestAlbumAcceptDialogListener {
     private val TAG = "AlbumFragment"
 
@@ -102,35 +94,7 @@ class AlbumFragment : Fragment(),
         }
 
 
-        viewModel.startCreateAlbum.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { list ->
-                viewModel.setNullCreateProperty()
-                showCreateParticipantsDialog(list)
-            }
-        }
 
-        viewModel.createReady.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {
-                viewModel.createAlbum()
-            }
-        }
-
-        viewModel.naviToHome.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let {
-                findNavController().navigate(
-                    AlbumFragmentDirections.actionAlbumToHomeGallery()
-                )
-            }
-        }
-
-        viewModel.naviToCreate.observe(viewLifecycleOwner){
-            it.getContentIfNotHandled()?.let{
-                findNavController().navigate(
-                    AlbumFragmentDirections.actionAlbumToCreate()
-                )
-            }
-
-        }
 
         viewModel.album.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { album ->
@@ -154,11 +118,42 @@ class AlbumFragment : Fragment(),
         }
 
 
-
+        navigateToOtherFragment()
         setOnItemSelectedListener(binding.albumBottomNavi)
         binding.albumBottomNavi.itemIconTintList = null
 
         return binding.root
+    }
+
+
+    /**
+     * AlbumFragment에서 다른 프래그먼트로 이동할 수 있도록
+     * Navigate LiveData를 관찰하는 메서드.
+     * */
+    private fun navigateToOtherFragment() {
+        viewModel.naviToHome.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
+                findNavController().navigate(
+                    AlbumFragmentDirections.actionAlbumToHomeGallery()
+                )
+            }
+        }
+
+        viewModel.naviToCreate.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
+                findNavController().navigate(
+                    AlbumFragmentDirections.actionAlbumToAblumCreate()
+                )
+            }
+        }
+
+        viewModel.naviToPhotoCreate.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
+                findNavController().navigate(
+                    AlbumFragmentDirections.actionAlbumToPhotoCreate()
+                )
+            }
+        }
     }
 
     override fun onStart() {
@@ -177,46 +172,11 @@ class AlbumFragment : Fragment(),
         new.show(parentFragmentManager, "RequestAlbumClick")
     }
 
-    private fun showCreateParticipantsDialog(list: List<FriendListDataItem.DialogProfileDataItem>) {
-        val new = AlbumCreateParticipantsDialog(this, list, viewModel.myProfile.value!!)
-        new.show(parentFragmentManager, "AlbumCreateParticipants")
-    }
 
-    private fun showCreateDialog(list: List<Friend>) {
-        val new = AlbumCreateDialog(this, list, viewModel.myProfile.value!!.asFriend(""))
-        new.show(parentFragmentManager, "AlbumCreate")
-    }
     //</dialog>
 
 
     //CreateParticipantsDialogListener
-    override fun onParticipantsDialogPositiveClick(friends: List<Friend>, dialog: DialogFragment) {
-        viewModel.addParticipants(friends)
-        showCreateDialog(friends)
-    }
-
-    override fun onParticipantsDialogNegativeClick(dialog: DialogFragment) {
-        viewModel.setNullCreateProperty()
-        dialog.dismiss()
-    }
-
-    //CreateDialogListener
-    override fun onCreateDialogPositiveClick(
-        albumId: String,
-        albumName: String,
-        thumbnail: Bitmap,
-        dialog: DialogFragment
-    ) {
-        viewModel.setCreateProperty(albumId, albumName, thumbnail)
-        viewModel.setCreateReady()
-    }
-
-    override fun onCreateDialogNegativeClick(dialog: DialogFragment) {
-        viewModel.setNullCreateProperty()
-        dialog.dismiss()
-    }
-
-
     //RequestAlbumAcceptDialog
     override fun onDialogPositiveClick(requestAlbum: RequestAlbum, dialog: DialogFragment) {
         viewModel.setValueInWithAlbum(requestAlbum)
@@ -247,8 +207,8 @@ class AlbumFragment : Fragment(),
                 R.id.album -> {
                     true
                 }
-                R.id.add -> {
-                    viewModel.onCreateAlbumBtn()
+                R.id.create -> {
+                    viewModel.navigateToCreate()
                     true
                 }
 

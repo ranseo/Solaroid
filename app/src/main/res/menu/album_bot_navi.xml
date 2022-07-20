@@ -20,9 +20,9 @@
 
 
     <item
-        android:id="@+id/add"
+        android:id="@+id/create"
         android:icon="@drawable/ic_baseline_add_24"
-        android:title="추가"/>
+        android:title="생성"/>
 
     <item
         android:id="@+id/request"

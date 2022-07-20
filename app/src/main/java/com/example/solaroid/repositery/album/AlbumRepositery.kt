@@ -18,22 +18,24 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
+import java.io.IOException
+import java.lang.NullPointerException
 
 class AlbumRepositery(
     private val roomDB: DatabasePhotoTicketDao,
     private val fbAuth: FirebaseAuth,
-    private val fbDatabase : FirebaseDatabase,
+    private val fbDatabase: FirebaseDatabase,
     private val albumDataSource: AlbumDataSource
 ) {
 
     private val TAG = "AlbumRepositery"
-    private var listener : ValueEventListener? = null
+    private var listener: ValueEventListener? = null
 
-    val album : LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum()) {
+    val album: LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum()) {
         it.asDomainModel()
     }
 
-    suspend fun getAlbum(albumId:String) : DatabaseAlbum{
+    suspend fun getAlbum(albumId: String): DatabaseAlbum {
         return roomDB.getAlbum(albumId)
     }
 
@@ -43,7 +45,8 @@ class AlbumRepositery(
      * FirebaseAlbum객체 write - setValue()
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun setValue(album:FirebaseAlbum, albumId:String) = suspendCancellableCoroutine<Unit>{ continuation ->
+    suspend fun setValue(album: FirebaseAlbum, albumId: String) =
+        suspendCancellableCoroutine<Unit> { continuation ->
             val user = fbAuth.currentUser!!
             val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
             val key = ref.key ?: return@suspendCancellableCoroutine
@@ -57,21 +60,26 @@ class AlbumRepositery(
             )
 
             ref.setValue(new).addOnCompleteListener {
-                if(it.isSuccessful) {
-                    Log.i(TAG,"ref.setValue(new) Successful")
+                if (it.isSuccessful) {
+                    Log.i(TAG, "ref.setValue(new) Successful")
                 } else {
-                    Log.i(TAG,"ref.setValue(new) fail :${it.exception?.message}")
+                    Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")
                 }
-                continuation.resume(Unit,null)
+                continuation.resume(Unit, null)
             }
-    }
+        }
 
     /**
      * firebase .child("album").child("$uid").child("${album.id}") 경로에
      * FirebaseAlbum객체 write - setValue()
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun setValueInProfile(album:FirebaseAlbum, albumId:String, insertAlbumRoom : (album:DatabaseAlbum)->Unit,insertHomeAlbumRoom : (homeAlbum: DatabaseHomeAlbum)->Unit ) = suspendCancellableCoroutine<Unit>{ continuation ->
+    suspend fun setValueInProfile(
+        album: FirebaseAlbum,
+        albumId: String,
+        insertAlbumRoom: (album: DatabaseAlbum) -> Unit,
+        insertHomeAlbumRoom: (homeAlbum: DatabaseHomeAlbum) -> Unit
+    ) = suspendCancellableCoroutine<Unit> { continuation ->
         val user = fbAuth.currentUser!!
         val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
         val key = ref.key ?: return@suspendCancellableCoroutine
@@ -85,14 +93,14 @@ class AlbumRepositery(
         )
 
         ref.setValue(new).addOnCompleteListener {
-            if(it.isSuccessful) {
+            if (it.isSuccessful) {
                 insertAlbumRoom(new.asDatabaseModel())
                 insertHomeAlbumRoom(new.asDatabaseModel().asHomeAlbum())
-                Log.i(TAG,"ref.setValue(new) Successful")
+                Log.i(TAG, "ref.setValue(new) Successful")
             } else {
-                Log.i(TAG,"ref.setValue(new) fail :${it.exception?.message}")
+                Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")
             }
-            continuation.resume(Unit,null)
+            continuation.resume(Unit, null)
         }
     }
 
@@ -102,7 +110,7 @@ class AlbumRepositery(
      * ValueEventListener 추가 - addValueEvnetListener
      * */
 
-    suspend fun addValueEventListener(insertAlbum: (album: DatabaseAlbum)->Unit) {
+    suspend fun addValueEventListener(insertAlbum: (album: DatabaseAlbum) -> Unit) {
         withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
             val ref = fbDatabase.reference.child("album").child(user.uid)
@@ -113,11 +121,10 @@ class AlbumRepositery(
     }
 
 
-
     /**
      * room database에 DatabaseAlbum insert
      * */
-    suspend fun insertRoomAlbum(album:DatabaseAlbum) {
+    suspend fun insertRoomAlbum(album: DatabaseAlbum) {
         withContext(Dispatchers.IO) {
             roomDB.insert(album)
         }
@@ -126,18 +133,17 @@ class AlbumRepositery(
     /**
      * room database에 DatabaseHomeAlbum insert
      * */
-    suspend fun insertRoomAlbum(album:DatabaseHomeAlbum) {
+    suspend fun insertRoomAlbum(album: DatabaseHomeAlbum) {
         withContext(Dispatchers.IO) {
             roomDB.insert(album)
         }
     }
 
 
-
     /**
      * 앨범이 몇개 있는지 확인.
      * */
-    suspend fun addGetAlbumCountSingleValueEventListener(insertCount:(count:Int)->Unit) : Boolean {
+    suspend fun addGetAlbumCountSingleValueEventListener(insertCount: (count: Int) -> Unit): Boolean {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser!!
             val listener = albumDataSource.getNumberOfAlbumValueEventListener(insertCount)
@@ -151,8 +157,15 @@ class AlbumRepositery(
      * remove Listener
      * */
     fun removeListener() {
-        val user = fbAuth.currentUser!!.uid
-        val ref = fbDatabase.reference.child("album").child(user)
-        ref.removeEventListener(listener!!)
+        try {
+            val user = fbAuth.currentUser!!.uid
+            val ref = fbDatabase.reference.child("album").child(user)
+            ref.removeEventListener(listener!!)
+
+        } catch (error: IOException) {
+            error.printStackTrace()
+        } catch (error: NullPointerException) {
+            error.printStackTrace()
+        }
     }
 }

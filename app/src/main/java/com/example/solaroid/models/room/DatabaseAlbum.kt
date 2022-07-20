@@ -19,7 +19,7 @@ data class DatabaseAlbum(
     val participants:String,
     val key: String
 ) {
-
+    fun getAlbumIdForFirebase() = parseAlbumIdDomainToFirebase(id,key)
 }
 
 fun DatabaseAlbum.asDomainModel() : Album {
@@ -40,19 +40,22 @@ fun DatabaseAlbum.asFirebaseModel() : FirebaseAlbum =
         key
     )
 
-fun DatabaseAlbum.asHomeAlbum() : DatabaseHomeAlbum {
-    return DatabaseHomeAlbum(
-        true,
-        name,
-        id
-    )
-}
 
 fun List<DatabaseAlbum>.asDomainModel() : List<Album> {
     return this.map{
         it.asDomainModel()
     }
 
+}
+
+
+
+fun DatabaseAlbum.asHomeAlbum() : DatabaseHomeAlbum {
+    return DatabaseHomeAlbum(
+        true,
+        name,
+        id
+    )
 }
 
 

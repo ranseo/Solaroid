@@ -55,20 +55,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     private val albumRequestRepositery =
         AlbumRequestRepositery(fbAuth, fbDatabase, RequestAlbumDataSource())
 
-    private val friendListRepositery =
-        FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(), roomDB)
-
-
     val myProfile = profileRepostiery.myProfile
-    val myFriendList = Transformations.map(friendListRepositery.friendList) {
-        convertFriendToDialogFriend(it)
-    }
-
-    private fun convertFriendToDialogFriend(list: List<Friend>): List<FriendListDataItem.DialogProfileDataItem> {
-        return list.map {
-            FriendListDataItem.DialogProfileDataItem(it)
-        }
-    }
 
     val albums = albumRepostiery.album
 
@@ -95,34 +82,22 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     val albumDataItem: LiveData<AlbumType>
         get() = _albumDataItem
 
-    //album을 생서(create) 할 때 사용되는 프로퍼티들
-
-    private val _startCreateAlbum =
-        MutableLiveData<Event<List<FriendListDataItem.DialogProfileDataItem>>>()
-    val startCreateAlbum: LiveData<Event<List<FriendListDataItem.DialogProfileDataItem>>>
-        get() = _startCreateAlbum
-
-    var createId: String = ""
-    var createName: String = ""
-    var createThumbnail: Bitmap? = null
-    var createParticipants: String = ""
-
-    private val _createReady = MutableLiveData<Event<Unit?>>()
-    val createReady: LiveData<Event<Unit?>>
-        get() = _createReady
-
 
     private val _naviToHome = MutableLiveData<Event<Unit>>()
     val naviToHome: LiveData<Event<Unit>>
         get() = _naviToHome
 
-    private val _naviToGallery = MutableLiveData<Event<Album>>()
-    val navlToGallery: LiveData<Event<Album>>
-        get() = _naviToGallery
+    private val _naviToPhotoCreate = MutableLiveData<Event<Unit>>()
+    val naviToPhotoCreate : LiveData<Event<Unit>>
+        get() = _naviToPhotoCreate
 
     private val _naviToCreate = MutableLiveData<Event<Any?>>()
     val naviToCreate: LiveData<Event<Any?>>
         get() = _naviToCreate
+
+    private val _naviToGallery = MutableLiveData<Event<Album>>()
+    val navlToGallery: LiveData<Event<Album>>
+        get() = _naviToGallery
 
 
     init {
@@ -198,22 +173,6 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         }
     }
 
-    /**
-     * AlbumFragment UI에서 bottomNavigation의 add 버튼을 누를 때
-     * 새로운 앨범을 추가할 수 있는 dialog를 시작하는 함수
-     * 나의 친구 목록이 담긴 myFriendList를 _startCreateAlbum의 Event값으로 할당한다.
-     * */
-    fun onCreateAlbumBtn() {
-        viewModelScope.launch {
-            val list = myFriendList.value ?: listOf()
-            _startCreateAlbum.value = Event(list)
-        }
-    }
-
-
-
-
-
 
 
     /**
@@ -285,6 +244,14 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     fun navigateToCreate() {
         _naviToCreate.value = Event(Unit)
     }
+
+    fun navigateToPhotoCreate() {
+        _naviToPhotoCreate.value = Event(Unit)
+    }
+
+
+
+
 
 
 }

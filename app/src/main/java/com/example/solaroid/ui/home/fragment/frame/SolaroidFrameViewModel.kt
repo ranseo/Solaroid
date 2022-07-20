@@ -114,9 +114,10 @@ class SolaroidFrameViewModel(
 
 
     init {
-        Log.i(TAG, "뷰모델 Init()")
+        Log.i(TAG, "뷰모델 Init() albumId : ${_albumId} , ${_albumKey}")
         albumId = _albumId
         albumKey = _albumKey
+
         _startPhotoTicket.value = photoTicket
     }
 

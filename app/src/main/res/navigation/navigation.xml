@@ -182,6 +182,10 @@
             />
 
         <action
+            android:id="@+id/action_album_to_photo_create"
+            app:destination="@+id/fragment_solaroid_create"/>
+
+        <action
             android:id="@+id/action_album_to_homeGallery"
             app:destination="@+id/fragment_home_gallery"
             app:popUpTo="@layout/fragment_album"
@@ -189,7 +193,7 @@
             />
 
         <action
-            android:id="@+id/action_album_to_create"
+            android:id="@+id/action_album_to_ablum_create"
             app:destination="@+id/album_create_navigation"
             />
 
@@ -258,6 +262,14 @@
                 android:id="@+id/action_start_to_final"
                 app:destination="@+id/create_final"
                 />
+
+            <action
+                android:id="@+id/action_start_to_album"
+                app:destination="@+id/fragment_album"
+                app:popUpToInclusive="true"
+                app:popUpTo="@layout/fragment_album"
+                />
+
         </fragment>
 
         <fragment

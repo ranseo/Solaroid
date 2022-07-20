@@ -1,5 +1,6 @@
 package com.example.solaroid.repositery.album
 
+import android.util.Log
 import com.example.solaroid.datasource.album.WithAlbumDataSource
 import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.models.firebase.FirebaseProfile
@@ -16,6 +17,7 @@ class WithAlbumRepositery(
     private val withAlbumDataSource: WithAlbumDataSource
 )
 {
+    private val TAG = "WithAlbumRepositery"
 
     /**
      * firebase .child("withAlbum").child("${album.id}").child("${fbAuth.currentUser.uid}") 경로에 write
@@ -28,7 +30,13 @@ class WithAlbumRepositery(
             val ref = fbDatabase.reference.child("withAlbum").child("$albumId").child(user.uid)
 
             ref.setValue(myProfile).addOnCompleteListener {
-                if(it.isSuccessful) continuation.resume(Unit, null)
+                if(it.isSuccessful) {
+                    Log.i(TAG, "setValue 성공")
+                    continuation.resume(Unit, null)
+                } else {
+                    Log.i(TAG, "setValue 실패 : ${it.exception?.message}")
+                    continuation.resume(Unit, null)
+                }
             }
 
     }

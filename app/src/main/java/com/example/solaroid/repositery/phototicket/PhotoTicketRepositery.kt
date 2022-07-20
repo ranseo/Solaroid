@@ -101,7 +101,7 @@ class PhotoTicketRepositery(
             ref.setValue(new.asFirebaseModel()).addOnFailureListener {
                 Log.d(TAG, "Network Connection Error : ${it.message}")
                 //Toast -> SnackBar 로 변경
-                Toast.makeText(application, "네트워크 연결되지 않아 업데이트 되지 않았다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(application, "네트워크 연결되지 않아 업데이트 불가능.", Toast.LENGTH_SHORT).show()
             }
 
 

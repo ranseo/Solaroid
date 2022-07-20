@@ -207,7 +207,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
         viewModelScope.launch {
             insertProfile(profile.asDatabaseModel())
             insertUserList(profile)
-            makeThumbnail(joinProfileImgListToString(listOf(profile.asDomainModel().asFriend(""))))
+            makeThumbnail(joinProfileImgListToString(listOf(profile.profileImg)))
         }
     }
 
