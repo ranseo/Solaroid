@@ -50,8 +50,12 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(), roomDB)
 
 
-    lateinit var myProfile : LiveData<Profile>
-    lateinit var myFriendList : LiveData<List<FriendListDataItem.DialogProfileDataItem>>
+    val myProfile : LiveData<Profile> = profileRepostiery.myProfile
+    val myFriendList : LiveData<List<FriendListDataItem.DialogProfileDataItem>> = Transformations.map(friendListRepositery.friendList) {
+        it?.let{ list ->
+            convertFriendToDialogFriend(list)
+        }
+    }
     private fun convertFriendToDialogFriend(list: List<Friend>): List<FriendListDataItem.DialogProfileDataItem> {
         return list.map {
             FriendListDataItem.DialogProfileDataItem(it)
@@ -78,31 +82,40 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     val participants: LiveData<List<Friend>>
         get() = _participants
 
+    private val _profileAndParticipants = MediatorLiveData<List<Friend>>()
+    val profileAndParticipants : LiveData<List<Friend>>
+        get() =_profileAndParticipants
+
+    fun setProfileAndParticipants(myProfile:LiveData<Profile>, participants:LiveData<List<Friend>>) {
+        if(myProfile.value != null && participants.value != null){
+            _profileAndParticipants.value = listOf(myProfile.value!!.asFriend(""))+ participants.value!!
+        }
+    }
 
 
     //Final에서 쓰일 프로퍼티
-    val createId = Transformations.map(participants) {
+    val createId = Transformations.map(profileAndParticipants) {
         if (!it.isNullOrEmpty()) {
-            getAlbumIdWithFriendCodes(it.map { v -> v.friendCode })
+            getAlbumIdWithFriendCodes(it.map { v -> v.friendCode.drop(1) })
         } else ""
     }
 
-    val createName = Transformations.map(participants) {
+    val createName = Transformations.map(profileAndParticipants) {
         if (!it.isNullOrEmpty()) {
-            getAlbumNameWithFriendsNickname(it.map { v -> v.nickname }, myProfile!!.value!!.nickname)
+            getAlbumNameWithFriendsNickname(it.map { v -> v.nickname })
         } else ""
     }
 
-    val createBitmap = Transformations.map(participants) {
+    val createBitmap = Transformations.map(profileAndParticipants) {
         if (!it.isNullOrEmpty()) {
-            joinProfileImgListToString(listOf(myProfile!!.value!!.profileImg) + it.map { v -> v.profileImg })
-        } else "acac"
+            joinProfileImgListToString(it.map { v -> v.profileImg })
+        } else ""
     }
     ///
 
 
     val participantsListString = Transformations.map(participants) {
-        "참여자 : " + it.fold("${myProfile!! .value!!.nickname}, ") { acc, v ->
+        "참여자 : " + it.fold("${myProfile .value!!.nickname}, ") { acc, v ->
             acc + v.nickname + ", "
         }.dropLast(2)
     }
@@ -113,16 +126,13 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
 
     init {
-        viewModelScope.launch {
-            myProfile = profileRepostiery.myProfile
-
-            Log.i(TAG, "init() myProfile : ${myProfile?.value?.nickname}}")
-
-            myFriendList = Transformations.map(friendListRepositery.friendList) {
-                convertFriendToDialogFriend(it)
+        with(_profileAndParticipants){
+            addSource(myProfile) {
+                setProfileAndParticipants(myProfile, participants)
             }
-
-            Log.i(TAG, "init() myFriendList : ${myFriendList?.value}")
+            addSource(participants) {
+                setProfileAndParticipants(myProfile,participants)
+            }
         }
     }
 
@@ -158,9 +168,9 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                 )
                 Log.i(
                     TAG,
-                    "myProfile.value : ${myProfile!!.value!!.asFirebaseModel()}, createId : ${createId}"
+                    "myProfile.value : ${myProfile.value!!.asFirebaseModel()}, createId : ${createId}"
                 )
-                withAlbumRepositery.setValue(myProfile!!.value!!.asFirebaseModel(), createId.value!!)
+                withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId.value!!)
 
                 albumRepostiery.setValue(firebaseAlbum, createId.value!!)
 
@@ -207,7 +217,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     private fun convertFriendListToString(): String {
         val list = participants.value ?: listOf()
-        return getAlbumPariticipantsWithFriendCodes(myProfile!!.value!!.friendCode, list.map {
+        return getAlbumPariticipantsWithFriendCodes(myProfile.value!!.friendCode, list.map {
             it.friendCode
         })
     }
@@ -234,7 +244,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
 
     fun removeListener() {
-        albumRequestRepositery.removeListener(myProfile!!.value!!.friendCode.drop(1))
+        albumRequestRepositery.removeListener(myProfile.value!!.friendCode.drop(1))
         albumRepostiery.removeListener()
     }
 

@@ -80,6 +80,24 @@ class AlbumCreateFinal() : Fragment() {
         }
 
 
+
+        viewModel.createBitmap.observe(viewLifecycleOwner) {
+            it?.let{
+                Log.i(TAG, "createBitmap ${it}")
+                binding.albumThumbnail.thumbnailString = it
+            }
+        }
+        viewModel.createId.observe(viewLifecycleOwner) {
+            it?.let{
+                Log.i(TAG, "createId ${it}")
+            }
+        }
+        viewModel.createName.observe(viewLifecycleOwner) {
+            it?.let{
+                Log.i(TAG, "createName ${it}")
+            }
+        }
+
         binding.btnAccept.setOnClickListener {
             viewModel.createAndNavigate()
         }

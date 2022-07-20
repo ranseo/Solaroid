@@ -28,6 +28,7 @@ fun convertHexStringToLongFormat(str: String): Long {
     return str.substring(1..4).toLong(16)
 }
 
+
 fun getAlbumIdWithFriendCodes(friendCodes: List<String>): String {
     return friendCodes.fold("") { acc, v ->
         acc + v.drop(1) + "|"
@@ -36,6 +37,12 @@ fun getAlbumIdWithFriendCodes(friendCodes: List<String>): String {
 
 fun getAlbumNameWithFriendsNickname(nickname: List<String>, myNickname:String): String {
     return nickname.fold("$myNickname, ") { acc, v ->
+        "$acc\'$v\'님, "
+    }.dropLast(2) + "의 앨범"
+}
+
+fun getAlbumNameWithFriendsNickname(nickname: List<String>): String {
+    return nickname.fold("") { acc, v ->
         "$acc\'$v\'님, "
     }.dropLast(2) + "의 앨범"
 }

@@ -74,6 +74,7 @@ class AlbumCreateStart() : Fragment() {
 
 
 
+
         binding.btnAccept.setOnClickListener {
             viewModel.checkParticipants()
             findNavController().navigate(
