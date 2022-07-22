@@ -92,7 +92,7 @@ class AlbumRequestViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun setValueInAlbum(album: FirebaseAlbum) {
         viewModelScope.launch {
-            albumRepostiery.setValue(album, album.id)
+            albumRepostiery.setValueInRequestAlbum(album, album.id)
         }
     }
 

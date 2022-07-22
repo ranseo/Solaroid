@@ -263,6 +263,11 @@
             app:popUpToInclusive="true"/>
 
 
+        <argument
+            android:name="ShowAppBar"
+            android:defaultValue="true"/>
+
+
 
     </fragment>
 

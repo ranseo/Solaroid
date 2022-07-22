@@ -37,6 +37,7 @@ class AlbumRepositery(
 
 
     /**
+     * AlbumFragment에서 사용
      * firebase .child("album").child("$uid").child("${album.id}") 경로에
      * FirebaseAlbum객체 write - setValue()
      * */
@@ -54,6 +55,44 @@ class AlbumRepositery(
                     album.thumbnail,
                     album.participants,
                     key
+                )
+
+                ref.setValue(new).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i(TAG, "ref.setValue(new) Successful")
+                        continuation.resume(Unit, null)
+                    } else {
+                        Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")
+                        continuation.resume(Unit, null)
+                    }
+
+                }
+            }catch (error:IOException) {
+                error.printStackTrace()
+            }catch (error:NullPointerException) {
+                error.printStackTrace()
+            }
+
+        }
+
+    /**
+     * AlbumRequestFramgent에서 사용
+     * firebase .child("album").child("$uid").child("${album.id}") 경로에
+     * FirebaseAlbum객체 write - setValue()
+     * */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun setValueInRequestAlbum(album: FirebaseAlbum, albumId: String) =
+        suspendCancellableCoroutine<Unit> { continuation ->
+            try {
+                val user = fbAuth.currentUser!!
+                val ref = fbDatabase.reference.child("album").child(user.uid).child(albumId).child(album.key)
+
+                val new = FirebaseAlbum(
+                    album.id,
+                    album.name,
+                    album.thumbnail,
+                    album.participants,
+                    album.key
                 )
 
                 ref.setValue(new).addOnCompleteListener {

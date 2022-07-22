@@ -36,11 +36,16 @@ class AlbumRequest : Fragment(), RequestAlbumAcceptDialogFragment.RequestAlbumAc
         viewModelFactory = AlbumRequestViewModelFactory(dataSource)
         viewModel = ViewModelProvider(this, viewModelFactory)[AlbumRequestViewModel::class.java]
 
+        binding.lifecycleOwner = viewLifecycleOwner
+
         val onRequestAlbumListener: (album: RequestAlbum) -> Unit = { album ->
             viewModel.setRequestAlbum(album)
         }
 
         val adapter = AlbumListAdapter(AlbumListClickListener(null, onRequestAlbumListener))
+
+
+        binding.recAlbumRequest.adapter = adapter
 
         viewModel.myProfile.observe(viewLifecycleOwner) {
             it?.let{
