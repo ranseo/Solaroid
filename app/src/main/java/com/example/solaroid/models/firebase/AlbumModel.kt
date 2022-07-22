@@ -4,6 +4,7 @@ import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
+import com.example.solaroid.joinAlbumIdAndKey
 import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.utils.BitmapUtils
 
@@ -18,13 +19,14 @@ data class FirebaseAlbum(
 
 
 
-fun FirebaseAlbum.asDatabaseModel() : DatabaseAlbum {
+fun FirebaseAlbum.asDatabaseModel(user:String) : DatabaseAlbum {
     return DatabaseAlbum(
-        "$id||$key",
+        joinAlbumIdAndKey(id,key),
         name,
         thumbnail,
         participants,
-        key
+        key,
+        user
     )
 }
 

@@ -27,6 +27,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.coroutines.*
+import java.lang.NullPointerException
 
 class PhotoTicketRepositery(
     private val dataSource: DatabasePhotoTicketDao,
@@ -76,9 +77,21 @@ class PhotoTicketRepositery(
      * */
     suspend fun refreshPhotoTickets(albumId:String, albumKey:String , insertRoomDb: (List<FirebasePhotoTicket>) -> Unit) =
         withContext(Dispatchers.IO) {
-            listener = photoTicketListenerDataSource.setPhotoTicketList(insertRoomDb)
+            listener = photoTicketListenerDataSource.setGalleryPhotoTicketList(insertRoomDb)
             val ref = fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey)
             ref.addValueEventListener(listener!!)
+        }
+
+    /**
+     * 어플리케이션을 처음 실행할 때 또는 UI를 전환할 때(프레임컨테이너 <-> 홈 갤러리 프래그먼트) 모든 포토티켓 리스트를
+     * 화면에 띄우기 위해 firebase의 실시간 데이버테이스로 부터 FirebasePhotoTicket을 불러오고 이를 다시 room database에 insert하는
+     * firebase - ValueEventListener를 등록하여 refresh하는 함수.
+     * */
+    suspend fun refreshPhotoTickets(albumId: String, insertRoomDb: (List<FirebasePhotoTicket>) -> Unit) =
+        withContext(Dispatchers.IO) {
+            listener = photoTicketListenerDataSource.setHomePhotoTicketList(insertRoomDb)
+            val ref = fbDatabase.reference.child("photoTicket").child(albumId)
+            ref.addListenerForSingleValueEvent(listener!!)
         }
 
     /**
@@ -119,38 +132,41 @@ class PhotoTicketRepositery(
             //room delete
             try {
                 dataSource.delete(key)
+                //firebase database delete
+                val ref =
+                    fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey).child(key)
+                ref.removeValue().addOnFailureListener {
+                    Log.d(TAG, "Network Connection Error : ${it.message}")
+                    //Toast -> SnackBar 로 변경
+                    Toast.makeText(application, "네트워크 연결되지 않아 삭제 되지 않았다.", Toast.LENGTH_SHORT).show()
+                }
+
+                //firebase storage delete
+                val storageRef =
+                    fbStorage.reference.child("photoTicket").child(albumId).child(key).child("image")
+                storageRef.listAll().addOnSuccessListener {
+                    if (it.items.size > 0) {
+                        storageRef.child(it.items[0].toString().toUri().lastPathSegment.toString())
+                            .delete()
+                            .addOnSuccessListener {
+                                Log.i(TAG, "Storage Delete Success")
+                            }.addOnFailureListener {
+                                Log.i(TAG, "Storage Delete Fail : ${it.message}")
+                            }
+                    }
+                }.addOnFailureListener {
+                    Log.d(TAG, "Network Connection Error : ${it.message}")
+                    //Toast -> SnackBar 로 변경
+                    Toast.makeText(application, "네트워크 연결되지 않아 삭제 되지 않았다.", Toast.LENGTH_SHORT).show()
+                }
             } catch (error: Exception) {
                 Log.i(TAG, "room database delete error : ${error.message}")
+            } catch (error:NullPointerException) {
+                error.printStackTrace()
             }
 
 
-            //firebase database delete
-            val ref =
-                fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey).child(key)
-            ref.removeValue().addOnFailureListener {
-                Log.d(TAG, "Network Connection Error : ${it.message}")
-                //Toast -> SnackBar 로 변경
-                Toast.makeText(application, "네트워크 연결되지 않아 삭제 되지 않았다.", Toast.LENGTH_SHORT).show()
-            }
 
-            //firebase storage delete
-            val storageRef =
-                fbStorage.reference.child("photoTicket").child(albumId).child(key).child("image")
-            storageRef.listAll().addOnSuccessListener {
-                if (it.items.size > 0) {
-                    storageRef.child(it.items[0].toString().toUri().lastPathSegment.toString())
-                        .delete()
-                        .addOnSuccessListener {
-                            Log.i(TAG, "Storage Delete Success")
-                        }.addOnFailureListener {
-                            Log.i(TAG, "Storage Delete Fail : ${it.message}")
-                        }
-                }
-            }.addOnFailureListener {
-                Log.d(TAG, "Network Connection Error : ${it.message}")
-                //Toast -> SnackBar 로 변경
-                Toast.makeText(application, "네트워크 연결되지 않아 삭제 되지 않았다.", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
@@ -229,12 +245,16 @@ class PhotoTicketRepositery(
                                 frontText = pre.frontText,
                                 backText = pre.backText,
                                 date = pre.date,
-                                favorite = pre.favorite
+                                favorite = pre.favorite,
+                                albumId = pre.albumId,
+                                albumName = pre.albumName,
+                                albumKey = pre.albumKey
                             )
 
                             fbDatabase.reference.child("photoTicket")
-                                .child(user.uid)
-                                .child(key)
+                                .child(new.albumId)
+                                .child(new.albumKey)
+                                .child(new.key)
                                 .setValue(new)
                             Log.i(
                                 TAG,

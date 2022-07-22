@@ -47,7 +47,13 @@ fun getAlbumNameWithFriendsNickname(nickname: List<String>): String {
     }.dropLast(2) + "의 앨범"
 }
 
-fun getAlbumPariticipantsWithFriendCodes(myFriendCode:String,friendCodes: List<String>): String {
+fun getAlbumParticipantsWithFriendCodes(friendCodes: List<String>): String {
+    return friendCodes.fold("") { acc, v ->
+        "$acc$v||"
+    }.dropLast(2)
+}
+
+fun getAlbumParticipantsWithFriendCodes(myFriendCode:String,friendCodes: List<String>): String {
     return friendCodes.fold("$myFriendCode||") { acc, v ->
         "$acc$v||"
     }.dropLast(2)
@@ -57,6 +63,7 @@ fun parseProfileImgStringToList(profiles: String): List<String> {
     return profiles.split("||")
 }
 
+
 fun joinProfileImgListToString(participants: List<String>) : String{
     return participants.fold("") { acc, v -> "$acc$v||"}.dropLast(2)
 }
@@ -64,6 +71,10 @@ fun joinProfileImgListToString(participants: List<String>) : String{
 
 fun parseAlbumIdDomainToFirebase(albumId:String, key:String) : String {
     return albumId.removeSuffix(key).dropLast(2)
+}
+
+fun joinAlbumIdAndKey(albumId:String, albumKey:String) : String {
+    return "$albumId||$albumKey"
 
 }
 

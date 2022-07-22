@@ -11,11 +11,9 @@ import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.repositery.album.AlbumRepositery
-import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -47,8 +45,6 @@ class SolaroidPhotoCreateViewModel(
         fbDatabase,
         AlbumDataSource()
     )
-    private val homeAlbumRepositery = HomeAlbumRepositery(database)
-
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
@@ -57,7 +53,7 @@ class SolaroidPhotoCreateViewModel(
 
     private val albums = albumRepositery.album
 
-    var albumName : String = ""
+    var albumName : String? = ""
     val albumNameList = Transformations.map(albumRepositery.album) { list ->
         list.map {
             it.name
@@ -144,7 +140,6 @@ class SolaroidPhotoCreateViewModel(
 
 
     init {
-            setHomeAlbumName()
     }
     /**
      * 이미지 저장 버튼을 누를 때 url,date,text,favorite 값을 기반으로한 포토티켓 객체를 만들고 이를 photoTicketRepositery.insert()의 매개변수로 전달하여
@@ -155,6 +150,7 @@ class SolaroidPhotoCreateViewModel(
 
             try {
 
+                val album =whichAlbum!!
                 val new =
                     PhotoTicket(
                         id = "",
@@ -162,14 +158,15 @@ class SolaroidPhotoCreateViewModel(
                         date = convertTodayToFormatted(System.currentTimeMillis()),
                         frontText = frontText,
                         backText = backText.value!!,
-                        favorite = false
+                        favorite = false,
+                        albumInfo = listOf(album.id, album.key, album.name)
                     )
 
                 Log.i(TAG, "onImageSave()")
 
                 _isProgressBar.value = true
                 photoTicketRepositery.insertPhotoTickets(
-                    whichAlbum!!.asFirebaseModel(),
+                    album.asFirebaseModel(),
                     new,
                     getApplication()
                 )
@@ -221,14 +218,6 @@ class SolaroidPhotoCreateViewModel(
         }
     }
 
-    /**
-     * HomeAlbumRepositery로 부터 HomeAlbum의 name 반환
-     * */
-    fun setHomeAlbumName() {
-        runBlocking {
-            albumName = homeAlbumRepositery.getHomeAlbumName()
-        }
-    }
 
     companion object {
         const val TAG = "크리에이트뷰모델"

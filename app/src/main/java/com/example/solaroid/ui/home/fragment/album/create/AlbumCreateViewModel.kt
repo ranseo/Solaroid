@@ -50,12 +50,14 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(), roomDB)
 
 
-    val myProfile : LiveData<Profile> = profileRepostiery.myProfile
-    val myFriendList : LiveData<List<FriendListDataItem.DialogProfileDataItem>> = Transformations.map(friendListRepositery.friendList) {
-        it?.let{ list ->
-            convertFriendToDialogFriend(list)
+    val myProfile: LiveData<Profile> = profileRepostiery.myProfile
+    val myFriendList: LiveData<List<FriendListDataItem.DialogProfileDataItem>> =
+        Transformations.map(friendListRepositery.friendList) {
+            it?.let { list ->
+                convertFriendToDialogFriend(list)
+            }
         }
-    }
+
     private fun convertFriendToDialogFriend(list: List<Friend>): List<FriendListDataItem.DialogProfileDataItem> {
         return list.map {
             FriendListDataItem.DialogProfileDataItem(it)
@@ -83,20 +85,30 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         get() = _participants
 
     private val _profileAndParticipants = MediatorLiveData<List<Friend>>()
-    val profileAndParticipants : LiveData<List<Friend>>
-        get() =_profileAndParticipants
+    private val profileAndParticipants: LiveData<List<Friend>>
+        get() = _profileAndParticipants
 
-    fun setProfileAndParticipants(myProfile:LiveData<Profile>, participants:LiveData<List<Friend>>) {
-        if(myProfile.value != null && participants.value != null){
-            _profileAndParticipants.value = listOf(myProfile.value!!.asFriend(""))+ participants.value!!
+    fun setProfileAndParticipants(
+        myProfile: LiveData<Profile>,
+        participants: LiveData<List<Friend>>
+    ) {
+        if (myProfile.value != null && participants.value != null) {
+            _profileAndParticipants.value =
+                listOf(myProfile.value!!.asFriend("")) + participants.value!!
         }
     }
 
 
     //Final에서 쓰일 프로퍼티
+    val createParticipants= Transformations.map(profileAndParticipants) {
+        if (!it.isNullOrEmpty()) {
+            getAlbumParticipantsWithFriendCodes(it.map { v -> v.friendCode })
+        } else ""
+    }
+
     val createId = Transformations.map(profileAndParticipants) {
         if (!it.isNullOrEmpty()) {
-            getAlbumIdWithFriendCodes(it.map { v -> v.friendCode.drop(1) })
+            getAlbumIdWithFriendCodes(it.map { v -> v.friendCode })
         } else ""
     }
 
@@ -111,11 +123,13 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
             joinProfileImgListToString(it.map { v -> v.profileImg })
         } else ""
     }
+
+
     ///
 
 
     val participantsListString = Transformations.map(participants) {
-        "참여자 : " + it.fold("${myProfile .value!!.nickname}, ") { acc, v ->
+        "참여자 : " + it.fold("${myProfile.value!!.nickname}, ") { acc, v ->
             acc + v.nickname + ", "
         }.dropLast(2)
     }
@@ -126,12 +140,12 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
 
     init {
-        with(_profileAndParticipants){
+        with(_profileAndParticipants) {
             addSource(myProfile) {
                 setProfileAndParticipants(myProfile, participants)
             }
             addSource(participants) {
-                setProfileAndParticipants(myProfile,participants)
+                setProfileAndParticipants(myProfile, participants)
             }
         }
     }
@@ -156,33 +170,38 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * 앨범의 참여자들에게 RequsetAlbum 객체를 전달할 수 있도록 만든다.
      * */
     suspend private fun createAlbum() {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             try {
                 val thumbnail = BitmapUtils.bitmapToString(createThumbnail!!)
+
+                Log.i(
+                    TAG,
+                    "createId : ${createId.value}, createName : ${createName.value}, createParticipants : ${createParticipants.value} "
+                )
+
                 val firebaseAlbum = FirebaseAlbum(
                     id = createId.value!!,
                     name = createName.value!!,
-                    participants = convertFriendListToString(),
+                    participants = createParticipants.value!!,
                     thumbnail = thumbnail,
                     key = ""
                 )
-                Log.i(
-                    TAG,
-                    "myProfile.value : ${myProfile.value!!.asFirebaseModel()}, createId : ${createId}"
-                )
+
                 withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId.value!!)
 
                 albumRepostiery.setValue(firebaseAlbum, createId.value!!)
 
-                val requestAlbum = FirebaseRequestAlbum(
-                    id = createId.value!!,
-                    name = createName.value!!,
-                    thumbnail = thumbnail,
-                    participants = convertFriendListToString(),
-                    key = ""
-                )
+                if (!participants.value.isNullOrEmpty()) {
+                    val requestAlbum = FirebaseRequestAlbum(
+                        id = createId.value!!,
+                        name = createName.value!!,
+                        thumbnail = thumbnail,
+                        participants = createParticipants.value!!,
+                        key = ""
+                    )
 
-                albumRequestRepositery.setValueToParticipants(requestAlbum)
+                    albumRequestRepositery.setValueToParticipants(participants.value!!, requestAlbum)
+                }
 
 
             } catch (error: IOException) {
@@ -210,19 +229,6 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
     /**
-     * AlbumCreateStart 로부터 앨범 참여자들의 list 값를 받아
-     * viewModel 내 createParticipants 프로퍼티에 할당한다.
-     * 할당할 때 uitls.kt 의 getAlbumParticiapntsWithFriendCodes 함수를 이용하여 해당 list의 friendCode들을 String
-     * 타입으로 엮어 반환한 값을 할당한다.
-     * */
-    private fun convertFriendListToString(): String {
-        val list = participants.value ?: listOf()
-        return getAlbumPariticipantsWithFriendCodes(myProfile.value!!.friendCode, list.map {
-            it.friendCode
-        })
-    }
-
-    /**
      * 앨범을 만들다가 취소할 경우,
      * 관련 create 프로퍼티 값들을 모두 "" 또는 null 로 초기화한다.
      * */
@@ -237,8 +243,8 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * listOf() 를 할당. 그렇지 않다면 그대로
      * */
     fun checkParticipants() {
-        if(_participants.value==null) {
-            _participants.value= listOf()
+        if (_participants.value == null) {
+            _participants.value = listOf()
         }
     }
 

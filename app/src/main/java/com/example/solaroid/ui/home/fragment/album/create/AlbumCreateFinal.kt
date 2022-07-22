@@ -25,14 +25,14 @@ import com.example.solaroid.room.SolaroidDatabase
 
 class AlbumCreateFinal() : Fragment() {
 
-    private lateinit var binding : FragmentAlbumCreateFinalBinding
+    private lateinit var binding: FragmentAlbumCreateFinalBinding
 
-    private lateinit var viewModel : AlbumCreateViewModel
+    private lateinit var viewModel: AlbumCreateViewModel
     private lateinit var viewModelFactory: AlbumCreateViewModelFactory
 
-    private lateinit var thumbnail : Bitmap
-    private lateinit var albumId : String
-    private lateinit var albumName : String
+    private lateinit var thumbnail: Bitmap
+    private lateinit var albumId: String
+    private lateinit var albumName: String
 
     private val TAG = "AlbumCreateFinal"
 
@@ -43,24 +43,35 @@ class AlbumCreateFinal() : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_album_create_final, container, false)
+        binding = DataBindingUtil.inflate(
+            layoutInflater,
+            R.layout.fragment_album_create_final,
+            container,
+            false
+        )
 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
 
         viewModelFactory = AlbumCreateViewModelFactory(dataSource)
-        viewModel = ViewModelProvider(requireActivity(),viewModelFactory)[AlbumCreateViewModel::class.java]
+        viewModel =
+            ViewModelProvider(requireActivity(), viewModelFactory)[AlbumCreateViewModel::class.java]
 
+
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
 
         binding.albumThumbnail.addOnLayoutChangeListener { p0, _, _, _, _, _, _, _, _ ->
             if (p0 != null) {
-              viewModel.setThumbnail((p0 as AlbumThumbnailView).getBitmapFromView())
+                val thumbnailBitmap = (p0 as AlbumThumbnailView).getBitmapFromView()
+                Log.i(TAG,"addOnLayoutChangeListener : ${thumbnailBitmap}")
+                viewModel.setThumbnail(thumbnailBitmap)
             }
         }
 
 
         viewModel.naviToAlbum.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     AlbumCreateFinalDirections.actinFinalToCreate()
                 )
@@ -68,13 +79,13 @@ class AlbumCreateFinal() : Fragment() {
         }
 
         viewModel.participants.observe(viewLifecycleOwner) {
-            it?.let{
+            it?.let {
                 Log.i(TAG, "participants observe : ${it}")
             }
         }
 
         viewModel.myProfile.observe(viewLifecycleOwner) {
-            it?.let{
+            it?.let {
                 Log.i(TAG, "myProfile observe : ${it.nickname}")
             }
         }
@@ -82,23 +93,32 @@ class AlbumCreateFinal() : Fragment() {
 
 
         viewModel.createBitmap.observe(viewLifecycleOwner) {
-            it?.let{
+            it?.let {
                 Log.i(TAG, "createBitmap ${it}")
-                binding.albumThumbnail.thumbnailString = it
+                //binding.albumThumbnail.thumbnailString = it
             }
         }
         viewModel.createId.observe(viewLifecycleOwner) {
-            it?.let{
+            it?.let {
                 Log.i(TAG, "createId ${it}")
             }
         }
         viewModel.createName.observe(viewLifecycleOwner) {
-            it?.let{
+            it?.let {
                 Log.i(TAG, "createName ${it}")
             }
         }
 
+        viewModel.createParticipants.observe(viewLifecycleOwner) {
+            it?.let{
+                Log.i(TAG, "createParticipants ${it}")
+            }
+        }
+
         binding.btnAccept.setOnClickListener {
+            val thumbnailBitmap = (binding.albumThumbnail).getBitmapFromView()
+            Log.i(TAG,"binding.btnAccept : ${thumbnailBitmap}")
+            viewModel.setThumbnail(thumbnailBitmap)
             viewModel.createAndNavigate()
         }
 

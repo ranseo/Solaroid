@@ -49,19 +49,11 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-
-        viewModel.albumId.observe(viewLifecycleOwner) {
-            if (!it.isNullOrEmpty()) {
-                Log.i(TAG,"viewModel.albumId.observe : ${id}")
-                viewModel.setAlbum(it)
-            }
-
-        }
-
-        viewModel.album.observe(viewLifecycleOwner) { it ->
-            it?.let { album ->
-                Log.i(TAG, "homeAlbum -> id : ${album.id}, key : ${album.key}")
-                viewModel.refreshFirebaseListener(parseAlbumIdDomainToFirebase(album.id, album.key), album.key)
+        viewModel.albums.observe(viewLifecycleOwner) { list ->
+            list?.let{
+                for(album in list) {
+                    viewModel.refreshFirebaseListener(parseAlbumIdDomainToFirebase(album.id,album.key), album.key)
+                }
             }
         }
 
@@ -71,6 +63,8 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
                 adapter.submitList(list)
             }
         }
+
+
 
         navgiateToOtherFragment()
 
@@ -96,10 +90,9 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         viewModel.naviToFrame.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { photoTicket ->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
-                val album = viewModel.album.value
-                val albumId = album?.getAlbumIdForFirebase()
-                val albumKey = album?.key
-
+                val albumId = photoTicket.albumInfo[0]
+                val albumKey = photoTicket.albumInfo[1]
+                Log.i(TAG, "albumId : ${albumId}, albumKey: ${albumKey}")
                 if (albumId != null && albumKey != null) {
                     findNavController().navigate(
                         HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
@@ -200,10 +193,8 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
     }
 
     override fun onDestroy() {
-
         viewModel.removeListener()
         super.onDestroy()
-
     }
 
 

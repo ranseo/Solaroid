@@ -2,6 +2,7 @@ package com.example.solaroid.ui.friend.adapter
 
 import android.app.Application
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -160,7 +161,7 @@ class FriendListAdatper(
         fun bind(item: Friend, onClickListener: OnDialogClickListener, application: Application?) {
             binding.friend = item
             binding.flag = false
-            binding.layoutListItem.setOnClickListener {
+            val lambda : (view: View) -> Unit = {
                 try {
                     binding.flag = !binding.flag
                     if (binding.flag) {
@@ -175,8 +176,9 @@ class FriendListAdatper(
 
                 }
             }
-
-
+            binding.layoutListItem.setOnClickListener(lambda)
+            binding.btnCheck.setOnClickListener(lambda)
+            binding.btnEmpty.setOnClickListener(lambda)
         }
 
         companion object {

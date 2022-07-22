@@ -51,14 +51,11 @@ class AlbumFragment : Fragment(),
             viewModel.setAlbum(album)
         }
 
-        val onRequestAlbumListener: (album: RequestAlbum) -> Unit = { album ->
-            viewModel.setRequestAlbum(album)
-        }
 
         val adapter = AlbumListAdapter(
             AlbumListClickListener(
                 onAlbumListener,
-                onRequestAlbumListener
+                null
             )
         )
 
@@ -67,6 +64,7 @@ class AlbumFragment : Fragment(),
 
         viewModel.myProfile.observe(viewLifecycleOwner) {
             it?.let { profile ->
+                Log.i(TAG,"myProfile : refreshAlbum 실행")
                 viewModel.refreshAlubm(convertHexStringToLongFormat(profile.friendCode))
             }
         }
@@ -189,6 +187,15 @@ class AlbumFragment : Fragment(),
         dialog.dismiss()
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewModel.removeListener()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        viewModel.removeListener()
+    }
 
     override fun onDestroy() {
         super.onDestroy()

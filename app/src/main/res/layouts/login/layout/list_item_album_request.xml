@@ -7,7 +7,7 @@
 
         <variable
             name="album"
-            type="com.example.solaroid.models.domain.Album" />
+            type="com.example.solaroid.models.domain.RequestAlbum" />
         <variable
             name="onClickListener"
             type="com.example.solaroid.ui.home.adapter.AlbumListClickListener" />
@@ -50,6 +50,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:text="란서's 사진첩" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="135dp"
+            android:layout_height="150dp"
+            android:layout_margin="3dp"
+            android:layout_gravity="center"
+            android:background="@color/grey_transper"
+            android:elevation="12dp">
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

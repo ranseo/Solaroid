@@ -9,6 +9,7 @@ import com.example.solaroid.models.room.asDomainModel
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -90,9 +91,9 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
         viewModelScope.launch {
             val curr = _photoTicket.value!!
             Log.i(TAG,"onUpdatePhotoTicket() : ${frontText}, ${_backText.value!!}")
-            val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, date.value!!, curr.favorite)
+            val new = PhotoTicket(curr.id, curr.url , frontText, _backText.value!!, date.value!!, curr.favorite, curr.albumInfo)
             Log.i(TAG,"onUpdatePhotoTicket() : album.Id : ${albumId}, album.key : ${albumKey}")
-            photoTicketRepositery.updatePhotoTickets(albumId, albumKey,new,getApplication())
+            photoTicketRepositery.updatePhotoTickets(parseAlbumIdDomainToFirebase(albumId, albumKey), albumKey,new,getApplication())
         }
     }
 

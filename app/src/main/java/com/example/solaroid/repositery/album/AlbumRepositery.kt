@@ -8,15 +8,11 @@ import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.models.room.asDomainModel
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.models.firebase.FirebaseAlbum
-import com.example.solaroid.models.firebase.asDatabaseModel
-import com.example.solaroid.models.room.DatabaseHomeAlbum
-import com.example.solaroid.models.room.asHomeAlbum
+import com.example.solaroid.models.room.modifyOverrideAlbumName
 import com.example.solaroid.room.DatabasePhotoTicketDao
-import com.example.solaroid.utils.BitmapUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import java.io.IOException
 import java.lang.NullPointerException
@@ -31,8 +27,8 @@ class AlbumRepositery(
     private val TAG = "AlbumRepositery"
     private var listener: ValueEventListener? = null
 
-    val album: LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum()) {
-        it.asDomainModel()
+    val album: LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum(fbAuth.currentUser!!.email!!)) {
+        it.modifyOverrideAlbumName().asDomainModel()
     }
 
     suspend fun getAlbum(albumId: String): DatabaseAlbum {
@@ -47,60 +43,47 @@ class AlbumRepositery(
     @OptIn(ExperimentalCoroutinesApi::class)
     suspend fun setValue(album: FirebaseAlbum, albumId: String) =
         suspendCancellableCoroutine<Unit> { continuation ->
-            val user = fbAuth.currentUser!!
-            val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
-            val key = ref.key ?: return@suspendCancellableCoroutine
+            try {
+                val user = fbAuth.currentUser!!
+                val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
+                val key = ref.key ?: return@suspendCancellableCoroutine
 
-            val new = FirebaseAlbum(
-                album.id,
-                album.name,
-                album.thumbnail,
-                album.participants,
-                key
-            )
+                val new = FirebaseAlbum(
+                    album.id,
+                    album.name,
+                    album.thumbnail,
+                    album.participants,
+                    key
+                )
 
-            ref.setValue(new).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Log.i(TAG, "ref.setValue(new) Successful")
-                } else {
-                    Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")
+                ref.setValue(new).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Log.i(TAG, "ref.setValue(new) Successful")
+                    } else {
+                        Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")
+                    }
+                    continuation.resume(Unit, null)
                 }
-                continuation.resume(Unit, null)
+            }catch (error:IOException) {
+                error.printStackTrace()
+            }catch (error:NullPointerException) {
+                error.printStackTrace()
             }
+
         }
 
     /**
-     * firebase .child("album").child("$uid").child("${album.id}") 경로에
-     * FirebaseAlbum객체 write - setValue()
+     * firebase .child("album").child("$uid"). child("${album.id}") 경로에
+     * ValueEventListener 추가 - addSingleValueEventListener를 이용하여
+     * HomeGallery 내 property에 내가 가진 album 리스트 할당하기.
      * */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun setValueInProfile(
-        album: FirebaseAlbum,
-        albumId: String,
-        insertAlbumRoom: (album: DatabaseAlbum) -> Unit,
-        insertHomeAlbumRoom: (homeAlbum: DatabaseHomeAlbum) -> Unit
-    ) = suspendCancellableCoroutine<Unit> { continuation ->
-        val user = fbAuth.currentUser!!
-        val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
-        val key = ref.key ?: return@suspendCancellableCoroutine
-
-        val new = FirebaseAlbum(
-            album.id,
-            album.name,
-            album.thumbnail,
-            album.participants,
-            key
-        )
-
-        ref.setValue(new).addOnCompleteListener {
-            if (it.isSuccessful) {
-                insertAlbumRoom(new.asDatabaseModel())
-                insertHomeAlbumRoom(new.asDatabaseModel().asHomeAlbum())
-                Log.i(TAG, "ref.setValue(new) Successful")
-            } else {
-                Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")
-            }
-            continuation.resume(Unit, null)
+    suspend fun addSingleValueEventListener(insertAlbum: (album: List<DatabaseAlbum>) -> Unit) {
+        withContext(Dispatchers.IO) {
+            val user = fbAuth.currentUser!!
+            val ref = fbDatabase.reference.child("album").child(user.uid)
+            listener = albumDataSource.getSingleValueEventListener(user.email!!, insertAlbum)
+            Log.i(TAG, "addValueEventListener : ref.add~")
+            ref.addValueEventListener(listener!!)
         }
     }
 
@@ -109,14 +92,16 @@ class AlbumRepositery(
      * firebase .child("album").child("$uid"). child("${album.id}") 경로에
      * ValueEventListener 추가 - addValueEvnetListener
      * */
-
-    suspend fun addValueEventListener(insertAlbum: (album: DatabaseAlbum) -> Unit) {
+    suspend fun addValueEventListener(insertAlbum: (albums: List<DatabaseAlbum>) -> Unit) {
         withContext(Dispatchers.IO) {
-            val user = fbAuth.currentUser!!
-            val ref = fbDatabase.reference.child("album").child(user.uid)
-            listener = albumDataSource.getValueEventListener(insertAlbum)
-            Log.i(TAG, "addValueEventListener : ref.add~")
-            ref.addValueEventListener(listener!!)
+            try {
+                val user = fbAuth.currentUser!!
+                val ref = fbDatabase.reference.child("album").child(user.uid)
+                listener = albumDataSource.getValueEventListener(user.email!!, insertAlbum)
+                ref.addValueEventListener(listener!!)
+            } catch (error: NullPointerException) {
+                error.printStackTrace()
+            }
         }
     }
 
@@ -131,11 +116,11 @@ class AlbumRepositery(
     }
 
     /**
-     * room database에 DatabaseHomeAlbum insert
+     * room database에 List<DatabaseAlbum> insert
      * */
-    suspend fun insertRoomAlbum(album: DatabaseHomeAlbum) {
+    suspend fun insertRoomAlbums(albums: List<DatabaseAlbum>) {
         withContext(Dispatchers.IO) {
-            roomDB.insert(album)
+            roomDB.insertAlbums(albums)
         }
     }
 

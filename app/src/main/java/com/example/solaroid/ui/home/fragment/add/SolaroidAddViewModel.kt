@@ -17,7 +17,6 @@ import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.models.room.asFirebaseModel
 import com.example.solaroid.repositery.album.AlbumRepositery
-import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -53,8 +52,6 @@ class SolaroidAddViewModel(
         fbDatabase,
         AlbumDataSource()
     )
-
-    private val homeAlbumRepositery = HomeAlbumRepositery(database)
 
     private val _photoTicket = MutableLiveData<PhotoTicket?>()
     val photoTicket: LiveData<PhotoTicket?>
@@ -132,7 +129,6 @@ class SolaroidAddViewModel(
     private var whichAlbum: DatabaseAlbum? = null
 
     init {
-        setHomeAlbumName()
         loadImage()
     }
 
@@ -182,13 +178,15 @@ class SolaroidAddViewModel(
         viewModelScope.launch {
 
             try {
+                val album = whichAlbum!!
                 val new = PhotoTicket(
                     id = "",
                     url = image.value!!,
                     date = date.value!!,
                     frontText = frontText,
                     backText = backText.value!!,
-                    favorite = false
+                    favorite = false,
+                    albumInfo = listOf(album.id, album.key, album.name)
                 )
 
                 photoTicketRepositery.insertPhotoTickets(
@@ -299,15 +297,6 @@ class SolaroidAddViewModel(
         viewModelScope.launch {
             val album = albums.value?.get(pos) ?: return@launch
             whichAlbum = database.getAlbum(album.id)
-        }
-    }
-
-    /**
-     * HomeAlbumRepositery로 부터 HomeAlbum의 name 반환
-     * */
-    fun setHomeAlbumName() {
-        runBlocking {
-            albumName = homeAlbumRepositery.getHomeAlbumName()
         }
     }
 }

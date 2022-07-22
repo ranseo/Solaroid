@@ -52,7 +52,7 @@ class AlbumCreateStart() : Fragment() {
         })
 
 
-        binding.recDialogFriend.adapter = adapter
+        binding.recStartFriend.adapter = adapter
 
         viewModel.myFriendList!!.observe(viewLifecycleOwner) {
             it?.let{ list ->

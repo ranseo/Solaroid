@@ -26,7 +26,6 @@ import kotlinx.coroutines.*
 
 class SolaroidProfileFragment() : Fragment() {
 
-    private lateinit var backPressedCallback: OnBackPressedCallback
     private lateinit var profileObserver: ProfileObserver
 
     private lateinit var viewModelFactory : SolaroidProfileViewModelFactory
@@ -111,14 +110,6 @@ class SolaroidProfileFragment() : Fragment() {
                 findNavController().navigate(
                     SolaroidProfileFragmentDirections.actionProfileFragmentToLoginFragment()
                 )
-            }
-        }
-
-        viewModel.thumbnail.observe(viewLifecycleOwner) {
-            if(!it.isNullOrEmpty()){
-
-                val bitmap = binding.albumThumbnail.getBitmapFromView()
-                viewModel.insertAlbumAndNavigateMain(bitmap)
             }
         }
 

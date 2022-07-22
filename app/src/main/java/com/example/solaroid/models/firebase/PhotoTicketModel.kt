@@ -1,5 +1,7 @@
 package com.example.solaroid.firebase
 
+import androidx.room.ColumnInfo
+import com.example.solaroid.joinAlbumIdAndKey
 import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.models.room.DatabasePhotoTicket
 
@@ -10,7 +12,10 @@ data class FirebasePhotoTicket(
     var frontText : String = "",
     var backText: String ="",
     var date : String = "",
-    var favorite : Boolean = false
+    var favorite : Boolean = false,
+    val albumName: String,
+    val albumId: String,
+    val albumKey: String
 ) {
 
 }
@@ -23,7 +28,10 @@ fun FirebasePhotoTicket.asDatabaseModel(user:String) : DatabasePhotoTicket {
         date = this.date,
         favorite = this.favorite,
         key = this.key,
-        user = user
+        user = user,
+        albumName = albumName,
+        albumKey = albumKey,
+        albumId = joinAlbumIdAndKey(albumId, albumKey)
     )
 }
 
@@ -40,7 +48,8 @@ fun FirebasePhotoTicket.asDomainModel() : PhotoTicket {
         frontText,
         backText,
         date,
-        favorite
+        favorite,
+        albumInfo = listOf(albumId, albumKey, albumName)
     )
 }
 

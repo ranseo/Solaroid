@@ -72,8 +72,8 @@
 
     "album" : {
       "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
         "$albumId" : {
-          ".read" : "auth != null && auth.uid == $uid",
           ".write" : "auth != null && auth.uid == $uid && root.child('withAlbum').child($albumId).child(auth.uid).exists()"
         }
       }
@@ -89,9 +89,12 @@
 
 
     "photoTicket" : {
+      ".read" : "auth != null",
       "$albumId" : {
         ".read" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()",
-        ".write" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()"
+        "$albumKey" : {
+          ".write" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()"
+        }
       }
     }
   }

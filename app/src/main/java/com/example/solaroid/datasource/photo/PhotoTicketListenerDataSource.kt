@@ -9,35 +9,75 @@ import com.google.firebase.database.ValueEventListener
 class PhotoTicketListenerDataSource {
 
 
-    suspend fun setPhotoTicketList(
-        insertRoomDb:  (List<FirebasePhotoTicket>) -> Unit
+    suspend fun setGalleryPhotoTicketList(
+        insertRoomDb: (List<FirebasePhotoTicket>) -> Unit
     ): ValueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
+        override fun onDataChange(snapshot: DataSnapshot) {
 
-               val photoTickets = snapshot.children.map { list ->
-                   val hashMap = list.value as HashMap<*, *>
-                   val phototicket = FirebasePhotoTicket(
-                       url = hashMap["url"]!! as String,
-                       key = hashMap["key"]!! as String,
-                       date = hashMap["date"]!! as String,
-                       frontText = hashMap["frontText"]!! as String,
-                       backText = hashMap["backText"]!! as String,
-                       favorite = hashMap["favorite"]!! as Boolean
-                   )
+            val photoTickets = snapshot.children.map { list ->
+                val hashMap = list.value as HashMap<*, *>
+                val phototicket = FirebasePhotoTicket(
+                    url = hashMap["url"]!! as String,
+                    key = hashMap["key"]!! as String,
+                    date = hashMap["date"]!! as String,
+                    frontText = hashMap["frontText"]!! as String,
+                    backText = hashMap["backText"]!! as String,
+                    favorite = hashMap["favorite"]!! as Boolean,
+                    albumId = hashMap["albumId"]!! as String,
+                    albumName = hashMap["albumName"]!! as String,
+                    albumKey = hashMap["albumKey"]!! as String
+                )
 
-                   phototicket
-               }
+                phototicket
+            }
 
+            Log.i(TAG, "photoTicket : ${photoTickets}")
+
+            insertRoomDb(photoTickets)
+
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+
+        }
+    }
+
+
+    suspend fun setHomePhotoTicketList(
+        insertRoomDb: (List<FirebasePhotoTicket>) -> Unit
+    ): ValueEventListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+
+            for (data in snapshot.children) {
+                val hash = data.value as HashMap<*, *>
+                val photoTickets = hash.values.map { list ->
+                    val hashMap = list as HashMap<*, *>
+                    val photoTicket = FirebasePhotoTicket(
+                        url = hashMap["url"]!! as String,
+                        key = hashMap["key"]!! as String,
+                        date = hashMap["date"]!! as String,
+                        frontText = hashMap["frontText"]!! as String,
+                        backText = hashMap["backText"]!! as String,
+                        favorite = hashMap["favorite"]!! as Boolean,
+                        albumId = hashMap["albumId"]!! as String,
+                        albumName = hashMap["albumName"]!! as String,
+                        albumKey = hashMap["albumKey"]!! as String
+                    )
+                    photoTicket
+                }
                 Log.i(TAG, "photoTicket : ${photoTickets}")
 
-               insertRoomDb(photoTickets)
-
+                insertRoomDb(photoTickets)
             }
 
-            override fun onCancelled(error: DatabaseError) {
 
-            }
         }
+
+
+        override fun onCancelled(error: DatabaseError) {
+
+        }
+    }
 
 
     companion object {

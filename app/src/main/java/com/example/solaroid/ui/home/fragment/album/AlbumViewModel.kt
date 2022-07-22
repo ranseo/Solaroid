@@ -1,29 +1,23 @@
 package com.example.solaroid.ui.album.viewmodel
 
-import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.album.RequestAlbumDataSource
 import com.example.solaroid.datasource.album.WithAlbumDataSource
-import com.example.solaroid.datasource.friend.MyFriendListDataSource
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
-import com.example.solaroid.getAlbumPariticipantsWithFriendCodes
-import com.example.solaroid.models.domain.*
+import com.example.solaroid.models.domain.Album
+import com.example.solaroid.models.domain.RequestAlbum
+import com.example.solaroid.models.domain.asFirebaseModel
 import com.example.solaroid.models.firebase.FirebaseAlbum
-import com.example.solaroid.models.firebase.FirebaseRequestAlbum
 import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.album.AlbumRequestRepositery
 import com.example.solaroid.repositery.album.WithAlbumRepositery
-import com.example.solaroid.repositery.friend.FriendListRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
-import com.example.solaroid.ui.friend.adapter.FriendListDataItem
-import com.example.solaroid.ui.home.fragment.gallery.AIAK
 import com.example.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.launch
 
@@ -158,10 +152,9 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun refreshAlubm(myFriendCode: Long) {
         viewModelScope.launch {
-
-            albumRepostiery.addValueEventListener { album ->
+            albumRepostiery.addValueEventListener { albums ->
                 viewModelScope.launch {
-                    albumRepostiery.insertRoomAlbum(album)
+                    albumRepostiery.insertRoomAlbums(albums)
                 }
             }
 

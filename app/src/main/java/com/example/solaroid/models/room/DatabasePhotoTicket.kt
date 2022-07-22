@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.firebase.FirebasePhotoTicket
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 
 //변수 photo는 임시로 설정
 @Entity(tableName = "photo_ticket_table")
@@ -20,7 +21,13 @@ data class DatabasePhotoTicket(
     @ColumnInfo(name = "photo_ticket_favorite")
     var favorite: Boolean = false,
     @ColumnInfo(name = "photo_ticket_user")
-    var user : String
+    var user : String,
+    @ColumnInfo(name = "photo_ticket_album_name")
+    val albumName: String,
+    @ColumnInfo(name = "photo_ticket_album_id")
+    val albumId: String,
+    @ColumnInfo(name = "photo_ticket_album_key")
+    val albumKey: String
 ) {
 
 }
@@ -34,7 +41,8 @@ fun List<DatabasePhotoTicket>.asDomainModel(): List<PhotoTicket> {
             frontText = it.frontText,
             backText = it.backText,
             date = it.date,
-            favorite = it.favorite
+            favorite = it.favorite,
+            albumInfo = listOf(it.albumId, it.albumKey, it.albumName)
         )
     }
 }
@@ -47,7 +55,8 @@ fun DatabasePhotoTicket.asDomainModel(): PhotoTicket {
         frontText = this.frontText,
         backText = this.backText,
         date = this.date,
-        favorite = this.favorite
+        favorite = this.favorite,
+        albumInfo = listOf(this.albumId, this.albumKey, this.albumName)
     )
 }
 
@@ -58,7 +67,10 @@ fun DatabasePhotoTicket.asFirebaseModel(): FirebasePhotoTicket {
         frontText = this.frontText,
         backText = this.backText,
         date = this.date,
-        favorite = this.favorite
+        favorite = this.favorite,
+        albumName= this.albumName,
+        albumId = parseAlbumIdDomainToFirebase(this.albumId, this.albumKey),
+        albumKey = this.albumKey
     )
 }
 

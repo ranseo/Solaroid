@@ -17,7 +17,9 @@ data class DatabaseAlbum(
     var name: String,
     var thumbnail: String,
     val participants:String,
-    val key: String
+    val key: String,
+    @ColumnInfo(name ="album_user")
+    val user:String
 ) {
     fun getAlbumIdForFirebase() = parseAlbumIdDomainToFirebase(id,key)
 }
@@ -41,22 +43,29 @@ fun DatabaseAlbum.asFirebaseModel() : FirebaseAlbum =
     )
 
 
+fun DatabaseAlbum.asDatabaseAlbum(name:String) =
+    DatabaseAlbum(
+        this.id,
+        name,
+        this.thumbnail,
+        this.participants,
+        this.key,
+        this.user
+    )
+
 fun List<DatabaseAlbum>.asDomainModel() : List<Album> {
     return this.map{
         it.asDomainModel()
     }
-
 }
 
-
-
-fun DatabaseAlbum.asHomeAlbum() : DatabaseHomeAlbum {
-    return DatabaseHomeAlbum(
-        true,
-        name,
-        id
-    )
+fun List<DatabaseAlbum>.modifyOverrideAlbumName() : List<DatabaseAlbum> {
+    val hash = this.groupBy { it.name }
+    var list = listOf<DatabaseAlbum>()
+    for(key in hash.keys) {
+        var cnt = 1
+        if(hash[key]?.size!! > 1) list+= hash[key]?.map{album -> album.asDatabaseAlbum("${album.name} (${cnt++})")} as List<DatabaseAlbum>
+        else list += hash[key]!!
+    }
+    return list
 }
-
-
-

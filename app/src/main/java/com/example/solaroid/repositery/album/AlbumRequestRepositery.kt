@@ -2,6 +2,7 @@ package com.example.solaroid.repositery.album
 
 import android.util.Log
 import com.example.solaroid.datasource.album.RequestAlbumDataSource
+import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.models.firebase.FirebaseRequestAlbum
@@ -10,8 +11,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.io.IOException
+import java.lang.NullPointerException
 
 class AlbumRequestRepositery(
     private val fbAuth: FirebaseAuth,
@@ -26,12 +30,12 @@ class AlbumRequestRepositery(
      * firebase .child("albumRequest").child("${friendCode}") 경로에 write
      *  setValue("${Album().Id}")
      * */
-    suspend fun setValueToParticipants(request: FirebaseRequestAlbum) =
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun setValueToParticipants(participants:List<Friend>, request: FirebaseRequestAlbum) =
         suspendCancellableCoroutine<Unit> { continuation ->
-            val list = parseProfileImgStringToList(request.participants)
-            for (friendCode in list) {
+            for (p in participants) {
                 val ref =
-                    fbDatabase.reference.child("albumRequest").child(friendCode.drop(1)).push()
+                    fbDatabase.reference.child("albumRequest").child(p.friendCode.drop(1)).push()
                 val key = ref.key!!
 
                 val firebaseRequestAlbum = FirebaseRequestAlbum(
@@ -43,12 +47,12 @@ class AlbumRequestRepositery(
                 )
 
                 ref.setValue(firebaseRequestAlbum).addOnCompleteListener {
-                    if(it.isSuccessful) {
-                        Log.i(TAG,"각 참여자들에게 Request value 쓰기 성공")
-                        continuation.resume(Unit,null)
-                    }else {
-                        Log.d(TAG,"setValue 실패 ${it.exception?.message}.")
-                        continuation.resume(Unit,null)
+                    if (it.isSuccessful) {
+                        Log.i(TAG, "각 참여자들에게 Request value 쓰기 성공")
+                        continuation.resume(Unit, null)
+                    } else {
+                        Log.d(TAG, "setValue 실패 ${it.exception?.message}.")
+                        continuation.resume(Unit, null)
                     }
                 }
             }
@@ -80,8 +84,14 @@ class AlbumRequestRepositery(
      * listener 제거
      */
     fun removeListener(myFriendCode: String) {
-        val ref = fbDatabase.reference.child("albumRequest").child("$myFriendCode")
-        ref.removeEventListener(listener!!)
+        try {
+            val ref = fbDatabase.reference.child("albumRequest").child("$myFriendCode")
+            ref.removeEventListener(listener!!)
+        }catch (error:NullPointerException) {
+            error.printStackTrace()
+        }catch(error:IOException) {
+            error.printStackTrace()
+        }
     }
 
 }

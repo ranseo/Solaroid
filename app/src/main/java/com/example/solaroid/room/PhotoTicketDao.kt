@@ -73,21 +73,12 @@ interface DatabasePhotoTicketDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(databaseAlbum: DatabaseAlbum)
 
-    @Query("SELECT * FROM album_table ORDER BY album_name DESC")
-    fun getAllAlbum() : LiveData<List<DatabaseAlbum>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAlbums(databaseAlbums: List<DatabaseAlbum>)
+
+    @Query("SELECT * FROM album_table WHERE album_user = :user ORDER BY album_name DESC")
+    fun getAllAlbum(user:String) : LiveData<List<DatabaseAlbum>>
 
     @Query("SELECT * FROM album_table WHERE id == :id")
     suspend fun getAlbum(id:String) : DatabaseAlbum
-
-    //home Album
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(databaseHomeAlbum: DatabaseHomeAlbum)
-
-    @Query("SELECT * FROM home_table")
-    fun getHomeAlbum() : LiveData<DatabaseHomeAlbum>
-
-    @Query("SELECT home_album_name FROM home_table")
-    suspend fun getHomeAlbumName() : String
-
-
 }

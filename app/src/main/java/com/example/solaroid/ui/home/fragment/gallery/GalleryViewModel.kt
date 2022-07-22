@@ -10,8 +10,6 @@ import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
-import com.example.solaroid.models.domain.Album
-import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase

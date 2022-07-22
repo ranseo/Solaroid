@@ -8,12 +8,16 @@ import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.ui.home.fragment.gallery.PhotoTicketFilter
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
+import java.io.IOException
+import java.lang.IndexOutOfBoundsException
+import java.lang.NullPointerException
 
 
 class SolaroidFrameViewModel(
@@ -152,7 +156,15 @@ class SolaroidFrameViewModel(
 
     fun setCurrentPhotoTicket(pos: Int) {
         val list = photoTickets.value
-        _currPhotoTicket.value = list?.get(pos)
+        try {
+            _currPhotoTicket.value = list?.get(pos)
+        }catch (error:IndexOutOfBoundsException) {
+            error.printStackTrace()
+        } catch (error:IOException) {
+            error.printStackTrace()
+        } catch (error:NullPointerException) {
+            error.printStackTrace()
+        }
     }
 
     fun refreshPhotoTicket() {
@@ -174,7 +186,7 @@ class SolaroidFrameViewModel(
             currPhotoTicket.value?.let {
                 it.favorite = it.favorite != true
                 Log.i(TAG, "updatePhotoTicketFavorite() : ${it.favorite}")
-                photoTicketRepositery.updatePhotoTickets(albumId, albumKey, it, getApplication())
+                photoTicketRepositery.updatePhotoTickets(parseAlbumIdDomainToFirebase(albumId,albumKey), albumKey, it, getApplication())
             }
         }
     }
@@ -184,7 +196,7 @@ class SolaroidFrameViewModel(
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            photoTicketRepositery.deletePhotoTickets(albumId,albumKey,key, getApplication())
+            photoTicketRepositery.deletePhotoTickets(parseAlbumIdDomainToFirebase(albumId,albumKey),albumKey,key, getApplication())
         }
     }
 

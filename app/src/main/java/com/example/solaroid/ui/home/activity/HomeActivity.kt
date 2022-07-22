@@ -36,6 +36,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navigationViewModelFactory: NavigationViewModelFactory
     private lateinit var naviViewModel: NavigationViewModel
 
+
+
     //Firebase
     private lateinit var auth: FirebaseAuth
 

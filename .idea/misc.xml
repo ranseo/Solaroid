@@ -128,11 +128,12 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/activity_album.xml" value="0.33" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/activity_friend.xml" value="0.1" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/activity_login.xml" value="0.2078125" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album.xml" value="0.2" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album.xml" value="0.15" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create.xml" value="0.25" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create_final.xml" value="0.25" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create_final.xml" value="0.22" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create_participants.xml" value="0.25" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create_start.xml" value="0.25" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create_start.xml" value="0.19626168224299065" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_request.xml" value="0.1278324070115434" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_filter_dialog.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_add.xml" value="0.3770833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_dispatch.xml" value="0.3770833333333333" />
@@ -143,7 +144,8 @@
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_login.xml" value="0.1" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_profile.xml" value="0.12" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_signup.xml" value="0.22" />
-        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_album.xml" value="0.15" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_album.xml" value="0.16" />
+        <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_album_request.xml" value="0.18" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_dispatch.xml" value="0.3770833333333333" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_party_list.xml" value="0.33" />
         <entry key="..\:/Users/aa/Downloads/Solaroid/app/src/main/res/layouts/login/layout/list_item_friend_reception.xml" value="0.3770833333333333" />

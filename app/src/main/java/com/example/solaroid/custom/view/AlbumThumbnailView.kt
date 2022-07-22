@@ -112,7 +112,7 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
             for (i in 0..participants) {
                 pointPosition.computeXYForThumbnail(computationList[participants][i])
-
+                Log.i(TAG, "onDraw() : thumbnailList : ${thumbnailList[i]}")
                 val rect = Rect(
                     (pointPosition.x - length / 2).toInt(),
                     (pointPosition.y - length / 2).toInt(),

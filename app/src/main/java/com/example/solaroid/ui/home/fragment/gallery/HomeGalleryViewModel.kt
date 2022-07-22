@@ -3,7 +3,6 @@ package com.example.solaroid.ui.home.fragment.gallery
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.room.Database
 import com.example.solaroid.Event
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.models.domain.PhotoTicket
@@ -14,13 +13,17 @@ import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
 import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.room.DatabaseAlbum
+import com.example.solaroid.models.room.asDomainModel
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.repositery.album.AlbumRepositery
-import com.example.solaroid.repositery.album.HomeAlbumRepositery
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
+import java.io.IOException
+import java.lang.IndexOutOfBoundsException
+import java.lang.NullPointerException
 
 
 /**
@@ -62,27 +65,11 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
     private val albumRepositery = AlbumRepositery(database, fbAuth, fbDatabase, AlbumDataSource())
-    private val homeAlbumRepositery = HomeAlbumRepositery(database)
-
 
     val photoTicketRepositery = PhotoTicketRepositery(
         database, fbAuth, fbDatabase, fbStorage,
         PhotoTicketListenerDataSource()
     )
-
-    var albumId = homeAlbumRepositery.homeAlbumId
-
-    private val _album = MutableLiveData<DatabaseAlbum>()
-    val album: LiveData<DatabaseAlbum>
-        get() = _album
-
-//    val homeAlbumKey = T
-//
-
-    private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
-    val photoTicketSetting: LiveData<Event<List<PhotoTicket>>>
-        get() = _photoTicketsSetting
-
 
     private val _naviToFrame = MutableLiveData<Event<PhotoTicket>>()
     val naviToFrame: LiveData<Event<PhotoTicket>>
@@ -104,6 +91,9 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val filter: LiveData<PhotoTicketFilter>
         get() = _filter
 
+    private val _albums = MutableLiveData<List<DatabaseAlbum>>()
+    val albums: LiveData<List<DatabaseAlbum>>
+        get() = _albums
 
     val photoTickets = Transformations.switchMap(filter) { filter ->
         Log.i(TAG, "val photoTickets = Transformations.map(filter) { filter -> ${filter}")
@@ -128,7 +118,15 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     }
 
     init {
+        refreshAlbumList()
+    }
 
+    private fun refreshAlbumList() {
+        viewModelScope.launch {
+            albumRepositery.addSingleValueEventListener { albums ->
+                _albums.value = albums
+            }
+        }
     }
 
 
@@ -136,12 +134,15 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         viewModelScope.launch {
             try {
                 val user = fbAuth.currentUser!!
+                Log.i(
+                    TAG,
+                    "refreshFirebaseListener : albumId : ${albumId}, albumKey :  ${albumKey}"
+                )
                 photoTicketRepositery.refreshPhotoTickets(
                     albumId,
                     albumKey
                 ) { firebasePhotoTickets ->
                     viewModelScope.launch(Dispatchers.Default) {
-                        Log.i(TAG, "viewModelScope.launch(Dispatchers.IO) : ${this}")
                         insert(firebasePhotoTickets, user.email!!)
                     }
                 }
@@ -158,7 +159,6 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
 
     suspend fun insert(firebasePhotoTickets: List<FirebasePhotoTicket>, user: String) =
         coroutineScope {
-
             val deferred = async {
                 firebasePhotoTickets.map {
                     it.asDatabaseModel(user)
@@ -169,28 +169,11 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
                 val databasePhotoTickets = deferred.await()
                 database.insertAll(databasePhotoTickets)
             }
-
         }
-
-
-    fun removeListener() {
-        val albumId = album.value?.id
-        val albumKey = album.value?.key
-
-        if (albumId != null && albumKey != null)
-            photoTicketRepositery.removeListener(albumId, albumKey)
-    }
-
-    fun setAlbum(albumId: String) {
-        viewModelScope.launch {
-            val tmp = albumRepositery.getAlbum(albumId)
-            //Log.i(TAG,"tmp : ${tmp}")
-            _album.value = tmp
-        }
-    }
 
 
     fun navigateToFrame(photoTicket: PhotoTicket) {
+        Log.i(TAG, "navigateToFrame : $photoTicket")
         _naviToFrame.value = Event(photoTicket)
     }
 
@@ -204,6 +187,19 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
 
     fun navigateToAlbum() {
         _naviToAlbum.value = Event(Unit)
+    }
+
+    fun removeListener() {
+        try {
+            for (a in albums.value!!)
+                photoTicketRepositery.removeListener(parseAlbumIdDomainToFirebase(a.id,a.key), a.key)
+        } catch (error: NullPointerException) {
+            error.printStackTrace()
+        } catch (error: IOException) {
+            error.printStackTrace()
+        } catch (error: IndexOutOfBoundsException) {
+            error.printStackTrace()
+        }
     }
 
 

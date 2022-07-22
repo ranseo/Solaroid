@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.databinding.ListItemAlbumBinding
-import com.example.solaroid.databinding.ListItemRequestAlbumBinding
+import com.example.solaroid.databinding.ListItemAlbumRequestBinding
 import com.example.solaroid.ui.home.adapter.AlbumListClickListener
-import com.example.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,18 +72,19 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
         }
     }
 
-    class RequestAlbumViewHolder(val binding: ListItemRequestAlbumBinding) :
+    class RequestAlbumViewHolder(val binding: ListItemAlbumRequestBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: RequestAlbum, onClickListener: AlbumListClickListener) {
-
             binding.album = item
+            binding.ivAlbum.setImageBitmap(item.thumbnail)
         }
 
         companion object {
+            private val TAG = "RequestAlbumViewHolder"
             fun from(parent: ViewGroup): RequestAlbumViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemRequestAlbumBinding.inflate(layoutInflater, parent, false)
+                val binding = ListItemAlbumRequestBinding.inflate(layoutInflater, parent, false)
                 return RequestAlbumViewHolder(binding)
             }
         }
