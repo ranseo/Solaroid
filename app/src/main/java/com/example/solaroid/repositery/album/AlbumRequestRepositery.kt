@@ -64,9 +64,9 @@ class AlbumRequestRepositery(
      * firebase .child("albumRequest").child("${my.friendCode}") 경로 read
      *  addSingleValueEventListener() : ValueEventListener
      * */
-    fun addValueEventListener(myFriendCode: Long, insert: (requests: List<RequestAlbum>) -> Unit) {
+    fun addValueEventListener(myFriendCode: String, insert: (requests: List<RequestAlbum>) -> Unit) {
         listener = requestAlbumDataSource.getValueEventListener(insert)
-        val ref = fbDatabase.reference.child("albumRequest").child("$myFriendCode")
+        val ref = fbDatabase.reference.child("albumRequest").child(myFriendCode)
         ref.addValueEventListener(listener!!)
     }
 
@@ -74,9 +74,16 @@ class AlbumRequestRepositery(
      * firebase.child("albumRequest").child("${my.friendCode}") 경로 상의 데이터 delete
      * removeValue() 호출
      * */
-    fun deleteValue(myFriendCode: Long, key: String) {
-        val ref = fbDatabase.reference.child("albumRequest").child("${myFriendCode}").child(key)
-        ref.removeValue()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun deleteValue(myFriendCode: String, key: String) = suspendCancellableCoroutine<Unit>{ continuation ->
+        val ref = fbDatabase.reference.child("albumRequest").child(myFriendCode).child(key)
+        ref.removeValue().addOnCompleteListener {
+            if(it.isSuccessful) {
+                continuation.resume(Unit, null)
+            } else {
+                continuation.resume(Unit, null)
+            }
+        }
     }
 
 

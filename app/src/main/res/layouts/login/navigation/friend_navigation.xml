@@ -22,6 +22,11 @@
         app:destination="@+id/friend_activity"
         />
 
+    <action
+        android:id="@+id/global_action_friendActivity_to_album"
+        app:destination="@+id/fragment_album"
+        />
+
 
     <!---->
     <activity

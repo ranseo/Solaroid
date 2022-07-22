@@ -2,28 +2,24 @@ package com.example.solaroid.ui.home.fragment.album
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
-import com.example.solaroid.convertHexStringToLongFormat
-import com.example.solaroid.ui.album.adapter.AlbumListAdapter
-import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.example.solaroid.databinding.FragmentAlbumBinding
 import com.example.solaroid.dialog.RequestAlbumAcceptDialogFragment
-import com.example.solaroid.models.domain.*
+import com.example.solaroid.models.domain.Album
 import com.example.solaroid.room.SolaroidDatabase
-import com.example.solaroid.ui.album.viewmodel.AlbumType
+import com.example.solaroid.ui.album.adapter.AlbumListAdapter
+import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.example.solaroid.ui.home.adapter.AlbumListClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class AlbumFragment : Fragment(),
-    RequestAlbumAcceptDialogFragment.RequestAlbumAcceptDialogListener {
+class AlbumFragment : Fragment() {
     private val TAG = "AlbumFragment"
 
     private lateinit var binding: FragmentAlbumBinding
@@ -63,36 +59,17 @@ class AlbumFragment : Fragment(),
 
 
         viewModel.myProfile.observe(viewLifecycleOwner) {
-            it?.let { profile ->
+            it?.let { _ ->
                 Log.i(TAG,"myProfile : refreshAlbum 실행")
-                viewModel.refreshAlubm(convertHexStringToLongFormat(profile.friendCode))
+                viewModel.refreshAlbum()
             }
         }
 
-
-        viewModel.albumDataItem.observe(viewLifecycleOwner) {
-            when (it) {
-                AlbumType.ALL -> {
-                    Log.i(TAG, "albumDataItem.observe : ALL")
-                    adapter.submitList(viewModel.albums.value, viewModel.requestAlbums.value)
-                }
-                AlbumType.NORMAL -> {
-                    Log.i(TAG, "albumDataItem.observe : NORMAL")
-                    adapter.submitList(normal = viewModel.albums.value)
-                }
-                AlbumType.REQUEST -> {
-                    Log.i(TAG, "albumDataItem.observe : REQUEST")
-                    adapter.submitList(request = viewModel.requestAlbums.value)
-                }
-                AlbumType.NONE -> {
-                    Log.i(TAG, "albumDataItem.observe : NONE")
-                    adapter.submitList()
-                }
+        viewModel.albums.observe(viewLifecycleOwner) {
+            it?.let{
+                adapter.submitList(it)
             }
         }
-
-
-
 
         viewModel.album.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { album ->
@@ -100,18 +77,11 @@ class AlbumFragment : Fragment(),
             }
         }
 
-
         viewModel.roomAlbum.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { album ->
                 findNavController().navigate(
                     AlbumFragmentDirections.actionAlbumToGallery(album.id, album.key)
                 )
-            }
-        }
-
-        viewModel.requestAlbum.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { album ->
-                showRequestAlbumClickDialog(album)
             }
         }
 
@@ -152,6 +122,14 @@ class AlbumFragment : Fragment(),
                 )
             }
         }
+
+        viewModel.naviToRequest.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{
+                findNavController().navigate(
+                    AlbumFragmentDirections.actionAlbumToAlbumRequest()
+                )
+            }
+        }
     }
 
     override fun onStart() {
@@ -163,29 +141,6 @@ class AlbumFragment : Fragment(),
         binding.albumBottomNavi.menu.findItem(R.id.album).isChecked = true
     }
 
-
-    //<dialog>
-    private fun showRequestAlbumClickDialog(album: RequestAlbum) {
-        val new = RequestAlbumAcceptDialogFragment(this, album, "앨범 참여 요청을 받아들이시겠습니까?", "수락", "거절")
-        new.show(parentFragmentManager, "RequestAlbumClick")
-    }
-
-
-    //</dialog>
-
-
-    //CreateParticipantsDialogListener
-    //RequestAlbumAcceptDialog
-    override fun onDialogPositiveClick(requestAlbum: RequestAlbum, dialog: DialogFragment) {
-        viewModel.setValueInWithAlbum(requestAlbum)
-        viewModel.deleteRequestAlbumInFirebase(requestAlbum)
-        viewModel.setValueInAlbum(requestAlbum.asDomainModel())
-    }
-
-    override fun onDialogNegativeClick(requestAlbum: RequestAlbum, dialog: DialogFragment) {
-        viewModel.deleteRequestAlbumInFirebase(requestAlbum)
-        dialog.dismiss()
-    }
 
     override fun onStop() {
         super.onStop()
@@ -216,6 +171,10 @@ class AlbumFragment : Fragment(),
                 }
                 R.id.create -> {
                     viewModel.navigateToCreate()
+                    true
+                }
+                R.id.request -> {
+                    viewModel.navigateToRequest()
                     true
                 }
 

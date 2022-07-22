@@ -45,7 +45,7 @@ class AlbumRepositery(
         suspendCancellableCoroutine<Unit> { continuation ->
             try {
                 val user = fbAuth.currentUser!!
-                val ref = fbDatabase.reference.child("album").child(user.uid).child("$albumId").push()
+                val ref = fbDatabase.reference.child("album").child(user.uid).child(albumId).push()
                 val key = ref.key ?: return@suspendCancellableCoroutine
 
                 val new = FirebaseAlbum(
@@ -59,10 +59,12 @@ class AlbumRepositery(
                 ref.setValue(new).addOnCompleteListener {
                     if (it.isSuccessful) {
                         Log.i(TAG, "ref.setValue(new) Successful")
+                        continuation.resume(Unit, null)
                     } else {
                         Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")
+                        continuation.resume(Unit, null)
                     }
-                    continuation.resume(Unit, null)
+
                 }
             }catch (error:IOException) {
                 error.printStackTrace()

@@ -190,14 +190,16 @@
         <action
             android:id="@+id/action_album_to_homeGallery"
             app:destination="@+id/fragment_home_gallery"
-            app:popUpTo="@+id/fragment_album"
-            app:popUpToInclusive="true"
             />
 
         <action
             android:id="@+id/action_album_to_ablum_create"
             app:destination="@+id/album_create_navigation"
             />
+
+        <action
+            android:id="@+id/action_album_to_album_request"
+            app:destination="@+id/fragment_album_request"/>
 
 
         <argument
@@ -249,6 +251,20 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/fragment_album_request"
+        android:name="com.example.solaroid.ui.home.fragment.album.request.AlbumRequest"
+        tools:layout="@layout/fragment_album_request">
+
+        <action
+            android:id="@+id/action_album_request_to_album"
+            app:destination="@id/fragment_album"
+            app:popUpTo="@layout/fragment_album_request"
+            app:popUpToInclusive="true"/>
+
+
+
+    </fragment>
 
     <navigation
         android:id="@+id/album_create_navigation"
@@ -273,6 +289,7 @@
                 />
 
         </fragment>
+
 
         <fragment
             android:id="@+id/create_final"

@@ -1,6 +1,8 @@
 package com.example.solaroid.models.domain
 
 import android.graphics.Bitmap
+import com.example.solaroid.models.firebase.FirebaseAlbum
+import com.example.solaroid.utils.BitmapUtils
 
 data class Album(
     val id:String,
@@ -23,11 +25,12 @@ data class RequestAlbum(
 
 }
 
-fun RequestAlbum.asDomainModel() : Album {
-    return Album(
+fun RequestAlbum.asFirebaseModel() : FirebaseAlbum {
+    return FirebaseAlbum(
         id,
         name,
-        thumbnail,
-        participant
+        BitmapUtils.bitmapToString(thumbnail),
+        participant,
+        ""
     )
 }

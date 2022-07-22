@@ -27,7 +27,7 @@ class WithAlbumRepositery(
     suspend fun setValue(myProfile:FirebaseProfile, albumId:String) = suspendCancellableCoroutine<Unit>{ continuation ->
             val user = fbAuth.currentUser!!
 
-            val ref = fbDatabase.reference.child("withAlbum").child("$albumId").child(user.uid)
+            val ref = fbDatabase.reference.child("withAlbum").child(albumId).child(user.uid)
 
             ref.setValue(myProfile).addOnCompleteListener {
                 if(it.isSuccessful) {
@@ -38,7 +38,6 @@ class WithAlbumRepositery(
                     continuation.resume(Unit, null)
                 }
             }
-
     }
 
 

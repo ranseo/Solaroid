@@ -21,27 +21,7 @@ private val VIEW_TYPE_REQUEST_ALBUM = 1
 
 class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
     ListAdapter<AlbumListDataItem, RecyclerView.ViewHolder>(AlbumListItemCallback()) {
-
     private val adapterScope = CoroutineScope(Dispatchers.Default)
-
-    fun submitList(normal: List<Album>? = null, request: List<RequestAlbum>? = null) {
-        adapterScope.launch {
-
-            val list =
-                if (normal.isNullOrEmpty()) request?.map { AlbumListDataItem.RequestAlbumDataItem(it) }
-                else if (request.isNullOrEmpty()) normal.map { AlbumListDataItem.NormalAlbumDataItem(it) }
-                else {
-                    normal.map {
-                        AlbumListDataItem.NormalAlbumDataItem(it)
-                    } + request.map { AlbumListDataItem.RequestAlbumDataItem(it) }
-                }
-
-
-            withContext(Dispatchers.Main) {
-                submitList(list)
-            }
-        }
-    }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -78,6 +58,7 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
         fun bind(item: RequestAlbum, onClickListener: AlbumListClickListener) {
             binding.album = item
             binding.ivAlbum.setImageBitmap(item.thumbnail)
+            binding.onClickListener = onClickListener
         }
 
         companion object {
@@ -98,6 +79,7 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
             Log.i(TAG,"NormalAlbumViewHolder : ${item.id}, ${item.thumbnail}, ${item.name}")
             binding.album = item
             binding.ivAlbum.setImageBitmap(item.thumbnail)
+            binding.onClickListener = onClickListener
         }
 
         companion object {
