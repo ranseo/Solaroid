@@ -84,6 +84,15 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     val participants: LiveData<List<Friend>>
         get() = _participants
 
+
+    //new Album을 만든 뒤, 해당 Album의 key를 requestAlbum에도 재활용 해야한다.
+    //따라서 albumKey 프로퍼티와 AlbumRepositery.setValue() 에 람다함수(key:String)->Unit을 전달하여
+    //albumKey에 값을 설정하고, observe 하고 있다가 requestAlbum을 실시한다.
+    private val _albumKey = MutableLiveData<String>()
+    val albumKey: LiveData<String>
+        get() = _albumKey
+
+
     private val _profileAndParticipants = MediatorLiveData<List<Friend>>()
     private val profileAndParticipants: LiveData<List<Friend>>
         get() = _profileAndParticipants
@@ -100,7 +109,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
 
     //Final에서 쓰일 프로퍼티
-    val createParticipants= Transformations.map(profileAndParticipants) {
+    val createParticipants = Transformations.map(profileAndParticipants) {
         if (!it.isNullOrEmpty()) {
             getAlbumParticipantsWithFriendCodes(it.map { v -> v.friendCode })
         } else ""
@@ -157,9 +166,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     fun createAndNavigate() {
         viewModelScope.launch {
             createAlbum()
-            withContext(Dispatchers.Main) {
-                navigateToAlbum()
-            }
+
         }
     }
 
@@ -169,7 +176,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * firebase 경로와 Room Database에 앨범을 생성하는 함수.
      * 앨범의 참여자들에게 RequsetAlbum 객체를 전달할 수 있도록 만든다.
      * */
-    suspend private fun createAlbum() {
+    private suspend fun createAlbum() {
         withContext(Dispatchers.IO) {
             try {
                 val thumbnail = BitmapUtils.bitmapToString(createThumbnail!!)
@@ -189,18 +196,8 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
                 withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId.value!!)
 
-                albumRepostiery.setValue(firebaseAlbum, createId.value!!)
-
-                if (!participants.value.isNullOrEmpty()) {
-                    val requestAlbum = FirebaseRequestAlbum(
-                        id = createId.value!!,
-                        name = createName.value!!,
-                        thumbnail = thumbnail,
-                        participants = createParticipants.value!!,
-                        key = ""
-                    )
-
-                    albumRequestRepositery.setValueToParticipants(participants.value!!, requestAlbum)
+                albumRepostiery.setValue(firebaseAlbum, createId.value!!) { key ->
+                    _albumKey.value = key
                 }
 
 
@@ -211,6 +208,41 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
             }
 
         }
+    }
+
+    /**
+     * 새로운 Album을 만든 뒤에, AlbumKey를 받아
+     * 각 Participants 에게 RequestAlbum을 보내야 한다.
+     * AlbumRepositery.requestAlbum()호출하는 메서드
+     * */
+    fun createRequestAlbum(albumKey: String) {
+        viewModelScope.launch {
+
+            if (!participants.value.isNullOrEmpty()) {
+                val thumbnail = BitmapUtils.bitmapToString(createThumbnail!!)
+
+                val requestAlbum = FirebaseRequestAlbum(
+                    id = createId.value!!,
+                    name = createName.value!!,
+                    thumbnail = thumbnail,
+                    participants = createParticipants.value!!,
+                    albumKey = albumKey,
+                    ""
+                )
+
+                withContext(Dispatchers.IO) {
+                    albumRequestRepositery.setValueToParticipants(
+                        participants.value!!,
+                        requestAlbum
+                    )
+                }
+
+                withContext(Dispatchers.Main) {
+                    navigateToAlbum()
+                }
+            }
+        }
+
     }
 
     /**

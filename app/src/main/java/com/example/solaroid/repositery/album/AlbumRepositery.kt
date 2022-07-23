@@ -42,7 +42,7 @@ class AlbumRepositery(
      * FirebaseAlbum객체 write - setValue()
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun setValue(album: FirebaseAlbum, albumId: String) =
+    suspend fun setValue(album: FirebaseAlbum, albumId: String, setKey : (key:String)->Unit) =
         suspendCancellableCoroutine<Unit> { continuation ->
             try {
                 val user = fbAuth.currentUser!!
@@ -60,6 +60,7 @@ class AlbumRepositery(
                 ref.setValue(new).addOnCompleteListener {
                     if (it.isSuccessful) {
                         Log.i(TAG, "ref.setValue(new) Successful")
+                        setKey(key)
                         continuation.resume(Unit, null)
                     } else {
                         Log.i(TAG, "ref.setValue(new) fail :${it.exception?.message}")

@@ -65,6 +65,8 @@ class AlbumRequest : Fragment(), RequestAlbumAcceptDialogFragment.RequestAlbumAc
             }
         }
 
+
+
         return binding.root
     }
 

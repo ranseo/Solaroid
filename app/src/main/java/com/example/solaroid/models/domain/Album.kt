@@ -20,6 +20,7 @@ data class RequestAlbum(
     val name :String,
     val thumbnail: Bitmap,
     val participant: String,
+    val albumKey:String,
     val key: String
 ) {
 
@@ -31,6 +32,6 @@ fun RequestAlbum.asFirebaseModel() : FirebaseAlbum {
         name,
         BitmapUtils.bitmapToString(thumbnail),
         participant,
-        ""
+        albumKey
     )
 }

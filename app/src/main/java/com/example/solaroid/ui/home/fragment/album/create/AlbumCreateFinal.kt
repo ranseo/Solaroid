@@ -115,6 +115,12 @@ class AlbumCreateFinal() : Fragment() {
             }
         }
 
+        viewModel.albumKey.observe(viewLifecycleOwner) {
+            it?.let{
+                viewModel.createRequestAlbum(it)
+            }
+        }
+
         binding.btnAccept.setOnClickListener {
             val thumbnailBitmap = (binding.albumThumbnail).getBitmapFromView()
             Log.i(TAG,"binding.btnAccept : ${thumbnailBitmap}")

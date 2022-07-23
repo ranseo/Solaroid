@@ -34,27 +34,34 @@ class AlbumRequestRepositery(
     suspend fun setValueToParticipants(participants:List<Friend>, request: FirebaseRequestAlbum) =
         suspendCancellableCoroutine<Unit> { continuation ->
             for (p in participants) {
-                val ref =
-                    fbDatabase.reference.child("albumRequest").child(p.friendCode.drop(1)).push()
-                val key = ref.key!!
+                try {
+                    val ref =
+                        fbDatabase.reference.child("albumRequest").child(p.friendCode.drop(1)).push()
+                    val key = ref.key!!
+                    val firebaseRequestAlbum = FirebaseRequestAlbum(
+                        request.id,
+                        request.name,
+                        request.thumbnail,
+                        request.participants,
+                        request.albumKey,
+                        key
+                    )
 
-                val firebaseRequestAlbum = FirebaseRequestAlbum(
-                    request.id,
-                    request.name,
-                    request.thumbnail,
-                    request.participants,
-                    key
-                )
-
-                ref.setValue(firebaseRequestAlbum).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.i(TAG, "각 참여자들에게 Request value 쓰기 성공")
-                        continuation.resume(Unit, null)
-                    } else {
-                        Log.d(TAG, "setValue 실패 ${it.exception?.message}.")
-                        continuation.resume(Unit, null)
+                    ref.setValue(firebaseRequestAlbum).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            Log.i(TAG, "각 참여자들에게 Request value 쓰기 성공")
+                            continuation.resume(Unit, null)
+                        } else {
+                            Log.d(TAG, "setValue 실패 ${it.exception?.message}.")
+                            continuation.resume(Unit, null)
+                        }
                     }
+                } catch (error:IOException) {
+                    error.printStackTrace()
+                } catch (error : NullPointerException) {
+                    error.printStackTrace()
                 }
+
             }
 
         }
