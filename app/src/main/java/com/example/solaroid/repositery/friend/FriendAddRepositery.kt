@@ -17,7 +17,7 @@ class FriendAddRepositery(
 
     suspend fun addSearchListener(friendCode: Long, listener:ValueEventListener) {
         return withContext(Dispatchers.IO) {
-            fbDatabase.reference.child("allUsers").child("${friendCode}").addListenerForSingleValueEvent(listener)
+            fbDatabase.reference.child("allUsers").child("$friendCode").addListenerForSingleValueEvent(listener)
         }
     }
 

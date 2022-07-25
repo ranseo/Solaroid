@@ -115,6 +115,7 @@ class AlbumRepositery(
         }
 
     /**
+     * HomeGalleryViewModel에서 사용.
      * firebase .child("album").child("$uid"). child("${album.id}") 경로에
      * ValueEventListener 추가 - addSingleValueEventListener를 이용하여
      * HomeGallery 내 property에 내가 가진 album 리스트 할당하기.
@@ -131,6 +132,7 @@ class AlbumRepositery(
 
 
     /**
+     * AlbumViewModel에서 사용.
      * firebase .child("album").child("$uid"). child("${album.id}") 경로에
      * ValueEventListener 추가 - addValueEvnetListener
      * */

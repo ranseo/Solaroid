@@ -10,6 +10,7 @@ import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.firebase.asDatabaseModel
+import com.example.solaroid.repositery.phototicket.GetPhotoTicketWithAlbumRepositery
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -28,17 +29,10 @@ class GalleryViewModel(
     private val database = dataSource
 
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
-    private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
-    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
-    val photoTicketRepositery = PhotoTicketRepositery(
-        database, fbAuth, fbDatabase, fbStorage,
-        PhotoTicketListenerDataSource()
+    private val getPhotoTicketWithAlbumRepositery = GetPhotoTicketWithAlbumRepositery(
+        database, fbAuth, _albumId
     )
-
-    val albumId = _albumId
-    val albumKey = _albumKey
-
 
     private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
     val photoTicketSetting: LiveData<Event<List<PhotoTicket>>>
@@ -76,44 +70,26 @@ class GalleryViewModel(
         return when (filter) {
             PhotoTicketFilter.DESC -> {
                 Log.i(TAG, "photoTicketsOrderByDesc.value")
-                photoTicketRepositery.photoTicketsOrderByDesc
+                getPhotoTicketWithAlbumRepositery.photoTicketsOrderByDesc
             }
             PhotoTicketFilter.ASC -> {
                 Log.i(TAG, "photoTicketsOrderByAsc")
-                photoTicketRepositery.photoTicketsOrderByAsc
+                getPhotoTicketWithAlbumRepositery.photoTicketsOrderByAsc
             }
             PhotoTicketFilter.FAVORTIE -> {
                 Log.i(TAG, "photoTicketsOrderByFavorite")
-                photoTicketRepositery.photoTicketsOrderByFavorite
+                getPhotoTicketWithAlbumRepositery.photoTicketsOrderByFavorite
             }
         }
     }
 
     init {
-        refreshFirebaseListener(_albumId)
-    }
-
-    fun refreshFirebaseListener(albumId: String) {
-        viewModelScope.launch {
-            try {
-                val user = fbAuth.currentUser!!
-                photoTicketRepositery.refreshPhotoTickets(albumId, albumKey) { firebasePhotoTickets ->
-                    viewModelScope.launch(Dispatchers.Default) {
-                        Log.i(TAG, "viewModelScope.launch(Dispatchers.IO) : ${this}")
-                        insert(firebasePhotoTickets, user.email!!)
-                    }
-                }
-            } catch (error: Exception) {
-                Log.d(TAG, "error : ${error.message}")
-            }
-        }
     }
 
 
     fun setFilter(filter: String) {
         _filter.value = PhotoTicketFilter.convertStringToFilter(filter)
     }
-
 
     fun navigateToFrame(photoTicket: PhotoTicket) {
         _naviToFrame.value = Event(photoTicket)
@@ -131,31 +107,9 @@ class GalleryViewModel(
         _naviToHome.value = Event(Unit)
     }
 
-    suspend fun insert(firebasePhotoTickets: List<FirebasePhotoTicket>, user: String) =
-        coroutineScope {
-
-            val deferred = async {
-                firebasePhotoTickets.map {
-                    it.asDatabaseModel(user)
-                }
-            }
-
-            withContext(Dispatchers.IO) {
-                val databasePhotoTickets = deferred.await()
-                database.insertAll(databasePhotoTickets)
-            }
-
-        }
-
-
-    fun removeListener() {
-        photoTicketRepositery.removeListener(albumId, albumKey)
-    }
-
 
     companion object {
         const val TAG = "갤러리_뷰모델"
-
     }
 
 

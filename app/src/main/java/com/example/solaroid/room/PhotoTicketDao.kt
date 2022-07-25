@@ -44,6 +44,19 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_user == :user AND pt.photo_ticket_favorite == :favorite ORDER BY photo_ticket_date ASC")
     fun getAllPhotoTicketWithUserFavorite(user:String, favorite: Boolean) : LiveData<List<DatabasePhotoTicket>?>
 
+    //Album이 특정된 포토티켓
+    @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_album_id == :albumId AND pt.photo_ticket_user == :user ORDER BY pt.photo_ticket_date DESC")
+    fun getAllPhotoTicketWithUserAndAlbumIdDesc(albumId:String, user:String) : LiveData<List<DatabasePhotoTicket>>
+
+    @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_album_id == :albumId AND pt.photo_ticket_user == :user ORDER BY pt.photo_ticket_date ASC")
+    fun getAllPhotoTicketWithUserAndAlbumIdAsc(albumId:String, user:String) : LiveData<List<DatabasePhotoTicket>>
+
+    @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_album_id == :albumId AND pt.photo_ticket_user == :user ORDER BY pt.photo_ticket_date ASC")
+    fun getAllPhotoTicketWithUserAndAlbumIdFavorite(albumId:String, user:String, favorite:Boolean) : LiveData<List<DatabasePhotoTicket>>
+
+
+
+
 
 
 

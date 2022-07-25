@@ -42,7 +42,12 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         val albumId = args.albumId
         val albumKey = args.albumKey
 
-        viewModelFactory = GalleryViewModelFactory(dataSource.photoTicketDao, application, parseAlbumIdDomainToFirebase(albumId,albumKey), albumKey)
+        viewModelFactory = GalleryViewModelFactory(
+            dataSource.photoTicketDao,
+            application,
+            parseAlbumIdDomainToFirebase(albumId, albumKey),
+            albumKey
+        )
         viewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
         val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->
@@ -65,13 +70,16 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
 
         navgiateToOtherFragment()
 
-
-
-
-        //setOnItemSelectedListener(binding.galleryBottomNavi)
+        setOnItemSelectedListener(binding.galleryBottomNavi)
+        binding.galleryBottomNavi.itemIconTintList = null
         filterDialogFragment = FilterDialogFragment(this)
         return binding.root
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.galleryBottomNavi.menu.findItem(R.id.album).isChecked = true
     }
 
     /**
@@ -80,10 +88,11 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
      * */
     private fun navgiateToOtherFragment() {
         viewModel.naviToFrame.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { photoTicket->
+            it.getContentIfNotHandled()?.let { photoTicket ->
                 val filter = viewModel.filter.value?.filter ?: "DESC"
-                val albumId = viewModel.albumId
-                val albumKey = viewModel.albumKey
+                val albumId = photoTicket.albumInfo[0]
+                val albumKey = photoTicket.albumInfo[1]
+                Log.i(TAG, "albumId : ${albumId}, albumKey: $albumKey")
                 findNavController().navigate(
                     GalleryFragmentDirections.actionGalleryToFrame(
                         filter,
@@ -112,7 +121,7 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         }
 
         viewModel.naviToHome.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     GalleryFragmentDirections.actionGalleryToHomeGallery()
                 )
@@ -143,28 +152,28 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
     }
 
 
-//    private fun setOnItemSelectedListener(
-//        botNavi: BottomNavigationView
-//    ) {
-//        botNavi.setOnItemSelectedListener { it ->
-//            when (it.itemId) {
-//                R.id.home -> {
-//                    viewModel.navigateToHome()
-//                    true
-//                }
-//                R.id.album -> {
-//                    true
-//                }
-//
-//                R.id.add -> {
-//                    viewModel.navigateToAdd()
-//                    true
-//
-//                }
-//                else -> false
-//            }
-//        }
-//    }
+    private fun setOnItemSelectedListener(
+        botNavi: BottomNavigationView
+    ) {
+        botNavi.setOnItemSelectedListener { it ->
+            when (it.itemId) {
+                R.id.home -> {
+                    viewModel.navigateToHome()
+                    true
+                }
+                R.id.album -> {
+                    true
+                }
+
+                R.id.add -> {
+                    viewModel.navigateToAdd()
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
 
     override fun onFilterDesc() {
         viewModel.setFilter("DESC")
@@ -178,13 +187,8 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         viewModel.setFilter("FAVORITE")
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.removeListener()
-    }
-
 
     companion object {
-        const val TAG = "갤러리프래그먼트"
+        const val TAG = "갤러리_프래그먼트"
     }
 }

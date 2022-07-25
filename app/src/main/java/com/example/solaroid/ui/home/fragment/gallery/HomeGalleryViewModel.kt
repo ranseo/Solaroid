@@ -204,7 +204,7 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
 
 
     companion object {
-        const val TAG = "갤러리_뷰모델"
+        const val TAG = "홈_갤러리_뷰모델"
 
     }
 

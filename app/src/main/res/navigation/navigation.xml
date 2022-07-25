@@ -214,7 +214,6 @@
         tools:layout="@layout/fragment_solaroid_gallery">
 
 
-
         <action
             android:id="@+id/action_gallery_to_frame"
             app:destination="@+id/fragment_solaroid_frame"
@@ -223,21 +222,17 @@
         <action
             android:id="@+id/action_gallery_to_add"
             app:destination="@+id/fragment_solaroid_add"
-            app:popUpTo="@+id/fragment_solaroid_add"
-            app:popUpToInclusive="true"/>
+           />
 
         <action
             android:id="@+id/action_gallery_to_create"
-            app:destination="@+id/fragment_solaroid_create"
-            app:popUpTo="@+id/fragment_solaroid_create"
-            app:popUpToInclusive="true"/>
+            app:destination="@+id/fragment_solaroid_create" />
 
         <action
             android:id="@+id/action_gallery_to_homeGallery"
             app:destination="@+id/fragment_home_gallery"
             app:popUpTo="@+id/fragment_home_gallery"
             app:popUpToInclusive="true"/>
-
 
         <argument
             android:name="ShowAppBar"

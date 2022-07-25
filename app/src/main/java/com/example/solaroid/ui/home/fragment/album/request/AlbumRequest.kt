@@ -31,6 +31,8 @@ class AlbumRequest : Fragment(), RequestAlbumAcceptDialogFragment.RequestAlbumAc
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_album_request, container, false)
 
+        setHasOptionsMenu(true)
+
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
         viewModelFactory = AlbumRequestViewModelFactory(dataSource)

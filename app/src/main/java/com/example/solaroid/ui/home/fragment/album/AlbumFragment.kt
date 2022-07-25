@@ -13,6 +13,7 @@ import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentAlbumBinding
 import com.example.solaroid.dialog.RequestAlbumAcceptDialogFragment
 import com.example.solaroid.models.domain.Album
+import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
@@ -80,7 +81,7 @@ class AlbumFragment : Fragment() {
         viewModel.roomAlbum.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { album ->
                 findNavController().navigate(
-                    AlbumFragmentDirections.actionAlbumToGallery(album.id, album.key)
+                    AlbumFragmentDirections.actionAlbumToGallery(parseAlbumIdDomainToFirebase(album.id,album.key), album.key)
                 )
             }
         }

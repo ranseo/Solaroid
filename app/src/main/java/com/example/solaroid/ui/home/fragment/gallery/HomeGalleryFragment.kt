@@ -92,17 +92,15 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
                 val filter = viewModel.filter.value?.filter ?: "DESC"
                 val albumId = photoTicket.albumInfo[0]
                 val albumKey = photoTicket.albumInfo[1]
-                Log.i(TAG, "albumId : ${albumId}, albumKey: ${albumKey}")
-                if (albumId != null && albumKey != null) {
-                    findNavController().navigate(
-                        HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
-                            filter,
-                            photoTicket,
-                            albumId,
-                            albumKey
-                        )
+                Log.i(TAG, "albumId : ${albumId}, albumKey: $albumKey")
+                findNavController().navigate(
+                    HomeGalleryFragmentDirections.actionHomeGalleryToFrame(
+                        filter,
+                        photoTicket,
+                        albumId,
+                        albumKey
                     )
-                }
+                )
             }
         }
 
