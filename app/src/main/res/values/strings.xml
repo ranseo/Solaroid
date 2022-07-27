@@ -4,11 +4,19 @@
     <string name="photo_create_front_hint">사진에 대한 짧은 정보를 적어주세요</string>
     <string name="photo_create_back_hint">사진에 담긴 추억을\n적어주세요</string>
 
-    <string-array name="list_set_dialog_items">
+    <string-array name="frame_long_click_dialog_items">
         <item>삭제</item>
         <item>편집</item>
-        <item>상세보기</item>
+        <item>공유</item>
     </string-array>
+
+    <string-array name="album_long_click_dialog_items">
+        <item>삭제</item>
+        <item>편집</item>
+        <item>초대</item>
+    </string-array>
+
+
     <string name="title_activity_login">LoginActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

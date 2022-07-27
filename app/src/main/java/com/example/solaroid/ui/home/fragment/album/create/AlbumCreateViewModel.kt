@@ -236,10 +236,10 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                         requestAlbum
                     )
                 }
+            }
 
-                withContext(Dispatchers.Main) {
-                    navigateToAlbum()
-                }
+            withContext(Dispatchers.Main) {
+                navigateToAlbum()
             }
         }
 

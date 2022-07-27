@@ -12,6 +12,7 @@ import com.example.solaroid.utils.BitmapUtils
 @Entity(tableName = "album_table")
 data class DatabaseAlbum(
     @PrimaryKey
+    @ColumnInfo(name = "album_id")
     val id: String,
     @ColumnInfo(name = "album_name")
     var name: String,

@@ -6,21 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentAlbumBinding
+import com.example.solaroid.dialog.ListSetDialogFragment
 import com.example.solaroid.dialog.RequestAlbumAcceptDialogFragment
 import com.example.solaroid.models.domain.Album
 import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
+import com.example.solaroid.ui.album.viewmodel.AlbumTag
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
+import com.example.solaroid.ui.album.viewmodel.ClickTag
 import com.example.solaroid.ui.home.adapter.AlbumListClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class AlbumFragment : Fragment() {
+class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
     private val TAG = "AlbumFragment"
 
     private lateinit var binding: FragmentAlbumBinding
@@ -44,15 +48,19 @@ class AlbumFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val onAlbumListener: (album: Album) -> Unit = { album ->
-            viewModel.setAlbum(album)
+        val onAlbumClickListener: (album: Album) -> Unit = { album ->
+            viewModel.setAlbum(AlbumTag(album, ClickTag.CLICK))
+        }
+
+        val onAlbumLongClickListener: (album: Album) -> Unit = { album ->
+            viewModel.setAlbum(AlbumTag(album, ClickTag.LONG))
         }
 
 
         val adapter = AlbumListAdapter(
             AlbumListClickListener(
-                onAlbumListener,
-                null
+                onAlbumClickListener = onAlbumClickListener,
+                onAlbumLongClickListener = onAlbumLongClickListener
             )
         )
 
@@ -61,28 +69,32 @@ class AlbumFragment : Fragment() {
 
         viewModel.myProfile.observe(viewLifecycleOwner) {
             it?.let { _ ->
-                Log.i(TAG,"myProfile : refreshAlbum 실행")
+                Log.i(TAG, "myProfile : refreshAlbum 실행")
                 viewModel.refreshAlbum()
             }
         }
 
         viewModel.albums.observe(viewLifecycleOwner) {
-            it?.let{
+            it?.let {
                 adapter.submitList(it)
             }
         }
 
         viewModel.album.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { album ->
-                viewModel.getRoomDatabaseAlbum(album.id)
+            it.getContentIfNotHandled()?.let { albumTag ->
+                viewModel.getRoomDatabaseAlbum(albumTag.first.id, albumTag.second)
             }
         }
 
         viewModel.roomAlbum.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { album ->
-                findNavController().navigate(
-                    AlbumFragmentDirections.actionAlbumToGallery(parseAlbumIdDomainToFirebase(album.id,album.key), album.key)
-                )
+            it.getContentIfNotHandled()?.let { albumTag ->
+                val album = albumTag.first
+                when (albumTag.second) {
+                    ClickTag.CLICK-> findNavController().navigate(
+                        AlbumFragmentDirections.actionAlbumToGallery(album.id, album.name)
+                    )
+                    ClickTag.LONG -> showLongClickDialog()
+                }
             }
         }
 
@@ -125,7 +137,7 @@ class AlbumFragment : Fragment() {
         }
 
         viewModel.naviToRequest.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{
+            it.getContentIfNotHandled()?.let {
                 findNavController().navigate(
                     AlbumFragmentDirections.actionAlbumToAlbumRequest()
                 )
@@ -182,6 +194,26 @@ class AlbumFragment : Fragment() {
                 else -> false
             }
         }
+    }
+
+    override fun onDialogListItem(dialog: DialogFragment, position: Int) {
+        val databaseAlbum = viewModel.roomAlbum.value?.peekContent()?.first ?: return
+        when (position) {
+            0 -> {
+                viewModel.deleteCurrAlbum(databaseAlbum)
+            }
+            1 -> {
+
+            }
+            else -> {
+
+            }
+        }
+    }
+
+    fun showLongClickDialog() {
+        val new = ListSetDialogFragment(R.array.album_long_click_dialog_items, this)
+        new.show(parentFragmentManager, "AlbumLongClick")
     }
 
 

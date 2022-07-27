@@ -3,6 +3,7 @@ package com.example.solaroid.repositery.album
 import android.util.Log
 import com.example.solaroid.datasource.album.WithAlbumDataSource
 import com.example.solaroid.models.domain.RequestAlbum
+import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -55,7 +56,14 @@ class WithAlbumRepositery(
         }
     }
 
-
-
+    /**
+     * album을 삭제하면 firebase withAlbum - albumId - uid -> removeValue
+     * */
+    suspend fun removeWithAlbumValue(album:FirebaseAlbum) {
+        return withContext(Dispatchers.IO){
+            val user = fbAuth.currentUser!!
+            fbDatabase.reference.child("withAlbum").child(album.id).child(user.uid).removeValue()
+        }
+    }
 
 }

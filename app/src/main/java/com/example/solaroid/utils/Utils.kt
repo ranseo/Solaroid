@@ -75,7 +75,10 @@ fun parseAlbumIdDomainToFirebase(albumId:String, key:String) : String {
 
 fun joinAlbumIdAndKey(albumId:String, albumKey:String) : String {
     return "$albumId||$albumKey"
+}
 
+fun parseAlbumParticipantsAndGetParticpantsNum(participants: String) : Int{
+    return participants.split("||").size
 }
 
 

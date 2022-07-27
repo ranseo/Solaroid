@@ -126,9 +126,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            else supportActionBar?.hide()
 //        }
 
+
+
         navController.addOnDestinationChangedListener{ _,_,arguments ->
             if(arguments != null) {
-                if(arguments.containsKey("ShowAppBar")) supportActionBar?.show()
+                if(arguments.containsKey("ShowAppBar")) {
+                    supportActionBar?.show()
+                }
                 else supportActionBar?.hide()
             } else supportActionBar?.hide()
 
@@ -196,6 +200,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (binding.drawerLayoutMain.isDrawerOpen(GravityCompat.START))
             binding.drawerLayoutMain.closeDrawer(GravityCompat.START)
         else  super.onBackPressed()
+    }
+
+    fun setActionBarTitle(title:String) {
+        val actionBar = supportActionBar
+        actionBar?.title = title
     }
 
 

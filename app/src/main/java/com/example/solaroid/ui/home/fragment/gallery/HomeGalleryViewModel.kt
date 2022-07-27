@@ -125,6 +125,7 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         viewModelScope.launch {
             albumRepositery.addSingleValueEventListener { albums ->
                 _albums.value = albums
+
             }
         }
     }

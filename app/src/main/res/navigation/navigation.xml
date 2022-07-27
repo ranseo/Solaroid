@@ -49,7 +49,7 @@
     <fragment
         android:id="@+id/fragment_home_gallery"
         android:name="com.example.solaroid.ui.home.fragment.gallery.HomeGalleryFragment"
-        android:label="갤러리"
+        android:label="홈"
         tools:layout="@layout/fragment_solaroid_gallery">
 
 
@@ -87,7 +87,7 @@
     <fragment
         android:id="@+id/fragment_solaroid_create"
         android:name="com.example.solaroid.ui.home.fragment.create.SolaroidPhotoCreateFragment"
-        android:label="카메라 촬영"
+        android:label=""
         tools:layout="@layout/fragment_solaroid_photo_create">
 
 
@@ -173,6 +173,7 @@
     <fragment
         android:id="@+id/fragment_album"
         android:name="com.example.solaroid.ui.home.fragment.album.AlbumFragment"
+        android:label="사진첩"
         tools:layout="@layout/fragment_album"
         >
 
@@ -242,7 +243,8 @@
             android:name="albumId"/>
         <argument
             app:argType="string"
-            android:name="albumKey"/>
+            android:name="albumName"/>
+
 
     </fragment>
 

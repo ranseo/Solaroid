@@ -12,6 +12,7 @@
             name="onClickListener"
             type="com.example.solaroid.ui.home.adapter.AlbumListClickListener" />
 
+
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -27,7 +28,8 @@
             android:background="@color/white"
             android:layout_margin="3dp"
             android:elevation="12dp"
-            android:onClick="@{()->onClickListener.onClick(album)}">
+            android:onClick="@{()->onClickListener.onClick(album)}"
+            android:onLongClick="@{()->onClickListener.onLongClick(album)}">
 
             <ImageView
                 android:id="@+id/iv_album"

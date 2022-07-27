@@ -31,6 +31,9 @@ interface DatabasePhotoTicketDao {
     @Query("DELETE FROM photo_ticket_table")
     suspend fun clear()
 
+    @Query("DELETE FROM photo_ticket_table WHERE photo_ticket_album_id == :id")
+    suspend fun deletePhotoTicketsWithAlbumId(id:String)
+
     //유저가 원하는 포토티켓
     @Query("SELECT * FROM photo_ticket_table WHERE :key == photo_ticket_key")
     suspend fun getDatabasePhotoTicket(key:String) : DatabasePhotoTicket
@@ -51,7 +54,7 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_album_id == :albumId AND pt.photo_ticket_user == :user ORDER BY pt.photo_ticket_date ASC")
     fun getAllPhotoTicketWithUserAndAlbumIdAsc(albumId:String, user:String) : LiveData<List<DatabasePhotoTicket>>
 
-    @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_album_id == :albumId AND pt.photo_ticket_user == :user ORDER BY pt.photo_ticket_date ASC")
+    @Query("SELECT * FROM photo_ticket_table AS pt WHERE pt.photo_ticket_album_id == :albumId AND pt.photo_ticket_user == :user AND pt.photo_ticket_favorite == :favorite ORDER BY pt.photo_ticket_date ASC")
     fun getAllPhotoTicketWithUserAndAlbumIdFavorite(albumId:String, user:String, favorite:Boolean) : LiveData<List<DatabasePhotoTicket>>
 
 
@@ -86,12 +89,16 @@ interface DatabasePhotoTicketDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(databaseAlbum: DatabaseAlbum)
 
+    @Query("DELETE FROM album_table WHERE album_id == :id")
+    suspend fun deleteAlbum(id:String)
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlbums(databaseAlbums: List<DatabaseAlbum>)
 
     @Query("SELECT * FROM album_table WHERE album_user = :user ORDER BY album_name DESC")
     fun getAllAlbum(user:String) : LiveData<List<DatabaseAlbum>>
 
-    @Query("SELECT * FROM album_table WHERE id == :id")
+    @Query("SELECT * FROM album_table WHERE album_id == :id")
     suspend fun getAlbum(id:String) : DatabaseAlbum
 }

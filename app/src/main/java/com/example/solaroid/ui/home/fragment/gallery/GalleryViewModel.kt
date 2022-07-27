@@ -21,8 +21,7 @@ import kotlinx.coroutines.*
 class GalleryViewModel(
     dataSource: DatabasePhotoTicketDao,
     application: Application,
-    _albumId: String,
-    _albumKey: String
+    _albumId: String
 ) :
     AndroidViewModel(application) {
 
@@ -84,6 +83,7 @@ class GalleryViewModel(
     }
 
     init {
+        Log.i(TAG, "albumId: ${_albumId}")
     }
 
 

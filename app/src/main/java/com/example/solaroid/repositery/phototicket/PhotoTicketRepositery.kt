@@ -27,6 +27,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storageMetadata
 import kotlinx.coroutines.*
+import java.io.IOException
 import java.lang.NullPointerException
 
 class PhotoTicketRepositery(
@@ -126,7 +127,7 @@ class PhotoTicketRepositery(
      * 해당 함수에서는 삭제할 포토티켓을 매개변수로 전달 받아 RoomDatabase와 Firebase 실시간 데이터 베이스 및 Storage 내에
      * 포토티켓 정보를 삭제한다.
      * */
-    suspend fun deletePhotoTickets(albumId:String, albumKey:String ,key: String, application: Application) {
+    suspend fun deletePhotoTicket(albumId:String, albumKey:String ,key: String, application: Application) {
         withContext(Dispatchers.IO) {
 
             //room delete
@@ -164,9 +165,32 @@ class PhotoTicketRepositery(
             } catch (error:NullPointerException) {
                 error.printStackTrace()
             }
+        }
+    }
 
+    /**
+     * 포토티켓의 앨범을 삭제할 때 사용자는 더 이상 해당 앨범에 속한 포토티켓을 볼 수 없어야 한다.
+     * 따라서 firebase-photoTicket 경로에 albumId - albumKey 경로를 삭제한다.
+     * 단, 앨범의 참여자가 나 혼자 일때만 가능.
+     * */
+    suspend fun deletePhotoTickets(album:FirebaseAlbum) {
+        return withContext(Dispatchers.IO) {
+            try {
+                fbDatabase.reference.child("photoTicket").child(album.id).child(album.key).removeValue()
+            }catch (error:IOException) {
+                error.printStackTrace()
+            }catch (error:NullPointerException) {
+                error.printStackTrace()
+            }
+        }
+    }
 
-
+    /**
+     * room database photoTicket table내에 전달받은 albumId를 가진 포토티켓을 모두 삭제
+     * */
+    suspend fun deletePhotoTicketsInRoom(albumId: String) {
+        return withContext(Dispatchers.IO) {
+            dataSource.deletePhotoTicketsWithAlbumId(albumId)
         }
     }
 

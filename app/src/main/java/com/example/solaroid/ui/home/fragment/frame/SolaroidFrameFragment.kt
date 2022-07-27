@@ -84,7 +84,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         viewPager = binding.viewpager
 
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
-            showListDialog(viewModel)
+            showListDialog()
         })
 
 
@@ -277,7 +277,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     override fun onDialogListItem(
         dialog: DialogFragment,
         position: Int,
-        viewModel: SolaroidFrameViewModel
     ) {
         val key = viewModel.currPhotoTicket.value!!.id
         when (position) {
@@ -294,8 +293,8 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         }
     }
 
-    private fun showListDialog(viewModel: SolaroidFrameViewModel) {
-        val newDialogFragment = ListSetDialogFragment(this, viewModel)
+    private fun showListDialog() {
+        val newDialogFragment = ListSetDialogFragment(R.array.frame_long_click_dialog_items,this)
         newDialogFragment.show(parentFragmentManager, "ListDialog")
     }
 

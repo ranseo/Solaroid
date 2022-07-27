@@ -13,8 +13,10 @@ import com.example.solaroid.adapter.OnClickListener
 import com.example.solaroid.adapter.SolaroidGalleryAdapter
 import com.example.solaroid.databinding.FragmentGalleryBinding
 import com.example.solaroid.dialog.FilterDialogFragment
+import com.example.solaroid.joinAlbumIdAndKey
 import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
+import com.example.solaroid.ui.home.activity.HomeActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener {
@@ -39,15 +41,18 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application)
 
-        val albumId = args.albumId
-        val albumKey = args.albumKey
 
+        val albumId = args.albumId
+        val albumName = args.albumName
+
+        (requireActivity() as HomeActivity).setActionBarTitle(albumName)
+        Log.i(TAG, "albumId: ${albumId}, albumKey: ${albumName}")
         viewModelFactory = GalleryViewModelFactory(
             dataSource.photoTicketDao,
             application,
-            parseAlbumIdDomainToFirebase(albumId, albumKey),
-            albumKey
+            albumId
         )
+
         viewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
         val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->
@@ -79,6 +84,8 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
 
     override fun onStart() {
         super.onStart()
+        Log.i(TAG,"${requireActivity().actionBar?.title }")
+
         binding.galleryBottomNavi.menu.findItem(R.id.album).isChecked = true
     }
 

@@ -196,7 +196,7 @@ class SolaroidFrameViewModel(
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            photoTicketRepositery.deletePhotoTickets(parseAlbumIdDomainToFirebase(albumId,albumKey),albumKey,key, getApplication())
+            photoTicketRepositery.deletePhotoTicket(parseAlbumIdDomainToFirebase(albumId,albumKey),albumKey,key, getApplication())
         }
     }
 

@@ -44,7 +44,7 @@ class AlbumRequest : Fragment(), RequestAlbumAcceptDialogFragment.RequestAlbumAc
             viewModel.setRequestAlbum(album)
         }
 
-        val adapter = AlbumListAdapter(AlbumListClickListener(null, onRequestAlbumListener))
+        val adapter = AlbumListAdapter(AlbumListClickListener(onRequestAlbumClickListener = onRequestAlbumListener))
 
 
         binding.recAlbumRequest.adapter = adapter

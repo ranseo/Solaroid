@@ -6,6 +6,7 @@ import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.datasource.album.RequestAlbumDataSource
 import com.example.solaroid.datasource.album.WithAlbumDataSource
+import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.datasource.profile.MyProfileDataSource
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.models.domain.Album
@@ -13,9 +14,12 @@ import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.models.domain.asFirebaseModel
 import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.models.room.DatabaseAlbum
+import com.example.solaroid.models.room.asFirebaseModel
+import com.example.solaroid.parseAlbumParticipantsAndGetParticpantsNum
 import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.repositery.album.AlbumRequestRepositery
 import com.example.solaroid.repositery.album.WithAlbumRepositery
+import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.ui.album.adapter.AlbumListDataItem
@@ -23,7 +27,15 @@ import com.example.solaroid.ui.album.adapter.AlbumListItemCallback
 import com.example.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.launch
 
+//DatabaseAlbum과 Tag를 Pair로 짝지어, list_item album 객체를 click 또는 long click 했을 때
+//Tag에 따라 구분할 수 있게 만들기.
+typealias AlbumTag = Pair<Album, ClickTag>
+typealias DAlbumTag = Pair<DatabaseAlbum, ClickTag>
 
+enum class ClickTag {
+    CLICK,
+    LONG,
+}
 class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     private val fbAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
@@ -36,6 +48,8 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     private val profileRepostiery =
         ProfileRepostiery(fbAuth, fbDatabase, fbStorage, roomDB, MyProfileDataSource())
     private val albumRepostiery = AlbumRepositery(roomDB, fbAuth, fbDatabase, AlbumDataSource())
+    private val withAlbumRepositery = WithAlbumRepositery(fbAuth, fbDatabase, WithAlbumDataSource())
+    private val photoTicketRepositery = PhotoTicketRepositery(roomDB,fbAuth,fbDatabase,fbStorage, PhotoTicketListenerDataSource())
 
     val myProfile = profileRepostiery.myProfile
 
@@ -46,13 +60,14 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
 
-    private val _album = MutableLiveData<Event<Album?>>()
-    val album: LiveData<Event<Album?>>
+    private val _album = MutableLiveData<Event<AlbumTag?>>()
+    val album: LiveData<Event<AlbumTag?>>
         get() = _album
 
-    private val _roomAlbum = MutableLiveData<Event<DatabaseAlbum>>()
-    val roomAlbum: LiveData<Event<DatabaseAlbum>>
+    private val _roomAlbum = MutableLiveData<Event<DAlbumTag?>>()
+    val roomAlbum: LiveData<Event<DAlbumTag?>>
         get() = _roomAlbum
+
 
     private val _naviToHome = MutableLiveData<Event<Unit>>()
     val naviToHome: LiveData<Event<Unit>>
@@ -67,7 +82,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         get() = _naviToCreate
 
     private val _naviToRequest = MutableLiveData<Event<Any?>>()
-    val naviToRequest : LiveData<Event<Any?>>
+    val naviToRequest: LiveData<Event<Any?>>
         get() = _naviToRequest
 
     private val _naviToGallery = MutableLiveData<Event<Album>>()
@@ -84,9 +99,10 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * 구현할 때 list_item인 Album 객체가 클릭되면
      * 해당 Album 객체를 viewModel 내 album 프로퍼티에 할당
      *  */
-    fun setAlbum(album: Album) {
-        _album.value = Event(album)
+    fun setAlbum(albumTag: AlbumTag) {
+        _album.value = Event(albumTag)
     }
+
 
 
     /**
@@ -112,11 +128,31 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * List_Item의 Album객체를 클릭 했을 때 해당 Album객체의 key를 이용해
      * Room Database Album 객체를 get()하는 함수
      * */
-    fun getRoomDatabaseAlbum(albumId: String) {
+    fun getRoomDatabaseAlbum(albumId: String, tag: ClickTag) {
         viewModelScope.launch {
-            _roomAlbum.value = Event(roomDB.getAlbum(albumId))
+            _roomAlbum.value = Event(DAlbumTag(roomDB.getAlbum(albumId),tag))
         }
     }
+
+
+    /**
+     * Album을 Long Click -> Dialog 나타남 -> 삭제를 선택했을 때
+     * deleteAlbum
+     * */
+    fun deleteCurrAlbum(album: DatabaseAlbum) {
+        viewModelScope.launch {
+            albumRepostiery.deleteAlbumInFirebase(album.asFirebaseModel())
+            albumRepostiery.deleteAlbumInRoomDB(album)
+
+            if(parseAlbumParticipantsAndGetParticpantsNum(album.participants) == 1) {
+                photoTicketRepositery.deletePhotoTickets(album.asFirebaseModel())
+            }
+            photoTicketRepositery.deletePhotoTicketsInRoom(album.id)
+            withAlbumRepositery.removeWithAlbumValue(album.asFirebaseModel())
+
+        }
+    }
+
 
     fun removeListener() {
         albumRepostiery.removeListener()

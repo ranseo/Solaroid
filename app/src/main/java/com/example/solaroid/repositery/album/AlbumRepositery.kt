@@ -27,9 +27,10 @@ class AlbumRepositery(
     private val TAG = "AlbumRepositery"
     private var listener: ValueEventListener? = null
 
-    val album: LiveData<List<Album>> = Transformations.map(roomDB.getAllAlbum(fbAuth.currentUser!!.email!!)) {
-        it.modifyOverrideAlbumName().asDomainModel()
-    }
+    val album: LiveData<List<Album>> =
+        Transformations.map(roomDB.getAllAlbum(fbAuth.currentUser!!.email!!)) {
+            it.modifyOverrideAlbumName().asDomainModel()
+        }
 
     suspend fun getAlbum(albumId: String): DatabaseAlbum {
         return roomDB.getAlbum(albumId)
@@ -42,7 +43,7 @@ class AlbumRepositery(
      * FirebaseAlbum객체 write - setValue()
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun setValue(album: FirebaseAlbum, albumId: String, setKey : (key:String)->Unit) =
+    suspend fun setValue(album: FirebaseAlbum, albumId: String, setKey: (key: String) -> Unit) =
         suspendCancellableCoroutine<Unit> { continuation ->
             try {
                 val user = fbAuth.currentUser!!
@@ -68,9 +69,9 @@ class AlbumRepositery(
                     }
 
                 }
-            }catch (error:IOException) {
+            } catch (error: IOException) {
                 error.printStackTrace()
-            }catch (error:NullPointerException) {
+            } catch (error: NullPointerException) {
                 error.printStackTrace()
             }
 
@@ -86,7 +87,8 @@ class AlbumRepositery(
         suspendCancellableCoroutine<Unit> { continuation ->
             try {
                 val user = fbAuth.currentUser!!
-                val ref = fbDatabase.reference.child("album").child(user.uid).child(albumId).child(album.key)
+                val ref = fbDatabase.reference.child("album").child(user.uid).child(albumId)
+                    .child(album.key)
 
                 val new = FirebaseAlbum(
                     album.id,
@@ -106,9 +108,9 @@ class AlbumRepositery(
                     }
 
                 }
-            }catch (error:IOException) {
+            } catch (error: IOException) {
                 error.printStackTrace()
-            }catch (error:NullPointerException) {
+            } catch (error: NullPointerException) {
                 error.printStackTrace()
             }
 
@@ -179,6 +181,40 @@ class AlbumRepositery(
             val ref = fbDatabase.reference.child("album").child(user.uid)
             ref.addListenerForSingleValueEvent(listener)
             false
+        }
+    }
+
+
+    /**
+     * album 삭제
+     * */
+    suspend fun deleteAlbumInFirebase(album: FirebaseAlbum) {
+        return withContext(Dispatchers.IO) {
+            try {
+                val user = fbAuth.currentUser!!
+                fbDatabase.reference.child("album").child(user.uid).child(album.id)
+                    .child(album.key).removeValue()
+
+
+            } catch (error:IOException) {
+                error.printStackTrace()
+            } catch (error:NullPointerException) {
+                error.printStackTrace()
+            }
+
+        }
+    }
+
+    suspend fun deleteAlbumInRoomDB(album: DatabaseAlbum) {
+        return withContext(Dispatchers.IO) {
+            try {
+                roomDB.deleteAlbum(album.id)
+            }catch (error:IOException) {
+                error.printStackTrace()
+            } catch (error:NullPointerException) {
+                error.printStackTrace()
+            }
+
         }
     }
 
