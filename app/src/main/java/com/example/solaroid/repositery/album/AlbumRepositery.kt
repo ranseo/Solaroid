@@ -55,6 +55,7 @@ class AlbumRepositery(
                     album.name,
                     album.thumbnail,
                     album.participants,
+                    album.numOfParticipants,
                     key
                 )
 
@@ -95,6 +96,7 @@ class AlbumRepositery(
                     album.name,
                     album.thumbnail,
                     album.participants,
+                    album.numOfParticipants,
                     album.key
                 )
 

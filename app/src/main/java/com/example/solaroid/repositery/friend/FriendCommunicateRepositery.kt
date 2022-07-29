@@ -55,7 +55,7 @@ class FriendCommunicateRepositery(
     /**
      * receptionFragment에서 친구추가 또는 거절 이후 Firebase의 ReceptionList에서 해당  friend 객체 삭제.
      * */
-    suspend fun deleteReceptionList(friendCode: Long, key: String) {
+    suspend fun deleteReceptionList(friendCode: Long, key: Long) {
         return withContext(Dispatchers.IO) {
             fbDatabase.reference.child("friendReception").child("${friendCode}").child("list")
                 .child("${key}").removeValue()
@@ -81,14 +81,13 @@ class FriendCommunicateRepositery(
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
 
-            val ref = fbDatabase.reference.child("myFriendList").child("${user.uid}").child("list").push()
-            val key = ref.key ?: return@withContext
+            val ref = fbDatabase.reference.child("myFriendList").child("${user.uid}").child("list").child("${convertHexStringToLongFormat(_friend.friendCode)}")
             val friend = FirebaseFriend(
                 _friend.id,
                 _friend.nickname,
                 _friend.profileImg,
                 convertHexStringToLongFormat(_friend.friendCode),
-                key
+                "key"
             )
 
             ref.setValue(friend)
@@ -102,10 +101,9 @@ class FriendCommunicateRepositery(
     suspend fun setValueTmpList(friendCode:Long, myProfile: Profile) {
         return withContext(Dispatchers.IO) {
 
-            val ref = fbDatabase.reference.child("tmpFriendList").child("${friendCode}").child("list").push()
-            val key = ref.key ?: return@withContext
+            val ref = fbDatabase.reference.child("tmpFriendList").child("${friendCode}").child("list").child("${convertHexStringToLongFormat(myProfile.friendCode)}")
 
-            val friend = myProfile.asFriend(key).asFirebaseModel()
+            val friend = myProfile.asFriend("key").asFirebaseModel()
             ref.setValue(friend)
 
         }

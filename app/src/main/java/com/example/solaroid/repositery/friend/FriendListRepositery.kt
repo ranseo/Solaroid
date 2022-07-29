@@ -2,6 +2,7 @@ package com.example.solaroid.repositery.friend
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.models.domain.asFirebaseModel
 import com.example.solaroid.models.room.asDomainModel
@@ -32,7 +33,7 @@ class FriendListRepositery(
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
             fbDatabase.reference.child("myFriendList").child(user.uid).child("list")
-                .addChildEventListener(myFriendListDataSource.friendListListener)
+                .addValueEventListener(myFriendListDataSource.friendListListener)
         }
     }
 
@@ -46,24 +47,23 @@ class FriendListRepositery(
     suspend fun setValueFriendListFromTmpList(_friend: Friend) {
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
-            val ref = fbDatabase.reference.child("myFriendList").child(user.uid).child("list").push()
-            val key = ref.key ?: return@withContext
+            val ref = fbDatabase.reference.child("myFriendList").child(user.uid).child("list").child("${convertHexStringToLongFormat(_friend.friendCode)}")
 
             val friend = Friend(
                 _friend.id,
                 _friend.nickname,
                 _friend.profileImg,
                 _friend.friendCode,
-                key
+                "key"
             ).asFirebaseModel()
 
             ref.setValue(friend)
         }
     }
 
-    suspend fun deleteTmpList(myFriendCode:Long, key:String) {
+    suspend fun deleteTmpList(myFriendCode:Long, key:Long) {
         return withContext(Dispatchers.IO) {
-            val ref= fbDatabase.reference.child("tmpFriendList").child("${myFriendCode}").child("list").child(key)
+            val ref= fbDatabase.reference.child("tmpFriendList").child("${myFriendCode}").child("list").child("$key")
             ref.removeValue()
         }
     }

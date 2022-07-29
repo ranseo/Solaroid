@@ -4,11 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
+import com.example.solaroid.datasource.album.AlbumDataSource
 import com.example.solaroid.models.domain.PhotoTicket
 import com.example.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.firebase.FirebaseManager
 import com.example.solaroid.parseAlbumIdDomainToFirebase
+import com.example.solaroid.repositery.album.AlbumRepositery
 import com.example.solaroid.ui.home.fragment.gallery.PhotoTicketFilter
 import com.example.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.google.firebase.auth.FirebaseAuth
@@ -50,6 +52,8 @@ class SolaroidFrameViewModel(
             PhotoTicketListenerDataSource()
         )
 
+    private val albumRepositery = AlbumRepositery(dataSource, fbAuth, fbDatabase, AlbumDataSource())
+
     val photoTickets = when (filter) {
         PhotoTicketFilter.DESC -> {
             photoTicketRepositery.photoTicketsOrderByDesc
@@ -64,6 +68,7 @@ class SolaroidFrameViewModel(
 
     val albumId : String
     val albumKey: String
+    var albumParticipants : Int = 1
 
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
@@ -121,12 +126,26 @@ class SolaroidFrameViewModel(
         Log.i(TAG, "뷰모델 Init() albumId : ${_albumId} , ${_albumKey}")
         albumId = _albumId
         albumKey = _albumKey
+        viewModelScope.launch {
+            getAlbumParticipants()
+        }
 
         _startPhotoTicket.value = photoTicket
     }
 
     fun setStartPhotoTicket(photo:PhotoTicket) {
         _startPhotoTicket.value = photo
+    }
+
+
+    /**
+     * albumId와 albumKey를 이용하여 room database에서 album 가져오기.
+     * */
+    suspend fun getAlbumParticipants() {
+        withContext(Dispatchers.IO) {
+
+            albumParticipants = albumRepositery.getAlbum(albumId).numOfParticipants
+        }
     }
 
 
@@ -196,7 +215,12 @@ class SolaroidFrameViewModel(
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            photoTicketRepositery.deletePhotoTicket(parseAlbumIdDomainToFirebase(albumId,albumKey),albumKey,key, getApplication())
+            if(albumParticipants == 1){
+                photoTicketRepositery.deletePhotoTicket(parseAlbumIdDomainToFirebase(albumId,albumKey),albumKey,key, getApplication())
+            } else {
+                photoTicketRepositery.deletePhotoTicketInRoom(key)
+            }
+
         }
     }
 

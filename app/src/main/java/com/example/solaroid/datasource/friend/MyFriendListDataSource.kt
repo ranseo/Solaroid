@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.lang.NullPointerException
 
 class MyFriendListDataSource(
     private var listener : OnValueListener? =null
@@ -19,37 +20,32 @@ class MyFriendListDataSource(
         fun onValueChanged(friend: Friend)
     }
 
-    val friendListListener: ChildEventListener = object : ChildEventListener {
-        override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-            val hashMap = snapshot.value as HashMap<*, *>
+    val friendListListener: ValueEventListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            for(data in snapshot.children) {
+                try {
+                    val hashMap = snapshot.value as HashMap<*, *>
+                    println("hashMap : ${hashMap}")
 
-            try {
-                val friend = FirebaseFriend(
-                    id = hashMap["id"]!! as String,
-                    nickname = hashMap["nickname"] as String,
-                    profileImg = hashMap["profileImg"] as String,
-                    friendCode = hashMap["friendCode"] as Long,
-                    key = hashMap["key"] as String
-                ).asDomainModel()
+                    for(value in hashMap.values) {
+                        value as HashMap<*,*>
+                        val friend = FirebaseFriend(
+                            id = value["id"]!! as String,
+                            nickname = value["nickname"] as String,
+                            profileImg = value["profileImg"] as String,
+                            friendCode = value["friendCode"] as Long,
+                            key = value["key"] as String
+                        ).asDomainModel()
 
-                listener!!.onValueAdded(friend)
+                        listener!!.onValueAdded(friend)
+                    }
 
-            } catch (error: Exception) {
-                Log.i(TAG, "friendListListener error : ${error.message}")
+
+
+                } catch(error:NullPointerException) {
+                    error.printStackTrace()
+                }
             }
-
-        }
-
-        override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-
-        }
-
-        override fun onChildRemoved(snapshot: DataSnapshot) {
-
-        }
-
-        override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
         }
 
         override fun onCancelled(error: DatabaseError) {

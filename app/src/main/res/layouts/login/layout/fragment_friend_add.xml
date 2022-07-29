@@ -34,7 +34,7 @@
             android:background="@drawable/edit_text_shadow"
             android:hint="친구 코드를 입력해주세요"
             android:textAlignment="center"
-            android:inputType="phone"
+            android:inputType="text"
             android:singleLine="true"
             android:maxLength="5"
             app:layout_constraintEnd_toEndOf="parent"

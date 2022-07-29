@@ -20,6 +20,7 @@ class RequestAlbumDataSource {
                         name = hashMap["name"] as String,
                         thumbnail = hashMap["thumbnail"] as String,
                         participants = hashMap["participants"] as String,
+                        numOfParticipants = hashMap["numOfParticipants"] as Int,
                         albumKey = hashMap["albumKey"] as String,
                         key = hashMap["key"] as String
                     ).asDomainModel()

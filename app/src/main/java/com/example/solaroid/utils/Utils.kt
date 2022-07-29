@@ -25,7 +25,13 @@ fun convertLongToHexStringFormat(num: Long): String {
 }
 
 fun convertHexStringToLongFormat(str: String): Long {
-    return str.substring(1..4).toLong(16)
+    try {
+        return str.substring(1..4).toLong(16)
+    } catch (error:NumberFormatException) {
+        error.printStackTrace()
+        return 0
+    }
+
 }
 
 

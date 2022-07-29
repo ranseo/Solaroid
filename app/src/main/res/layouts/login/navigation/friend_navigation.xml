@@ -47,6 +47,7 @@
     <fragment
         android:id="@+id/fragment_friend_list"
         android:name="com.example.solaroid.ui.friend.fragment.list.FriendListFragment"
+        android:label="친구 목록"
         tools:layout="@layout/fragment_friend_list">
 
     </fragment>
@@ -54,6 +55,7 @@
     <fragment
         android:id="@+id/fragment_friend_add"
         android:name="com.example.solaroid.ui.friend.fragment.add.FriendAddFragment"
+        android:label="친구 요청"
         tools:layout="@layout/fragment_friend_add">
 
     </fragment>

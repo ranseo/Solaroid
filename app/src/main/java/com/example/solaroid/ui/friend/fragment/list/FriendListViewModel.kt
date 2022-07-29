@@ -86,7 +86,7 @@ class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyF
 
     fun deleteTmpList(friend:Friend) {
         viewModelScope.launch {
-            friendListRepositery.deleteTmpList(convertHexStringToLongFormat(myProfile.value!!.friendCode), friend.key)
+            friendListRepositery.deleteTmpList(convertHexStringToLongFormat(myProfile.value!!.friendCode), convertHexStringToLongFormat(friend.friendCode))
         }
     }
 

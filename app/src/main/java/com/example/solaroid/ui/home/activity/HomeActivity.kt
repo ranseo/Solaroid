@@ -112,7 +112,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(binding.mainToolbar)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.fragment_home_gallery, R.id.fragment_album, R.id.fragment_gallery) ,binding.drawerLayoutMain
+            setOf(R.id.fragment_home_gallery, R.id.fragment_album) ,binding.drawerLayoutMain
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)

@@ -18,6 +18,7 @@ data class DatabaseAlbum(
     var name: String,
     var thumbnail: String,
     val participants:String,
+    val numOfParticipants: Int,
     val key: String,
     @ColumnInfo(name ="album_user")
     val user:String
@@ -31,6 +32,7 @@ fun DatabaseAlbum.asDomainModel() : Album {
         name,
         BitmapUtils.stringToBitmap(thumbnail),
         participants,
+        numOfParticipants
     )
 }
 
@@ -40,6 +42,7 @@ fun DatabaseAlbum.asFirebaseModel() : FirebaseAlbum =
         name,
         thumbnail,
         participants,
+        numOfParticipants,
         key
     )
 
@@ -50,6 +53,7 @@ fun DatabaseAlbum.asDatabaseAlbum(name:String) =
         name,
         this.thumbnail,
         this.participants,
+        this.numOfParticipants,
         this.key,
         this.user
     )

@@ -190,6 +190,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                     id = createId.value!!,
                     name = createName.value!!,
                     participants = createParticipants.value!!,
+                    numOfParticipants = profileAndParticipants.value!!.size,
                     thumbnail = thumbnail,
                     key = ""
                 )
@@ -226,6 +227,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                     name = createName.value!!,
                     thumbnail = thumbnail,
                     participants = createParticipants.value!!,
+                    numOfParticipants = profileAndParticipants.value!!.size,
                     albumKey = albumKey,
                     ""
                 )

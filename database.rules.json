@@ -26,7 +26,9 @@
       "$uid" : {
         "list" : {
           ".read" : "auth !=null && auth.uid == $uid",
-          ".write" : "auth != null && auth.uid == $uid"
+          "$friendCode" :{
+            ".write" : "auth != null && auth.uid == $uid"
+          }
         }
       }
     },
@@ -36,7 +38,9 @@
       "$friendCode" : {
         "list" : {
           ".read" : "auth !=null",
-          ".write" : "auth != null"
+          "$myFriendCode" :{
+            ".write" : "auth != null"
+          }
         }
       }
     },
@@ -46,7 +50,9 @@
       "$friendCode" : {
         "list" : {
           ".read" : "auth !=null",
-          ".write" : "auth != null"
+          "$myfriendCode" : {
+            ".write" : "auth != null"
+          }
         }
       }
     },

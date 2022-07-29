@@ -123,6 +123,14 @@ class PhotoTicketRepositery(
     }
 
     /**
+     * room database 내에서 photoTicket삭제
+     * */
+    suspend fun deletePhotoTicketInRoom(key:String) {
+        withContext(Dispatchers.IO) {
+            dataSource.delete(key)
+        }
+    }
+    /**
      * 포토티켓의 삭제 기능을 수행하는 리포지터리 함수
      * 해당 함수에서는 삭제할 포토티켓을 매개변수로 전달 받아 RoomDatabase와 Firebase 실시간 데이터 베이스 및 Storage 내에
      * 포토티켓 정보를 삭제한다.
@@ -132,7 +140,7 @@ class PhotoTicketRepositery(
 
             //room delete
             try {
-                dataSource.delete(key)
+                deletePhotoTicketInRoom(key)
                 //firebase database delete
                 val ref =
                     fbDatabase.reference.child("photoTicket").child(albumId).child(albumKey).child(key)

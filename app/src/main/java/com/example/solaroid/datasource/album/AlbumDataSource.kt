@@ -25,6 +25,7 @@ class AlbumDataSource {
                             name = hashMap["name"] as String,
                             thumbnail = hashMap["thumbnail"] as String,
                             participants = hashMap["participants"] as String,
+                            numOfParticipants = hashMap["numOfParticipants"] as Int,
                             key = hashMap["key"] as String
                         ).asDatabaseModel(user)
 
@@ -54,6 +55,7 @@ class AlbumDataSource {
                             name = hashMap["name"] as String,
                             thumbnail = hashMap["thumbnail"] as String,
                             participants = hashMap["participants"] as String,
+                            numOfParticipants = hashMap["numOfParticipants"] as Long,
                             key = hashMap["key"] as String
                         ).asDatabaseModel(user)
 

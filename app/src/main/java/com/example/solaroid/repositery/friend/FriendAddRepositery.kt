@@ -25,14 +25,13 @@ class FriendAddRepositery(
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser
             if(user!=null) {
-                val ref = fbDatabase.reference.child("friendReception").child("${friendCode}").child("list").push()
-                val key = ref.key ?: return@withContext
+                val ref = fbDatabase.reference.child("friendReception").child("${friendCode}").child("list").child("${myProfile.friendCode}")
                 val friend = FirebaseFriend(
                     myProfile.id,
                     myProfile.nickname,
                     myProfile.profileImg,
                     myProfile.friendCode,
-                    key
+                    ""
                 )
 
                 ref.setValue(friend)

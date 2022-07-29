@@ -8,6 +8,7 @@ import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.firebase.FirebaseManager
+import com.example.solaroid.models.domain.asFirebaseModel
 import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchFriend
 import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchStatus
@@ -105,7 +106,8 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(),
     fun deleteReceptionList() {
         viewModelScope.launch {
             try {
-                friendCommunicateRepositery.deleteReceptionList(myFriendCode, friend.value!!.key)
+
+                friendCommunicateRepositery.deleteReceptionList(myFriendCode, friend!!.value!!.asFirebaseModel().friendCode)
             } catch (error: Exception) {
                 Log.d(TAG, "deleteReceptionList() error : ${error}")
             }

@@ -15,6 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.lang.IllegalStateException
 import java.lang.NullPointerException
 
 class AlbumRequestRepositery(
@@ -43,6 +44,7 @@ class AlbumRequestRepositery(
                         request.name,
                         request.thumbnail,
                         request.participants,
+                        request.numOfParticipants,
                         request.albumKey,
                         key
                     )
@@ -50,15 +52,16 @@ class AlbumRequestRepositery(
                     ref.setValue(firebaseRequestAlbum).addOnCompleteListener {
                         if (it.isSuccessful) {
                             Log.i(TAG, "각 참여자들에게 Request value 쓰기 성공")
-                            continuation.resume(Unit, null)
                         } else {
                             Log.d(TAG, "setValue 실패 ${it.exception?.message}.")
-                            continuation.resume(Unit, null)
                         }
                     }
+                    continuation.resume(Unit, null)
                 } catch (error:IOException) {
                     error.printStackTrace()
                 } catch (error : NullPointerException) {
+                    error.printStackTrace()
+                } catch (error:IllegalStateException) {
                     error.printStackTrace()
                 }
 
