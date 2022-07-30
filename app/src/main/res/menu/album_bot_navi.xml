@@ -21,12 +21,12 @@
 
     <item
         android:id="@+id/create"
-        android:icon="@drawable/ic_baseline_add_24"
-        android:title="생성"/>
+        android:icon="@drawable/ic_baseline_add_photo_album"
+        android:title="사진첩 생성"/>
 
     <item
         android:id="@+id/request"
-        android:icon="@drawable/ic_baseline_share_24"
+        android:icon="@drawable/ic_baseline_share_album_request_24"
         android:title="요청"/>
 
 

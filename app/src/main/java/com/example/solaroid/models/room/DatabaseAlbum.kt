@@ -42,7 +42,7 @@ fun DatabaseAlbum.asFirebaseModel() : FirebaseAlbum =
         name,
         thumbnail,
         participants,
-        numOfParticipants,
+        numOfParticipants.toLong(),
         key
     )
 

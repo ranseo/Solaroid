@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.lang.ClassCastException
 import java.lang.NullPointerException
 
 class MyFriendListDataSource(
@@ -43,6 +44,8 @@ class MyFriendListDataSource(
 
 
                 } catch(error:NullPointerException) {
+                    error.printStackTrace()
+                } catch (error:ClassCastException) {
                     error.printStackTrace()
                 }
             }

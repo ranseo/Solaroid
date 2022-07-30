@@ -68,7 +68,7 @@ class SolaroidFrameViewModel(
 
     val albumId : String
     val albumKey: String
-    var albumParticipants : Int = 1
+    var albumParticipants : Int = 0
 
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.

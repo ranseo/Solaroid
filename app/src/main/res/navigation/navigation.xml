@@ -251,6 +251,7 @@
     <fragment
         android:id="@+id/fragment_album_request"
         android:name="com.example.solaroid.ui.home.fragment.album.request.AlbumRequest"
+        android:label="공유 사진첩 요청"
         tools:layout="@layout/fragment_album_request">
 
         <action
@@ -259,13 +260,9 @@
             app:popUpTo="@layout/fragment_album_request"
             app:popUpToInclusive="true"/>
 
-
         <argument
             android:name="ShowAppBar"
             android:defaultValue="true"/>
-
-
-
     </fragment>
 
     <navigation

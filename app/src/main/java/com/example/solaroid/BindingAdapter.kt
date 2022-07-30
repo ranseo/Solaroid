@@ -81,7 +81,7 @@ fun bindImage (imageView: ImageView, imgUri: Uri?) {
 @RequiresApi(Build.VERSION_CODES.P)
 @BindingAdapter("participants")
 fun setParticipants(albumThumbnailView: AlbumThumbnailView, participants:Int) {
-    albumThumbnailView.participants = participants
+    albumThumbnailView.participants = participants-1
 }
 
 @RequiresApi(Build.VERSION_CODES.P)

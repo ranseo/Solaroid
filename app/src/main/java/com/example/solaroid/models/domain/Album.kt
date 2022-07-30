@@ -34,7 +34,7 @@ fun RequestAlbum.asFirebaseModel() : FirebaseAlbum {
         name,
         BitmapUtils.bitmapToString(thumbnail),
         participant,
-        numOfParticipants,
+        numOfParticipants.toLong(),
         albumKey
     )
 }

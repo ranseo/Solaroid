@@ -115,6 +115,12 @@ class AlbumCreateFinal() : Fragment() {
             }
         }
 
+        viewModel.createSize.observe(viewLifecycleOwner) {
+            it?.let{
+                Log.i(TAG, "createSize ${it}")
+            }
+        }
+
         viewModel.albumKey.observe(viewLifecycleOwner) {
             it?.let{
                 viewModel.createRequestAlbum(it)

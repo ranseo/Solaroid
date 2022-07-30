@@ -8,6 +8,10 @@
             name="friend"
             type="com.example.solaroid.models.domain.Friend" />
 
+        <variable
+            name="onClickListener"
+            type="com.example.solaroid.ui.friend.adapter.OnNormalClickListener" />
+
 
     </data>
 
@@ -18,6 +22,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:background="@drawable/border_line_only_bot"
+        android:onClick="@{()->onClickListener.onLongClick(friend)}"
         android:theme="@style/Theme.FriendActivity">
 
         <FrameLayout

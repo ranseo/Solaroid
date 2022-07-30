@@ -16,6 +16,11 @@
         <item>초대</item>
     </string-array>
 
+    <string-array name="friend_long_click_dialog_items">
+        <item>친구 삭제</item>
+        <item>친구 차단</item>
+    </string-array>
+
 
     <string name="title_activity_login">LoginActivity</string>
     <!-- Strings used for fragments for navigation -->

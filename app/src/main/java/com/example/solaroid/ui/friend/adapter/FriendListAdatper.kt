@@ -27,6 +27,7 @@ private val VIEW_TYPE_DIALOG_PROFILE = 3
 
 class FriendListAdatper(
     val application: Application? = null,
+    val normalClickListener: OnNormalClickListener,
     val receptionClickListener: OnReceptionClickListener? = null,
     val dispatchClickListener: OnDispatchClickListener? = null,
     val dialogClickListener: OnDialogClickListener? = null
@@ -57,7 +58,7 @@ class FriendListAdatper(
         when (holder) {
             is FriendListViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.NormalProfileDataItem
-                holder.bind(item.friend)
+                holder.bind(item.friend, normalClickListener)
             }
             is FriendReceptionViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.ReceptionProfileDataItem
@@ -77,8 +78,9 @@ class FriendListAdatper(
     class FriendListViewHolder(private val binding: ListItemSolaroidFriendBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Friend) {
+        fun bind(item: Friend, listener: OnNormalClickListener) {
             binding.friend = item
+            binding.onClickListener =  listener
         }
 
         companion object {
@@ -226,6 +228,12 @@ sealed class FriendListDataItem() {
     class DialogProfileDataItem(val friend: Friend) : FriendListDataItem() {
         override val id: String
             get() = friend.id
+    }
+}
+
+class OnNormalClickListener(val listener : (friend:Friend)->Unit) {
+    fun onLongClick(friend:Friend) {
+        listener(friend)
     }
 }
 

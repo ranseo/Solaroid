@@ -128,6 +128,7 @@ class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
         }
     }
 
+
     fun setValueFriendDispatch() {
         viewModelScope.launch {
             friendAddRepositery.setValueToFriendDispatch(

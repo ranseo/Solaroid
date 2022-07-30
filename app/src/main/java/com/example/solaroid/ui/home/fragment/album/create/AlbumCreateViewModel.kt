@@ -121,6 +121,12 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         } else ""
     }
 
+    val createSize = Transformations.map(profileAndParticipants) {
+        if(!it.isNullOrEmpty()) {
+            it.size
+        } else 0
+    }
+
     val createName = Transformations.map(profileAndParticipants) {
         if (!it.isNullOrEmpty()) {
             getAlbumNameWithFriendsNickname(it.map { v -> v.nickname })
@@ -132,8 +138,6 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
             joinProfileImgListToString(it.map { v -> v.profileImg })
         } else ""
     }
-
-
     ///
 
 
@@ -190,7 +194,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                     id = createId.value!!,
                     name = createName.value!!,
                     participants = createParticipants.value!!,
-                    numOfParticipants = profileAndParticipants.value!!.size,
+                    numOfParticipants = createSize.value!!.toLong(),
                     thumbnail = thumbnail,
                     key = ""
                 )
@@ -227,7 +231,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                     name = createName.value!!,
                     thumbnail = thumbnail,
                     participants = createParticipants.value!!,
-                    numOfParticipants = profileAndParticipants.value!!.size,
+                    numOfParticipants = createSize.value!!.toLong(),
                     albumKey = albumKey,
                     ""
                 )

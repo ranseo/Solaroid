@@ -81,7 +81,7 @@ class FriendCommunicateRepositery(
         return withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
 
-            val ref = fbDatabase.reference.child("myFriendList").child("${user.uid}").child("list").child("${convertHexStringToLongFormat(_friend.friendCode)}")
+            val ref = fbDatabase.reference.child("myFriendList").child(user.uid).child("list").child("${convertHexStringToLongFormat(_friend.friendCode)}")
             val friend = FirebaseFriend(
                 _friend.id,
                 _friend.nickname,
