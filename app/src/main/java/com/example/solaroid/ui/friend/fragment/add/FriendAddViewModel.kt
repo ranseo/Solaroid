@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.solaroid.Event
 import com.example.solaroid.convertHexStringToLongFormat
+import com.example.solaroid.datasource.friend.FriendSearchDataSource
 import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.models.domain.asFirebaseModel
 import com.example.solaroid.models.firebase.FirebaseProfile
@@ -29,7 +30,7 @@ class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     private val dataSource = database
 
     //repositery
-    private val friendAddRepositery = FriendAddRepositery(fbAuth, fbDatabase)
+    private val friendAddRepositery = FriendAddRepositery(fbAuth, fbDatabase, FriendSearchDataSource())
     private val profileRepositery = ProfileRepostiery(fbAuth, fbDatabase, fbStorage, dataSource,
         MyProfileDataSource()
     )
@@ -68,43 +69,23 @@ class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
                 searchFriendCode = -1L
         }
         getSearchProfile()
-
     }
+
 
     private fun getSearchProfile() {
         viewModelScope.launch {
             Log.i(TAG, "start getSearchProfile()")
             if (searchFriendCode > -1L) {
-                val eventListener = object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        try {
 
-                            val hashMap = snapshot.value as HashMap<*, *>
-
-                            val profile = FirebaseProfile(
-                                hashMap["id"]!! as String,
-                                hashMap["nickname"]!! as String,
-                                hashMap["profileImg"]!! as String,
-                                hashMap["friendCode"]!! as Long
-
-                            ).asDomainModel()
-
-                            if (profile == myProfile.value) setSearchUserNull()
-                            else _searchUser.value = profile
-
-                            Log.i(TAG, "task is Success, searchUser.value : ${searchUser.value}")
-                        } catch (error: Exception) {
-                            _searchUser.value = null
-                            Log.d(TAG, "task is Failure, searchUser.value : ${error.message}")
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        setSearchUserNull()
-                        Log.i(TAG, "task is fail")
-                    }
+                val listenerNull : (profile: Profile?) -> Unit = { profile ->
+                    if(profile==myProfile.value || profile==null) setSearchUserNull()
                 }
-                friendAddRepositery.addSearchListener(searchFriendCode, eventListener)
+
+                val listenerSet : (profile:Profile) -> Unit = { profile ->
+                    _searchUser.value = profile
+                }
+
+                friendAddRepositery.addSearchListener(searchFriendCode, listenerNull, listenerSet)
             } else {
                 setSearchUserNull()
             }

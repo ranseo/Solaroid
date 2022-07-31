@@ -79,7 +79,7 @@ interface DatabasePhotoTicketDao {
     suspend fun insert(databaseFriend: DatabaseFriend)
 
     @Query("DELETE FROM friend_table WHERE friend_code == :friendCode")
-    suspend fun delete(friendCode:Long)
+    suspend fun deleteFriend(friendCode:String)
 
     @Query("SELECT * FROM friend_table WHERE friend_my_email == :user ORDER BY friend_nickname DESC")
     fun getAllFriends(user:String) : LiveData<List<DatabaseFriend>>

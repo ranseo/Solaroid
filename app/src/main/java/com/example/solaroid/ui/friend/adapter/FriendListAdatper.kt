@@ -27,7 +27,7 @@ private val VIEW_TYPE_DIALOG_PROFILE = 3
 
 class FriendListAdatper(
     val application: Application? = null,
-    val normalClickListener: OnNormalClickListener,
+    val normalClickListener: OnNormalClickListener?=null,
     val receptionClickListener: OnReceptionClickListener? = null,
     val dispatchClickListener: OnDispatchClickListener? = null,
     val dialogClickListener: OnDialogClickListener? = null
@@ -58,7 +58,7 @@ class FriendListAdatper(
         when (holder) {
             is FriendListViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.NormalProfileDataItem
-                holder.bind(item.friend, normalClickListener)
+                holder.bind(item.friend, normalClickListener!!)
             }
             is FriendReceptionViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.ReceptionProfileDataItem
@@ -232,8 +232,9 @@ sealed class FriendListDataItem() {
 }
 
 class OnNormalClickListener(val listener : (friend:Friend)->Unit) {
-    fun onLongClick(friend:Friend) {
+    fun onLongClick(friend:Friend) :Boolean{
         listener(friend)
+        return true
     }
 }
 

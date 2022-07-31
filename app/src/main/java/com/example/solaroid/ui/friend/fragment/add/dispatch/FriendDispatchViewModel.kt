@@ -13,8 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(),
-    FriendCommunicationDataSource.OnDataListener {
+class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(){
 
     private val myProfile = _myProfile
     private val myFriendCode: Long = convertHexStringToLongFormat(myProfile.friendCode)
@@ -25,7 +24,7 @@ class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(),
 
     //repositery
     private val friendCommunicateRepositery =
-        FriendCommunicateRepositery(fbAuth, fbDatabase, FriendCommunicationDataSource(this))
+        FriendCommunicateRepositery(fbAuth, fbDatabase, FriendCommunicationDataSource())
 
     private val _friends =
         MutableLiveData<List<FriendListDataItem.DispatchProfileDataItem>>(listOf())
@@ -40,7 +39,16 @@ class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(),
 
     private fun refreshDispatchProfiles() {
         viewModelScope.launch {
-            friendCommunicateRepositery.addValueListenerToDisptachRef(myFriendCode)
+            val listener : (friends:List<DispatchFriend>)->Unit = { friends ->
+                viewModelScope.launch(Dispatchers.Default) {
+                    val tmp = friends.distinct().map {FriendListDataItem.DispatchProfileDataItem(it)}
+                    withContext(Dispatchers.Main){
+                        _friends.value = tmp
+                    }
+                }
+            }
+
+            friendCommunicateRepositery.addValueListenerToDisptachRef(myFriendCode, listener)
         }
     }
 
@@ -48,22 +56,6 @@ class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(),
         viewModelScope.launch {
             friendCommunicateRepositery.deleteFriendInDispatchList(myFriendCode, convertHexStringToLongFormat(friend.friendCode))
         }
-    }
-
-
-    override fun onReceptionDataChanged(friend: List<Friend>) {
-
-    }
-
-    override fun onDispatchDataChanged(friend: List<DispatchFriend>) {
-        viewModelScope.launch(Dispatchers.Default) {
-            val tmp = friend.distinct().map { FriendListDataItem.DispatchProfileDataItem(it) }
-            withContext(Dispatchers.Main) {
-                _friends.value = tmp
-            }
-        }
-
-        Log.i(TAG, "nDispatchDataChanged : ${friend}}")
     }
 
     companion object {

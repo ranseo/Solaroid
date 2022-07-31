@@ -12,24 +12,16 @@ import kotlinx.coroutines.launch
 import java.lang.ClassCastException
 import java.lang.NullPointerException
 
-class MyFriendListDataSource(
-    private var listener : OnValueListener? =null
-) {
-    interface OnValueListener {
-        fun onValueAdded(friend: Friend)
-        fun onValueRemoved(friend: Friend)
-        fun onValueChanged(friend: Friend)
-    }
+class MyFriendListDataSource() {
 
-    val friendListListener: ValueEventListener = object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            for(data in snapshot.children) {
-                try {
-                    val hashMap = snapshot.value as HashMap<*, *>
-                    println("hashMap : ${hashMap}")
 
-                    for(value in hashMap.values) {
-                        value as HashMap<*,*>
+    fun getFriendListListener(listener: (friend: Friend) -> Unit): ValueEventListener {
+        val friendListListener: ValueEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (data in snapshot.children) {
+                    try {
+                        val value = data.value as HashMap<*, *>
+
                         val friend = FirebaseFriend(
                             id = value["id"]!! as String,
                             nickname = value["nickname"] as String,
@@ -38,52 +30,56 @@ class MyFriendListDataSource(
                             key = value["key"] as String
                         ).asDomainModel()
 
-                        listener!!.onValueAdded(friend)
+                        listener(friend)
+
+
+                    } catch (error: NullPointerException) {
+                        error.printStackTrace()
+                    } catch (error: ClassCastException) {
+                        error.printStackTrace()
                     }
-
-
-
-                } catch(error:NullPointerException) {
-                    error.printStackTrace()
-                } catch (error:ClassCastException) {
-                    error.printStackTrace()
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
         }
-
-        override fun onCancelled(error: DatabaseError) {
-
-        }
-
+        return friendListListener
     }
 
-    val tmpListListener = object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            for (data in snapshot.children) {
 
-                val hashMap = data.value as HashMap<*, *>
+    fun getTmpListener(listener: (friend: Friend) -> Unit): ValueEventListener {
+        val tmpListListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (data in snapshot.children) {
 
-                try {
-                    val friend = FirebaseFriend(
-                        id = hashMap["id"]!! as String,
-                        nickname = hashMap["nickname"] as String,
-                        profileImg = hashMap["profileImg"] as String,
-                        friendCode = hashMap["friendCode"] as Long,
-                        key = hashMap["key"] as String
-                    ).asDomainModel()
+                    val hashMap = data.value as HashMap<*, *>
 
-                    listener!!.onValueChanged(friend)
+                    try {
+                        val friend = FirebaseFriend(
+                            id = hashMap["id"]!! as String,
+                            nickname = hashMap["nickname"] as String,
+                            profileImg = hashMap["profileImg"] as String,
+                            friendCode = hashMap["friendCode"] as Long,
+                            key = hashMap["key"] as String
+                        ).asDomainModel()
 
-                } catch (error: Exception) {
-                    Log.i(TAG, "tmpListListener  error : ${error.message}")
+                        listener(friend)
+
+                    } catch (error: Exception) {
+                        Log.i(TAG, "tmpListListener  error : ${error.message}")
+                    }
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
         }
-
-        override fun onCancelled(error: DatabaseError) {
-
-        }
-
+        return tmpListListener
     }
 
     suspend fun addFriendListener(
@@ -136,48 +132,48 @@ class MyFriendListDataSource(
     suspend fun addFriendListenerAsync(
         updateFriendList: suspend (friend: List<Friend>) -> Unit
     ): ValueEventListener = coroutineScope {
-            val addFriendListListener = object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val channel = Channel<Friend>()
-                    launch {
-                        for (data in snapshot.children) {
-                            launch {
-                                try {
-                                    val hashMap = data.value as HashMap<*, *>
+        val addFriendListListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val channel = Channel<Friend>()
+                launch {
+                    for (data in snapshot.children) {
+                        launch {
+                            try {
+                                val hashMap = data.value as HashMap<*, *>
 
-                                    val friend = FirebaseFriend(
-                                        id = hashMap["id"]!! as String,
-                                        nickname = hashMap["nickname"] as String,
-                                        profileImg = hashMap["profileImg"] as String,
-                                        friendCode = hashMap["friendCode"] as Long,
-                                        key = hashMap["key"] as String
-                                    ).asDomainModel()
+                                val friend = FirebaseFriend(
+                                    id = hashMap["id"]!! as String,
+                                    nickname = hashMap["nickname"] as String,
+                                    profileImg = hashMap["profileImg"] as String,
+                                    friendCode = hashMap["friendCode"] as Long,
+                                    key = hashMap["key"] as String
+                                ).asDomainModel()
 
-                                    channel.send(friend)
-                                } catch (error: Exception) {
-                                    Log.d(TAG, "error : ${error.message}")
-                                }
+                                channel.send(friend)
+                            } catch (error: Exception) {
+                                Log.d(TAG, "error : ${error.message}")
                             }
-
                         }
 
-                        var allFriendList = emptyList<Friend>()
-                        repeat(snapshot.childrenCount.toInt()) {
-                            val friends = channel.receive()
-                            allFriendList = (allFriendList + friends)
-                            updateFriendList(allFriendList)
-                        }
+                    }
+
+                    var allFriendList = emptyList<Friend>()
+                    repeat(snapshot.childrenCount.toInt()) {
+                        val friends = channel.receive()
+                        allFriendList = (allFriendList + friends)
+                        updateFriendList(allFriendList)
                     }
                 }
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-
-                }
+            override fun onCancelled(error: DatabaseError) {
 
             }
 
-            addFriendListListener
         }
+
+        addFriendListListener
+    }
 
 
     companion object {

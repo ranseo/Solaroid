@@ -1,10 +1,8 @@
 package com.example.solaroid.ui.friend.fragment.list
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.example.solaroid.Event
 import com.example.solaroid.convertHexStringToLongFormat
 import com.example.solaroid.models.domain.Friend
 import com.example.solaroid.models.domain.Profile
@@ -16,93 +14,115 @@ import com.example.solaroid.ui.friend.adapter.FriendListDataItem
 import com.example.solaroid.repositery.friend.FriendListRepositery
 import com.example.solaroid.repositery.profile.ProfileRepostiery
 import com.example.solaroid.room.DatabasePhotoTicketDao
+import com.example.solaroid.ui.album.viewmodel.ClickTag
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 
-class FriendListViewModel(dataSource:DatabasePhotoTicketDao) : ViewModel(),  MyFriendListDataSource.OnValueListener  {
 
+//Friend 객체와 ClickTag enum class 객체의 Pair
+typealias FT = Pair<Friend, ClickTag>
+
+class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     //firebase
-    private val fbAuth : FirebaseAuth = FirebaseManager.getAuthInstance()
+    private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
-    private val fbStorage : FirebaseStorage = FirebaseManager.getStorageInstance()
+    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
     //room
-    private val database : DatabasePhotoTicketDao = dataSource
+    private val database: DatabasePhotoTicketDao = dataSource
 
     //repositery
-    private val friendListRepositery : FriendListRepositery = FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(this),  database)
-    private val profileRepostiery : ProfileRepostiery = ProfileRepostiery(fbAuth,fbDatabase, fbStorage, dataSource,
+    private val friendListRepositery: FriendListRepositery =
+        FriendListRepositery(database, fbAuth, fbDatabase, MyFriendListDataSource(), database)
+    private val profileRepostiery: ProfileRepostiery = ProfileRepostiery(
+        fbAuth, fbDatabase, fbStorage, dataSource,
         MyProfileDataSource()
     )
 
     //data
-    val friendList = Transformations.map(friendListRepositery.friendList){
-        it.map{ friend ->
+    val friendList = Transformations.map(friendListRepositery.friendList) {
+        it.map { friend ->
             FriendListDataItem.NormalProfileDataItem(friend)
         }
     }
 
-    val myProfile : LiveData<Profile> = profileRepostiery.myProfile
+    val myProfile: LiveData<Profile> = profileRepostiery.myProfile
 
 
+    private val _longClick = MutableLiveData<Event<FT?>>()
+    val longClick: LiveData<Event<FT?>>
+        get() = _longClick
 
-    fun initRefreshFriendList(friendCode:Long) {
+    private val _currFriend = MutableLiveData<Event<FT?>>()
+    val currFriend: LiveData<Event<FT?>>
+        get() = _currFriend
+
+    private val _tmpFriend = MutableLiveData<Event<Friend>>()
+    val tmpFriend : LiveData<Event<Friend>>
+        get() = _tmpFriend
+
+    //
+
+    fun initRefreshFriendList(friendCode: Long) {
         viewModelScope.launch {
-            Log.i(TAG,"friendCode : ${friendCode}")
-            friendListRepositery.addListenerForMyFriendList()
-            friendListRepositery.addTmpListValueEventListener(friendCode)
+            Log.i(TAG, "friendCode : ${friendCode}")
+            val myFriendListener: (friend: Friend) -> Unit = { friend ->
+                viewModelScope.launch {
+                    val userEmail = fbAuth.currentUser!!.email ?: return@launch
+                    database.insert(friend.asDatabaseFriend(userEmail))
+                }
+            }
+            friendListRepositery.addListenerForMyFriendList(myFriendListener)
+
+
+            val myTmpListener: (friend: Friend) -> Unit = { friend ->
+                viewModelScope.launch {
+                    friendListRepositery.setValueFriendListFromTmpList(friend)
+                    _tmpFriend.value = Event(friend)
+                }
+            }
+            friendListRepositery.addTmpListValueEventListener(friendCode, myTmpListener)
         }
     }
 
+    fun deleteTmpList(friend: Friend) {
+        viewModelScope.launch {
+            friendListRepositery.deleteTmpList(
+                convertHexStringToLongFormat(myProfile.value!!.friendCode),
+                convertHexStringToLongFormat(friend.friendCode)
+            )
+        }
+    }
 
 
     /**
-     * Room Database에 DatabaseFriend 객체 insert
+     * 친구 삭제 시, firebase와 room 모두에서 friend data를 삭제한다.
      * */
-    fun insertFriendToRoom(friend: Friend) {
+    fun deleteFriend(friend: Friend) {
         viewModelScope.launch {
-            val userEmail = fbAuth.currentUser!!.email ?: return@launch
-            database.insert(friend.asDatabaseFriend(userEmail))
-            Log.i(TAG, "insertFriendToRoom")
+            friendListRepositery.deleteFriendFirebase(convertHexStringToLongFormat(friend.friendCode))
+            friendListRepositery.deleteFriendRoom(friend.friendCode)
         }
     }
-
 
 
     /**
-     * 만약 내 친구요청을 상대가 받아줬다면
-     * 해당 프렌드 객체는 TmpList에 저장된다.
-     * 따라서 TmpList를 읽고 해당 프렌드 객체들을 다시 myFriendList에
-     * setValue()하는 함수.
+     * friend list_item을 long Click시, longClick 프로퍼티 값을 할당
      * */
-    fun setValueFriendListFromTmpList(friend: Friend) {
-        viewModelScope.launch {
-            friendListRepositery.setValueFriendListFromTmpList(friend)
-            Log.i(TAG, "setValueFriendListFromTmpList")
-        }
+    fun onLongClick(friend: Friend, tag: ClickTag) {
+        _longClick.value = Event(FT(friend, tag))
     }
 
-    fun deleteTmpList(friend:Friend) {
-        viewModelScope.launch {
-            friendListRepositery.deleteTmpList(convertHexStringToLongFormat(myProfile.value!!.friendCode), convertHexStringToLongFormat(friend.friendCode))
-        }
+    /**
+     * 현재 friend를 설정
+     * */
+    fun setCurrFriend(ft: FT) {
+        _currFriend.value = Event(ft)
     }
 
-    // MyFriendListDataSource.OnValueListener
-    override fun onValueAdded(friend: Friend) {
-        insertFriendToRoom(friend)
-    }
-
-    override fun onValueRemoved(friend: Friend) {
-
-    }
-
-    override fun onValueChanged(friend: Friend) {
-        setValueFriendListFromTmpList(friend)
-        deleteTmpList(friend)
-    }
 
     companion object {
         const val TAG = "프렌드_리스트_뷰모델"

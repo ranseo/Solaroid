@@ -20,7 +20,8 @@ class ListSetDialogFragment(val itemSet: Int,_listener: ListSetDialogListener) :
         val builder = requireParentFragment().let{
             AlertDialog.Builder(it.context)
         }
-        builder?.setItems(itemSet,DialogInterface.OnClickListener { dialog, which ->
+
+        builder.setItems(itemSet,DialogInterface.OnClickListener { dialog, which ->
             listener.onDialogListItem(this, which)
             dialog.dismiss()
         })

@@ -47,7 +47,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         AlbumRequestRepositery(fbAuth, fbDatabase, RequestAlbumDataSource())
 
     private val friendListRepositery =
-        FriendListRepositery(fbAuth, fbDatabase, MyFriendListDataSource(), roomDB)
+        FriendListRepositery(roomDB,fbAuth, fbDatabase, MyFriendListDataSource(), roomDB)
 
 
     val myProfile: LiveData<Profile> = profileRepostiery.myProfile

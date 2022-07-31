@@ -15,9 +15,9 @@ import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchStatus
 import com.example.solaroid.repositery.friend.FriendCommunicateRepositery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(),
-    FriendCommunicationDataSource.OnDataListener {
+class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(){
 
     private val myProfile = _myProfile
     private val myFriendCode :Long = convertHexStringToLongFormat(myProfile.friendCode)
@@ -29,7 +29,7 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(),
     //repositery
     private val friendCommunicateRepositery = FriendCommunicateRepositery(
         fbAuth, fbDatabase,
-        FriendCommunicationDataSource(this)
+        FriendCommunicationDataSource()
     )
 
 
@@ -81,7 +81,18 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(),
 
     private fun refreshReceptionProfiles() {
         viewModelScope.launch {
-            friendCommunicateRepositery.addValueListenerToReceptionRef(myFriendCode)
+            val listener : (friends:List<Friend>)->Unit = { friends ->
+                viewModelScope.launch(Dispatchers.Default) {
+                    val tmp = friends.distinct().map { FriendListDataItem.ReceptionProfileDataItem(
+                        ReceptionFriend(it)
+                    )}
+                    withContext(Dispatchers.Main) {
+                        _friends.value = tmp
+                    }
+                }
+            }
+
+            friendCommunicateRepositery.addValueListenerToReceptionRef(myFriendCode, listener)
         }
     }
 
@@ -117,19 +128,6 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(),
 
     companion object {
         const val TAG = "프렌드_리셉션_뷰모델"
-    }
-
-    override fun onReceptionDataChanged(friend: List<Friend>) {
-        viewModelScope.launch(Dispatchers.Default) {
-            _friends.postValue( friend.distinct().map { FriendListDataItem.ReceptionProfileDataItem(
-                ReceptionFriend(it)
-            )})
-        }
-        Log.i(TAG, "onReceptionDataChanged : ${friend}")
-    }
-
-    override fun onDispatchDataChanged(friend: List<DispatchFriend>) {
-
     }
 
 

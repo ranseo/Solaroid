@@ -9,6 +9,7 @@ import com.example.solaroid.models.domain.asFriend
 import com.example.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.example.solaroid.firebase.FirebaseFriend
 import com.example.solaroid.firebase.asFirebaseDispatchFriend
+import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchFriend
 import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchStatus
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -24,11 +25,11 @@ class FriendCommunicateRepositery(
     /**
      * DispatchFragment에서 Firebase/DispatchList 에 있는 Friend객체를 읽기 위해 해당 경로에 ValueEventListener를 추가하는 함수.
      * */
-    suspend fun addValueListenerToDisptachRef(friendCode: Long) {
+    suspend fun addValueListenerToDisptachRef(friendCode: Long, setFriends: (friends:List<DispatchFriend>)->Unit) {
         return withContext(Dispatchers.IO) {
             try {
-                val listener = friendCommunicationDataSource.dispatchValueEventListener
-                fbDatabase.reference.child("friendDispatch").child("${friendCode}").child("list")
+                val listener = friendCommunicationDataSource.getDispatchValueEventListener(setFriends)
+                fbDatabase.reference.child("friendDispatch").child("$friendCode").child("list")
                     .addValueEventListener(listener)
             } catch (e: Exception) {
                 Log.i(TAG, "addValueListenerToDisptachRef error : ${e.message}")
@@ -39,11 +40,11 @@ class FriendCommunicateRepositery(
     /**
      * ReceptionFragment에서 Firebase/ReceptionList 에 있는 Friend객체를 읽기 위해 해당 경로에 ValueEventListnener를 추가하는 함수.
      * */
-    suspend fun addValueListenerToReceptionRef(friendCode: Long) {
+    suspend fun addValueListenerToReceptionRef(friendCode: Long, setFriends: (friends:List<Friend>)->Unit ) {
         return withContext(Dispatchers.IO) {
             try {
-                val listener = friendCommunicationDataSource.receptionValueEventListener
-                fbDatabase.reference.child("friendReception").child("${friendCode}").child("list")
+                val listener = friendCommunicationDataSource.getReceptionValueEventListener(setFriends)
+                fbDatabase.reference.child("friendReception").child("$friendCode").child("list")
                     .addValueEventListener(listener)
             } catch (e: Exception) {
                 Log.i(TAG, "addValueListenerToReceptionRef error : ${e.message}")

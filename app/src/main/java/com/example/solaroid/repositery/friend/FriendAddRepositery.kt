@@ -1,8 +1,10 @@
 package com.example.solaroid.repositery.friend
 
+import com.example.solaroid.datasource.friend.FriendSearchDataSource
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.firebase.FirebaseDispatchFriend
 import com.example.solaroid.firebase.FirebaseFriend
+import com.example.solaroid.models.domain.Profile
 import com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchStatus
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -12,11 +14,13 @@ import kotlinx.coroutines.withContext
 
 class FriendAddRepositery(
     private val fbAuth: FirebaseAuth,
-    private val fbDatabase: FirebaseDatabase
+    private val fbDatabase: FirebaseDatabase,
+    private val friendSearchDataSource : FriendSearchDataSource
 ) {
 
-    suspend fun addSearchListener(friendCode: Long, listener:ValueEventListener) {
+    suspend fun addSearchListener(friendCode: Long, listenerNull:(profile: Profile?)->Unit, listenerSet:(profile:Profile)->Unit) {
         return withContext(Dispatchers.IO) {
+            val listener = friendSearchDataSource.getValueEventListener(listenerNull, listenerSet)
             fbDatabase.reference.child("allUsers").child("$friendCode").addListenerForSingleValueEvent(listener)
         }
     }

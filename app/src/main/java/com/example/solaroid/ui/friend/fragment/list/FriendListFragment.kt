@@ -16,6 +16,8 @@ import com.example.solaroid.room.DatabasePhotoTicketDao
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentFriendListBinding
 import com.example.solaroid.dialog.ListSetDialogFragment
+import com.example.solaroid.models.domain.Friend
+import com.example.solaroid.ui.album.viewmodel.ClickTag
 import com.example.solaroid.ui.friend.adapter.FriendListAdatper
 import com.example.solaroid.ui.friend.adapter.OnNormalClickListener
 
@@ -44,9 +46,11 @@ class FriendListFragment : Fragment(), ListSetDialogFragment.ListSetDialogListen
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = FriendListAdatper(normalClickListener = OnNormalClickListener{ friend ->
+        val longClickListener : (friend: Friend) -> Unit = { friend ->
+            viewModel.onLongClick(friend, ClickTag.LONG)
+        }
 
-        })
+        val adapter = FriendListAdatper(normalClickListener= OnNormalClickListener(longClickListener))
 
         binding.recFriendList.adapter = adapter
 
@@ -55,6 +59,31 @@ class FriendListFragment : Fragment(), ListSetDialogFragment.ListSetDialogListen
             it?.let{ profile->
                 val friendCode = convertHexStringToLongFormat(profile.friendCode)
                 viewModel.initRefreshFriendList(friendCode)
+            }
+        }
+
+        viewModel.longClick.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { ft->
+                viewModel.setCurrFriend(ft)
+            }
+        }
+
+        viewModel.currFriend.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { ft->
+                when(ft.second) {
+                    ClickTag.CLICK -> {
+
+                    }
+                    ClickTag.LONG -> {
+                        showDialog()
+                    }
+                }
+            }
+        }
+
+        viewModel.tmpFriend.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{ friend ->
+                viewModel.deleteTmpList(friend)
             }
         }
         return binding.root
@@ -71,7 +100,19 @@ class FriendListFragment : Fragment(), ListSetDialogFragment.ListSetDialogListen
     }
 
     override fun onDialogListItem(dialog: DialogFragment, position: Int) {
+        val friend = viewModel.currFriend.value?.peekContent()?.first ?: return
 
+        when(position) {
+            0 -> {
+                viewModel.deleteFriend(friend)
+            }
+            1 -> {
+
+            }
+            else -> {
+
+            }
+        }
     }
 
 

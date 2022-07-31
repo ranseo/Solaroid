@@ -22,7 +22,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:background="@drawable/border_line_only_bot"
-        android:onClick="@{()->onClickListener.onLongClick(friend)}"
+        android:onLongClick="@{()->onClickListener.onLongClick(friend)}"
         android:theme="@style/Theme.FriendActivity">
 
         <FrameLayout
