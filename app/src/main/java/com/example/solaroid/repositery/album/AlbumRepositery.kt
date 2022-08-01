@@ -198,9 +198,9 @@ class AlbumRepositery(
                     .child(album.key).removeValue()
 
 
-            } catch (error:IOException) {
+            } catch (error: IOException) {
                 error.printStackTrace()
-            } catch (error:NullPointerException) {
+            } catch (error: NullPointerException) {
                 error.printStackTrace()
             }
 
@@ -211,14 +211,31 @@ class AlbumRepositery(
         return withContext(Dispatchers.IO) {
             try {
                 roomDB.deleteAlbum(album.id)
-            }catch (error:IOException) {
+            } catch (error: IOException) {
                 error.printStackTrace()
-            } catch (error:NullPointerException) {
+            } catch (error: NullPointerException) {
                 error.printStackTrace()
             }
 
         }
     }
+
+    /**
+     * album수정.
+     * */
+    suspend fun editAlbum(album:FirebaseAlbum) {
+        return withContext(Dispatchers.IO) {
+            try {
+                val user = fbAuth.currentUser!!
+                val ref = fbDatabase.reference.child("album").child(user.uid).child(album.id)
+                ref.setValue(album)
+            } catch (error: Exception) {
+                error.printStackTrace()
+            }
+
+        }
+    }
+
 
     /**
      * remove Listener

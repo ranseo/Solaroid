@@ -18,7 +18,7 @@ class NormalDialogFragment(_listener: NormalDialogListener, val titleMsg:String,
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return requireParentFragment().let {
             val builder = AlertDialog.Builder(it.context)
-            builder?.setMessage(titleMsg)
+            builder.setMessage(titleMsg)
                 .setPositiveButton(positiveMsg, DialogInterface.OnClickListener { dialogInterface, i ->
                     listener.onDialogPositiveClick(this)
                 })

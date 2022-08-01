@@ -79,7 +79,9 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
             Log.i(TAG,"NormalAlbumViewHolder : ${item.id}, ${item.thumbnail}, ${item.name}")
             binding.album = item
             binding.ivAlbum.setImageBitmap(item.thumbnail)
+            binding.tvAlbum.text = if(item.name.length >= 30) item.name.substring(0..25)+".." else item.name
             binding.onClickListener = onClickListener
+
         }
 
         companion object {

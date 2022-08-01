@@ -13,8 +13,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentAlbumBinding
 import com.example.solaroid.dialog.ListSetDialogFragment
+import com.example.solaroid.dialog.RenameDialog
 import com.example.solaroid.dialog.RequestAlbumAcceptDialogFragment
 import com.example.solaroid.models.domain.Album
+import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
@@ -24,13 +26,15 @@ import com.example.solaroid.ui.album.viewmodel.ClickTag
 import com.example.solaroid.ui.home.adapter.AlbumListClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
+class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, RenameDialog.RenameDialogListener {
     private val TAG = "AlbumFragment"
 
     private lateinit var binding: FragmentAlbumBinding
 
     private lateinit var viewModel: AlbumViewModel
     private lateinit var viewModelFactory: AlbumViewModelFactory
+
+    private lateinit var adapter : AlbumListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +61,7 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
         }
 
 
-        val adapter = AlbumListAdapter(
+        adapter = AlbumListAdapter(
             AlbumListClickListener(
                 onAlbumClickListener = onAlbumClickListener,
                 onAlbumLongClickListener = onAlbumLongClickListener
@@ -200,13 +204,13 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
         val databaseAlbum = viewModel.roomAlbum.value?.peekContent()?.first ?: return
         when (position) {
             0 -> {
-                viewModel.deleteCurrAlbum(databaseAlbum)
+                showRenameDialog(databaseAlbum)
             }
             1 -> {
 
             }
             else -> {
-
+                viewModel.deleteCurrAlbum(databaseAlbum)
             }
         }
     }
@@ -214,6 +218,19 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
     fun showLongClickDialog() {
         val new = ListSetDialogFragment(R.array.album_long_click_dialog_items, this)
         new.show(parentFragmentManager, "AlbumLongClick")
+    }
+
+    fun showRenameDialog(album:DatabaseAlbum) {
+        val new = RenameDialog(this,"사진첩의 이름을 변경하세요","변경", "취소", album.name)
+        new.show(parentFragmentManager, "RenameDialog")
+    }
+
+    override fun onRenamePositive(dialog: DialogFragment, new:String) {
+        viewModel.editAlbum(new)
+    }
+
+    override fun onRenameNegatvie(dialog: DialogFragment) {
+        dialog.dismiss()
     }
 
 

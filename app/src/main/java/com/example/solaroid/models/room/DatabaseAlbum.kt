@@ -46,6 +46,15 @@ fun DatabaseAlbum.asFirebaseModel() : FirebaseAlbum =
         key
     )
 
+fun DatabaseAlbum.asFirebaseModel(new:String) : FirebaseAlbum =
+    FirebaseAlbum(
+        parseAlbumIdDomainToFirebase(id,key),
+        new,
+        thumbnail,
+        participants,
+        numOfParticipants.toLong(),
+        key
+    )
 
 fun DatabaseAlbum.asDatabaseAlbum(name:String) =
     DatabaseAlbum(

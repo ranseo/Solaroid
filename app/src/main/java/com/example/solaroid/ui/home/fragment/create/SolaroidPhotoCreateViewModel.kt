@@ -79,6 +79,9 @@ class SolaroidPhotoCreateViewModel(
     val cameraConverter: LiveData<Boolean>
         get() = _cameraConverter
 
+    //버튼 클릭 시 카메라 셀렉터 변경
+
+
 
     //포토티켓 저장 이후 해당 포토티켓과 관련된 back & front text를 모두 clear 하는 프로퍼티.
     private val _editTextClear = MutableLiveData<String?>()

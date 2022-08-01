@@ -25,7 +25,7 @@
             android:layout_width="135dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:background="@color/white"
+            android:background="@color/fui_transparent"
             android:layout_margin="3dp"
             android:elevation="12dp"
             android:onClick="@{()->onClickListener.onClick(album)}"
@@ -43,15 +43,15 @@
 
             <TextView
                 android:id="@+id/tv_album"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{album.name}"
+                android:padding="3dp"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:text="란서's 사진첩" />
+                tools:text="란서의 사진첩" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

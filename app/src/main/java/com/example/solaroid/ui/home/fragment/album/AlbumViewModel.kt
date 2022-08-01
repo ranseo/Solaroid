@@ -36,6 +36,7 @@ enum class ClickTag {
     CLICK,
     LONG,
 }
+
 class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     private val fbAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase = FirebaseManager.getDatabaseInstance()
@@ -49,7 +50,13 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         ProfileRepostiery(fbAuth, fbDatabase, fbStorage, roomDB, MyProfileDataSource())
     private val albumRepostiery = AlbumRepositery(roomDB, fbAuth, fbDatabase, AlbumDataSource())
     private val withAlbumRepositery = WithAlbumRepositery(fbAuth, fbDatabase, WithAlbumDataSource())
-    private val photoTicketRepositery = PhotoTicketRepositery(roomDB,fbAuth,fbDatabase,fbStorage, PhotoTicketListenerDataSource())
+    private val photoTicketRepositery = PhotoTicketRepositery(
+        roomDB,
+        fbAuth,
+        fbDatabase,
+        fbStorage,
+        PhotoTicketListenerDataSource()
+    )
 
     val myProfile = profileRepostiery.myProfile
 
@@ -104,7 +111,6 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
 
-
     /**
      * AlbumViewModel이 초기화되고, myProfile 프로퍼티가  초기화되면
      * albumFragment내에서 앨범 목록을 display하기 위한 refresh.
@@ -130,7 +136,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun getRoomDatabaseAlbum(albumId: String, tag: ClickTag) {
         viewModelScope.launch {
-            _roomAlbum.value = Event(DAlbumTag(roomDB.getAlbum(albumId),tag))
+            _roomAlbum.value = Event(DAlbumTag(roomDB.getAlbum(albumId), tag))
         }
     }
 
@@ -144,12 +150,28 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
             albumRepostiery.deleteAlbumInFirebase(album.asFirebaseModel())
             albumRepostiery.deleteAlbumInRoomDB(album)
 
-            if(parseAlbumParticipantsAndGetParticpantsNum(album.participants) == 1) {
+            if (parseAlbumParticipantsAndGetParticpantsNum(album.participants) == 1) {
                 photoTicketRepositery.deletePhotoTickets(album.asFirebaseModel())
             }
             photoTicketRepositery.deletePhotoTicketsInRoom(album.id)
             withAlbumRepositery.removeWithAlbumValue(album.asFirebaseModel())
 
+        }
+    }
+
+
+    /**
+     * 해당 사진첩의 이름을 변경하는 앨범 편집 메서드로써
+     * firebase 내 앨범이름을 변경한다.
+     * */
+    fun editAlbum(name: String) {
+        viewModelScope.launch {
+            try {
+                val new = roomAlbum.value!!.peekContent()!!.first.asFirebaseModel(name)
+                albumRepostiery.editAlbum(new)
+            } catch (error: Exception) {
+                error.printStackTrace()
+            }
         }
     }
 

@@ -13,7 +13,10 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
-import androidx.camera.core.*
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -22,6 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.work.await
 import com.example.solaroid.R
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.databinding.FragmentSolaroidPhotoCreateBinding
@@ -41,6 +45,9 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
 
     private var imageCapture: ImageCapture? = null
     private var CameraProvider :  ProcessCameraProvider? = null
+
+    private var lensFacing : Int = CameraSelector.LENS_FACING_BACK
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,16 +94,18 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
 
 
 
-        viewModel.cameraConverter.observe(viewLifecycleOwner, Observer {
+        viewModel.cameraConverter.observe(viewLifecycleOwner){
+            CameraProvider?.unbindAll()
             startCamera(it)
-        })
+        }
 
 
-        viewModel.startImageCapture.observe(viewLifecycleOwner, Observer {
+
+        viewModel.startImageCapture.observe(viewLifecycleOwner){
             it.getContentIfNotHandled()?.let {
                 captureImage()
             }
-        })
+        }
 
 
         return binding.root
@@ -112,6 +121,9 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
 //        requireActivity().onBackPressedDispatcher.addCallback(this,backPressCallback)
 //    }
 
+    /**
+     * 일반 카메라 Preview 실행
+     * */
     private fun startCamera(cameraConverter: Boolean) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(application)
 
@@ -125,8 +137,10 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
                 }
 
             val cameraSelector = if (!cameraConverter) {
+                lensFacing = CameraSelector.LENS_FACING_BACK
                 CameraSelector.DEFAULT_BACK_CAMERA
             } else {
+                lensFacing = CameraSelector.LENS_FACING_FRONT
                 CameraSelector.DEFAULT_FRONT_CAMERA
             }
 
@@ -148,6 +162,10 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
         }, ContextCompat.getMainExecutor(application))
     }
 
+    /**
+     * extension Api 사용한 카메라실행
+     * */
+
     private fun captureImage() {
         val imageCapture = imageCapture ?: return
 
@@ -161,13 +179,19 @@ class SolaroidPhotoCreateFragment : Fragment(), AdapterView.OnItemSelectedListen
             }
         }
 
+        val metadata = ImageCapture.Metadata().apply {
+            isReversedHorizontal =  lensFacing == CameraSelector.LENS_FACING_FRONT
+        }
+
 
         //fragment에서 contentResolver 쓰려면 activity에서 끌고와야함
         val outputOptions = ImageCapture.OutputFileOptions.Builder(
             application.contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             contentValues
-        ).build()
+        )
+            .setMetadata(metadata)
+            .build()
 
         imageCapture.takePicture(outputOptions,
             ContextCompat.getMainExecutor(application),

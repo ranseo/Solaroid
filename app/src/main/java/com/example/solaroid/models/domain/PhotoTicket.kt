@@ -6,6 +6,7 @@ import com.example.solaroid.firebase.FirebasePhotoTicket
 import com.example.solaroid.parseAlbumIdDomainToFirebase
 import kotlinx.parcelize.Parcelize
 
+
 @Parcelize
 data class PhotoTicket(
     val id: String,
@@ -14,7 +15,7 @@ data class PhotoTicket(
     var backText: String,
     var date : String,
     var favorite : Boolean = false,
-    var albumInfo : List<String>
+    var albumInfo : List<String> // albumInfo[0] = id, [1] = key, [2] = name
 ) : Parcelable {
 
 }

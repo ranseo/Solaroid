@@ -27,6 +27,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/front_layout"
+            tools:visibility="invisible"
             android:visibility="@{imageSpin ? View.GONE : View.VISIBLE}"
             android:onLongClickListener="@{()->onLongClickListener.onClick(photoTicket)}"
             android:layout_width="@dimen/polaroid_film_larger_width"
@@ -87,11 +88,11 @@
                 tools:text="좋은 사람들을 만난 계양산에서" />
 
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/back_layout"
+            tools:visibility="visible"
             android:visibility="@{imageSpin ? View.VISIBLE : View.GONE}"
             android:layout_width="@dimen/polaroid_film_larger_width"
             android:layout_height="@dimen/polaroid_film_larger_height"
@@ -100,6 +101,18 @@
             android:background="@color/white">
 
 
+            <TextView
+                android:id="@+id/back_albumname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/phototicket_back_text_size"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/back_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@{photoTicket.albumInfo[2]}"
+                />
 
             <TextView
                 android:id="@+id/back_text"
@@ -114,6 +127,19 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/back_participants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/phototicket_back_text_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/back_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="@{photoTicket.albumInfo[2]}"
                 />
 
 

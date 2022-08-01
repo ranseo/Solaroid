@@ -11,9 +11,9 @@
     </string-array>
 
     <string-array name="album_long_click_dialog_items">
+        <item>이름 변경</item>
+        <item>공유</item>
         <item>삭제</item>
-        <item>편집</item>
-        <item>초대</item>
     </string-array>
 
     <string-array name="friend_long_click_dialog_items">
