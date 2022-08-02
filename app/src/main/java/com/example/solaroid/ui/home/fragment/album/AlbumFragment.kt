@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.solaroid.R
 import com.example.solaroid.databinding.FragmentAlbumBinding
 import com.example.solaroid.dialog.ListSetDialogFragment
@@ -20,11 +21,13 @@ import com.example.solaroid.models.room.DatabaseAlbum
 import com.example.solaroid.parseAlbumIdDomainToFirebase
 import com.example.solaroid.room.SolaroidDatabase
 import com.example.solaroid.ui.album.adapter.AlbumListAdapter
+import com.example.solaroid.ui.album.adapter.AlbumListDataItem
 import com.example.solaroid.ui.album.viewmodel.AlbumTag
 import com.example.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.example.solaroid.ui.album.viewmodel.ClickTag
 import com.example.solaroid.ui.home.adapter.AlbumListClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 
 class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, RenameDialog.RenameDialogListener {
     private val TAG = "AlbumFragment"
@@ -79,9 +82,12 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
         }
 
         viewModel.albums.observe(viewLifecycleOwner) {
-            it?.let {
-                adapter.submitList(it)
+            if(it.isNullOrEmpty()) {
+                adapter.submitList(listOf(AlbumListDataItem.NormalAlbumEmpty))
+            } else {
+                adapter.submitList( it.map { v -> AlbumListDataItem.NormalAlbumDataItem(v) })
             }
+
         }
 
         viewModel.album.observe(viewLifecycleOwner) {
@@ -107,6 +113,19 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
         setOnItemSelectedListener(binding.albumBottomNavi)
         binding.albumBottomNavi.itemIconTintList = null
 
+        
+        val manager = GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
+        manager.spanSizeLookup = object:GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                when(adapter.currentList) {
+                    is List<AlbumListDataItem.NormalAlbumEmpty> -> {}
+                    is List<AlbumListDataItem.NormalAlbumDataItem> -> {}
+                    else -> {}
+                }
+            }
+
+
+        }
         return binding.root
     }
 

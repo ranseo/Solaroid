@@ -2,10 +2,12 @@ package com.example.solaroid.ui.album.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.solaroid.R
 import com.example.solaroid.models.domain.Album
 import com.example.solaroid.models.domain.RequestAlbum
 import com.example.solaroid.databinding.ListItemAlbumBinding
@@ -18,6 +20,8 @@ import kotlinx.coroutines.withContext
 
 private val VIEW_TYPE_NORMAL_ALBUM = 0
 private val VIEW_TYPE_REQUEST_ALBUM = 1
+private val VIEW_TYPE_NORMAL_ALBUM_EMPTY = 2
+private val VIEW_TYPE_NORMAL_REQUEST_EMPTY = 3
 
 class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
     ListAdapter<AlbumListDataItem, RecyclerView.ViewHolder>(AlbumListItemCallback()) {
@@ -27,6 +31,8 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
         return when (getItem(position)) {
             is AlbumListDataItem.NormalAlbumDataItem -> VIEW_TYPE_NORMAL_ALBUM
             is AlbumListDataItem.RequestAlbumDataItem -> VIEW_TYPE_REQUEST_ALBUM
+            is AlbumListDataItem.NormalAlbumEmpty -> VIEW_TYPE_NORMAL_ALBUM_EMPTY
+            is AlbumListDataItem.RequestAlbumDataItem -> VIEW_TYPE_NORMAL_REQUEST_EMPTY
             else -> throw IllegalArgumentException("UNKNOWN_CLASS")
         }
     }
@@ -35,6 +41,8 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
         return when (viewType) {
             VIEW_TYPE_NORMAL_ALBUM -> NormalAlbumViewHolder.from(parent)
             VIEW_TYPE_REQUEST_ALBUM -> RequestAlbumViewHolder.from(parent)
+            VIEW_TYPE_NORMAL_ALBUM_EMPTY ->NormalAlbumEmptyViewHolder.from(parent)
+            VIEW_TYPE_NORMAL_REQUEST_EMPTY -> RequestAlbumEmptyViewHolder.from(parent)
             else -> throw IllegalArgumentException("UNKNOWN_VIEWTYPE")
         }
     }
@@ -93,6 +101,26 @@ class AlbumListAdapter(val albumListClickListener: AlbumListClickListener) :
             }
         }
     }
+
+    class NormalAlbumEmptyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        companion object {
+            fun from(parent:ViewGroup) : NormalAlbumEmptyViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.list_item_album_empty, parent, false)
+                return NormalAlbumEmptyViewHolder(view)
+            }
+        }
+    }
+
+    class RequestAlbumEmptyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        companion object {
+            fun from(parent:ViewGroup) : RequestAlbumEmptyViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.list_item_request_album_empty, parent, false)
+                return RequestAlbumEmptyViewHolder(view)
+            }
+        }
+    }
 }
 
 
@@ -115,5 +143,13 @@ sealed class AlbumListDataItem() {
 
     class RequestAlbumDataItem(val album: RequestAlbum) : AlbumListDataItem() {
         override val id: String = album.id
+    }
+
+    object NormalAlbumEmpty : AlbumListDataItem() {
+        override val id : String = "NormalAlbumEmpty"
+    }
+
+    class RequestAlbumEmpty() : AlbumListDataItem() {
+        override val id : String = "RequestAlbumEmpty"
     }
 }

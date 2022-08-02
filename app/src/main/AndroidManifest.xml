@@ -22,9 +22,6 @@
         android:theme="@style/Theme.Solaroid"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".ui.album.activity.AlbumActivity"
-            android:exported="false" />
-        <activity
             android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>

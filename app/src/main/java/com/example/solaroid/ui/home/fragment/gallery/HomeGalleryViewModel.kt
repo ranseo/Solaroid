@@ -95,6 +95,8 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val albums: LiveData<List<DatabaseAlbum>>
         get() = _albums
 
+
+
     val photoTickets = Transformations.switchMap(filter) { filter ->
         Log.i(TAG, "val photoTickets = Transformations.map(filter) { filter -> ${filter}")
         getPhotoTickets(filter)
@@ -125,7 +127,6 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         viewModelScope.launch {
             albumRepositery.addSingleValueEventListener { albums ->
                 _albums.value = albums
-
             }
         }
     }

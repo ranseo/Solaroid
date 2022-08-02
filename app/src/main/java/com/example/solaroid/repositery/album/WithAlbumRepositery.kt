@@ -26,10 +26,10 @@ class WithAlbumRepositery(
      *  setValue(FirebaseProfile())
      * */
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun setValue(myProfile:FirebaseProfile, albumId:String) = suspendCancellableCoroutine<Unit>{ continuation ->
+    suspend fun setValue(myProfile:FirebaseProfile, albumId:String, albumKey:String) = suspendCancellableCoroutine<Unit>{ continuation ->
             val user = fbAuth.currentUser!!
 
-            val ref = fbDatabase.reference.child("withAlbum").child(albumId).child(user.uid)
+            val ref = fbDatabase.reference.child("withAlbum").child(albumId).child(user.uid).child(albumKey)
 
             ref.setValue(myProfile).addOnCompleteListener {
                 if(it.isSuccessful) {
@@ -47,10 +47,11 @@ class WithAlbumRepositery(
      * firebase .child("withAlbum").child("${album.id}").child("${fbAuth.currentUser.uid}") 경로 read
      *  addSingieValueEventListener - ValueEventListener (한번 읽기)
      * */
-    suspend fun addValueEventListener(albumId:String) {
+    suspend fun addValueEventListener(albumId:String, albumKey:String) {
         withContext(Dispatchers.IO) {
+            val user = fbAuth.currentUser!!.uid!!
             val listener = withAlbumDataSource.getWithAlbumListener()
-            val ref = fbDatabase.reference.child("withAlbum").child("$albumId")
+            val ref = fbDatabase.reference.child("withAlbum").child(albumId).child(user).child(albumKey)
 
             ref.addListenerForSingleValueEvent(listener)
         }
@@ -62,7 +63,7 @@ class WithAlbumRepositery(
     suspend fun removeWithAlbumValue(album:FirebaseAlbum) {
         return withContext(Dispatchers.IO){
             val user = fbAuth.currentUser!!
-            fbDatabase.reference.child("withAlbum").child(album.id).child(user.uid).removeValue()
+            fbDatabase.reference.child("withAlbum").child(album.id).child(user.uid).child(album.key).removeValue()
         }
     }
 

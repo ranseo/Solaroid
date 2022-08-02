@@ -1,5 +1,6 @@
 package com.example.solaroid.datasource.album
 
+import android.util.Log
 import com.example.solaroid.models.firebase.FirebaseAlbum
 import com.example.solaroid.models.firebase.FirebaseProfile
 import com.example.solaroid.models.firebase.asDatabaseModel
@@ -12,13 +13,18 @@ import com.google.firebase.database.ValueEventListener
 
 class AlbumDataSource {
 
-    fun getValueEventListener(user:String, insertAlbum: (albums: List<DatabaseAlbum>) -> Unit): ValueEventListener {
+    private val TAG = "AlbumDataSource"
+
+    fun getValueEventListener(
+        user: String,
+        insertAlbum: (albums: List<DatabaseAlbum>) -> Unit
+    ): ValueEventListener {
         return object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (data in snapshot.children) {
                     val hash = data.value as HashMap<*, *>
 
-                    val albums =  hash.values.map { v ->
+                    val albums = hash.values.map { v ->
                         val hashMap = v as HashMap<*, *>
                         val album = FirebaseAlbum(
                             id = hashMap["id"] as String,
@@ -42,27 +48,39 @@ class AlbumDataSource {
         }
     }
 
-    fun getSingleValueEventListener(user:String, insertAlbum: (albums: List<DatabaseAlbum>) -> Unit): ValueEventListener {
+    fun getSingleValueEventListener(
+        user: String,
+        insertAlbum: (albums: List<DatabaseAlbum>) -> Unit
+    ): ValueEventListener {
         return object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for (data in snapshot.children) {
-                    val hash = data.value as HashMap<*, *>
+                Log.i(TAG,"onDataChange : start")
+                try {
+                    for (data in snapshot.children) {
+                        val hash = data.value as HashMap<*, *>
 
-                    val albums =  hash.values.map { v ->
-                        val hashMap = v as HashMap<*, *>
-                        val album = FirebaseAlbum(
-                            id = hashMap["id"] as String,
-                            name = hashMap["name"] as String,
-                            thumbnail = hashMap["thumbnail"] as String,
-                            participants = hashMap["participants"] as String,
-                            numOfParticipants = hashMap["numOfParticipants"] as Long,
-                            key = hashMap["key"] as String
-                        ).asDatabaseModel(user)
+                        val albums = hash.values.map { v ->
+                            val hashMap = v as HashMap<*, *>
+                            val album = FirebaseAlbum(
+                                id = hashMap["id"] as String,
+                                name = hashMap["name"] as String,
+                                thumbnail = hashMap["thumbnail"] as String,
+                                participants = hashMap["participants"] as String,
+                                numOfParticipants = hashMap["numOfParticipants"] as Long,
+                                key = hashMap["key"] as String
+                            ).asDatabaseModel(user)
 
-                        album
+                            album
+                        }
+
+                        Log.i(TAG,"onDataChange : ${albums.isEmpty()}")
+                        if (albums.isEmpty()) insertAlbum(listOf())
+                        else insertAlbum(albums)
                     }
-
-                    insertAlbum(albums)
+                    insertAlbum(listOf())
+                } catch (error: Exception) {
+                    Log.d(TAG, "error: ${error.printStackTrace()}")
+                    insertAlbum(listOf())
                 }
             }
 

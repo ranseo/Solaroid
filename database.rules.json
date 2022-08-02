@@ -69,8 +69,10 @@
     "withAlbum" : {
       "$albumId" : {
         "$uid" : {
-          ".read" : "auth != null",
-          ".write" : "auth != null && auth.uid == $uid"
+          "$albumKey" :{
+            ".read" : "auth != null",
+            ".write" : "auth != null && auth.uid == $uid"
+          }
         }
       }
     },
@@ -80,7 +82,7 @@
       "$uid" : {
         ".read" : "auth != null && auth.uid == $uid",
         "$albumId" : {
-          ".write" : "auth != null && auth.uid == $uid && root.child('withAlbum').child($albumId).child(auth.uid).exists()"
+          ".write" : "auth != null && auth.uid == $uid"
         }
       }
     },
@@ -99,7 +101,7 @@
       "$albumId" : {
         ".read" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()",
         "$albumKey" : {
-          ".write" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()"
+          ".write" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).child($albumKey).exists()"
         }
       }
     }

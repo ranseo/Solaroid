@@ -60,11 +60,8 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     val myProfile = profileRepostiery.myProfile
 
-    val albums = Transformations.map(albumRepostiery.album) {
-        it?.let {
-            it.map { v -> AlbumListDataItem.NormalAlbumDataItem(v) }
-        }
-    }
+    val albums = albumRepostiery.album
+
 
 
     private val _album = MutableLiveData<Event<AlbumTag?>>()

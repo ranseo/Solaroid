@@ -80,7 +80,7 @@ class AlbumRequestViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun setValueInWithAlbum(album: RequestAlbum) {
         viewModelScope.launch {
-            withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), album.id)
+            withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), album.id, album.key)
         }
     }
 

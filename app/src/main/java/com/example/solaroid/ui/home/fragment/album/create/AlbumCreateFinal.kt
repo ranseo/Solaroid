@@ -123,6 +123,7 @@ class AlbumCreateFinal() : Fragment() {
 
         viewModel.albumKey.observe(viewLifecycleOwner) {
             it?.let{
+                viewModel.createWithAlbum(it)
                 viewModel.createRequestAlbum(it)
             }
         }

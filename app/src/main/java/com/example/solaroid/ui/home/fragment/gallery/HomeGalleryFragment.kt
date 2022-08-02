@@ -50,9 +50,16 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel.albums.observe(viewLifecycleOwner) { list ->
-            list?.let{
-                for(album in list) {
-                    viewModel.refreshFirebaseListener(parseAlbumIdDomainToFirebase(album.id,album.key), album.key)
+            if (list.isEmpty()) {
+                findNavController().navigate(
+                    HomeGalleryFragmentDirections.actionHomeGalleryToAlbum()
+                )
+            } else {
+                for (album in list) {
+                    viewModel.refreshFirebaseListener(
+                        parseAlbumIdDomainToFirebase(album.id, album.key),
+                        album.key
+                    )
                 }
             }
         }
@@ -197,6 +204,6 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
 
     companion object {
-        const val TAG = "갤러리프래그먼트"
+        const val TAG = "홈_갤러리_프래그먼트"
     }
 }

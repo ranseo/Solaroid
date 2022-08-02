@@ -88,8 +88,8 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     //new Album을 만든 뒤, 해당 Album의 key를 requestAlbum에도 재활용 해야한다.
     //따라서 albumKey 프로퍼티와 AlbumRepositery.setValue() 에 람다함수(key:String)->Unit을 전달하여
     //albumKey에 값을 설정하고, observe 하고 있다가 requestAlbum을 실시한다.
-    private val _albumKey = MutableLiveData<String>()
-    val albumKey: LiveData<String>
+    private val _albumKey = MutableLiveData<String?>()
+    val albumKey: LiveData<String?>
         get() = _albumKey
 
 
@@ -199,7 +199,6 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                     key = ""
                 )
 
-                withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId.value!!)
 
                 albumRepostiery.setValue(firebaseAlbum, createId.value!!) { key ->
                     _albumKey.value = key
@@ -245,10 +244,21 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
             }
 
             withContext(Dispatchers.Main) {
+                setNullCreateProperty()
                 navigateToAlbum()
             }
         }
 
+    }
+
+    /**
+     * AlbumKey가 등록되면 WithAlbumRepostiery에도 setValue
+     * */
+    fun createWithAlbum(albumKey: String) {
+        viewModelScope.launch {
+            withAlbumRepositery.setValue(myProfile.value!!.asFirebaseModel(), createId.value!!, albumKey)
+
+        }
     }
 
     /**
@@ -272,6 +282,7 @@ class AlbumCreateViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun setNullCreateProperty() {
         _participants.value = listOf()
+        _albumKey.value = null
         createThumbnail = null
     }
 

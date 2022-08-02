@@ -227,7 +227,7 @@ class AlbumRepositery(
         return withContext(Dispatchers.IO) {
             try {
                 val user = fbAuth.currentUser!!
-                val ref = fbDatabase.reference.child("album").child(user.uid).child(album.id)
+                val ref = fbDatabase.reference.child("album").child(user.uid).child(album.id).child(album.key)
                 ref.setValue(album)
             } catch (error: Exception) {
                 error.printStackTrace()
