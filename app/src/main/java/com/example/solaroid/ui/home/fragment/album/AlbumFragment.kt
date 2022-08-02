@@ -113,19 +113,27 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
         setOnItemSelectedListener(binding.albumBottomNavi)
         binding.albumBottomNavi.itemIconTintList = null
 
-        
+
         val manager = GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
         manager.spanSizeLookup = object:GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                when(adapter.currentList) {
-                    is List<AlbumListDataItem.NormalAlbumEmpty> -> {}
-                    is List<AlbumListDataItem.NormalAlbumDataItem> -> {}
-                    else -> {}
-                }
+                val list = adapter.currentList
+                return if(!list.isNullOrEmpty()) {
+                    when(adapter.currentList[0]) {
+                        is AlbumListDataItem.NormalAlbumEmpty -> {
+                            3
+                        }
+                        is AlbumListDataItem.NormalAlbumDataItem -> {
+                            1
+                        }
+                        else -> 1
+                    }
+                } else 1
+
             }
-
-
         }
+
+        binding.recAlbum.layoutManager = manager
         return binding.root
     }
 
