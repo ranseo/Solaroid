@@ -7,11 +7,11 @@
 
         <variable
             name="photoTicket"
-            type="com.example.solaroid.models.domain.PhotoTicket" />
+            type="com.ranseo.solaroid.models.domain.PhotoTicket" />
 
         <variable
             name="clickListener"
-            type="com.example.solaroid.adapter.OnClickListener" />
+            type="com.ranseo.solaroid.adapter.OnClickListener" />
 
     </data>
 

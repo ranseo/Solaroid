@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.solaroid.NavigationViewModel" />
+            type="com.ranseo.solaroid.NavigationViewModel" />
 
     </data>
 

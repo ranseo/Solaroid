@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.ui.home.fragment.frame.SolaroidFrameViewModel" />
+            type="com.ranseo.solaroid.ui.home.fragment.frame.SolaroidFrameViewModel" />
 
     </data>
 

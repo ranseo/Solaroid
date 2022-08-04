@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.ui.home.fragment.gallery.GalleryViewModel" />
+            type="com.ranseo.solaroid.ui.home.fragment.gallery.GalleryViewModel" />
 
     </data>
 
@@ -46,7 +46,7 @@
                 tools:itemCount="16"
                 tools:listitem="@layout/list_item_solaroid_gallery" />
 
-            <com.example.solaroid.custom.view.CustomBottomNavigationView
+            <com.ranseo.solaroid.custom.view.CustomBottomNavigationView
                 android:id="@+id/gallery_bottom_navi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

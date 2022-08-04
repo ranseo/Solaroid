@@ -6,7 +6,7 @@
     <data>
         <variable
             name="friend"
-            type="com.example.solaroid.models.domain.Friend" />
+            type="com.ranseo.solaroid.models.domain.Friend" />
 
         <variable
             name="flag"

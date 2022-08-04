@@ -7,10 +7,10 @@
 
         <variable
             name="album"
-            type="com.example.solaroid.models.domain.RequestAlbum" />
+            type="com.ranseo.solaroid.models.domain.RequestAlbum" />
         <variable
             name="onClickListener"
-            type="com.example.solaroid.ui.home.adapter.AlbumListClickListener" />
+            type="com.ranseo.solaroid.ui.home.adapter.AlbumListClickListener" />
 
     </data>
 
@@ -24,7 +24,6 @@
             android:layout_width="135dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:background="@color/white"
             android:layout_margin="3dp"
             android:elevation="12dp"
             android:onClick="@{()->onClickListener.onClick(album)}">
@@ -38,6 +37,33 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/tv_album"
                 tools:src="@drawable/ic_baseline_photo_album_24" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="3dp"
+                android:layout_gravity="center"
+                android:background="@color/grey_transper"
+                app:layout_constraintTop_toTopOf="@id/iv_album"
+                app:layout_constraintBottom_toBottomOf="@id/iv_album"
+                app:layout_constraintStart_toStartOf="@+id/iv_album"
+                app:layout_constraintEnd_toEndOf="@id/iv_album"
+                android:elevation="12dp">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerInside"
+                    android:layout_margin="12dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:src="@drawable/question_mark"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
             <TextView
                 android:id="@+id/tv_album"
@@ -53,15 +79,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="135dp"
-            android:layout_height="150dp"
-            android:layout_margin="3dp"
-            android:layout_gravity="center"
-            android:background="@color/grey_transper"
-            android:elevation="12dp">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

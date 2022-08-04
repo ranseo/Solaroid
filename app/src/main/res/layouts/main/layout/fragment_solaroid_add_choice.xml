@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.solaroid.ui.home.fragment.add.SolaroidAddViewModel" />
+            type="com.ranseo.solaroid.ui.home.fragment.add.SolaroidAddViewModel" />
 
     </data>
 

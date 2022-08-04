@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.solaroid",
+  "applicationId": "com.ranseo.solaroid",
   "variantName": "release",
   "elements": [
     {

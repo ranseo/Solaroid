@@ -31,22 +31,22 @@
     <!---->
     <activity
         android:id="@+id/home_activity"
-        android:name="com.example.solaroid.ui.home.activity.HomeActivity"
+        android:name="com.ranseo.solaroid.ui.home.activity.HomeActivity"
         tools:layout="@layout/activity_home"/>
 
     <activity
         android:id="@+id/login_activity"
-        android:name="com.example.solaroid.ui.login.activity.LoginActivity"
+        android:name="com.ranseo.solaroid.ui.login.activity.LoginActivity"
         tools:layout="@layout/activity_login"/>
 
     <activity
         android:id="@+id/friend_activity"
-        android:name="com.example.solaroid.ui.friend.activity.FriendActivity"
+        android:name="com.ranseo.solaroid.ui.friend.activity.FriendActivity"
         tools:layout="@layout/activity_friend"/>
 
     <fragment
         android:id="@+id/fragment_friend_list"
-        android:name="com.example.solaroid.ui.friend.fragment.list.FriendListFragment"
+        android:name="com.ranseo.solaroid.ui.friend.fragment.list.FriendListFragment"
         android:label="친구 목록"
         tools:layout="@layout/fragment_friend_list">
 
@@ -54,7 +54,7 @@
 
     <fragment
         android:id="@+id/fragment_friend_add"
-        android:name="com.example.solaroid.ui.friend.fragment.add.FriendAddFragment"
+        android:name="com.ranseo.solaroid.ui.friend.fragment.add.FriendAddFragment"
         android:label="친구 요청"
         tools:layout="@layout/fragment_friend_add">
 

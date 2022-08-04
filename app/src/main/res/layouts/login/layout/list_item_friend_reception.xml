@@ -6,11 +6,11 @@
     <data>
         <variable
             name="friend"
-            type="com.example.solaroid.models.domain.Friend" />
+            type="com.ranseo.solaroid.models.domain.Friend" />
 
         <variable
             name="onClickListener"
-            type="com.example.solaroid.ui.friend.adapter.OnReceptionClickListener" />
+            type="com.ranseo.solaroid.ui.friend.adapter.OnReceptionClickListener" />
 
     </data>
 

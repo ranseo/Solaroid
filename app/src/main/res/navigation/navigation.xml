@@ -31,24 +31,24 @@
     <!---->
     <activity
         android:id="@+id/home_activity"
-        android:name="com.example.solaroid.ui.home.activity.HomeActivity"
+        android:name="com.ranseo.solaroid.ui.home.activity.HomeActivity"
         tools:layout="@layout/activity_home"
         />
     <activity
         android:id="@+id/login_activity"
-        android:name="com.example.solaroid.ui.login.activity.LoginActivity"
+        android:name="com.ranseo.solaroid.ui.login.activity.LoginActivity"
         tools:layout="@layout/activity_login"
         android:label="로그인 활동"/>
     <activity
         android:id="@+id/friend_activity"
-        android:name="com.example.solaroid.ui.friend.activity.FriendActivity"
+        android:name="com.ranseo.solaroid.ui.friend.activity.FriendActivity"
         tools:layout="@layout/activity_friend"
         android:label=""/>
 
 
     <fragment
         android:id="@+id/fragment_home_gallery"
-        android:name="com.example.solaroid.ui.home.fragment.gallery.HomeGalleryFragment"
+        android:name="com.ranseo.solaroid.ui.home.fragment.gallery.HomeGalleryFragment"
         android:label="홈"
         tools:layout="@layout/fragment_solaroid_gallery">
 
@@ -86,7 +86,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_create"
-        android:name="com.example.solaroid.ui.home.fragment.create.SolaroidPhotoCreateFragment"
+        android:name="com.ranseo.solaroid.ui.home.fragment.create.SolaroidPhotoCreateFragment"
         android:label=""
         tools:layout="@layout/fragment_solaroid_photo_create">
 
@@ -97,7 +97,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_frame"
-        android:name="com.example.solaroid.ui.home.fragment.frame.SolaroidFrameFragment"
+        android:name="com.ranseo.solaroid.ui.home.fragment.frame.SolaroidFrameFragment"
         android:label=""
         tools:layout="@layout/fragment_solaroid_frame">
 
@@ -118,7 +118,7 @@
 
         <argument
             android:name="photoTicket"
-            app:argType="com.example.solaroid.models.domain.PhotoTicket"/>
+            app:argType="com.ranseo.solaroid.models.domain.PhotoTicket"/>
 
         <argument
             android:name="albumId"
@@ -130,7 +130,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_solaroid_edit"
-        android:name="com.example.solaroid.ui.home.fragment.edit.SolaroidEditFragment"
+        android:name="com.ranseo.solaroid.ui.home.fragment.edit.SolaroidEditFragment"
         android:label="수정"
         tools:layout="@layout/fragment_solaroid_edit">
 
@@ -155,7 +155,7 @@
 
     <fragment
         android:id="@+id/fragment_solaroid_add"
-        android:name="com.example.solaroid.ui.home.fragment.add.SolaroidAddFragment"
+        android:name="com.ranseo.solaroid.ui.home.fragment.add.SolaroidAddFragment"
         android:label=""
         tools:layout="@layout/fragment_solaroid_add">
 
@@ -172,7 +172,7 @@
 
     <fragment
         android:id="@+id/fragment_album"
-        android:name="com.example.solaroid.ui.home.fragment.album.AlbumFragment"
+        android:name="com.ranseo.solaroid.ui.home.fragment.album.AlbumFragment"
         android:label="사진첩"
         tools:layout="@layout/fragment_album"
         >
@@ -211,7 +211,7 @@
 
     <fragment
         android:id="@+id/fragment_gallery"
-        android:name="com.example.solaroid.ui.home.fragment.gallery.GalleryFragment"
+        android:name="com.ranseo.solaroid.ui.home.fragment.gallery.GalleryFragment"
         tools:layout="@layout/fragment_solaroid_gallery">
 
 
@@ -250,7 +250,7 @@
 
     <fragment
         android:id="@+id/fragment_album_request"
-        android:name="com.example.solaroid.ui.home.fragment.album.request.AlbumRequest"
+        android:name="com.ranseo.solaroid.ui.home.fragment.album.request.AlbumRequest"
         android:label="공유 사진첩 요청"
         tools:layout="@layout/fragment_album_request">
 
@@ -272,7 +272,7 @@
 
         <fragment
             android:id="@+id/create_start"
-            android:name="com.example.solaroid.ui.home.fragment.album.create.AlbumCreateStart"
+            android:name="com.ranseo.solaroid.ui.home.fragment.album.create.AlbumCreateStart"
             tools:layout="@layout/fragment_album_create_start">
 
             <action
@@ -292,7 +292,7 @@
 
         <fragment
             android:id="@+id/create_final"
-            android:name="com.example.solaroid.ui.home.fragment.album.create.AlbumCreateFinal"
+            android:name="com.ranseo.solaroid.ui.home.fragment.album.create.AlbumCreateFinal"
             tools:layout="@layout/fragment_album_create_final">
 
             <action

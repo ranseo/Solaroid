@@ -6,11 +6,11 @@
     <data>
         <variable
             name="friend"
-            type="com.example.solaroid.ui.friend.fragment.add.dispatch.DispatchFriend" />
+            type="com.ranseo.solaroid.ui.friend.fragment.add.dispatch.DispatchFriend" />
 
         <variable
             name="onClickListener"
-            type="com.example.solaroid.ui.friend.adapter.OnDispatchClickListener" />
+            type="com.ranseo.solaroid.ui.friend.adapter.OnDispatchClickListener" />
 
         <variable
             name="statusMsg"

@@ -8,7 +8,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.solaroid.ui.home.fragment.create.SolaroidPhotoCreateViewModel" />
+            type="com.ranseo.solaroid.ui.home.fragment.create.SolaroidPhotoCreateViewModel" />
 
         <import type="android.view.View"/>
 

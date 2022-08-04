@@ -7,10 +7,10 @@
 
         <variable
             name="album"
-            type="com.example.solaroid.models.domain.Album" />
+            type="com.ranseo.solaroid.models.domain.Album" />
         <variable
             name="onClickListener"
-            type="com.example.solaroid.ui.home.adapter.AlbumListClickListener" />
+            type="com.ranseo.solaroid.ui.home.adapter.AlbumListClickListener" />
 
 
     </data>

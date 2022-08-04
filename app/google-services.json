@@ -1,58 +1,41 @@
 {
   "project_info": {
-    "project_number": "1080768750285",
-    "firebase_url": "https://solaroid-fca9c-default-rtdb.firebaseio.com",
-    "project_id": "solaroid-fca9c",
-    "storage_bucket": "solaroid-fca9c.appspot.com"
+    "project_number": "668980346028",
+    "project_id": "solaroid-45908",
+    "storage_bucket": "solaroid-45908.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1080768750285:android:629c9e829e99c924df7f84",
+        "mobilesdk_app_id": "1:668980346028:android:0c44b260e27ff981593309",
         "android_client_info": {
-          "package_name": "com.example.solaroid"
+          "package_name": "com.ranseo.solaroid"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1080768750285-fdofganvtvao8o5le62fr99qngp012vo.apps.googleusercontent.com",
+          "client_id": "668980346028-59in5krsj73uch3m2nrpmhob5bf13oms.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.solaroid",
+            "package_name": "com.ranseo.solaroid",
             "certificate_hash": "f38d5a1f20567a93fe8c91d9e8f109615f464bb3"
           }
         },
         {
-          "client_id": "1080768750285-td59f3jetnghls8mir0d1afrra60s4er.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.solaroid",
-            "certificate_hash": "e43eaa5dbcb66a2927fdfb76dce8750f279ff24d"
-          }
-        },
-        {
-          "client_id": "1080768750285-uk13oh8eekh89gical5s7ci8k4eqvcjc.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.solaroid",
-            "certificate_hash": "860fb9830478553ed788f581b481dbc5908bf7ec"
-          }
-        },
-        {
-          "client_id": "1080768750285-84iidhdrhsdvn7u4omd364dhefug6611.apps.googleusercontent.com",
+          "client_id": "668980346028-lt54l8if59v30s9notpg7el021nfp41n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBOfVzm5LbOLInQCvPuItJ1Odx64UVt0Ug"
+          "current_key": "AIzaSyAy02SrNa7-L12NAdgIalHOEM6lLotgfQE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1080768750285-84iidhdrhsdvn7u4omd364dhefug6611.apps.googleusercontent.com",
+              "client_id": "668980346028-lt54l8if59v30s9notpg7el021nfp41n.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.solaroid.ui.friend.fragment.add.FriendAddViewModel" />
+            type="com.ranseo.solaroid.ui.friend.fragment.add.FriendAddViewModel" />
 
         <import type="android.view.View"/>
 

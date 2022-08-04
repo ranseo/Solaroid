@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.solaroid.ui.home.fragment.add.SolaroidAddViewModel"/>
+            type="com.ranseo.solaroid.ui.home.fragment.add.SolaroidAddViewModel"/>
 
         <import type="android.view.View"/>
 

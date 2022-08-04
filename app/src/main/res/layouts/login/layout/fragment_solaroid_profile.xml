@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.ui.login.viewmodel.SolaroidProfileViewModel" />
+            type="com.ranseo.solaroid.ui.login.viewmodel.SolaroidProfileViewModel" />
 
         <import type="android.view.View" />
 
@@ -176,7 +176,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.example.solaroid.custom.view.AlbumThumbnailView
+        <com.ranseo.solaroid.custom.view.AlbumThumbnailView
             android:id="@+id/album_thumbnail"
             android:layout_width="200dp"
             android:layout_height="200dp"

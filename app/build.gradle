@@ -12,7 +12,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.solaroid"
+        applicationId "com.ranseo.solaroid"
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -133,6 +133,10 @@ dependencies {
     implementation "com.airbnb.android:lottie:5.0.3"
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //Kakao Api
+    implementation "com.kakao.sdk:v2-share:2.11.0" // 메시지(카카오톡 공유)
+    implementation "com.kakao.sdk:v2-user:2.11.0" // 카카오 로그인
 }
 repositories {
     mavenCentral()

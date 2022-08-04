@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.solaroid.ui.album.viewmodel.AlbumViewModel" />
+            type="com.ranseo.solaroid.ui.album.viewmodel.AlbumViewModel" />
 
     </data>
 
@@ -44,7 +44,7 @@
                 tools:listitem="@layout/list_item_album" />
 
 
-            <com.example.solaroid.custom.view.CustomBottomNavigationView
+            <com.ranseo.solaroid.custom.view.CustomBottomNavigationView
                 android:id="@+id/album_bottom_navi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
