@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.OAuthProvider
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.KakaoSdkError
@@ -45,10 +46,9 @@ class SolaroidLoginFragment : Fragment() {
     //로그인
     private lateinit var auth: FirebaseAuth
     private var kakaoToken : Boolean = false
-    private val properties = mapOf("id" to "", "profile_image" to "", "email" to "")
+    private lateinit var providerBuilder : OAuthProvider.Builder
 
-
-    /*
+     /*
      * 해당 sharedPreferences는 "아이디 저장" 에 해당하는 변수이다.
      * Str은 저장할 아이디를, Bool은 아이디 저장 여부를.
      * */
@@ -134,6 +134,11 @@ class SolaroidLoginFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        providerBuilder = OAuthProvider.newBuilder("odic.com.ranseo.solaroid")
+        //선택사항
+        //providerBuilder.addCustomParameter("login_hint", "user@example.com")
+        //val scopes = arrayListOf("mail.read", "calendars.read")
+        //providerBuilder.setScopes(scopes)
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
@@ -217,41 +222,54 @@ class SolaroidLoginFragment : Fragment() {
         viewModel.kakaoLogin.observe(viewLifecycleOwner) {
 
             it.getContentIfNotHandled()?.let {
-
                 //토큰 존재 여부 확인.
-                if (AuthApiClient().hasToken()) {
-                    //UserApiClient의 AccessTokenInfo() API를 통해 액세스 토큰의 유효성 확인.
-                    UserApiClient().accessTokenInfo { tokenInfo, error ->
-                        if (error != null) {
-                            //에러 발생 시, 액세스 토큰 및 리프레시 토큰이 유효하지 않아 사용자 로그인 필요
-                            //각 에러에 맞는 처리 필요. 레퍼런스 참고.
-                            if (error is KakaoSdkError && error.isInvalidTokenError() == true) {
-                                //로그인 필요
-                                loginWithKakao()
-                            } else {
-                                //기타에러
-                            }
-                        } else if(tokenInfo != null) {
-                            //토큰 유효성 체크 성공(필요 시 토큰 갱신됨) -> 사용자 로그인 불필요 + 해당 액세스 토큰으로 카카오 API 호출 가능
-                            Log.i(TAG, "토큰 정보 보기 성공" +
-                                    "\n회원번호 : ${tokenInfo.id}" +
-                                    "\n만료시간 : ${tokenInfo.expiresIn} 초")
-                            getKakaoUserInfo()
-                        }
-                    }
-                } else {
-                    //로그인 필요
+                checkKakaoToken()
+            }
+        }
 
-
-                    loginWithKakao()
-                }
-
-
+        viewModel.kakaoUserInfo.observe(viewLifecycleOwner) {
+            it?.let{ user ->
+                Log.i(
+                    TAG, "카카오 유저 정보" +
+                            "\n회원번호 : ${user.id}" +
+                            "\n이메일 : ${user.kakaoAccount?.email}" +
+                            "\n닉네임 : ${user.kakaoAccount?.profile?.nickname}" +
+                            "\n프로필사진 : ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                )
             }
         }
 
 
         return binding.root
+    }
+
+    private fun checkKakaoToken() {
+        if (AuthApiClient().hasToken()) {
+            //UserApiClient의 AccessTokenInfo() API를 통해 액세스 토큰의 유효성 확인.
+            UserApiClient().accessTokenInfo { tokenInfo, error ->
+                if (error != null) {
+                    //에러 발생 시, 액세스 토큰 및 리프레시 토큰이 유효하지 않아 사용자 로그인 필요
+                    //각 에러에 맞는 처리 필요. 레퍼런스 참고.
+                    if (error is KakaoSdkError && error.isInvalidTokenError()) {
+                        //로그인 필요
+                        loginWithKakao()
+                    } else {
+                        //기타에러
+                    }
+                } else if (tokenInfo != null) {
+                    //토큰 유효성 체크 성공(필요 시 토큰 갱신됨) -> 사용자 로그인 불필요 + 해당 액세스 토큰으로 카카오 API 호출 가능
+                    Log.i(
+                        TAG, "토큰 정보 보기 성공" +
+                                "\n회원번호 : ${tokenInfo.id}" +
+                                "\n만료시간 : ${tokenInfo.expiresIn} 초"
+                    )
+                    getKakaoUserInfo()
+                }
+            }
+        } else {
+            //로그인 필요
+            loginWithKakao()
+        }
     }
 
     private fun getKakaoUserInfo() {
@@ -266,13 +284,7 @@ class SolaroidLoginFragment : Fragment() {
                             "\n닉네임 : ${user.kakaoAccount?.profile?.nickname}" +
                             "\n프로필사진 : ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
                 )
-                UserApiClient().updateProfile(properties) {error ->
-                    if(error != null) {
-                        Log.e(TAG, "사용자 정보 저장 실패", error)
-                    } else {
-                        Log.i(TAG,"사용자 정보 저장 성공 ${properties}")
-                    }
-                }
+                viewModel.setKakaoUser(user)
             }
         }
     }

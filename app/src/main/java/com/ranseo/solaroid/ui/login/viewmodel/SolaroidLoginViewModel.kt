@@ -10,6 +10,7 @@ import com.ranseo.solaroid.room.DatabasePhotoTicketDao
 import com.ranseo.solaroid.ui.login.FirebaseAuthLiveData
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.kakao.sdk.user.model.User
 import kotlinx.coroutines.launch
 
 
@@ -41,6 +42,10 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     private val _kakaoLogin = MutableLiveData<Event<Any?>>()
     val kakaoLogin : LiveData<Event<Any?>>
         get() = _kakaoLogin
+
+    private val _kakaoUserInfo = MutableLiveData<User>()
+    val kakaoUserInfo : LiveData<User>
+        get() = _kakaoUserInfo
 
 
     private val _isSaveId = MutableLiveData<Boolean>()
@@ -168,6 +173,10 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
 
     fun onKakaoLogin() {
         _kakaoLogin.value = Event(Unit)
+    }
+
+    fun setKakaoUser(user:User) {
+        _kakaoUserInfo.value = user
     }
 
     companion object {
