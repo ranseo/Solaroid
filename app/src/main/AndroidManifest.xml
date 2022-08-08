@@ -54,7 +54,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data android:host="oauth"
-                    android:scheme="kakao71eb0d1f916dfd2a0f2786e2c9fff1d6"/>
+                    android:scheme="@string/com.ranse.solaroid.appkey"/>
 
             </intent-filter>
 

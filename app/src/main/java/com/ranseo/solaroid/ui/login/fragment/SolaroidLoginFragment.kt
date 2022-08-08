@@ -22,15 +22,11 @@ import com.ranseo.solaroid.ui.login.viewmodel.SolaroidLoginViewModel
 import com.ranseo.solaroid.R
 import com.ranseo.solaroid.databinding.FragmentSolaroidLoginBinding
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.ActionCodeSettings
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.*
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
-import retrofit2.http.Url
 
 class SolaroidLoginFragment : Fragment() {
 
@@ -45,13 +41,13 @@ class SolaroidLoginFragment : Fragment() {
 
     //로그인
     private lateinit var auth: FirebaseAuth
-    private var kakaoToken : Boolean = false
-    private lateinit var providerBuilder : OAuthProvider.Builder
+    private var kakaoToken: Boolean = false
+    private lateinit var providerBuilder: OAuthProvider.Builder
 
-     /*
-     * 해당 sharedPreferences는 "아이디 저장" 에 해당하는 변수이다.
-     * Str은 저장할 아이디를, Bool은 아이디 저장 여부를.
-     * */
+    /*
+    * 해당 sharedPreferences는 "아이디 저장" 에 해당하는 변수이다.
+    * Str은 저장할 아이디를, Bool은 아이디 저장 여부를.
+    * */
     private lateinit var sharedPrefStr: SharedPreferences
     private lateinit var sharedPrefBool: SharedPreferences
 
@@ -102,7 +98,7 @@ class SolaroidLoginFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if(kakaoToken) {
+        if (kakaoToken) {
             getKakaoUserInfo()
 
         }
@@ -119,9 +115,6 @@ class SolaroidLoginFragment : Fragment() {
             container,
             false
         )
-
-
-
         val application = requireNotNull(this.activity).application
         val dataSource = SolaroidDatabase.getInstance(application).photoTicketDao
 
@@ -134,11 +127,14 @@ class SolaroidLoginFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        providerBuilder = OAuthProvider.newBuilder("odic.com.ranseo.solaroid")
+        providerBuilder = OAuthProvider.newBuilder("oidc.com.ranseo.solaroid")
         //선택사항
         //providerBuilder.addCustomParameter("login_hint", "user@example.com")
         //val scopes = arrayListOf("mail.read", "calendars.read")
         //providerBuilder.setScopes(scopes)
+
+
+
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
@@ -184,6 +180,85 @@ class SolaroidLoginFragment : Fragment() {
             }
         })
 
+        navigateToOther()
+
+        viewModel.isSaveId.observe(viewLifecycleOwner) {
+            Log.i(TAG, "viewModel.isSaveId : ${it}")
+            with(sharedPrefBool.edit()) {
+                putBoolean(getString(R.string.com_ranseo_solaroid_LoginSaveKeyBool), it)
+                apply()
+            }
+
+            putEmailSharedPref(it, viewModel.SavedLoginId.value)
+        }
+
+
+        viewModel.kakaoLogin.observe(viewLifecycleOwner) {
+
+            it.getContentIfNotHandled()?.let {
+                //토큰 존재 여부 확인.
+                checkKakaoToken()
+                //checkPendingAuthResult()
+
+            }
+        }
+
+        viewModel.kakaoUserInfo.observe(viewLifecycleOwner) {
+            it?.let { user ->
+                Log.i(
+                    TAG, "카카오 유저 정보" +
+                            "\n회원번호 : ${user.id}" +
+                            "\n이메일 : ${user.kakaoAccount?.email}" +
+                            "\n닉네임 : ${user.kakaoAccount?.profile?.nickname}" +
+                            "\n프로필사진 : ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                )
+            }
+        }
+
+
+        return binding.root
+    }
+
+    private fun loginWithKakaoOIDC() {
+        FirebaseManager.getAuthInstance()
+            .startActivityForSignInWithProvider(requireActivity(), providerBuilder.build())
+            .addOnSuccessListener { authResult ->
+
+                val credential = authResult.credential
+                if (credential !is OAuthCredential) return@addOnSuccessListener
+                val accessToken = credential.accessToken
+                val idToken = credential.idToken
+                Log.i(TAG, "accessToken : ${accessToken}, idToken : ${idToken}")
+
+                //getKakaoUserInfo()
+            }
+            .addOnFailureListener { error ->
+                Log.e(TAG, "ERROR : $error")
+            }
+    }
+
+    private fun checkPendingAuthResult() {
+        Log.i(TAG,"checkPendingAuthResult()")
+        FirebaseManager.getAuthInstance().pendingAuthResult?.addOnSuccessListener { authResult ->
+            val credential = authResult.credential
+            if (credential !is OAuthCredential) {
+                Log.i(TAG,"checkPendingAuthResult() (credential !is OAuthCredential) ")
+                loginWithKakaoOIDC()
+                return@addOnSuccessListener
+            }
+            val accessToken = credential.accessToken
+            val idToken = credential.idToken
+            Log.i(TAG, "checkPendingAuthResult()  accessToken : ${accessToken}, idToken : ${idToken}")
+        }?.addOnFailureListener { error ->
+            Log.e(TAG, "checkPendingAuthResult() ERROR : $error")
+            loginWithKakaoOIDC()
+        } ?: loginWithKakaoOIDC()
+
+
+
+    }
+
+    private fun navigateToOther() {
         viewModel.naviToSignUp.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 Log.i(TAG, "viewModel.naviToSignUp")
@@ -207,40 +282,6 @@ class SolaroidLoginFragment : Fragment() {
                 }
             }
         }
-
-        viewModel.isSaveId.observe(viewLifecycleOwner) {
-            Log.i(TAG, "viewModel.isSaveId : ${it}")
-            with(sharedPrefBool.edit()) {
-                putBoolean(getString(R.string.com_ranseo_solaroid_LoginSaveKeyBool), it)
-                apply()
-            }
-
-            putEmailSharedPref(it, viewModel.SavedLoginId.value)
-        }
-
-
-        viewModel.kakaoLogin.observe(viewLifecycleOwner) {
-
-            it.getContentIfNotHandled()?.let {
-                //토큰 존재 여부 확인.
-                checkKakaoToken()
-            }
-        }
-
-        viewModel.kakaoUserInfo.observe(viewLifecycleOwner) {
-            it?.let{ user ->
-                Log.i(
-                    TAG, "카카오 유저 정보" +
-                            "\n회원번호 : ${user.id}" +
-                            "\n이메일 : ${user.kakaoAccount?.email}" +
-                            "\n닉네임 : ${user.kakaoAccount?.profile?.nickname}" +
-                            "\n프로필사진 : ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
-                )
-            }
-        }
-
-
-        return binding.root
     }
 
     private fun checkKakaoToken() {
@@ -282,7 +323,8 @@ class SolaroidLoginFragment : Fragment() {
                             "\n회원번호 : ${user.id}" +
                             "\n이메일 : ${user.kakaoAccount?.email}" +
                             "\n닉네임 : ${user.kakaoAccount?.profile?.nickname}" +
-                            "\n프로필사진 : ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                            "\n프로필사진 : ${user.kakaoAccount?.profile?.thumbnailImageUrl}" +
+                            "\n인증정보 : ${user.kakaoAccount?.isEmailVerified}"
                 )
                 viewModel.setKakaoUser(user)
             }
@@ -293,10 +335,11 @@ class SolaroidLoginFragment : Fragment() {
         //카카오계정으로 로그인 공동 callback 구성
         //카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨.
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            if(error!=null) {
+            if (error != null) {
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
-            } else if(token != null) {
+            } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+                getKakaoUserInfo()
             }
         }
 
