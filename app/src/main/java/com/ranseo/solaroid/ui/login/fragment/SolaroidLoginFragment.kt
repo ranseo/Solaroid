@@ -102,13 +102,13 @@ class SolaroidLoginFragment : Fragment() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (kakaoToken) {
-            getKakaoUserInfo()
-
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        if (kakaoToken) {
+//            getKakaoUserInfo()
+//
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -317,7 +317,7 @@ class SolaroidLoginFragment : Fragment() {
                         if(task.isSuccessful) {
                             Log.i(TAG, "getCustomToken() success : ${task.result} ")
                         } else {
-                            Log.d(TAG, "getCustomToken() success : ${task.exception?.message} ")
+                            Log.d(TAG, "getCustomToken() error : ${task.exception?.message} ")
                         }
                     }
                     getKakaoUserInfo()
@@ -359,7 +359,7 @@ class SolaroidLoginFragment : Fragment() {
                     if(task.isSuccessful) {
                         Log.i(TAG, "getCustomToken() success : ${task.result} ")
                     } else {
-                        Log.d(TAG, "getCustomToken() success : ${task.exception?.message} ")
+                        Log.d(TAG, "getCustomToken() error : ${task.exception?.message} ")
                     }
                 }
                 getKakaoUserInfo()
@@ -380,7 +380,7 @@ class SolaroidLoginFragment : Fragment() {
                             if(task.isSuccessful) {
                                 Log.i(TAG, "getCustomToken() success : ${task.result} ")
                             } else {
-                                Log.d(TAG, "getCustomToken() success : ${task.exception?.message} ")
+                                Log.d(TAG, "getCustomToken() error : ${task.exception?.message} ")
                             }
                         }
                     }
@@ -529,13 +529,15 @@ class SolaroidLoginFragment : Fragment() {
     //functions
 
     private fun getCustomToken(kakaoAccessToken:String) : Task<String> {
+        Log.i(TAG, "kakaoAccessToken : ${kakaoAccessToken}")
         val data = hashMapOf(
-            "kakaoAccessToken" to kakaoAccessToken
+            "access_token" to kakaoAccessToken
         )
-        return functions.getHttpsCallable("createFirebaseToken")
+        return functions.getHttpsCallable("kakaoToken")
             .call(data)
             .continueWith { task ->
                 val result = task.result?.data as String
+
                 result
             }
     }

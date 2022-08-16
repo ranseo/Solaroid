@@ -21,8 +21,11 @@ import com.ranseo.solaroid.room.SolaroidDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+
 
 class SplashActivity : AppCompatActivity() {
     var isCameraAvailable: Boolean = false
@@ -44,7 +47,7 @@ class SplashActivity : AppCompatActivity() {
             Firebase.auth.useEmulator("10.0.2.2", 9099)
             Firebase.database.useEmulator("10.0.2.2", 9000)
             Firebase.storage.useEmulator("10.0.2.2", 9199)
-
+            Firebase.functions.useEmulator("10.0.2.2", 5001)
         }
 
 

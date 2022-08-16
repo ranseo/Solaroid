@@ -137,6 +137,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
     }
 
 
+
     private fun showFilterDialog() {
         filterDialogFragment.show(parentFragmentManager, "filterDialog")
     }

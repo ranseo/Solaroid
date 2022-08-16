@@ -21,8 +21,11 @@ admin.initializeApp(adminConfig);
 const kakaoRequestMeUrl = 'https://kapi.kakao.com/v2/user/me?secure_resource=true';
 
 exports.kakaoToken = functions.region('asia-northeast3').https.onCall((data, context) => {
+	console.log("KaKaoToken")
 	var access_token = data['access_token'];
+	console.log(access_token)
 	var token = createFirebaseToken(access_token);
+	console.log(token)
 	return token;
 });
 
@@ -56,6 +59,7 @@ async function updateOrCreateUser(updateParams) {
 }
 
 async function createFirebaseToken(kakaoAccessToken) {
+  console.log("createFirebaseToken")
 	var requestMeResult = await requestMe(kakaoAccessToken);
 	const userData = requestMeResult.data; // JSON.parse(response)
 	console.log(userData);

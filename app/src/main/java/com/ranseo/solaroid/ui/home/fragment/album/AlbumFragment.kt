@@ -5,12 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.ranseo.solaroid.R
 import com.ranseo.solaroid.databinding.FragmentAlbumBinding
 import com.ranseo.solaroid.dialog.ListSetDialogFragment
@@ -176,16 +182,11 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
     override fun onStart() {
         super.onStart()
         setTrueAlbumIconInBottomNavi()
+        setBadgeOnBottomNavigationView(5,0)
     }
 
     private fun setTrueAlbumIconInBottomNavi() {
         binding.albumBottomNavi.menu.findItem(R.id.album).isChecked = true
-    }
-
-
-    override fun onStop() {
-        super.onStop()
-        viewModel.removeListener()
     }
 
     override fun onDetach() {
@@ -196,6 +197,24 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
     override fun onDestroy() {
         super.onDestroy()
         viewModel.removeListener()
+    }
+
+    private fun setBadgeOnBottomNavigationView(cnt:Int, idx:Int) {
+        val bottomNavi = binding.albumBottomNavi.getChildAt(0) as BottomNavigationMenuView
+        val itemView = bottomNavi.getChildAt(1) as BottomNavigationItemView
+
+
+        BadgeDrawable.create(requireContext()).apply{
+            number=cnt
+            backgroundColor = ContextCompat.getColor(requireContext(), R.color.alert_color)
+            badgeTextColor = ContextCompat.getColor(requireContext(), R.color.white)
+            badgeGravity = BadgeDrawable.BOTTOM_END
+        }.let{ badge ->
+            itemView.foreground = badge
+            itemView.addOnLayoutChangeListener { view, i, i2, i3, i4, i5, i6, i7, i8 ->
+                BadgeUtils.attachBadgeDrawable(badge, view)
+            }
+        }
     }
 
     private fun setOnItemSelectedListener(

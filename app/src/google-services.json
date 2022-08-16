@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "646521344479",
-    "project_id": "solaroid-22b8f",
-    "storage_bucket": "solaroid-22b8f.appspot.com"
+    "project_number": "668980346028",
+    "project_id": "solaroid-45908",
+    "storage_bucket": "solaroid-45908.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:646521344479:android:1bdf7c1a65d9a68d69f46a",
+        "mobilesdk_app_id": "1:668980346028:android:0c44b260e27ff981593309",
         "android_client_info": {
           "package_name": "com.ranseo.solaroid"
         }
       },
       "oauth_client": [
         {
-          "client_id": "646521344479-rpbgadsv9ac2nlcmopsko6ek6i3jbkdp.apps.googleusercontent.com",
+          "client_id": "668980346028-59in5krsj73uch3m2nrpmhob5bf13oms.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ranseo.solaroid",
@@ -22,20 +22,20 @@
           }
         },
         {
-          "client_id": "646521344479-4ho5phtov8mmvrgnn0tfoasgfruirfni.apps.googleusercontent.com",
+          "client_id": "668980346028-lt54l8if59v30s9notpg7el021nfp41n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCzmQCrCf06M7BEibW3sW-Mt2zYx-p1UAQ"
+          "current_key": "AIzaSyAy02SrNa7-L12NAdgIalHOEM6lLotgfQE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "646521344479-4ho5phtov8mmvrgnn0tfoasgfruirfni.apps.googleusercontent.com",
+              "client_id": "668980346028-lt54l8if59v30s9notpg7el021nfp41n.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

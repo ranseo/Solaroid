@@ -1,0 +1,155 @@
+[debug] [2022-08-16T09:34:23.610Z] ----------------------------------------------------------------------
+[debug] [2022-08-16T09:34:23.612Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only auth,database,storage
+[debug] [2022-08-16T09:34:23.612Z] CLI Version:   10.9.2
+[debug] [2022-08-16T09:34:23.612Z] Platform:      win32
+[debug] [2022-08-16T09:34:23.612Z] Node Version:  v16.16.0
+[debug] [2022-08-16T09:34:23.613Z] Time:          Tue Aug 16 2022 18:34:23 GMT+0900 (대한민국 표준시)
+[debug] [2022-08-16T09:34:23.614Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-08-16T09:34:23.675Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-08-16T09:34:23.675Z] > authorizing via signed-in user (slcksseo@gmail.com)
+[debug] [2022-08-16T09:34:23.812Z] java version "11.0.15.1" 2022-04-22 LTS
+
+[debug] [2022-08-16T09:34:23.812Z] Java(TM) SE Runtime Environment 18.9 (build 11.0.15.1+2-LTS-10)
+Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.15.1+2-LTS-10, mixed mode)
+
+[debug] [2022-08-16T09:34:23.833Z] Parsed Java major version: 11
+[info] i  emulators: Starting emulators: auth, database, storage {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, database, storage"}}
+[debug] [2022-08-16T09:34:23.859Z] [hub] writing locator at C:\Users\aa\AppData\Local\Temp\hub-solaroid-45908.json
+[debug] [2022-08-16T09:34:23.903Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908 [none]
+[debug] [2022-08-16T09:34:24.346Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908 200
+[debug] [2022-08-16T09:34:24.346Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908 {"projectId":"solaroid-45908","projectNumber":"668980346028","displayName":"SOLAROID","name":"projects/solaroid-45908","resources":{"hostingSite":"solaroid-45908","realtimeDatabaseInstance":"solaroid-45908-default-rtdb","storageBucket":"solaroid-45908.appspot.com","locationId":"asia-northeast2"},"state":"ACTIVE","etag":"1_694114fe-bc09-4c07-a5c3-cf8b456940c6"}
+[debug] [2022-08-16T09:34:24.347Z] database rules config:  [{"instance":"solaroid-45908-default-rtdb","rules":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\database.rules.json"}]
+[debug] [2022-08-16T09:34:24.351Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2022-08-16T09:34:24.351Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-08-16T09:34:24.351Z] Ignoring unsupported arg: rules {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: rules"}}
+[debug] [2022-08-16T09:34:24.351Z] Starting Database Emulator with command {"binary":"java","args":["-Duser.language=en","-jar","C:\\Users\\aa\\.cache\\firebase\\emulators\\firebase-database-emulator-v4.7.3.jar","--host","localhost","--port",9000],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host"],"joinArgs":false} {"metadata":{"emulator":{"name":"database"},"message":"Starting Database Emulator with command {\"binary\":\"java\",\"args\":[\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\aa\\\\.cache\\\\firebase\\\\emulators\\\\firebase-database-emulator-v4.7.3.jar\",\"--host\",\"localhost\",\"--port\",9000],\"optionalArgs\":[\"port\",\"host\",\"functions_emulator_port\",\"functions_emulator_host\"],\"joinArgs\":false}"}}
+[info] i  database: Database Emulator logging to database-debug.log {"metadata":{"emulator":{"name":"database"},"message":"Database Emulator logging to \u001b[1mdatabase-debug.log\u001b[22m"}}
+[debug] [2022-08-16T09:34:32.319Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"storage"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2022-08-16T09:34:33.115Z] Temp file directory for storage emulator: C:\Users\aa\AppData\Local\Temp/firebase/storage/blobs {"metadata":{"emulator":{"name":"storage"},"message":"Temp file directory for storage emulator: C:\\Users\\aa\\AppData\\Local\\Temp/firebase/storage/blobs"}}
+[debug] [2022-08-16T09:34:33.126Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-08-16T09:34:33.126Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2022-08-16T09:34:33.126Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\aa\\.cache\\firebase\\emulators\\ui-v1.7.0\\server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\aa\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.7.0\\\\server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2022-08-16T09:34:33.251Z] Web / API server started at localhost:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at localhost:4000\n"}}
+[debug] [2022-08-16T09:34:33.403Z] >>> HTTP REQUEST PUT http://localhost:9000/.settings/rules.json?ns=solaroid-45908-default-rtdb  
+ {
+  "rules": {
+    "profile": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "currentUsersNum": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "allUsers": {
+      ".read": "auth != null && root.child('profile').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('profile').child(auth.uid).exists()"
+    },
+    "myFriendList": {
+      "$uid": {
+        "list": {
+          ".read": "auth !=null && auth.uid == $uid",
+          "$friendCode": {
+            ".write": "auth != null && auth.uid == $uid"
+          }
+        }
+      }
+    },
+    "tmpFriendList": {
+      "$friendCode": {
+        "list": {
+          ".read": "auth !=null",
+          "$myFriendCode": {
+            ".write": "auth != null"
+          }
+        }
+      }
+    },
+    "friendReception": {
+      "$friendCode": {
+        "list": {
+          ".read": "auth !=null",
+          "$myfriendCode": {
+            ".write": "auth != null"
+          }
+        }
+      }
+    },
+    "friendDispatch": {
+      "$friendCode": {
+        "list": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    },
+    "withAlbum": {
+      "$albumId": {
+        "$uid": {
+          "$albumKey": {
+            ".read": "auth != null",
+            ".write": "auth != null && auth.uid == $uid"
+          }
+        }
+      }
+    },
+    "album": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        "$albumId": {
+          ".write": "auth != null && auth.uid == $uid"
+        }
+      }
+    },
+    "albumRequest": {
+      "$friendCode": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "photoTicket": {
+      ".read": "auth != null",
+      "$albumId": {
+        ".read": "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()",
+        "$albumKey": {
+          ".write": "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).child($albumKey).exists()"
+        }
+      }
+    }
+  }
+}
+
+[debug] [2022-08-16T09:34:33.732Z] <<< HTTP RESPONSE 200 {"content-length":"15","content-type":"application/json; charset=utf-8","access-control-allow-origin":"*","cache-control":"no-cache","x-firebase-project-id":"solaroid-45908-default-rtdb","x-firebase-project-number":"123456789","x-firebase-uuid":"9dddb456-0f55-4b98-8f2b-c005ed948451"}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4000                │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI            │
+├────────────────┼────────────────┼────────────────────────────────┤
+│ Authentication │ localhost:9099 │ http://localhost:4000/auth     │
+├────────────────┼────────────────┼────────────────────────────────┤
+│ Database       │ localhost:9000 │ http://localhost:4000/database │
+├────────────────┼────────────────┼────────────────────────────────┤
+│ Storage        │ localhost:9199 │ http://localhost:4000/storage  │
+└────────────────┴────────────────┴────────────────────────────────┘
+  Emulator Hub running at localhost:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[warn] !  canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web. {"metadata":{"emulator":{"name":"auth"},"message":"canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web."}}
+[info] i  To verify the email address a@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=R3hHPuYw835W4foq8wr7nDfwrlgk39ymMHha7P-HeUwOJNoCHPbzdz&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DxPRVPglIF1ypVSxg66GB0tpRZDon {"metadata":{"emulator":{"name":"auth"},"message":"To verify the email address a@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=R3hHPuYw835W4foq8wr7nDfwrlgk39ymMHha7P-HeUwOJNoCHPbzdz&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DxPRVPglIF1ypVSxg66GB0tpRZDon"}}
+[warn] !  canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web. {"metadata":{"emulator":{"name":"auth"},"message":"canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web."}}
+[info] i  To verify the email address b@vv.cc, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=KXoGiEJBFSHCzLufyv68rp6ZO6Ee8cJ40Bb8baIiU9qvDU0y5XNa52&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DitJ8KiVwAM945oV1Yb8PBg04H50f {"metadata":{"emulator":{"name":"auth"},"message":"To verify the email address b@vv.cc, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=KXoGiEJBFSHCzLufyv68rp6ZO6Ee8cJ40Bb8baIiU9qvDU0y5XNa52&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DitJ8KiVwAM945oV1Yb8PBg04H50f"}}
+[warn] !  canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web. {"metadata":{"emulator":{"name":"auth"},"message":"canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web."}}
+[info] i  To verify the email address bb@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=vSDrvFyivPayJ-mDi2XJbVIqrMRhiPxInu0OEXj98t57DdQS-YvLcB&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DXtpI484LDz9j7pvVWvJdVMPCpdws {"metadata":{"emulator":{"name":"auth"},"message":"To verify the email address bb@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=vSDrvFyivPayJ-mDi2XJbVIqrMRhiPxInu0OEXj98t57DdQS-YvLcB&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DXtpI484LDz9j7pvVWvJdVMPCpdws"}}
+[warn] !  canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web. {"metadata":{"emulator":{"name":"auth"},"message":"canHandleCodeInApp is unsupported in Auth Emulator. All OOB operations will complete via web."}}
+[info] i  To verify the email address bbb@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=BRYJpI74wbr6MlkdpgtmrDXIzCAUml8uIy8u84my6ohDo3jG9x19_h&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DGdxff95uGEJXPQKj8MW5GOcOP4qI {"metadata":{"emulator":{"name":"auth"},"message":"To verify the email address bbb@naver.com, follow this link: http://localhost:9099/emulator/action?mode=verifyEmail&lang=en&oobCode=BRYJpI74wbr6MlkdpgtmrDXIzCAUml8uIy8u84my6ohDo3jG9x19_h&apiKey=fake-api-key&continueUrl=https%3A%2F%2Fssolaroid.page.link%2FrniX%3Fmode%3DverifyEmail%26uid%3DGdxff95uGEJXPQKj8MW5GOcOP4qI"}}
