@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "solaroid-fca9c"
-  }
+    "default": "solaroid-45908",
+    "SOLAROID": "solaroid-45908"
+  },
+  "targets": {},
+  "etags": {}
 }

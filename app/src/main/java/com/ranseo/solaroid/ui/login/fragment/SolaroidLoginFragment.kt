@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.tasks.Task
 import com.ranseo.solaroid.firebase.FirebaseManager
 import com.ranseo.solaroid.room.SolaroidDatabase
 import com.ranseo.solaroid.ui.login.viewmodel.LoginViewModelFactory
@@ -23,6 +24,9 @@ import com.ranseo.solaroid.R
 import com.ranseo.solaroid.databinding.FragmentSolaroidLoginBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.*
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.ktx.functions
+import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.KakaoSdkError
@@ -41,8 +45,10 @@ class SolaroidLoginFragment : Fragment() {
 
     //로그인
     private lateinit var auth: FirebaseAuth
+    private lateinit var functions: FirebaseFunctions
     private var kakaoToken: Boolean = false
     private lateinit var providerBuilder: OAuthProvider.Builder
+
 
     /*
     * 해당 sharedPreferences는 "아이디 저장" 에 해당하는 변수이다.
@@ -126,6 +132,8 @@ class SolaroidLoginFragment : Fragment() {
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        functions = Firebase.functions
 
         providerBuilder = OAuthProvider.newBuilder("oidc.com.ranseo.solaroid")
         //선택사항
@@ -304,6 +312,14 @@ class SolaroidLoginFragment : Fragment() {
                                 "\n회원번호 : ${tokenInfo.id}" +
                                 "\n만료시간 : ${tokenInfo.expiresIn} 초"
                     )
+
+                    getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!).addOnCompleteListener { task ->
+                        if(task.isSuccessful) {
+                            Log.i(TAG, "getCustomToken() success : ${task.result} ")
+                        } else {
+                            Log.d(TAG, "getCustomToken() success : ${task.exception?.message} ")
+                        }
+                    }
                     getKakaoUserInfo()
                 }
             }
@@ -339,6 +355,13 @@ class SolaroidLoginFragment : Fragment() {
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+                getCustomToken(token.accessToken).addOnCompleteListener { task ->
+                    if(task.isSuccessful) {
+                        Log.i(TAG, "getCustomToken() success : ${task.result} ")
+                    } else {
+                        Log.d(TAG, "getCustomToken() success : ${task.exception?.message} ")
+                    }
+                }
                 getKakaoUserInfo()
             }
         }
@@ -353,6 +376,13 @@ class SolaroidLoginFragment : Fragment() {
                         Log.e(TAG, "로그인 실패", error)
                     } else if (token != null) {
                         Log.i(TAG, "로그인 성공 ${token.accessToken}")
+                        getCustomToken(token.accessToken).addOnCompleteListener { task ->
+                            if(task.isSuccessful) {
+                                Log.i(TAG, "getCustomToken() success : ${task.result} ")
+                            } else {
+                                Log.d(TAG, "getCustomToken() success : ${task.exception?.message} ")
+                            }
+                        }
                     }
                 }
             } else {
@@ -491,6 +521,22 @@ class SolaroidLoginFragment : Fragment() {
                     Log.w(TAG, "이메일 인증 메시지 전송 실패")
                     Toast.makeText(this.context, "메일을 전송에 실패.네트워크 확인", Toast.LENGTH_SHORT).show()
                 }
+            }
+    }
+
+
+    //////////////////////////////////////////////////////////
+    //functions
+
+    private fun getCustomToken(kakaoAccessToken:String) : Task<String> {
+        val data = hashMapOf(
+            "kakaoAccessToken" to kakaoAccessToken
+        )
+        return functions.getHttpsCallable("createFirebaseToken")
+            .call(data)
+            .continueWith { task ->
+                val result = task.result?.data as String
+                result
             }
     }
 
