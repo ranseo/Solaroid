@@ -47,6 +47,10 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     val kakaoUserInfo : LiveData<User>
         get() = _kakaoUserInfo
 
+    private val _customToken = MutableLiveData<Event<String>>()
+    val customToken : LiveData<Event<String>>
+        get() = _customToken
+
 
     private val _isSaveId = MutableLiveData<Boolean>()
     val isSaveId: LiveData<Boolean>
@@ -177,6 +181,10 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
 
     fun setKakaoUser(user:User) {
         _kakaoUserInfo.value = user
+    }
+
+    fun setCustomToken(token:String) {
+        _customToken.value = Event(token)
     }
 
     companion object {

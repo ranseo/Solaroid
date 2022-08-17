@@ -5,6 +5,8 @@ const admin = require("firebase-admin");
 
 const serviceAccount = require("./service-account.json")
 const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+console.log(process.env.FIREBASE_CONFIG)
+console.log(serviceAccount)
 adminConfig.credential = admin.credential.cert(serviceAccount)
 
 admin.initializeApp(adminConfig);
@@ -20,10 +22,10 @@ admin.initializeApp(adminConfig);
 // });
 const kakaoRequestMeUrl = 'https://kapi.kakao.com/v2/user/me?secure_resource=true';
 
-exports.kakaoToken = functions.region('asia-northeast3').https.onCall((data, context) => {
+exports.kakaoToken = functions.region('asia-northeast3').https.onCall((data) => {
 	console.log("KaKaoToken")
+	console.log(data['access_token'])
 	var access_token = data['access_token'];
-	console.log(access_token)
 	var token = createFirebaseToken(access_token);
 	console.log(token)
 	return token;
@@ -48,13 +50,18 @@ async function updateOrCreateUser(updateParams) {
 	console.log('updating or creating a firebase user');
 	console.log(updateParams);
 	try {
-		var userRecord = await admin.auth().getUserByEmail(updateParams['email']);
+		// var userRecord = await admin.auth().getUserByEmail(updateParams['email']);
+		var userRecord = await admin.auth().updateUser(updateParams['uid'], updateParams);
 	} catch (error) {
 		if (error.code === 'auth/user-not-found') {
+			console.log(updateParams)
 			return admin.auth().createUser(updateParams);
 		}
 		throw error;
 	}
+
+
+
 	return userRecord;
 }
 
@@ -83,6 +90,7 @@ async function createFirebaseToken(kakaoAccessToken) {
 		provider: 'KAKAO',
 		displayName: nickname,
 		email: userData.kakao_account.email,
+		emailVerified : true
 	};
 
 	if (nickname) {

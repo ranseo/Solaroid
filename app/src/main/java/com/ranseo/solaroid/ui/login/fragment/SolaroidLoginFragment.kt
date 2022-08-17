@@ -15,6 +15,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.ranseo.solaroid.firebase.FirebaseManager
 import com.ranseo.solaroid.room.SolaroidDatabase
@@ -31,6 +32,10 @@ import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SolaroidLoginFragment : Fragment() {
 
@@ -42,6 +47,8 @@ class SolaroidLoginFragment : Fragment() {
 
     private lateinit var viewModelFactory: LoginViewModelFactory
     private lateinit var viewModel: SolaroidLoginViewModel
+
+    private lateinit var coroutineScope: CoroutineScope
 
     //로그인
     private lateinit var auth: FirebaseAuth
@@ -133,7 +140,7 @@ class SolaroidLoginFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        functions = Firebase.functions
+        functions = FirebaseFunctions.getInstance("asia-northeast3")
 
         providerBuilder = OAuthProvider.newBuilder("oidc.com.ranseo.solaroid")
         //선택사항
@@ -141,6 +148,16 @@ class SolaroidLoginFragment : Fragment() {
         //val scopes = arrayListOf("mail.read", "calendars.read")
         //providerBuilder.setScopes(scopes)
 
+        coroutineScope = CoroutineScope(Dispatchers.IO)
+        binding.btnKakaoLogout.setOnClickListener {
+            UserApiClient().unlink { error ->
+                if (error != null) {
+                    Log.e(TAG, "연결 끊기 실패", error)
+                } else {
+                    Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨.")
+                }
+            }
+        }
 
 
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
@@ -223,6 +240,19 @@ class SolaroidLoginFragment : Fragment() {
             }
         }
 
+        viewModel.customToken.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { customToken ->
+                auth.signInWithCustomToken(customToken)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Log.i(TAG, "signInWithCustomToken() success ${task.result.user?.uid}")
+                        } else {
+                            Log.e(TAG, "signInWithCustomToken() failure ${task.exception?.message}")
+                        }
+                    }
+            }
+        }
+
 
         return binding.root
     }
@@ -246,22 +276,24 @@ class SolaroidLoginFragment : Fragment() {
     }
 
     private fun checkPendingAuthResult() {
-        Log.i(TAG,"checkPendingAuthResult()")
+        Log.i(TAG, "checkPendingAuthResult()")
         FirebaseManager.getAuthInstance().pendingAuthResult?.addOnSuccessListener { authResult ->
             val credential = authResult.credential
             if (credential !is OAuthCredential) {
-                Log.i(TAG,"checkPendingAuthResult() (credential !is OAuthCredential) ")
+                Log.i(TAG, "checkPendingAuthResult() (credential !is OAuthCredential) ")
                 loginWithKakaoOIDC()
                 return@addOnSuccessListener
             }
             val accessToken = credential.accessToken
             val idToken = credential.idToken
-            Log.i(TAG, "checkPendingAuthResult()  accessToken : ${accessToken}, idToken : ${idToken}")
+            Log.i(
+                TAG,
+                "checkPendingAuthResult()  accessToken : ${accessToken}, idToken : ${idToken}"
+            )
         }?.addOnFailureListener { error ->
             Log.e(TAG, "checkPendingAuthResult() ERROR : $error")
             loginWithKakaoOIDC()
         } ?: loginWithKakaoOIDC()
-
 
 
     }
@@ -313,13 +345,18 @@ class SolaroidLoginFragment : Fragment() {
                                 "\n만료시간 : ${tokenInfo.expiresIn} 초"
                     )
 
-                    getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!).addOnCompleteListener { task ->
-                        if(task.isSuccessful) {
-                            Log.i(TAG, "getCustomToken() success : ${task.result} ")
-                        } else {
-                            Log.d(TAG, "getCustomToken() error : ${task.exception?.message} ")
-                        }
-                    }
+//                    getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!).addOnCompleteListener { task ->
+//                        if (task.isSuccessful) {
+//                            Log.i(TAG, "getCustomToken() success : ${task.result} ")
+//                        } else {
+//                            Log.d(
+//                                TAG,
+//                                "getCustomToken() error : ${task.exception?.message} ${task.exception} "
+//                            )
+//                        }
+//                    }
+
+                    getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!)
                     getKakaoUserInfo()
                 }
             }
@@ -355,13 +392,17 @@ class SolaroidLoginFragment : Fragment() {
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
-                getCustomToken(token.accessToken).addOnCompleteListener { task ->
-                    if(task.isSuccessful) {
-                        Log.i(TAG, "getCustomToken() success : ${task.result} ")
-                    } else {
-                        Log.d(TAG, "getCustomToken() error : ${task.exception?.message} ")
-                    }
-                }
+//                getCustomToken(token.accessToken).addOnCompleteListener { task ->
+//                    if (task.isSuccessful) {
+//                        Log.i(TAG, "getCustomToken() success : ${task.result} ")
+//                    } else {
+//                        Log.d(
+//                            TAG,
+//                            "getCustomToken() error : ${task.exception?.message} ${task.exception} "
+//                        )
+//                    }
+//                }
+                getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!)
                 getKakaoUserInfo()
             }
         }
@@ -376,13 +417,17 @@ class SolaroidLoginFragment : Fragment() {
                         Log.e(TAG, "로그인 실패", error)
                     } else if (token != null) {
                         Log.i(TAG, "로그인 성공 ${token.accessToken}")
-                        getCustomToken(token.accessToken).addOnCompleteListener { task ->
-                            if(task.isSuccessful) {
-                                Log.i(TAG, "getCustomToken() success : ${task.result} ")
-                            } else {
-                                Log.d(TAG, "getCustomToken() error : ${task.exception?.message} ")
-                            }
-                        }
+                        getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!)
+//                        getCustomToken(token.accessToken).addOnCompleteListener { task ->
+//                            if (task.isSuccessful) {
+//                                Log.i(TAG, "getCustomToken() success : ${task.result} ")
+//                            } else {
+//                                Log.d(
+//                                    TAG,
+//                                    "getCustomToken() error : ${task.exception?.message} ${task.exception} "
+//                                )
+//                            }
+//                        }
                     }
                 }
             } else {
@@ -528,18 +573,29 @@ class SolaroidLoginFragment : Fragment() {
     //////////////////////////////////////////////////////////
     //functions
 
-    private fun getCustomToken(kakaoAccessToken:String) : Task<String> {
-        Log.i(TAG, "kakaoAccessToken : ${kakaoAccessToken}")
-        val data = hashMapOf(
-            "access_token" to kakaoAccessToken
-        )
-        return functions.getHttpsCallable("kakaoToken")
-            .call(data)
-            .continueWith { task ->
-                val result = task.result?.data as String
+    private fun getCustomToken(kakaoAccessToken: String) {
+        coroutineScope.launch {
+            Log.i(TAG, "kakaoAccessToken : ${kakaoAccessToken}")
+            val data = hashMapOf(
+                "access_token" to kakaoAccessToken
+            )
 
-                result
-            }
+            functions.getHttpsCallable("kakaoToken")
+                .call(data)
+                .continueWith { task ->
+                    val result = task.result?.data as String
+
+                    result
+                }
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.i(TAG, "${task.result}")
+                        viewModel.setCustomToken(task.result)
+                    } else {
+                        Log.e(TAG, "${task.exception?.message}")
+                    }
+                }
+        }
     }
 
     companion object {

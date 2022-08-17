@@ -1,5 +1,6 @@
 package com.ranseo.solaroid.ui.home.fragment.album
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -199,6 +200,7 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
         viewModel.removeListener()
     }
 
+    @SuppressLint("UnsafeOptInUsageError")
     private fun setBadgeOnBottomNavigationView(cnt:Int, idx:Int) {
         val bottomNavi = binding.albumBottomNavi.getChildAt(0) as BottomNavigationMenuView
         val itemView = bottomNavi.getChildAt(1) as BottomNavigationItemView
@@ -208,7 +210,8 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
             number=cnt
             backgroundColor = ContextCompat.getColor(requireContext(), R.color.alert_color)
             badgeTextColor = ContextCompat.getColor(requireContext(), R.color.white)
-            badgeGravity = BadgeDrawable.BOTTOM_END
+            horizontalOffset = 33
+            verticalOffset = 33
         }.let{ badge ->
             itemView.foreground = badge
             itemView.addOnLayoutChangeListener { view, i, i2, i3, i4, i5, i6, i7, i8 ->
