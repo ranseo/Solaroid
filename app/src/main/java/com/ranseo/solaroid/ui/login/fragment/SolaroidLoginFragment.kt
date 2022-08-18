@@ -149,33 +149,30 @@ class SolaroidLoginFragment : Fragment() {
         //providerBuilder.setScopes(scopes)
 
         coroutineScope = CoroutineScope(Dispatchers.IO)
-        binding.btnKakaoLogout.setOnClickListener {
-            UserApiClient().unlink { error ->
-                if (error != null) {
-                    Log.e(TAG, "연결 끊기 실패", error)
-                } else {
-                    Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨.")
-                }
-            }
-        }
-
 
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 SolaroidLoginViewModel.AuthenticationState.AUTHENTICATED -> {
                     Log.i(TAG, "로그인 성공 userId : ${auth.currentUser?.uid}")
-                    if (auth.currentUser == null) auth.signOut()
-                    else {
+                    if (auth.currentUser == null) {
+                        setProgressbar(false)
+                        Log.i(TAG, "currentUser : null")
+                        auth.signOut()
+                    } else {
+                        setProgressbar(false)
                         Log.i(TAG, "프로필설정 또는 메인컨텐츠 이동")
                         viewModel.setSavedLoginId(auth.currentUser?.email)
                         viewModel.isProfileAlready()
                     }
+
                 }
                 SolaroidLoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                    setProgressbar(false)
 //                    Toast.makeText(requireActivity(), LoginFail, Toast.LENGTH_LONG).show()
                 }
                 SolaroidLoginViewModel.AuthenticationState.INVALID_AUTHENTICATION -> {
                     Log.i(TAG, "로그인 인증 확인 안됨")
+                    setProgressbar(false)
                     viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.INVALID)
                     auth.signOut()
                 }
@@ -185,6 +182,7 @@ class SolaroidLoginFragment : Fragment() {
 
         viewModel.loginBtn.observe(viewLifecycleOwner, Observer { login ->
             login.getContentIfNotHandled()?.let {
+                setProgressbar(true)
                 val email = binding.etId.text.toString()
                 val password = binding.etPassword.text.toString()
                 checkLoginError(email, password)
@@ -222,6 +220,7 @@ class SolaroidLoginFragment : Fragment() {
 
             it.getContentIfNotHandled()?.let {
                 //토큰 존재 여부 확인.
+                setProgressbar(true)
                 checkKakaoToken()
                 //checkPendingAuthResult()
 
@@ -474,6 +473,14 @@ class SolaroidLoginFragment : Fragment() {
                 apply()
             }
             Log.i(TAG, "putEmailSharedPref : putString null")
+        }
+    }
+
+    private fun setProgressbar(flag: Boolean) {
+        if(flag) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
         }
     }
 

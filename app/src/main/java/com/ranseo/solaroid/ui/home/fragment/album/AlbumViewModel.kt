@@ -3,19 +3,23 @@ package com.ranseo.solaroid.ui.album.viewmodel
 import androidx.lifecycle.*
 import com.ranseo.solaroid.Event
 import com.ranseo.solaroid.datasource.album.AlbumDataSource
+import com.ranseo.solaroid.datasource.album.RequestAlbumDataSource
 import com.ranseo.solaroid.datasource.album.WithAlbumDataSource
 import com.ranseo.solaroid.datasource.photo.PhotoTicketListenerDataSource
 import com.ranseo.solaroid.datasource.profile.MyProfileDataSource
 import com.ranseo.solaroid.firebase.FirebaseManager
 import com.ranseo.solaroid.models.domain.Album
+import com.ranseo.solaroid.models.domain.RequestAlbum
 import com.ranseo.solaroid.models.room.DatabaseAlbum
 import com.ranseo.solaroid.models.room.asFirebaseModel
 import com.ranseo.solaroid.parseAlbumParticipantsAndGetParticpantsNum
 import com.ranseo.solaroid.repositery.album.AlbumRepositery
+import com.ranseo.solaroid.repositery.album.AlbumRequestRepositery
 import com.ranseo.solaroid.repositery.album.WithAlbumRepositery
 import com.ranseo.solaroid.repositery.phototicket.PhotoTicketRepositery
 import com.ranseo.solaroid.repositery.profile.ProfileRepostiery
 import com.ranseo.solaroid.room.DatabasePhotoTicketDao
+import com.ranseo.solaroid.ui.album.adapter.AlbumListDataItem
 import kotlinx.coroutines.launch
 
 //DatabaseAlbum과 Tag를 Pair로 짝지어, list_item album 객체를 click 또는 long click 했을 때
@@ -49,6 +53,11 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         PhotoTicketListenerDataSource()
     )
 
+    private val albumRequestRepositery =
+        AlbumRequestRepositery(fbAuth, fbDatabase, RequestAlbumDataSource())
+
+
+
     val myProfile = profileRepostiery.myProfile
 
     val albums = albumRepostiery.album
@@ -63,6 +72,10 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     val roomAlbum: LiveData<Event<DAlbumTag?>>
         get() = _roomAlbum
 
+
+    private val _requestAlbumsSize = MutableLiveData<Int>()
+    val requestAlbumsSize: LiveData<Int>
+        get() = _requestAlbumsSize
 
     private val _naviToHome = MutableLiveData<Event<Unit>>()
     val naviToHome: LiveData<Event<Unit>>
@@ -89,6 +102,7 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     }
 
 
+
     /**
      * AlbumListAdapter의 onClickListener를
      * 구현할 때 list_item인 Album 객체가 클릭되면
@@ -102,8 +116,8 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     /**
      * AlbumViewModel이 초기화되고, myProfile 프로퍼티가  초기화되면
      * albumFragment내에서 앨범 목록을 display하기 위한 refresh.
-     * albumRepositery와 albumRequestRepositery에 ValueEventListener를 추가하고
-     * 각각 alubm과 requestAlbum의 목록을 viewModel 내 프로퍼티 (album 및 requestAlbum) 에
+     * albumRepositery에 ValueEventListener를 추가하고
+     * album을 viewModel 내 프로퍼티 (album) 에
      * 할당할 수 있도록 만드는 함수이다.
      * */
     fun refreshAlbum() {
@@ -114,6 +128,19 @@ class AlbumViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
                 }
             }
 
+        }
+    }
+
+    /**
+     * BottomNavigation 공유 사진첩 요청의 badge를 위하여
+     * */
+    fun refreshRequestAlbums(myFriendCode: String) {
+        viewModelScope.launch {
+            albumRequestRepositery.addValueEventListener(myFriendCode) { request ->
+                viewModelScope.launch {
+                    _requestAlbumsSize.value = request.size
+                }
+            }
         }
     }
 

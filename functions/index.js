@@ -11,15 +11,6 @@ adminConfig.credential = admin.credential.cert(serviceAccount)
 
 admin.initializeApp(adminConfig);
 
-
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 const kakaoRequestMeUrl = 'https://kapi.kakao.com/v2/user/me?secure_resource=true';
 
 exports.kakaoToken = functions.region('asia-northeast3').https.onCall((data) => {
@@ -60,8 +51,6 @@ async function updateOrCreateUser(updateParams) {
 		throw error;
 	}
 
-
-
 	return userRecord;
 }
 
@@ -82,6 +71,8 @@ async function createFirebaseToken(kakaoAccessToken) {
 		nickname = userData.properties.nickname;
 		profileImage = userData.properties.profile_image;
 	}
+
+
 	//! Firebase 특성상 email 필드는 필수이다.
 	//! 사업자등록 이후 email을 필수옵션으로 설정할 수 있으니 (카카오 개발자 사이트) 꼭 설정하자.
 	//! 테스트 단계에서는 email을 동의하지 않고 로그인 할 경우 에러가 발생한다.

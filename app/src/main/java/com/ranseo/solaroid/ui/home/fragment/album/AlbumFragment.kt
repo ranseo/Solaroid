@@ -33,7 +33,8 @@ import com.ranseo.solaroid.ui.album.viewmodel.ClickTag
 import com.ranseo.solaroid.ui.home.adapter.AlbumListClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, RenameDialog.RenameDialogListener {
+class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
+    RenameDialog.RenameDialogListener {
     private val TAG = "AlbumFragment"
 
     private lateinit var binding: FragmentAlbumBinding
@@ -41,7 +42,7 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
     private lateinit var viewModel: AlbumViewModel
     private lateinit var viewModelFactory: AlbumViewModelFactory
 
-    private lateinit var adapter : AlbumListAdapter
+    private lateinit var adapter: AlbumListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,17 +80,18 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
 
 
         viewModel.myProfile.observe(viewLifecycleOwner) {
-            it?.let { _ ->
+            it?.let { profile ->
                 Log.i(TAG, "myProfile : refreshAlbum 실행")
                 viewModel.refreshAlbum()
+                viewModel.refreshRequestAlbums(profile.friendCode.drop(1))
             }
         }
 
         viewModel.albums.observe(viewLifecycleOwner) {
-            if(it.isNullOrEmpty()) {
+            if (it.isNullOrEmpty()) {
                 adapter.submitList(listOf(AlbumListDataItem.NormalAlbumEmpty))
             } else {
-                adapter.submitList( it.map { v -> AlbumListDataItem.NormalAlbumDataItem(v) })
+                adapter.submitList(it.map { v -> AlbumListDataItem.NormalAlbumDataItem(v) })
             }
 
         }
@@ -104,7 +106,7 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
             it.getContentIfNotHandled()?.let { albumTag ->
                 val album = albumTag.first
                 when (albumTag.second) {
-                    ClickTag.CLICK-> findNavController().navigate(
+                    ClickTag.CLICK -> findNavController().navigate(
                         AlbumFragmentDirections.actionAlbumToGallery(album.id, album.name)
                     )
                     ClickTag.LONG -> showLongClickDialog()
@@ -119,11 +121,11 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
 
 
         val manager = GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
-        manager.spanSizeLookup = object:GridLayoutManager.SpanSizeLookup() {
+        manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val list = adapter.currentList
-                return if(!list.isNullOrEmpty()) {
-                    when(adapter.currentList[0]) {
+                return if (!list.isNullOrEmpty()) {
+                    when (adapter.currentList[0]) {
                         is AlbumListDataItem.NormalAlbumEmpty -> {
                             3
                         }
@@ -178,12 +180,20 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
                 )
             }
         }
+
+        viewModel.requestAlbumsSize.observe(viewLifecycleOwner) {
+            it?.let { size ->
+                if (size > 0) {
+                    setBadgeOnBottomNavigationView(it, 4)
+                }
+            }
+        }
     }
 
     override fun onStart() {
         super.onStart()
         setTrueAlbumIconInBottomNavi()
-        setBadgeOnBottomNavigationView(5,0)
+
     }
 
     private fun setTrueAlbumIconInBottomNavi() {
@@ -195,30 +205,38 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
         viewModel.removeListener()
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.removeListener()
     }
 
     @SuppressLint("UnsafeOptInUsageError")
-    private fun setBadgeOnBottomNavigationView(cnt:Int, idx:Int) {
+    private fun setBadgeOnBottomNavigationView(cnt: Int, idx: Int) {
         val bottomNavi = binding.albumBottomNavi.getChildAt(0) as BottomNavigationMenuView
-        val itemView = bottomNavi.getChildAt(1) as BottomNavigationItemView
+        val itemView = bottomNavi.getChildAt(idx) as BottomNavigationItemView
 
 
-        BadgeDrawable.create(requireContext()).apply{
-            number=cnt
+        BadgeDrawable.create(requireContext()).apply {
+            number = cnt
             backgroundColor = ContextCompat.getColor(requireContext(), R.color.alert_color)
             badgeTextColor = ContextCompat.getColor(requireContext(), R.color.white)
-            horizontalOffset = 33
-            verticalOffset = 33
-        }.let{ badge ->
+            verticalOffset = 45
+            if (cnt < 10) {
+                horizontalOffset = 45
+            } else if(cnt < 100){
+                horizontalOffset = 60
+            } else {
+                horizontalOffset = 75
+            }
+        }.let { badge ->
             itemView.foreground = badge
             itemView.addOnLayoutChangeListener { view, i, i2, i3, i4, i5, i6, i7, i8 ->
                 BadgeUtils.attachBadgeDrawable(badge, view)
             }
         }
     }
+
 
     private fun setOnItemSelectedListener(
         botNavi: BottomNavigationView
@@ -266,12 +284,12 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener, R
         new.show(parentFragmentManager, "AlbumLongClick")
     }
 
-    fun showRenameDialog(album:DatabaseAlbum) {
-        val new = RenameDialog(this,"사진첩의 이름을 변경하세요","변경", "취소", album.name)
+    fun showRenameDialog(album: DatabaseAlbum) {
+        val new = RenameDialog(this, "사진첩의 이름을 변경하세요", "변경", "취소", album.name)
         new.show(parentFragmentManager, "RenameDialog")
     }
 
-    override fun onRenamePositive(dialog: DialogFragment, new:String) {
+    override fun onRenamePositive(dialog: DialogFragment, new: String) {
         viewModel.editAlbum(new)
     }
 

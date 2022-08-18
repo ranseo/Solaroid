@@ -1,5 +1,6 @@
 package com.ranseo.solaroid.ui.friend.fragment.add.dispatch
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.ranseo.solaroid.convertHexStringToLongFormat
 import com.ranseo.solaroid.models.domain.Profile
@@ -7,6 +8,7 @@ import com.ranseo.solaroid.datasource.friend.FriendCommunicationDataSource
 import com.ranseo.solaroid.firebase.FirebaseManager
 import com.ranseo.solaroid.ui.friend.adapter.FriendListDataItem
 import com.ranseo.solaroid.repositery.friend.FriendCommunicateRepositery
+import com.ranseo.solaroid.ui.friend.fragment.add.reception.FriendReceptionViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,6 +58,15 @@ class FriendDispatchViewModel(_myProfile: Profile) : ViewModel(){
         }
     }
 
+    fun removeListener() {
+        viewModelScope.launch {
+            try {
+                friendCommunicateRepositery.removeDispatchListener(myFriendCode)
+            } catch (error: Exception) {
+                Log.i(TAG, "removeListener() : ${error.message}")
+            }
+        }
+    }
     companion object {
         const val TAG = "프렌드_디스패치_뷰모델"
 

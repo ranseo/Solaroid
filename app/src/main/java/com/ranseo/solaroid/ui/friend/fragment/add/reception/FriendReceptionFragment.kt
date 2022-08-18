@@ -91,6 +91,10 @@ class FriendReceptionFragment() : Fragment() {
         return binding.root
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        viewModel.removeListener()
+    }
     companion object {
         const val TAG = "프렌드_리셉션_프래그먼트"
         const val KEY = "ReceptionKey"

@@ -75,6 +75,11 @@ class FriendDispatchFragment() : Fragment() {
         return binding.root
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        viewModel.removeListener()
+    }
+
     companion object {
         const val TAG = "프렌드_디스패치_프래그먼트"
         const val KEY = "DispatchKey"

@@ -26,6 +26,7 @@ class AlbumRepositery(
 
     private val TAG = "AlbumRepositery"
     private var listener: ValueEventListener? = null
+    private val user = fbAuth.currentUser!!.uid
 
     val album: LiveData<List<Album>> =
         Transformations.map(roomDB.getAllAlbum(fbAuth.currentUser!!.email!!)) {
@@ -245,9 +246,10 @@ class AlbumRepositery(
      * */
     fun removeListener() {
         try {
-            val user = fbAuth.currentUser!!.uid
+
             val ref = fbDatabase.reference.child("album").child(user)
             ref.removeEventListener(listener!!)
+            Log.i(TAG,"albumRepositery removeListener() 성공")
 
         } catch (error: IOException) {
             error.printStackTrace()

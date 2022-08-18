@@ -1,9 +1,11 @@
 package com.ranseo.solaroid.ui.friend.activity
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -12,6 +14,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.ranseo.solaroid.NavigationViewModel
 import com.ranseo.solaroid.NavigationViewModelFactory
 import com.ranseo.solaroid.R
@@ -19,6 +25,7 @@ import com.ranseo.solaroid.databinding.ActivityFriendBinding
 import com.ranseo.solaroid.firebase.FirebaseManager
 import com.ranseo.solaroid.room.SolaroidDatabase
 import com.google.android.material.navigation.NavigationView
+import com.ranseo.solaroid.convertHexStringToLongFormat
 
 class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,6 +39,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     //viewModel
     private lateinit var navigationViewModelFactory: NavigationViewModelFactory
     private lateinit var naviViewModel : NavigationViewModel
+    private lateinit var friendViewModel : FriendActivityViewModel
 
 
 
@@ -45,6 +53,8 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         navigationViewModelFactory = NavigationViewModelFactory(dataSource, this.application )
         naviViewModel = ViewModelProvider(this, navigationViewModelFactory)[NavigationViewModel::class.java]
 
+        friendViewModel = ViewModelProvider(this)[FriendActivityViewModel::class.java]
+
         binding.naviViewModel = naviViewModel
         binding.lifecycleOwner = this
         //toolbar
@@ -57,6 +67,12 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navigtionViewFriend.navView.setNavigationItemSelectedListener(this)
         ///
+
+        naviViewModel.myProfile.observe(this) {
+            it?.let{ profile ->
+                friendViewModel.setMyFriendCode(convertHexStringToLongFormat(profile.friendCode))
+            }
+        }
 
         naviViewModel.naviToHomeAct.observe(this) {
             it.getContentIfNotHandled()?.let{
@@ -86,11 +102,21 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
         }
 
+        friendViewModel.myFriendCode.observe(this) {
+            it?.let{ friendCode ->
+                friendViewModel.refreshReceptionFriendSize(friendCode)
+                friendViewModel.refreshDispatchFriendSize(friendCode)
+            }
+        }
+        friendViewModel.totalFriendSize.observe(this) {
+            it?.let{ size ->
+                if(size>0) {
+                    setBadgeOnBottomNavigationView(size, 1)
+                }
+            }
+        }
 
         binding.bottomNaviFriend.setupWithNavController(navController)
-
-
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -112,10 +138,41 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         FirebaseManager.getAuthInstance().signOut()
     }
 
-
     fun setActionBarTitle(str:String) {
         val actionBar = supportActionBar
         actionBar?.title = str
+    }
+
+    @SuppressLint("UnsafeOptInUsageError")
+    private fun setBadgeOnBottomNavigationView(cnt: Int, idx: Int) {
+        val bottomNavi = binding.bottomNaviFriend.getChildAt(0) as BottomNavigationMenuView
+        val itemView = bottomNavi.getChildAt(idx) as BottomNavigationItemView
+
+
+
+        BadgeDrawable.create(this).apply {
+            number = cnt
+            backgroundColor = ContextCompat.getColor(this@FriendActivity, R.color.alert_color)
+            badgeTextColor = ContextCompat.getColor(this@FriendActivity, R.color.white)
+            verticalOffset = 45
+            if (cnt < 10) {
+                horizontalOffset = 145
+            } else if (cnt < 100) {
+                horizontalOffset = 160
+            } else {
+                horizontalOffset = 175
+            }
+        }.let { badge ->
+            itemView.foreground = badge
+            itemView.addOnLayoutChangeListener { view, i, i2, i3, i4, i5, i6, i7, i8 ->
+                BadgeUtils.attachBadgeDrawable(badge, view)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        friendViewModel.removeListener()
     }
 
     companion object{

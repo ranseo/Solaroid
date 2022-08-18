@@ -16,10 +16,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(){
+class FriendReceptionViewModel(_myProfile: Profile) : ViewModel() {
 
     private val myProfile = _myProfile
-    private val myFriendCode :Long = convertHexStringToLongFormat(myProfile.friendCode)
+    private val myFriendCode: Long = convertHexStringToLongFormat(myProfile.friendCode)
 
     //firebase
     private val fbAuth = FirebaseManager.getAuthInstance()
@@ -30,7 +30,6 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(){
         fbAuth, fbDatabase,
         FriendCommunicationDataSource()
     )
-
 
 
     private val _friends =
@@ -80,11 +79,13 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(){
 
     private fun refreshReceptionProfiles() {
         viewModelScope.launch {
-            val listener : (friends:List<Friend>)->Unit = { friends ->
+            val listener: (friends: List<Friend>) -> Unit = { friends ->
                 viewModelScope.launch(Dispatchers.Default) {
-                    val tmp = friends.distinct().map { FriendListDataItem.ReceptionProfileDataItem(
-                        ReceptionFriend(it)
-                    )}
+                    val tmp = friends.distinct().map {
+                        FriendListDataItem.ReceptionProfileDataItem(
+                            ReceptionFriend(it)
+                        )
+                    }
                     withContext(Dispatchers.Main) {
                         _friends.value = tmp
                     }
@@ -109,7 +110,12 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(){
 
     fun setValueDispatchList(friendCode: Long, flag: DispatchStatus) {
         viewModelScope.launch {
-            friendCommunicateRepositery.setValueFriendDispatch(friendCode, myProfile, flag, myFriendCode)
+            friendCommunicateRepositery.setValueFriendDispatch(
+                friendCode,
+                myProfile,
+                flag,
+                myFriendCode
+            )
         }
     }
 
@@ -117,11 +123,24 @@ class FriendReceptionViewModel(_myProfile: Profile) : ViewModel(){
         viewModelScope.launch {
             try {
 
-                friendCommunicateRepositery.deleteReceptionList(myFriendCode, friend!!.value!!.asFirebaseModel().friendCode)
+                friendCommunicateRepositery.deleteReceptionList(
+                    myFriendCode,
+                    friend!!.value!!.asFirebaseModel().friendCode
+                )
             } catch (error: Exception) {
                 Log.d(TAG, "deleteReceptionList() error : ${error}")
             }
 
+        }
+    }
+
+    fun removeListener() {
+        viewModelScope.launch {
+            try {
+                friendCommunicateRepositery.removeReceptionListener(myFriendCode)
+            } catch (error: Exception) {
+                Log.i(TAG, "removeListener() : ${error.message}")
+            }
         }
     }
 
