@@ -1,14 +1,19 @@
 package com.ranseo.solaroid.adapter
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ranseo.solaroid.custom.view.AlbumThumbnailView
 import com.ranseo.solaroid.models.domain.PhotoTicket
 import com.ranseo.solaroid.databinding.ListItemSolaroidFrameBinding
 
-class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListener) :
+class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListener, val onFrameShareListener:OnFrameShareListener) :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
 
 
@@ -19,16 +24,9 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, onFrameLongClickListener)
+        holder.bind(item, onFrameLongClickListener, onFrameShareListener)
 
         //holder.binding.executePendingBindings()
-    }
-
-    fun getPhotoTicket(position: Int): PhotoTicket? {
-        if (itemCount == 0) return null
-        val photoTicket = getItem(position)
-        Log.d("favoriteFrame", "getPhotoTicket: ${photoTicket?.id}")
-        return photoTicket
     }
 
 
@@ -37,7 +35,7 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
 
 
 
-        fun bind(item: PhotoTicket?, onLongClickListener:OnFrameLongClickListener) {
+        fun bind(item: PhotoTicket?, onLongClickListener:OnFrameLongClickListener, onShareListener:OnFrameShareListener) {
             this.binding.photoTicket = item
             this.binding.onLongClickListener = onLongClickListener
 
@@ -51,6 +49,17 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
                 val toggle = binding.imageSpin
                 binding.imageSpin = !toggle
             }
+
+
+            binding.frontLayout.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                val frontImage = (view as ConstraintLayout).getBitmapFromView()
+            }
+
+            binding.backLayout.addOnLayoutChangeListener {view, _, _, _, _, _, _, _, _ ->
+                val backImage = (view as ConstraintLayout).getBitmapFromView()
+            }
+
+
         }
 
         companion object {
@@ -60,7 +69,15 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
                 return PhotoViewHolder(binding)
             }
         }
+
+        fun ConstraintLayout.getBitmapFromView(): Bitmap {
+            val bitmap = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            this.draw(canvas)
+            return bitmap
+        }
     }
+
 
 }
 

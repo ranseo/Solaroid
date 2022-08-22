@@ -1,6 +1,7 @@
 package com.ranseo.solaroid.ui.home.fragment.frame
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.*
 import com.ranseo.solaroid.Event
@@ -122,6 +123,14 @@ class SolaroidFrameViewModel(
         get() = _favorite
 
 
+    private val _currBitmap = MutableLiveData<Bitmap?>()
+    val currBitmap : LiveData<Bitmap?>
+        get() =_currBitmap
+
+    private val _shareImage = MutableLiveData<Event<Any?>>()
+    val shareImage : LiveData<Event<Any?>>
+        get() = _shareImage
+
     init {
         Log.i(TAG, "뷰모델 Init() albumId : ${_albumId} , ${_albumKey}")
         albumId = _albumId
@@ -223,6 +232,18 @@ class SolaroidFrameViewModel(
 
         }
     }
+
+    /**
+     *
+     * */
+    fun sharePhotoTicket(){
+        _shareImage.value = Event(Unit)
+    }
+
+    fun setCurrPhotoTicketBitmap(bitmap: Bitmap) {
+        _currBitmap.value = bitmap
+    }
+
 
     //SolaroidEditFragment로 이동
     private val _naviToEditFrag = MutableLiveData<Event<String>>()

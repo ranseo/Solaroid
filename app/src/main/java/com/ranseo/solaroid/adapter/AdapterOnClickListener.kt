@@ -1,5 +1,6 @@
 package com.ranseo.solaroid.adapter
 
+import android.graphics.Bitmap
 import android.net.Uri
 
 import com.ranseo.solaroid.models.domain.MediaStoreData
@@ -15,6 +16,13 @@ class OnFrameLongClickListener(val clickListener: (photoTicketKey:String)->Unit)
     fun onClick(photoTicket: PhotoTicket) : Boolean {
         clickListener(photoTicket.id)
         return true
+    }
+}
+
+class OnFrameShareListener(val shareFrontListener: (front: Bitmap)->Unit, val shareBackListener: (back: Bitmap)->Unit) {
+    fun onShare(front: Bitmap, back: Bitmap) {
+        shareListener(front, back)
+
     }
 }
 

@@ -1,9 +1,16 @@
 package com.ranseo.solaroid.ui.home.fragment.frame
 
 
+import android.content.ContentValues
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -20,11 +27,19 @@ import com.ranseo.solaroid.dialog.ListSetDialogFragment
 import com.ranseo.solaroid.ui.home.fragment.gallery.PhotoTicketFilter
 import com.ranseo.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.ranseo.solaroid.adapter.OnFrameShareListener
+import com.ranseo.solaroid.ui.home.fragment.create.SolaroidPhotoCreateFragment
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
 
     companion object {
         const val TAG = "프레임 컨테이너"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
@@ -85,6 +100,8 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog()
+        }, OnFrameShareListener { bitmap ->
+            setBitmapImage(bitmap)
         })
 
 
@@ -97,7 +114,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         viewModel.startPosition.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { pos ->
-                Log.i(TAG,"startPosition : ${pos}")
+                Log.i(TAG, "startPosition : ${pos}")
                 binding.viewpager.setCurrentItem(pos, false)
             }
         }
@@ -111,11 +128,26 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 binding.viewpager.adapter = adapter
 
                 viewModel.refreshPhotoTicket()
+            }
+        }
 
+        viewModel.shareImage.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
+                val bitmap = viewModel.currBitmap.value
+                bitmap?.let {
+                    Log.i(TAG, "shareImage.observe ${bitmap}")
+                    makeImage(bitmap)
 
+                }
+            }
+        }
 
+        viewModel.currBitmap.observe(viewLifecycleOwner) {
+            it?.let { bitmap ->
+                Log.i(TAG, "currBitmap.observe ${bitmap}")
 
             }
+
         }
 
 
@@ -187,10 +219,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     }
 
 
-
-
-
-
     /**
      * gallery Fragment에서 viewModel naviTo 라이브 객체를 관찰하여
      * 원하는 Fragment로 이동하기 위한 코드를 모아놓은 함수
@@ -211,7 +239,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 )
             }
         }
-
 
 
     }
@@ -261,7 +288,10 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
                     }
                     true
-
+                }
+                R.id.share -> {
+                    viewModel.sharePhotoTicket()
+                    true
                 }
                 else -> false
             }
@@ -294,14 +324,56 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     }
 
     private fun showListDialog() {
-        val newDialogFragment = ListSetDialogFragment(R.array.frame_long_click_dialog_items,this)
+        val newDialogFragment = ListSetDialogFragment(R.array.frame_long_click_dialog_items, this)
         newDialogFragment.show(parentFragmentManager, "ListDialog")
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.i(TAG, "onPause : 등록 해제")
-        viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+    private fun setBitmapImage(bitmap: Bitmap) {
+        viewModel.setCurrPhotoTicketBitmap(bitmap)
+    }
+
+
+    private fun makeImage(bitmap: Bitmap) {
+        val name =
+            SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA).format(System.currentTimeMillis())
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, name)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Solaroid")
+            put(MediaStore.Images.Media.IS_PENDING, 1)
+        }
+
+
+        //fragment에서 contentResolver 쓰려면 activity에서 끌고와야함
+
+        val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+        val item: Uri = requireActivity().contentResolver.insert(collection, contentValues)!!
+
+
+        try{
+            requireActivity().contentResolver.openFileDescriptor(item, "w", null).use {
+                FileOutputStream(it!!.fileDescriptor).use { outputStream ->
+                    Log.i(TAG,"outputStream  : ${outputStream}")
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    outputStream.flush()
+                    outputStream.close()
+                }
+            }
+
+            contentValues.clear()
+            contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+            requireActivity().contentResolver.update(item, contentValues, null, null)
+
+
+        } catch (error:Exception) {
+            Log.e(TAG,"makeImage() error: ${error}")
+        } catch (error:IOException) {
+            error.printStackTrace()
+        } catch (error: FileNotFoundException) {
+            error.printStackTrace()
+        }
+
     }
 
     override fun onStop() {
