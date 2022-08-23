@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ranseo.solaroid.custom.view.AlbumThumbnailView
 import com.ranseo.solaroid.models.domain.PhotoTicket
 import com.ranseo.solaroid.databinding.ListItemSolaroidFrameBinding
+import kotlinx.coroutines.runBlocking
+import java.lang.Thread.sleep
 
 class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListener, val onFrameShareListener:OnFrameShareListener) :
     ListAdapter<PhotoTicket, SolaroidFrameAdapter.PhotoViewHolder>(PhotoTicketDiffCallback()) {
@@ -52,14 +54,17 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
 
 
             binding.frontLayout.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+                Log.i("포토뷰홀더","frontLayout.addOnLayoutChangeListener ")
                 val frontImage = (view as ConstraintLayout).getBitmapFromView()
+                onShareListener.onShareFront(frontImage)
             }
+
 
             binding.backLayout.addOnLayoutChangeListener {view, _, _, _, _, _, _, _, _ ->
+                Log.i("포토뷰홀더","backLayout.addOnLayoutChangeListener ")
                 val backImage = (view as ConstraintLayout).getBitmapFromView()
+                onShareListener.onShareBack(backImage)
             }
-
-
         }
 
         companion object {

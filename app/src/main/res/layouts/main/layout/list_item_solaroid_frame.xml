@@ -28,7 +28,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/front_layout"
             tools:visibility="invisible"
-            android:visibility="@{imageSpin ? View.GONE : View.VISIBLE}"
+            android:visibility="@{imageSpin ? View.INVISIBLE : View.VISIBLE}"
             android:onLongClickListener="@{()->onLongClickListener.onClick(photoTicket)}"
             android:layout_width="@dimen/polaroid_film_larger_width"
             android:layout_height="@dimen/polaroid_film_larger_height"
@@ -93,7 +93,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/back_layout"
             tools:visibility="visible"
-            android:visibility="@{imageSpin ? View.VISIBLE : View.GONE}"
+            android:visibility="@{imageSpin ? View.VISIBLE : View.INVISIBLE}"
             android:layout_width="@dimen/polaroid_film_larger_width"
             android:layout_height="@dimen/polaroid_film_larger_height"
             android:elevation="12dp"

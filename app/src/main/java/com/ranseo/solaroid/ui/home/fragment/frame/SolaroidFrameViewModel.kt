@@ -28,8 +28,8 @@ class SolaroidFrameViewModel(
     application: Application,
     filter: PhotoTicketFilter,
     photoTicket: PhotoTicket,
-    _albumId:String,
-    _albumKey:String
+    _albumId: String,
+    _albumKey: String
 ) :
     AndroidViewModel(application) {
 
@@ -67,19 +67,16 @@ class SolaroidFrameViewModel(
         }
     }
 
-    val albumId : String
+    val albumId: String
     val albumKey: String
-    var albumParticipants : Int = 0
+    var albumParticipants: Int = 0
 
     /**
      * Room으로 부터 얻은 포토티켓 리스트의 사이즈를 갖는 프로퍼티.
      * */
-//    private val _photoTicketsSize = MutableLiveData<Int>()
-//    val photoTicketsSize: LiveData<Int>
-//        get() = _photoTicketsSize
-//
-//    fun setPhotoTicketSize(size: Int) {
-//        _photoTicketsSize.value = size
+
+//    val photoTicketSize = Transformations.map(photoTickets) {
+//        it.size
 //    }
 
     /**
@@ -123,12 +120,16 @@ class SolaroidFrameViewModel(
         get() = _favorite
 
 
-    private val _currBitmap = MutableLiveData<Bitmap?>()
-    val currBitmap : LiveData<Bitmap?>
-        get() =_currBitmap
+    private var _currFrontBitmaps = mutableListOf<Bitmap?>()
+    val currFrontBitmaps: List<Bitmap?>
+        get() = _currFrontBitmaps
+
+    private var _currBackBitmaps = mutableListOf<Bitmap?>()
+    val currBackBitmaps: List<Bitmap?>
+        get() = _currBackBitmaps
 
     private val _shareImage = MutableLiveData<Event<Any?>>()
-    val shareImage : LiveData<Event<Any?>>
+    val shareImage: LiveData<Event<Any?>>
         get() = _shareImage
 
     init {
@@ -142,7 +143,7 @@ class SolaroidFrameViewModel(
         _startPhotoTicket.value = photoTicket
     }
 
-    fun setStartPhotoTicket(photo:PhotoTicket) {
+    fun setStartPhotoTicket(photo: PhotoTicket) {
         _startPhotoTicket.value = photo
     }
 
@@ -174,23 +175,21 @@ class SolaroidFrameViewModel(
         if (pos > -1) {
             Log.i(TAG, "setCurrentPosition : ${pos}")
             _currentPosition.value = pos
-        }
-        else {
+        } else {
             _favorite.value = false
         }
     }
-
 
 
     fun setCurrentPhotoTicket(pos: Int) {
         val list = photoTickets.value
         try {
             _currPhotoTicket.value = list?.get(pos)
-        }catch (error:IndexOutOfBoundsException) {
+        } catch (error: IndexOutOfBoundsException) {
             error.printStackTrace()
-        } catch (error:IOException) {
+        } catch (error: IOException) {
             error.printStackTrace()
-        } catch (error:NullPointerException) {
+        } catch (error: NullPointerException) {
             error.printStackTrace()
         }
     }
@@ -214,7 +213,12 @@ class SolaroidFrameViewModel(
             currPhotoTicket.value?.let {
                 it.favorite = it.favorite != true
                 Log.i(TAG, "updatePhotoTicketFavorite() : ${it.favorite}")
-                photoTicketRepositery.updatePhotoTickets(parseAlbumIdDomainToFirebase(albumId,albumKey), albumKey, it, getApplication())
+                photoTicketRepositery.updatePhotoTickets(
+                    parseAlbumIdDomainToFirebase(
+                        albumId,
+                        albumKey
+                    ), albumKey, it, getApplication()
+                )
             }
         }
     }
@@ -224,8 +228,13 @@ class SolaroidFrameViewModel(
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            if(albumParticipants == 1){
-                photoTicketRepositery.deletePhotoTicket(parseAlbumIdDomainToFirebase(albumId,albumKey),albumKey,key, getApplication())
+            if (albumParticipants == 1) {
+                photoTicketRepositery.deletePhotoTicket(
+                    parseAlbumIdDomainToFirebase(
+                        albumId,
+                        albumKey
+                    ), albumKey, key, getApplication()
+                )
             } else {
                 photoTicketRepositery.deletePhotoTicketInRoom(key)
             }
@@ -236,14 +245,44 @@ class SolaroidFrameViewModel(
     /**
      *
      * */
-    fun sharePhotoTicket(){
+    fun sharePhotoTicket() {
         _shareImage.value = Event(Unit)
     }
 
-    fun setCurrPhotoTicketBitmap(bitmap: Bitmap) {
-        _currBitmap.value = bitmap
+
+    /**
+     * 포토티켓리스트 size에 따라 (front, back) Bitmaps 의 array를 초기화
+     * */
+
+    fun setCurrFrontBitmap(bitmap: Bitmap) {
+        _currFrontBitmaps.add(bitmap)
     }
 
+    fun setCurrBackBitmap(bitmap: Bitmap) {
+        _currBackBitmaps.add(bitmap)
+    }
+
+    fun recycleBitmap() {
+        viewModelScope.launch(Dispatchers.Default) {
+            launch {
+                for (bitmap in _currFrontBitmaps) {
+                    bitmap?.let {
+                        bitmap.recycle()
+                    }
+                }
+            }
+
+            launch {
+
+                for (bitmap in _currBackBitmaps) {
+                    bitmap?.let {
+                        bitmap.recycle()
+                    }
+                }
+            }
+        }
+
+    }
 
     //SolaroidEditFragment로 이동
     private val _naviToEditFrag = MutableLiveData<Event<String>>()
@@ -254,7 +293,6 @@ class SolaroidFrameViewModel(
     fun navigateToEdit(key: String) {
         _naviToEditFrag.value = Event(key)
     }
-
 
 
     /////////////////////////////////////////////////////////////////

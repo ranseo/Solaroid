@@ -2,6 +2,7 @@ package com.ranseo.solaroid.ui.home.fragment.frame
 
 
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -98,11 +99,17 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         viewPager = binding.viewpager
 
+        val shareFront: (front: Bitmap) -> Unit = { front ->
+            viewModel.setCurrFrontBitmap(front)
+        }
+
+        val shareBack: (back: Bitmap) -> Unit = { back ->
+            viewModel.setCurrBackBitmap(back)
+        }
+
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog()
-        }, OnFrameShareListener { bitmap ->
-            setBitmapImage(bitmap)
-        })
+        }, OnFrameShareListener(shareFront, shareBack))
 
 
         binding.viewModel = viewModel
@@ -131,23 +138,41 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             }
         }
 
+//        viewModel.photoTicketSize.observe(viewLifecycleOwner) {
+//            it?.let{ size ->
+//                viewModel.setBitmapArray(size)
+//            }
+//        }
+
         viewModel.shareImage.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
-                val bitmap = viewModel.currBitmap.value
-                bitmap?.let {
-                    Log.i(TAG, "shareImage.observe ${bitmap}")
-                    makeImage(bitmap)
+                val currPos = viewModel.currentPosition.value!!
 
+                val frontBitmap = viewModel.currFrontBitmaps[currPos]
+                val backBitmap = viewModel.currBackBitmaps[currPos]
+
+                Log.i(TAG, "currPos : ${currPos}, frontBitmap  : ${frontBitmap}")
+
+                val imageUris : ArrayList<Uri> = arrayListOf()
+                frontBitmap?.let{
+                    imageUris.add(makeImage(frontBitmap))
+                }
+
+                backBitmap?.let{
+                    imageUris.add(makeImage(backBitmap))
+                }
+
+
+                val shareIntent = Intent().apply {
+                    action = Intent.ACTION_SEND_MULTIPLE
+                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris)
+                    type = "image/png"
+                }
+
+                if(shareIntent.resolveActivity(this.requireActivity().packageManager) !=null){
+                    startActivity(Intent.createChooser(shareIntent, "이미지 공유"))
                 }
             }
-        }
-
-        viewModel.currBitmap.observe(viewLifecycleOwner) {
-            it?.let { bitmap ->
-                Log.i(TAG, "currBitmap.observe ${bitmap}")
-
-            }
-
         }
 
 
@@ -328,12 +353,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         newDialogFragment.show(parentFragmentManager, "ListDialog")
     }
 
-    private fun setBitmapImage(bitmap: Bitmap) {
-        viewModel.setCurrPhotoTicketBitmap(bitmap)
-    }
-
-
-    private fun makeImage(bitmap: Bitmap) {
+    private fun makeImage(bitmap: Bitmap) : Uri {
         val name =
             SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA).format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
@@ -351,10 +371,9 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         val item: Uri = requireActivity().contentResolver.insert(collection, contentValues)!!
 
 
-        try{
+        try {
             requireActivity().contentResolver.openFileDescriptor(item, "w", null).use {
                 FileOutputStream(it!!.fileDescriptor).use { outputStream ->
-                    Log.i(TAG,"outputStream  : ${outputStream}")
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                     outputStream.flush()
                     outputStream.close()
@@ -365,15 +384,15 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
             requireActivity().contentResolver.update(item, contentValues, null, null)
 
-
-        } catch (error:Exception) {
-            Log.e(TAG,"makeImage() error: ${error}")
-        } catch (error:IOException) {
+        } catch (error: Exception) {
+            Log.e(TAG, "makeImage() error: ${error}")
+        } catch (error: IOException) {
             error.printStackTrace()
         } catch (error: FileNotFoundException) {
             error.printStackTrace()
         }
 
+        return item
     }
 
     override fun onStop() {
@@ -385,6 +404,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "onDestroy : 등록 해제")
+        viewModel.recycleBitmap()
         viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
     }
 
