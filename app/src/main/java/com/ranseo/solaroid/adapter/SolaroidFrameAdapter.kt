@@ -56,14 +56,16 @@ class SolaroidFrameAdapter(val onFrameLongClickListener: OnFrameLongClickListene
             binding.frontLayout.addOnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
                 Log.i("포토뷰홀더","frontLayout.addOnLayoutChangeListener ")
                 val frontImage = (view as ConstraintLayout).getBitmapFromView()
-                onShareListener.onShareFront(frontImage)
+                val pos = absoluteAdapterPosition
+                onShareListener.onShareFront(frontImage, pos)
             }
 
 
             binding.backLayout.addOnLayoutChangeListener {view, _, _, _, _, _, _, _, _ ->
                 Log.i("포토뷰홀더","backLayout.addOnLayoutChangeListener ")
                 val backImage = (view as ConstraintLayout).getBitmapFromView()
-                onShareListener.onShareBack(backImage)
+                val pos = absoluteAdapterPosition
+                onShareListener.onShareBack(backImage, pos)
             }
         }
 

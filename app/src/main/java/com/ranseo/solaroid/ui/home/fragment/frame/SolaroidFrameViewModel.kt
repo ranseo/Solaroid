@@ -120,12 +120,12 @@ class SolaroidFrameViewModel(
         get() = _favorite
 
 
-    private var _currFrontBitmaps = mutableListOf<Bitmap?>()
-    val currFrontBitmaps: List<Bitmap?>
+    private lateinit var _currFrontBitmaps: Array<Bitmap?>
+    val currFrontBitmaps: Array<Bitmap?>
         get() = _currFrontBitmaps
 
-    private var _currBackBitmaps = mutableListOf<Bitmap?>()
-    val currBackBitmaps: List<Bitmap?>
+    private lateinit var _currBackBitmaps: Array<Bitmap?>
+    val currBackBitmaps: Array<Bitmap?>
         get() = _currBackBitmaps
 
     private val _shareImage = MutableLiveData<Event<Any?>>()
@@ -174,6 +174,10 @@ class SolaroidFrameViewModel(
     fun setCurrentPosition(pos: Int) {
         if (pos > -1) {
             Log.i(TAG, "setCurrentPosition : ${pos}")
+            Log.i(
+                TAG,
+                "currFrontBitmap : ${currFrontBitmaps[pos]}, currBackBitmap: ${currBackBitmaps[pos]}"
+            )
             _currentPosition.value = pos
         } else {
             _favorite.value = false
@@ -250,16 +254,33 @@ class SolaroidFrameViewModel(
     }
 
 
+    fun refreshBimtaps(size: Int) {
+        _currFrontBitmaps = Array<Bitmap?>(size) { null }
+        _currBackBitmaps = Array<Bitmap?>(size) { null }
+
+    }
+
     /**
      * 포토티켓리스트 size에 따라 (front, back) Bitmaps 의 array를 초기화
      * */
 
-    fun setCurrFrontBitmap(bitmap: Bitmap) {
-        _currFrontBitmaps.add(bitmap)
+    fun setCurrFrontBitmap(bitmap: Bitmap, pos: Int) {
+        Log.i(TAG, "setCurrFrontBitmap : ${bitmap}")
+        if (!_currFrontBitmaps.isNullOrEmpty()) {
+            _currFrontBitmaps[pos] = bitmap
+            Log.i(TAG, "pos : ${pos}, currFrontBitmaps : ${currFrontBitmaps[pos]}")
+        }
+
+
     }
 
-    fun setCurrBackBitmap(bitmap: Bitmap) {
-        _currBackBitmaps.add(bitmap)
+    fun setCurrBackBitmap(bitmap: Bitmap, pos: Int) {
+        Log.i(TAG, "setCurrBackBitmap : ${bitmap}")
+        if (!_currFrontBitmaps.isNullOrEmpty()) {
+            _currBackBitmaps[pos] = bitmap
+            Log.i(TAG, "pos : ${pos}, currBackBitmaps : ${currBackBitmaps[pos]}")
+        }
+
     }
 
     fun recycleBitmap() {

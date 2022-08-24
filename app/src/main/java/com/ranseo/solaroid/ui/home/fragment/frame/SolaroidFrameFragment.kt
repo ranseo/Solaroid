@@ -99,12 +99,12 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         viewPager = binding.viewpager
 
-        val shareFront: (front: Bitmap) -> Unit = { front ->
-            viewModel.setCurrFrontBitmap(front)
+        val shareFront: (front: Bitmap, pos:Int) -> Unit = { front, pos ->
+            viewModel.setCurrFrontBitmap(front, pos)
         }
 
-        val shareBack: (back: Bitmap) -> Unit = { back ->
-            viewModel.setCurrBackBitmap(back)
+        val shareBack: (back: Bitmap, pos:Int) -> Unit = { back, pos ->
+            viewModel.setCurrBackBitmap(back, pos)
         }
 
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
@@ -131,6 +131,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             list?.let {
                 Log.i(TAG, "photoTickets : ${list}")
 //                viewModel.setPhotoTicketSize(it.size)
+                viewModel.refreshBimtaps(it.size)
                 adapter.submitList(list)
                 binding.viewpager.adapter = adapter
 
@@ -148,10 +149,11 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             it.getContentIfNotHandled()?.let {
                 val currPos = viewModel.currentPosition.value!!
 
+
                 val frontBitmap = viewModel.currFrontBitmaps[currPos]
                 val backBitmap = viewModel.currBackBitmaps[currPos]
 
-                Log.i(TAG, "currPos : ${currPos}, frontBitmap  : ${frontBitmap}")
+                Log.i(TAG, "currPos : ${currPos}, frontBitmap  : ${frontBitmap}, backBitmap  : ${backBitmap}")
 
                 val imageUris : ArrayList<Uri> = arrayListOf()
                 frontBitmap?.let{
@@ -395,11 +397,11 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         return item
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.i(TAG, "onStop : 등록 해제")
-        viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
-    }
+//    override fun onStop() {
+//        super.onStop()
+//        Log.i(TAG, "onStop : 등록 해제")
+//        viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

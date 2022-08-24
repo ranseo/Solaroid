@@ -19,13 +19,13 @@ class OnFrameLongClickListener(val clickListener: (photoTicketKey:String)->Unit)
     }
 }
 
-class OnFrameShareListener(val shareFrontListener: (front: Bitmap)->Unit, val shareBackListener: (back: Bitmap)->Unit) {
-    fun onShareFront(front: Bitmap) {
-        shareFrontListener(front)
+class OnFrameShareListener(val shareFrontListener: (front: Bitmap, pos:Int)->Unit, val shareBackListener: (back: Bitmap, pos:Int)->Unit) {
+    fun onShareFront(front: Bitmap, pos:Int) {
+        shareFrontListener(front, pos)
     }
 
-    fun onShareBack(back: Bitmap) {
-        shareBackListener(back)
+    fun onShareBack(back: Bitmap, pos:Int) {
+        shareBackListener(back, pos)
     }
 }
 
