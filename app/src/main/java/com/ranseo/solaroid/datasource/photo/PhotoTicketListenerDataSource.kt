@@ -31,7 +31,7 @@ class PhotoTicketListenerDataSource {
                 phototicket
             }
 
-            Log.i(TAG, "photoTicket : ${photoTickets}")
+            //Log.i(TAG, "photoTicket : ${photoTickets}")
 
             insertRoomDb(photoTickets)
 

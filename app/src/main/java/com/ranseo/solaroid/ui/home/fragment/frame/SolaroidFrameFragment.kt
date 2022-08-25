@@ -1,17 +1,16 @@
 package com.ranseo.solaroid.ui.home.fragment.frame
 
 
+import android.content.ClipData
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
+import androidx.core.content.FileProvider.getUriForFile
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -28,11 +27,9 @@ import com.ranseo.solaroid.dialog.ListSetDialogFragment
 import com.ranseo.solaroid.ui.home.fragment.gallery.PhotoTicketFilter
 import com.ranseo.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.ranseo.solaroid.MyFileProvider
 import com.ranseo.solaroid.adapter.OnFrameShareListener
-import com.ranseo.solaroid.ui.home.fragment.create.SolaroidPhotoCreateFragment
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -99,18 +96,18 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         viewPager = binding.viewpager
 
-        val shareFront: (front: Bitmap, pos:Int) -> Unit = { front, pos ->
+        val shareFront: (front: Bitmap, pos: Int) -> Unit = { front, pos ->
             viewModel.setCurrFrontBitmap(front, pos)
         }
 
-        val shareBack: (back: Bitmap, pos:Int) -> Unit = { back, pos ->
+        val shareBack: (back: Bitmap, pos: Int) -> Unit = { back, pos ->
             viewModel.setCurrBackBitmap(back, pos)
         }
 
         val adapter = SolaroidFrameAdapter(OnFrameLongClickListener {
             showListDialog()
         }, OnFrameShareListener(shareFront, shareBack))
-
+        binding.viewpager.adapter = adapter
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -121,21 +118,33 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         viewModel.startPosition.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { pos ->
-                Log.i(TAG, "startPosition : ${pos}")
+                // Log.i(TAG, "startPosition : ${pos}")
+
                 binding.viewpager.setCurrentItem(pos, false)
+                binding.frameBottomNavi.menu.findItem(R.id.favorite).isEnabled = true
             }
         }
 
-
+        var cnt = 1
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
-            list?.let {
+            list?.let { photoTicket ->
+                binding.frameBottomNavi.menu.findItem(R.id.favorite).isEnabled = false
                 Log.i(TAG, "photoTickets : ${list}")
+                val currPhotoTicket = viewModel.currPhotoTicket.value
+                currPhotoTicket?.let { photoTicket ->
+                    viewModel.setStartPhotoTicket(photoTicket)
+                }
 //                viewModel.setPhotoTicketSize(it.size)
-                viewModel.refreshBimtaps(it.size)
+                repeat(cnt) {
+                    viewModel.refreshBimtaps(photoTicket.size)
+                    cnt--
+                }
+
                 adapter.submitList(list)
-                binding.viewpager.adapter = adapter
+//                binding.viewpager.adapter = adapter
 
                 viewModel.refreshPhotoTicket()
+                viewModel.refreshFavorite()
             }
         }
 
@@ -153,25 +162,29 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 val frontBitmap = viewModel.currFrontBitmaps[currPos]
                 val backBitmap = viewModel.currBackBitmaps[currPos]
 
-                Log.i(TAG, "currPos : ${currPos}, frontBitmap  : ${frontBitmap}, backBitmap  : ${backBitmap}")
+                // Log.i(TAG, "currPos : ${currPos}, frontBitmap  : ${frontBitmap}, backBitmap  : ${backBitmap}")
 
-                val imageUris : ArrayList<Uri> = arrayListOf()
-                frontBitmap?.let{
-                    imageUris.add(makeImage(frontBitmap))
+                val imageUris: ArrayList<Uri> = arrayListOf()
+                frontBitmap?.let {
+                    imageUris.add(makeCacheDir1(frontBitmap))
                 }
 
-                backBitmap?.let{
-                    imageUris.add(makeImage(backBitmap))
+                backBitmap?.let {
+                    imageUris.add(makeCacheDir1(backBitmap))
                 }
 
 
                 val shareIntent = Intent().apply {
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
                     action = Intent.ACTION_SEND_MULTIPLE
                     putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris)
                     type = "image/png"
                 }
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
-                if(shareIntent.resolveActivity(this.requireActivity().packageManager) !=null){
+
+                if (shareIntent.resolveActivity(this.requireActivity().packageManager) != null) {
                     startActivity(Intent.createChooser(shareIntent, "이미지 공유"))
                 }
             }
@@ -188,6 +201,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         setOnItemSelectedListener(binding.frameBottomNavi)
 
+        //1
 
         return binding.root
     }
@@ -200,12 +214,12 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     private fun observeFavorite() {
         viewModel.favorite.observe(viewLifecycleOwner) { favor ->
             favor?.let {
-                Log.d(TAG, "viewModel.favorite.observe  : ${favor}")
+                Log.i(TAG, "viewModel.favorite.observe  : ${favor}")
                 //getItem은 오류 findItem이랑 다른듯.!
                 val menuItem: MenuItem =
                     binding.frameBottomNavi.menu.findItem(R.id.favorite)
                 menuItem.setIcon(if (!it) R.drawable.ic_favorite_false else R.drawable.ic_favorite_true)
-                Log.d(TAG, "Success")
+                Log.i(TAG, "Success")
             }
         }
     }
@@ -220,7 +234,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     private fun observeCurrentPosition() {
         viewModel.currentPosition.observe(viewLifecycleOwner, Observer { pos ->
             pos?.let {
-                Log.i(TAG, "currentPosition.observe pos : ${it}")
+                //Log.i(TAG, "currentPosition.observe pos : ${it}")
                 viewModel.setCurrentPhotoTicket(pos)
             }
         })
@@ -236,10 +250,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                 viewModel.setCurrentFavorite(photoTicket.favorite)
                 viewModel.setStartPhotoTicket(photoTicket)
                 //Toast.makeText(this.context, "현재 포토티켓 : ${photoTicket}", Toast.LENGTH_LONG).show()
-                Log.i(
-                    TAG,
-                    "observeCurrentPhoto()  : ${photoTicket}"
-                )
+                //Log.i(TAG, "observeCurrentPhoto()  : ${photoTicket}")
             }
             if (it == null) viewModel.setCurrentFavorite(false)
         }
@@ -279,7 +290,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.i(TAG, "onPageSelected")
+                //Log.i(TAG, "onPageSelected")
                 if (adapter.itemCount > 0) {
                     viewModel.setCurrentPosition(position)
                 } else {
@@ -355,7 +366,51 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         newDialogFragment.show(parentFragmentManager, "ListDialog")
     }
 
-    private fun makeImage(bitmap: Bitmap) : Uri {
+
+    private fun makeCacheDir(bitmap: Bitmap) {
+        val imagePath = File(requireActivity().cacheDir, "my_images")
+        imagePath.mkdirs()
+        val stream = FileOutputStream(imagePath)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        stream.close()
+    }
+
+    private fun makeCacheDir1(bitmap: Bitmap): Uri {
+        val imagePath = File(requireActivity().cacheDir, "my_images")
+        val fileName =
+            SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA).format(System.currentTimeMillis())
+        val newFile = File(imagePath, "${fileName}.png")
+
+        val uri = getUriForFile(requireContext(), "com.ranseo.solaroid.fileprovider", newFile)
+
+        try {
+            requireActivity().contentResolver.openFileDescriptor(uri, "w", null).use {
+                FileOutputStream(it!!.fileDescriptor).use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    outputStream.flush()
+                    outputStream.close()
+                }
+            }
+        } catch (error: Exception) {
+            Log.e(TAG, "makeCacheDir() error: ${error}")
+        } catch (error: IOException) {
+            error.printStackTrace()
+        } catch (error: FileNotFoundException) {
+            error.printStackTrace()
+        }
+
+        return uri
+
+
+    }
+
+    private fun shareImagesInCacheDir(file: File) {
+        val imagePath = File(requireActivity().cacheDir, "my_images")
+
+    }
+
+
+    private fun makeImageInMediaStore(bitmap: Bitmap): Uri {
         val name =
             SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA).format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
@@ -371,7 +426,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
         val item: Uri = requireActivity().contentResolver.insert(collection, contentValues)!!
-
 
         try {
             requireActivity().contentResolver.openFileDescriptor(item, "w", null).use {

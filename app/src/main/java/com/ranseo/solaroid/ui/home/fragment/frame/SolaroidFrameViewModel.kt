@@ -133,7 +133,7 @@ class SolaroidFrameViewModel(
         get() = _shareImage
 
     init {
-        Log.i(TAG, "뷰모델 Init() albumId : ${_albumId} , ${_albumKey}")
+        // Log.i(TAG, "뷰모델 Init() albumId : ${_albumId} , ${_albumKey}")
         albumId = _albumId
         albumKey = _albumKey
         viewModelScope.launch {
@@ -145,6 +145,7 @@ class SolaroidFrameViewModel(
 
     fun setStartPhotoTicket(photo: PhotoTicket) {
         _startPhotoTicket.value = photo
+        // Log.i(TAG,"startPhotoTicket : ${startPhotoTicket.value?.frontText}")
     }
 
 
@@ -160,11 +161,23 @@ class SolaroidFrameViewModel(
 
 
     /**
-     * 현재 포토티켓의 즐겨찾기 상태를 대입한다.
+     * 현재 포토티켓의 즐겨찾기 상태를 반영한다.
      * */
-    fun setCurrentFavorite(favorite: Boolean) {
-        Log.i(TAG, "setCurrentFavorite : ${favorite}")
-        _favorite.value = favorite
+    fun setCurrentFavorite(favor: Boolean) {
+        Log.i(TAG, "before setCurrentFavorite : ${favor}")
+        _favorite.value = favor
+        Log.i(TAG, "after setCurrentFavorite : ${favorite.value}")
+    }
+
+    fun refreshFavorite() {
+        try {
+            _favorite.value = currPhotoTicket.value?.favorite
+        } catch (error: NullPointerException) {
+            error.printStackTrace()
+        } catch (error: Exception) {
+            error.printStackTrace()
+        }
+
     }
 
 
@@ -172,12 +185,9 @@ class SolaroidFrameViewModel(
      * currentPosition의 값 설정.
      * */
     fun setCurrentPosition(pos: Int) {
+
         if (pos > -1) {
-            Log.i(TAG, "setCurrentPosition : ${pos}")
-            Log.i(
-                TAG,
-                "currFrontBitmap : ${currFrontBitmaps[pos]}, currBackBitmap: ${currBackBitmaps[pos]}"
-            )
+            //Log.i(TAG, "setCurrentPosition : ${pos}")
             _currentPosition.value = pos
         } else {
             _favorite.value = false
@@ -205,7 +215,7 @@ class SolaroidFrameViewModel(
             withContext(Dispatchers.Main) {
                 _startPosition.value = Event(idx)
             }
-            Log.i(TAG, "startPositin.value  :  ${_startPosition.value}")
+            //Log.i(TAG, "startPositin.value  :  ${_startPosition.value}")
         }
     }
 
@@ -216,7 +226,7 @@ class SolaroidFrameViewModel(
         viewModelScope.launch {
             currPhotoTicket.value?.let {
                 it.favorite = it.favorite != true
-                Log.i(TAG, "updatePhotoTicketFavorite() : ${it.favorite}")
+                //Log.i(TAG, "updatePhotoTicketFavorite() : ${it.favorite}")
                 photoTicketRepositery.updatePhotoTickets(
                     parseAlbumIdDomainToFirebase(
                         albumId,
@@ -265,20 +275,20 @@ class SolaroidFrameViewModel(
      * */
 
     fun setCurrFrontBitmap(bitmap: Bitmap, pos: Int) {
-        Log.i(TAG, "setCurrFrontBitmap : ${bitmap}")
+        //Log.i(TAG, "setCurrFrontBitmap : ${bitmap}")
         if (!_currFrontBitmaps.isNullOrEmpty()) {
             _currFrontBitmaps[pos] = bitmap
-            Log.i(TAG, "pos : ${pos}, currFrontBitmaps : ${currFrontBitmaps[pos]}")
+            //Log.i(TAG, "pos : ${pos}, currFrontBitmaps : ${currFrontBitmaps[pos]}")
         }
 
 
     }
 
     fun setCurrBackBitmap(bitmap: Bitmap, pos: Int) {
-        Log.i(TAG, "setCurrBackBitmap : ${bitmap}")
+        // Log.i(TAG, "setCurrBackBitmap : ${bitmap}")
         if (!_currFrontBitmaps.isNullOrEmpty()) {
             _currBackBitmaps[pos] = bitmap
-            Log.i(TAG, "pos : ${pos}, currBackBitmaps : ${currBackBitmaps[pos]}")
+            // Log.i(TAG, "pos : ${pos}, currBackBitmaps : ${currBackBitmaps[pos]}")
         }
 
     }
@@ -302,7 +312,6 @@ class SolaroidFrameViewModel(
                 }
             }
         }
-
     }
 
     //SolaroidEditFragment로 이동

@@ -3,17 +3,18 @@
     <item
         android:id="@+id/favorite"
         android:icon="@drawable/ic_favorite_false"
-        android:title="즐겨찾기"/>
+        android:title="즐겨찾기"
+        />
 
     <item
         android:id="@+id/edit"
         android:icon="@drawable/editing"
-        android:title="편집"/>
+        android:title="편집" />
 
 
     <item
         android:id="@+id/share"
         android:icon="@drawable/ic_baseline_share_24"
-        android:title="공유"/>
+        android:title="공유" />
 
 </menu>
