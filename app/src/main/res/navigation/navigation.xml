@@ -99,7 +99,7 @@
         android:id="@+id/fragment_solaroid_frame"
         android:name="com.ranseo.solaroid.ui.home.fragment.frame.SolaroidFrameFragment"
         android:label=""
-        tools:layout="@layout/fragment_solaroid_frame">
+        tools:layout="@layout/fragment_solaroid_frame_container">
 
         <action
             android:id="@+id/action_frame_to_edit"

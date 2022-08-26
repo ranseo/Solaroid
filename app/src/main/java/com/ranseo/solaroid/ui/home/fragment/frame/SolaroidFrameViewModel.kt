@@ -2,6 +2,7 @@ package com.ranseo.solaroid.ui.home.fragment.frame
 
 import android.app.Application
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import com.ranseo.solaroid.Event
@@ -325,6 +326,13 @@ class SolaroidFrameViewModel(
     }
 
 
+    private val _tmp = MutableLiveData<Uri>()
+    val tmp: LiveData<Uri>
+        get() = _tmp
+
+    fun setTmp(uri:Uri) {
+        _tmp.value = uri
+    }
     /////////////////////////////////////////////////////////////////
 
 

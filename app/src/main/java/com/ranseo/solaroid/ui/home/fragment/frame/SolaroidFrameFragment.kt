@@ -1,16 +1,18 @@
 package com.ranseo.solaroid.ui.home.fragment.frame
 
 
-import android.content.ClipData
-import android.content.ContentValues
-import android.content.Intent
+import android.content.*
+import android.content.Context.CLIPBOARD_SERVICE
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.FileProvider.getUriForFile
+import androidx.core.content.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -113,7 +115,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-
+        
         registerOnPageChangeCallback(adapter)
 
         viewModel.startPosition.observe(viewLifecycleOwner) {
@@ -173,20 +175,19 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
                     imageUris.add(makeCacheDir1(backBitmap))
                 }
 
+                shareIntent(imageUris)
 
-                val shareIntent = Intent().apply {
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    action = Intent.ACTION_SEND_MULTIPLE
-                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris)
-                    type = "image/png"
-                }
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-
-
-                if (shareIntent.resolveActivity(this.requireActivity().packageManager) != null) {
-                    startActivity(Intent.createChooser(shareIntent, "이미지 공유"))
-                }
+//                val shareIntent = Intent().apply {
+//                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+//                    action = Intent.ACTION_SEND_MULTIPLE
+//                    putParcelableArrayListExtra(Intent.EXTRA_STREAM, )
+//                    type = "image/png"
+//                }
+//
+//
+//                if (shareIntent.resolveActivity(this.requireActivity().packageManager) != null) {
+//                    startActivity(Intent.createChooser(shareIntent, "이미지 공유"))
+//                }
             }
         }
 
@@ -205,6 +206,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         return binding.root
     }
+
 
 
     /**
@@ -375,25 +377,54 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         stream.close()
     }
 
+    private fun clipData(uri:Uri) {
+        val clipboard = requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
+        val lastName = uri.lastPathSegment
+        Log.i(TAG, "clipData LastName = ${lastName}")
+
+        uri.
+
+    }
+
+    private fun shareIntent(uris: ArrayList<Uri>) {
+        val shareIntent = Intent().apply {
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            action = Intent.ACTION_SEND_MULTIPLE
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+            type = "image/png"
+        }
+
+
+        if (shareIntent.resolveActivity(this.requireActivity().packageManager) != null) {
+            startActivity(Intent.createChooser(shareIntent, "이미지 공유"))
+        }
+    }
+
     private fun makeCacheDir1(bitmap: Bitmap): Uri {
         val imagePath = File(requireActivity().cacheDir, "my_images")
-
+        imagePath.mkdirs()
         val fileName =
             SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA).format(System.currentTimeMillis())
         val newFile = File(imagePath, "${fileName}.png")
 
         val uri = getUriForFile(requireContext(), "com.ranseo.solaroid.fileprovider", newFile)
 
-        requireActivity().grantUriPermission("com.ranseo.solaroid.ui.home.fragment.frame", uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val packageName = requireContext().packageName
+        Log.i(TAG, "packageName : ${packageName}")
+        requireActivity().grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
         try {
+            Log.i(TAG,"URI : ${uri}")
             requireActivity().contentResolver.openFileDescriptor(uri, "w", null).use {
                 FileOutputStream(it!!.fileDescriptor).use { outputStream ->
+                    Log.i(TAG,"outputStream: ${outputStream}")
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                     outputStream.flush()
                     outputStream.close()
                 }
             }
+            Log.i(TAG, "success")
         } catch (error: Exception) {
             Log.e(TAG, "makeCacheDir() error: ${error}")
         } catch (error: IOException) {
@@ -401,6 +432,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         } catch (error: FileNotFoundException) {
             error.printStackTrace()
         }
+
 
         requireActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         return uri

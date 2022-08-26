@@ -48,7 +48,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:menu="@menu/fragment_frame_bot_navi" />
+
+            <ImageView
+                android:id="@+id/tmp_check"
+                android:src="@drawable/tmp_photo_image"
+                setImage="@{viewModel.tmp}"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:elevation="23dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
