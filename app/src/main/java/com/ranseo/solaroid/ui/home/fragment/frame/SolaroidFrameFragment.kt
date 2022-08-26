@@ -377,11 +377,14 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
     private fun makeCacheDir1(bitmap: Bitmap): Uri {
         val imagePath = File(requireActivity().cacheDir, "my_images")
+
         val fileName =
             SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA).format(System.currentTimeMillis())
         val newFile = File(imagePath, "${fileName}.png")
 
         val uri = getUriForFile(requireContext(), "com.ranseo.solaroid.fileprovider", newFile)
+
+        requireActivity().grantUriPermission("com.ranseo.solaroid.ui.home.fragment.frame", uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
         try {
             requireActivity().contentResolver.openFileDescriptor(uri, "w", null).use {
@@ -399,6 +402,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
             error.printStackTrace()
         }
 
+        requireActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         return uri
 
 
