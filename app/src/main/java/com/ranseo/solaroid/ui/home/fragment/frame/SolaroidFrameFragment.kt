@@ -34,12 +34,15 @@ import com.ranseo.solaroid.adapter.OnFrameShareListener
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
 
     companion object {
         const val TAG = "프레임 컨테이너"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val FILEPROVIDER = "content://com.ranseo.solaroid.fileprovider"
+        const val COPY_PATH = "/copy"
     }
 
     private lateinit var viewModelFactory: SolaroidFrameViewModelFactory
@@ -115,7 +118,7 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         binding.lifecycleOwner = viewLifecycleOwner
 
 
-        
+
         registerOnPageChangeCallback(adapter)
 
         viewModel.startPosition.observe(viewLifecycleOwner) {
@@ -168,12 +171,16 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
                 val imageUris: ArrayList<Uri> = arrayListOf()
                 frontBitmap?.let {
-                    imageUris.add(makeCacheDir1(frontBitmap))
+                    val uri = makeCacheDir1(frontBitmap)
+                    imageUris.add(uri)
                 }
 
                 backBitmap?.let {
-                    imageUris.add(makeCacheDir1(backBitmap))
+                    val uri = makeCacheDir1(backBitmap)
+                    imageUris.add(uri)
                 }
+                clipData(imageUris)
+
 
                 shareIntent(imageUris)
 
@@ -206,7 +213,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         return binding.root
     }
-
 
 
     /**
@@ -377,27 +383,47 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
         stream.close()
     }
 
-    private fun clipData(uri:Uri) {
+    private fun clipData(uris:ArrayList<Uri>) {
         val clipboard = requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
-        val lastName = uri.lastPathSegment
-        Log.i(TAG, "clipData LastName = ${lastName}")
+        val copyUri1: Uri = Uri.parse("${uris[0]}")
+        val copyUri2: Uri = Uri.parse("${uris[1]}")
 
-        uri.
+        val item2 = ClipData.Item(copyUri2)
+
+        val clip: ClipData = ClipData.newUri(requireActivity().contentResolver, "URI", copyUri1)
+        clip.addItem(item2)
+
+
+        clipboard.setPrimaryClip(clip)
 
     }
 
     private fun shareIntent(uris: ArrayList<Uri>) {
-        val shareIntent = Intent().apply {
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            action = Intent.ACTION_SEND_MULTIPLE
-            putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
-            type = "image/png"
+        viewModel.setTmp(uris.get(0))
+        val clipboard = requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val item = clipboard.primaryClip
+        if(item ==null) {
+            Log.e(TAG,"shareIntent - clipBoard item is ${item}")
+            return
         }
 
 
+        Log.i(TAG, "ITEM : ${item}, item.get() : ${item.getItemAt(0)}")
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND_MULTIPLE
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            clipData = item
+            type = "image/png"
+        }
+
+        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+
+        //shareIntent.putExtra(Intent.EXTRA_STREAM, uris.get(0))
+
         if (shareIntent.resolveActivity(this.requireActivity().packageManager) != null) {
-            startActivity(Intent.createChooser(shareIntent, "이미지 공유"))
+            val intentChooser = Intent.createChooser(shareIntent, "이미지 공유")
+            startActivity(intentChooser)
         }
     }
 
@@ -412,13 +438,17 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
 
         val packageName = requireContext().packageName
         Log.i(TAG, "packageName : ${packageName}")
-        requireActivity().grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        requireActivity().grantUriPermission(
+            packageName,
+            uri,
+            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        )
 
         try {
-            Log.i(TAG,"URI : ${uri}")
+            Log.i(TAG, "URI : ${uri}")
             requireActivity().contentResolver.openFileDescriptor(uri, "w", null).use {
                 FileOutputStream(it!!.fileDescriptor).use { outputStream ->
-                    Log.i(TAG,"outputStream: ${outputStream}")
+                    Log.i(TAG, "outputStream: ${outputStream}")
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                     outputStream.flush()
                     outputStream.close()
