@@ -375,14 +375,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     }
 
 
-    private fun makeCacheDir(bitmap: Bitmap) {
-        val imagePath = File(requireActivity().cacheDir, "my_images")
-        imagePath.mkdirs()
-        val stream = FileOutputStream(imagePath)
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        stream.close()
-    }
-
     private fun clipData(uris:ArrayList<Uri>) {
         val clipboard = requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 

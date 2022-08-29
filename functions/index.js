@@ -3,8 +3,9 @@ const axios = require('axios').default;
 const async = require('async');
 const admin = require("firebase-admin");
 
-const serviceAccount = require("./service-account.json")
+const serviceAccount = require("C:/Users/aa/Desktop/solaroid/service_account_key/service-account.json")
 const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG);
+
 console.log(process.env.FIREBASE_CONFIG)
 console.log(serviceAccount)
 adminConfig.credential = admin.credential.cert(serviceAccount)
