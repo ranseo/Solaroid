@@ -18,7 +18,7 @@ import java.lang.ClassCastException
 const val VIEW_TYPE_NORMAL_GALLERY = 0
 const val VIEW_TYPE_LONGCLICK_GALLERY = 1
 
-class SolaroidGalleryAdapter(val clickListener: OnClickListener, val application: Application) :
+class SolaroidGalleryAdapter(val clickListener: OnGalleryClickListener, val onLongClickListener: OnGalleryLongClickListener, val application: Application) :
     ListAdapter<GalleryListDataItem, RecyclerView.ViewHolder>(GalleryDataItemCallback()) {
 
 
@@ -45,7 +45,7 @@ class SolaroidGalleryAdapter(val clickListener: OnClickListener, val application
             }
             is LongClickViewHolder -> {
                 val item = getItem(position) as GalleryListDataItem.LongClickGalleryDataItem
-                holder.bind(item.photoTicket,application)
+                holder.bind(item.photoTicket,onLongClickListener,application)
             }
         }
     }
@@ -54,7 +54,7 @@ class SolaroidGalleryAdapter(val clickListener: OnClickListener, val application
     class NormalViewHolder(val binding: ListItemSolaroidGalleryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket, clickListener: OnClickListener) {
+        fun bind(item: PhotoTicket, clickListener: OnGalleryClickListener) {
             this.binding.photoTicket = item
             this.binding.clickListener = clickListener
         }
@@ -71,9 +71,9 @@ class SolaroidGalleryAdapter(val clickListener: OnClickListener, val application
     class LongClickViewHolder(val binding: ListItemSolaroidGalleryLongClickBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket, application:Application) {
-            this.binding.photoTicket = item
-
+        fun bind(item: PhotoTicket, onLongClickListener: OnGalleryLongClickListener,application:Application) {
+            binding.photoTicket = item
+            binding.clickListener = onLongClickListener
             binding.flag = false
             val lambda : (view: View) -> Unit = {
                 try {

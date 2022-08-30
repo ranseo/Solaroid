@@ -6,9 +6,15 @@ import android.net.Uri
 import com.ranseo.solaroid.models.domain.MediaStoreData
 import com.ranseo.solaroid.models.domain.PhotoTicket
 
-class OnClickListener(val clickListener: (photoTicket: PhotoTicket)->Unit) {
+class OnGalleryClickListener(val clickListener: (photoTicket: PhotoTicket)->Unit) {
     fun onClick(photoTicket: PhotoTicket) {
         clickListener(photoTicket)
+    }
+}
+
+class OnGalleryLongClickListener(val onLongClickListener: ()->Unit) {
+    fun onClick() {
+        onLongClickListener()
     }
 }
 
@@ -17,7 +23,8 @@ class OnFrameLongClickListener(val clickListener: (photoTicketKey:String)->Unit)
         clickListener(photoTicket.id)
         return true
     }
-}
+}9.
+
 
 class OnFrameShareListener(val shareFrontListener: (front: Bitmap, pos:Int)->Unit, val shareBackListener: (back: Bitmap, pos:Int)->Unit) {
     fun onShareFront(front: Bitmap, pos:Int) {

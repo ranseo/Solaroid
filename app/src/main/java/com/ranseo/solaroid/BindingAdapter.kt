@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.ranseo.solaroid.R
+import com.ranseo.solaroid.adapter.GalleryListDataItem
 import com.ranseo.solaroid.adapter.SolaroidFrameAdapter
 import com.ranseo.solaroid.adapter.SolaroidGalleryAdapter
 import com.ranseo.solaroid.custom.view.AlbumThumbnailView
@@ -30,7 +31,7 @@ fun bindViewPager(viewPager: ViewPager2, photoTickets: List<PhotoTicket>?) {
 
 
 @BindingAdapter("submitList")
-fun bindRecycler(recyclerView: RecyclerView, photoTickets: List<PhotoTicket>?) {
+fun bindRecycler(recyclerView: RecyclerView, photoTickets: List<GalleryListDataItem>?) {
     val adapter = recyclerView.adapter as SolaroidGalleryAdapter
     photoTickets?.let {
         Log.i("바인딩어댑터","포토티켓값 : ${it}")

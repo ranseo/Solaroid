@@ -24,6 +24,14 @@ import java.lang.NullPointerException
 
 
 /**
+ * PhotoTicket
+ * */
+enum class PhotoTicketState {
+    NORMAL,
+    LONG
+}
+
+/**
  * PhotoTicket을 즐겨찾기 전용 또는 날짜순(오름차순, 내림차순) 으로 정렬하기 위해
  * enum class 를 만들어 활용.
  * */
@@ -43,14 +51,6 @@ enum class PhotoTicketFilter(val filter: String) {
         }
     }
 }
-
-/**
- * AlbumId, AlbumKey 를 받기 위해 만들어진 Pair<String,String> 유형을 AIAK로 따로 지정하였다.
- * AIAK 유형은 주로 Gallery에서 CreateFragment, AddFragment, FrameFragment로 이동할 때
- * Album의 Key와 ID를 전달해줘야 하기 때문에 간편하게 AIAK타입의 변수로 만들어 전달할 수 있다.
- * */
-typealias AIAK = Pair<String, String>
-
 
 class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Application) :
     AndroidViewModel(application) {
@@ -87,6 +87,10 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     private val _filter = MutableLiveData(PhotoTicketFilter.DESC)
     val filter: LiveData<PhotoTicketFilter>
         get() = _filter
+
+    private val _photoTicketState = MutableLiveData<PhotoTicketState>()
+    val photoTicketState : LiveData<PhotoTicketState>
+        get() = _photoTicketState
 
 //    private val _albums = MutableLiveData<List<DatabaseAlbum>>()
 //    val albums: LiveData<List<DatabaseAlbum>>
@@ -171,6 +175,14 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         }
 
 
+    fun changePhotoTicketState() {
+        when(photoTicketState.value) {
+            PhotoTicketState.NORMAL -> {_photoTicketState.value = PhotoTicketState.LONG}
+            PhotoTicketState.LONG -> {_photoTicketState.value = PhotoTicketState.NORMAL}
+        }
+
+    }
+
     fun navigateToFrame(photoTicket: PhotoTicket) {
         Log.i(TAG, "navigateToFrame : $photoTicket")
         _naviToFrame.value = Event(photoTicket)
@@ -188,6 +200,7 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
         _naviToAlbum.value = Event(Unit)
     }
 
+
     fun removeListener() {
         try {
             for (a in albums.value!!)
@@ -203,6 +216,8 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
             error.printStackTrace()
         }
     }
+
+
 
 
     companion object {

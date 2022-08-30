@@ -75,6 +75,11 @@ class GalleryViewModel(
         }
     }
 
+    private val _photoTicketState = MutableLiveData<PhotoTicketState>()
+    val photoTicketState : LiveData<PhotoTicketState>
+        get() = _photoTicketState
+
+
     init {
         Log.i(TAG, "albumId: ${_albumId}")
     }

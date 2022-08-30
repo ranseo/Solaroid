@@ -11,7 +11,7 @@
 
         <variable
             name="clickListener"
-            type="com.ranseo.solaroid.adapter.OnClickListener" />
+            type="com.ranseo.solaroid.adapter.OnGalleryLongClickListener" />
 
         <variable
             name="flag"
@@ -33,7 +33,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/photo_layout"
-            android:onClick="@{()->clickListener.onClick(photoTicket)}"
+            android:onClick="@{()->clickListener.onClick()}"
             android:layout_width="100dp"
             android:layout_height="155dp"
             android:layout_gravity="center"

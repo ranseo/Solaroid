@@ -8,13 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.ranseo.solaroid.R
-import com.ranseo.solaroid.adapter.OnClickListener
-import com.ranseo.solaroid.adapter.SolaroidGalleryAdapter
 import com.ranseo.solaroid.databinding.FragmentSolaroidGalleryBinding
 import com.ranseo.solaroid.dialog.FilterDialogFragment
 import com.ranseo.solaroid.parseAlbumIdDomainToFirebase
 import com.ranseo.solaroid.room.SolaroidDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.ranseo.solaroid.adapter.*
 
 class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener {
 
@@ -38,9 +37,11 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
         viewModelFactory = HomeGalleryViewModelFactory(dataSource.photoTicketDao, application)
         viewModel = ViewModelProvider(this, viewModelFactory)[HomeGalleryViewModel::class.java]
 
-        val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->
+        val adapter = SolaroidGalleryAdapter(OnGalleryClickListener { photoTicket ->
             viewModel.navigateToFrame(photoTicket)
-        })
+        }, OnGalleryLongClickListener {
+            viewModel.changePhotoTicketState()
+        }, application)
 
         binding.photoTicketRec.adapter = adapter
 
@@ -62,10 +63,35 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
             }
         }
 
+        viewModel.photoTicketState.observe(viewLifecycleOwner) { state ->
+            state?.let {
+                val list = viewModel.photoTickets.value
+                if (list != null) {
+                    val dataItemList = when (viewModel.photoTicketState.value) {
+                        PhotoTicketState.LONG -> {
+                            list.map { GalleryListDataItem.LongClickGalleryDataItem(it) }
+                        }
+                        else -> {
+                            list.map { GalleryListDataItem.NormalGalleryDataItem(it) }
+                        }
+                    }
+                    adapter.submitList(dataItemList)
+                }
+            }
+        }
+
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
                 Log.i(TAG, "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list} }")
-                adapter.submitList(list)
+                val dataItemList = when (viewModel.photoTicketState.value) {
+                    PhotoTicketState.LONG -> {
+                        list.map { GalleryListDataItem.LongClickGalleryDataItem(it) }
+                    }
+                    else -> {
+                        list.map { GalleryListDataItem.NormalGalleryDataItem(it) }
+                    }
+                }
+                adapter.submitList(dataItemList)
             }
         }
 
@@ -135,7 +161,6 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
 
     }
-
 
 
     private fun showFilterDialog() {

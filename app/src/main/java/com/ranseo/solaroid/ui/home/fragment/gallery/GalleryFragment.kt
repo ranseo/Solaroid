@@ -9,13 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ranseo.solaroid.R
-import com.ranseo.solaroid.adapter.OnClickListener
-import com.ranseo.solaroid.adapter.SolaroidGalleryAdapter
 import com.ranseo.solaroid.databinding.FragmentGalleryBinding
 import com.ranseo.solaroid.dialog.FilterDialogFragment
 import com.ranseo.solaroid.room.SolaroidDatabase
 import com.ranseo.solaroid.ui.home.activity.HomeActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.ranseo.solaroid.adapter.*
 
 class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener {
 
@@ -53,9 +52,11 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
 
         viewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
 
-        val adapter = SolaroidGalleryAdapter(OnClickListener { photoTicket ->
+        val adapter = SolaroidGalleryAdapter(OnGalleryClickListener { photoTicket ->
             viewModel.navigateToFrame(photoTicket)
-        })
+        }, OnGalleryLongClickListener {
+
+        }, application)
 
         binding.photoTicketRec.adapter = adapter
 
@@ -64,10 +65,19 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
 
 
 
+
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
             list?.let {
                 Log.i(TAG, "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list} }")
-                adapter.submitList(list)
+                val dataItemList = when (viewModel.photoTicketState.value) {
+                    PhotoTicketState.LONG -> {
+                        list.map { GalleryListDataItem.LongClickGalleryDataItem(it) }
+                    }
+                    else -> {
+                        list.map { GalleryListDataItem.NormalGalleryDataItem(it) }
+                    }
+                }
+                adapter.submitList(dataItemList)
             }
         }
 
