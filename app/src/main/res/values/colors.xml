@@ -26,5 +26,7 @@
 
   <color name="toolbar_pink">#FF9999</color>
 
+  <color name="long_click_color">#FFDC00</color>
+
 
 </resources>

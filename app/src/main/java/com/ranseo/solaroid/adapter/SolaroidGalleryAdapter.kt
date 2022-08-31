@@ -18,34 +18,38 @@ import java.lang.ClassCastException
 const val VIEW_TYPE_NORMAL_GALLERY = 0
 const val VIEW_TYPE_LONGCLICK_GALLERY = 1
 
-class SolaroidGalleryAdapter(val clickListener: OnGalleryClickListener, val onLongClickListener: OnGalleryLongClickListener, val application: Application) :
+class SolaroidGalleryAdapter(
+    val clickListener: OnGalleryClickListener,
+    val onLongClickListener: OnGalleryLongClickListener,
+    val application: Application
+) :
     ListAdapter<GalleryListDataItem, RecyclerView.ViewHolder>(GalleryDataItemCallback()) {
 
 
     override fun getItemViewType(position: Int): Int {
-        return when(getItem(position)) {
+        return when (getItem(position)) {
             is GalleryListDataItem.NormalGalleryDataItem -> VIEW_TYPE_NORMAL_GALLERY
             is GalleryListDataItem.LongClickGalleryDataItem -> VIEW_TYPE_LONGCLICK_GALLERY
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
-            VIEW_TYPE_NORMAL_GALLERY ->  NormalViewHolder.from(parent)
+        return when (viewType) {
+            VIEW_TYPE_NORMAL_GALLERY -> NormalViewHolder.from(parent)
             VIEW_TYPE_LONGCLICK_GALLERY -> LongClickViewHolder.from(parent)
             else -> throw ClassCastException("UNKNOWN_VIEW_TYPE_${viewType}")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(holder) {
+        when (holder) {
             is NormalViewHolder -> {
                 val item = getItem(position) as GalleryListDataItem.NormalGalleryDataItem
-                holder.bind(item.photoTicket, clickListener)
+                holder.bind(item.photoTicket, clickListener, onLongClickListener)
             }
             is LongClickViewHolder -> {
                 val item = getItem(position) as GalleryListDataItem.LongClickGalleryDataItem
-                holder.bind(item.photoTicket,onLongClickListener,application)
+                holder.bind(item.photoTicket, onLongClickListener, application)
             }
         }
     }
@@ -54,9 +58,14 @@ class SolaroidGalleryAdapter(val clickListener: OnGalleryClickListener, val onLo
     class NormalViewHolder(val binding: ListItemSolaroidGalleryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket, clickListener: OnGalleryClickListener) {
+        fun bind(
+            item: PhotoTicket,
+            clickListener: OnGalleryClickListener,
+            longClickListener: OnGalleryLongClickListener
+        ) {
             this.binding.photoTicket = item
             this.binding.clickListener = clickListener
+            binding.longClickListener = longClickListener
         }
 
         companion object {
@@ -71,21 +80,25 @@ class SolaroidGalleryAdapter(val clickListener: OnGalleryClickListener, val onLo
     class LongClickViewHolder(val binding: ListItemSolaroidGalleryLongClickBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PhotoTicket, onLongClickListener: OnGalleryLongClickListener,application:Application) {
+        fun bind(
+            item: PhotoTicket,
+            onLongClickListener: OnGalleryLongClickListener,
+            application: Application
+        ) {
             binding.photoTicket = item
             binding.clickListener = onLongClickListener
             binding.flag = false
-            val lambda : (view: View) -> Unit = {
+            val lambda: (view: View) -> Unit = {
                 try {
                     binding.flag = !binding.flag
                     if (binding.flag) {
                         binding.photoLayout.background =
-                            application!!.getDrawable(R.drawable.border_line_grey)
+                            application!!.getDrawable(R.drawable.border_line_yellow)
                     } else {
                         binding.photoLayout.background =
-                            application!!.getDrawable(R.color.grey_transper)
+                            application!!.getDrawable(R.color.white)
                     }
-                } catch (error:Exception){
+                } catch (error: Exception) {
 
                 }
             }
@@ -98,12 +111,12 @@ class SolaroidGalleryAdapter(val clickListener: OnGalleryClickListener, val onLo
         companion object {
             fun from(parent: ViewGroup): LongClickViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemSolaroidGalleryLongClickBinding.inflate(layoutInflater, parent, false)
+                val binding =
+                    ListItemSolaroidGalleryLongClickBinding.inflate(layoutInflater, parent, false)
                 return LongClickViewHolder(binding)
             }
         }
     }
-
 
 
 }

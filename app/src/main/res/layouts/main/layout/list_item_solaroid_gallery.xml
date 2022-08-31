@@ -13,6 +13,9 @@
             name="clickListener"
             type="com.ranseo.solaroid.adapter.OnGalleryClickListener" />
 
+        <variable
+            name="longClickListener"
+            type="com.ranseo.solaroid.adapter.OnGalleryLongClickListener" />
     </data>
 
     <!--    android:layout_width="130dp"-->
@@ -25,6 +28,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/front_layout"
             android:onClick="@{()->clickListener.onClick(photoTicket)}"
+            android:onLongClick="@{()->longClickListener.onLongClick()}"
             android:layout_width="100dp"
             android:layout_height="155dp"
             android:layout_gravity="center"

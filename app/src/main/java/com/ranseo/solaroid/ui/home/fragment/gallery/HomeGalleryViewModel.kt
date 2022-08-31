@@ -88,8 +88,8 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val filter: LiveData<PhotoTicketFilter>
         get() = _filter
 
-    private val _photoTicketState = MutableLiveData<PhotoTicketState>()
-    val photoTicketState : LiveData<PhotoTicketState>
+    private val _photoTicketState = MutableLiveData<PhotoTicketState>(PhotoTicketState.NORMAL)
+    val photoTicketState: LiveData<PhotoTicketState>
         get() = _photoTicketState
 
 //    private val _albums = MutableLiveData<List<DatabaseAlbum>>()
@@ -176,12 +176,38 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
 
 
     fun changePhotoTicketState() {
-        when(photoTicketState.value) {
-            PhotoTicketState.NORMAL -> {_photoTicketState.value = PhotoTicketState.LONG}
-            PhotoTicketState.LONG -> {_photoTicketState.value = PhotoTicketState.NORMAL}
+        when (photoTicketState.value) {
+            PhotoTicketState.NORMAL -> {
+                _photoTicketState.value = PhotoTicketState.LONG
+            }
+            PhotoTicketState.LONG -> {
+                _photoTicketState.value = PhotoTicketState.NORMAL
+            }
         }
-
     }
+
+    fun refreshPhtoTicketState() {
+        _photoTicketState.value = PhotoTicketState.NORMAL
+    }
+
+
+    /**
+     * 포토티켓을 삭제.
+     * */
+    fun deletePhotoTicket(photoTicket: PhotoTicket) {
+        viewModelScope.launch {
+            val (albumId, albumKey) = photoTicket.albumInfo
+            val key = photoTicket.id
+            photoTicketRepositery.deletePhotoTicket(
+                albumId, albumKey, key, getApplication()
+            )
+
+            photoTicketRepositery.deletePhotoTicketInRoom(key)
+
+
+        }
+    }
+
 
     fun navigateToFrame(photoTicket: PhotoTicket) {
         Log.i(TAG, "navigateToFrame : $photoTicket")
@@ -216,8 +242,6 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
             error.printStackTrace()
         }
     }
-
-
 
 
     companion object {

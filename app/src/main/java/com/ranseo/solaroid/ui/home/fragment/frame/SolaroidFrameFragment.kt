@@ -392,7 +392,6 @@ class SolaroidFrameFragment : Fragment(), ListSetDialogFragment.ListSetDialogLis
     }
 
     private fun shareIntent(uris: ArrayList<Uri>) {
-        viewModel.setTmp(uris.get(0))
         val clipboard = requireActivity().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val item = clipboard.primaryClip
         if(item ==null) {

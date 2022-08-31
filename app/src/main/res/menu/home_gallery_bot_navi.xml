@@ -26,6 +26,6 @@
     <item
         android:id="@+id/share"
         android:icon="@drawable/ic_baseline_share_24"
-        android:title="사진 공유"/>
+        android:title="사진 삭제"/>
 
 </menu>

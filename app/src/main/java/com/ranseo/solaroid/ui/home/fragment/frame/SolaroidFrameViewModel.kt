@@ -326,13 +326,6 @@ class SolaroidFrameViewModel(
     }
 
 
-    private val _tmp = MutableLiveData<Uri>()
-    val tmp: LiveData<Uri>
-        get() = _tmp
-
-    fun setTmp(uri:Uri) {
-        _tmp.value = uri
-    }
     /////////////////////////////////////////////////////////////////
 
 

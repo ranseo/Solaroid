@@ -12,9 +12,14 @@ class OnGalleryClickListener(val clickListener: (photoTicket: PhotoTicket)->Unit
     }
 }
 
-class OnGalleryLongClickListener(val onLongClickListener: ()->Unit) {
-    fun onClick() {
+class OnGalleryLongClickListener(val onClickListener : (photoTicket:PhotoTicket)->Unit, val onLongClickListener: ()->Unit) {
+
+    fun onClick(photoTicket: PhotoTicket) {
+        onClickListener(photoTicket)
+    }
+    fun onLongClick() : Boolean {
         onLongClickListener()
+        return true
     }
 }
 
@@ -23,7 +28,7 @@ class OnFrameLongClickListener(val clickListener: (photoTicketKey:String)->Unit)
         clickListener(photoTicket.id)
         return true
     }
-}9.
+}
 
 
 class OnFrameShareListener(val shareFrontListener: (front: Bitmap, pos:Int)->Unit, val shareBackListener: (back: Bitmap, pos:Int)->Unit) {

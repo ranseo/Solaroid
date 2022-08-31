@@ -1,8 +1,10 @@
 package com.ranseo.solaroid.ui.home.fragment.gallery
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +23,34 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
     private lateinit var viewModel: HomeGalleryViewModel
     private lateinit var binding: FragmentSolaroidGalleryBinding
 
+    private lateinit var backPressedCallback: OnBackPressedCallback
+
     private lateinit var filterDialogFragment: FilterDialogFragment
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        backPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                when(viewModel.photoTicketState.value) {
+                    PhotoTicketState.LONG-> {
+                        viewModel.changePhotoTicketState()
+                    }
+                    else -> {
+                        requireActivity().finish()
+                    }
+                }
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, backPressedCallback)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        backPressedCallback.remove()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,6 +94,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
         viewModel.photoTicketState.observe(viewLifecycleOwner) { state ->
             state?.let {
+                Log.i(TAG,"state : ${state}")
                 val list = viewModel.photoTickets.value
                 if (list != null) {
                     val dataItemList = when (viewModel.photoTicketState.value) {
@@ -110,8 +140,11 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
     override fun onStart() {
         super.onStart()
+        viewModel.refreshPhtoTicketState()
         binding.galleryBottomNavi.menu.findItem(R.id.home).isChecked = true
     }
+
+
 
     /**
      * gallery Fragment에서 viewModel naviTo 라이브 객체를 관찰하여

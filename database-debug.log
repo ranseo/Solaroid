@@ -1,0 +1,10 @@
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by io.netty.util.internal.ReflectionUtil (file:/C:/Users/aa/.cache/firebase/emulators/firebase-database-emulator-v4.8.0.jar) to field sun.nio.ch.SelectorImpl.selectedKeys
+WARNING: Please consider reporting this to the maintainers of io.netty.util.internal.ReflectionUtil
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+11:38:41.778 [NamespaceSystem-akka.actor.default-dispatcher-4] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+11:38:42.021 [main] INFO com.firebase.server.forge.App$ - Listening at localhost:9000
+11:38:53.760 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - solaroid-45908-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 190ms, init: 0ms
+11:38:53.853 [NamespaceSystem-blocking-namespace-operation-dispatcher-6:solaroid-45908-default-rtdb$471698516:] INFO com.firebase.core.namespace.StateManager - Namespace solaroid-45908-default-rtdb status Active to Active
+16:58:31.399 [NamespaceSystem-akka.actor.default-dispatcher-255] INFO com.firebase.core.namespace.NamespaceActor - solaroid-45908 successfully activated FBKV (SurveyIdle(0)) wait: 8ms, init: 0ms
