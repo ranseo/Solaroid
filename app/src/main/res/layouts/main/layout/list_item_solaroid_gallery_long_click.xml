@@ -33,7 +33,6 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/photo_layout"
-            android:onClick="@{()->clickListener.onClick(photoTicket)}"
             android:onLongClick="@{()->clickListener.onLongClick()}"
             android:layout_width="100dp"
             android:layout_height="155dp"

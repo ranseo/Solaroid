@@ -17,6 +17,8 @@ import java.lang.ClassCastException
 
 const val VIEW_TYPE_NORMAL_GALLERY = 0
 const val VIEW_TYPE_LONGCLICK_GALLERY = 1
+const val VIEW_TYPE_GALLERY_EMPTY_TITLE = 2
+
 
 class SolaroidGalleryAdapter(
     val clickListener: OnGalleryClickListener,
@@ -30,6 +32,7 @@ class SolaroidGalleryAdapter(
         return when (getItem(position)) {
             is GalleryListDataItem.NormalGalleryDataItem -> VIEW_TYPE_NORMAL_GALLERY
             is GalleryListDataItem.LongClickGalleryDataItem -> VIEW_TYPE_LONGCLICK_GALLERY
+            is GalleryListDataItem.GalleryEmptyDataItem -> VIEW_TYPE_GALLERY_EMPTY_TITLE
         }
     }
 
@@ -37,6 +40,7 @@ class SolaroidGalleryAdapter(
         return when (viewType) {
             VIEW_TYPE_NORMAL_GALLERY -> NormalViewHolder.from(parent)
             VIEW_TYPE_LONGCLICK_GALLERY -> LongClickViewHolder.from(parent)
+            VIEW_TYPE_GALLERY_EMPTY_TITLE -> NormalGalleryEmptyViewHolder.from(parent)
             else -> throw ClassCastException("UNKNOWN_VIEW_TYPE_${viewType}")
         }
     }
@@ -89,23 +93,31 @@ class SolaroidGalleryAdapter(
             binding.clickListener = onLongClickListener
             binding.flag = false
             val lambda: (view: View) -> Unit = {
-                try {
-                    binding.flag = !binding.flag
-                    if (binding.flag) {
-                        binding.photoLayout.background =
-                            application!!.getDrawable(R.drawable.border_line_yellow)
-                    } else {
-                        binding.photoLayout.background =
-                            application!!.getDrawable(R.color.white)
-                    }
-                } catch (error: Exception) {
-
-                }
+                setFlag(application)
             }
 
-            binding.photoLayout.setOnClickListener(lambda)
+            binding.photoLayout.setOnClickListener{
+                onLongClickListener.onClick(item)
+                setFlag(application)
+
+            }
             binding.btnCheck.setOnClickListener(lambda)
             binding.btnEmpty.setOnClickListener(lambda)
+        }
+
+        fun setFlag(application: Application) {
+            try {
+                binding.flag = !binding.flag
+                if (binding.flag) {
+                    binding.photoLayout.background =
+                        application!!.getDrawable(R.drawable.border_line_yellow)
+                } else {
+                    binding.photoLayout.background =
+                        application!!.getDrawable(R.color.white)
+                }
+            } catch (error: Exception) {
+
+            }
         }
 
         companion object {
@@ -114,6 +126,16 @@ class SolaroidGalleryAdapter(
                 val binding =
                     ListItemSolaroidGalleryLongClickBinding.inflate(layoutInflater, parent, false)
                 return LongClickViewHolder(binding)
+            }
+        }
+    }
+
+    class NormalGalleryEmptyViewHolder(view:View) : RecyclerView.ViewHolder(view) {
+        companion object {
+            fun from(parent:ViewGroup) : NormalGalleryEmptyViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.list_item_gallery_empty, parent, false)
+                return NormalGalleryEmptyViewHolder(view)
             }
         }
     }
@@ -144,6 +166,10 @@ sealed class GalleryListDataItem() {
     class LongClickGalleryDataItem(val photoTicket: PhotoTicket) : GalleryListDataItem() {
         override val id: String
             get() = photoTicket.id
+    }
+
+    object GalleryEmptyDataItem : GalleryListDataItem() {
+        override val id : String = "GalleryEmpty"
     }
 }
 

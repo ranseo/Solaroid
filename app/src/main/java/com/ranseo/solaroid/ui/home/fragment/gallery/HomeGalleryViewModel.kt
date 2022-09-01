@@ -88,9 +88,13 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
     val filter: LiveData<PhotoTicketFilter>
         get() = _filter
 
-    private val _photoTicketState = MutableLiveData<PhotoTicketState>(PhotoTicketState.NORMAL)
-    val photoTicketState: LiveData<PhotoTicketState>
+    private val _photoTicketState = MutableLiveData<Event<PhotoTicketState>>()
+    val photoTicketState: LiveData<Event<PhotoTicketState>>
         get() = _photoTicketState
+
+    private val _photoDeleteList = mutableListOf<PhotoTicket>()
+    val photoDeleteList: List<PhotoTicket>
+        get() = _photoDeleteList
 
 //    private val _albums = MutableLiveData<List<DatabaseAlbum>>()
 //    val albums: LiveData<List<DatabaseAlbum>>
@@ -176,37 +180,65 @@ class HomeGalleryViewModel(dataSource: DatabasePhotoTicketDao, application: Appl
 
 
     fun changePhotoTicketState() {
-        when (photoTicketState.value) {
+        when (photoTicketState.value?.peekContent()) {
             PhotoTicketState.NORMAL -> {
-                _photoTicketState.value = PhotoTicketState.LONG
+                _photoTicketState.value = Event(PhotoTicketState.LONG)
             }
             PhotoTicketState.LONG -> {
-                _photoTicketState.value = PhotoTicketState.NORMAL
+                _photoTicketState.value = Event(PhotoTicketState.NORMAL)
             }
         }
     }
 
     fun refreshPhtoTicketState() {
-        _photoTicketState.value = PhotoTicketState.NORMAL
+        _photoTicketState.value = Event(PhotoTicketState.NORMAL)
+    }
+
+    /**
+     *  DeleteList에 삭제할 photoTicket을 추가하거나 삭제.
+     * */
+    fun addOrRemoveDeleteList(photoTicket: PhotoTicket) {
+        val idx = photoDeleteList.indexOf(photoTicket)
+        if (idx > -1) _photoDeleteList.removeAt(idx)
+        else _photoDeleteList.add(photoTicket)
+    }
+
+    fun clearDeleteList() {
+        _photoDeleteList.clear()
     }
 
 
     /**
      * 포토티켓을 삭제.
      * */
-    fun deletePhotoTicket(photoTicket: PhotoTicket) {
-        viewModelScope.launch {
-            val (albumId, albumKey) = photoTicket.albumInfo
-            val key = photoTicket.id
-            photoTicketRepositery.deletePhotoTicket(
-                albumId, albumKey, key, getApplication()
-            )
+    fun deletePhotoTickets() {
+        viewModelScope.launch(Dispatchers.Default) {
+            Log.i(TAG,"photoDeleteList : ${photoDeleteList}")
+            val list = mutableListOf<String>()
+            for (photoTicket in photoDeleteList) {
+                val (albumId, albumKey) = photoTicket.albumInfo
+                val key = photoTicket.id
+                Log.i(TAG, "albumId: ${albumId}, alubmKey: ${albumKey}, id : ${key}")
 
-            photoTicketRepositery.deletePhotoTicketInRoom(key)
-
-
+                list.add(key)
+                photoTicketRepositery.deletePhotoTicket(
+                    parseAlbumIdDomainToFirebase(albumId, albumKey),
+                    albumKey, key, getApplication()
+                )
+            }
+            Log.i(TAG,"LIST: ${list}")
+            deleteRoom(list)
+            clearDeleteList()
         }
     }
+    fun deleteRoom(list:List<String>) {
+        viewModelScope.launch {
+            list.forEach {
+                photoTicketRepositery.deletePhotoTicketInRoom(it)
+            }
+        }
+    }
+
 
 
     fun navigateToFrame(photoTicket: PhotoTicket) {

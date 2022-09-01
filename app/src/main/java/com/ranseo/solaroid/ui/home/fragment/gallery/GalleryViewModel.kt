@@ -9,6 +9,12 @@ import com.ranseo.solaroid.room.DatabasePhotoTicketDao
 import com.ranseo.solaroid.firebase.FirebaseManager
 import com.ranseo.solaroid.repositery.phototicket.GetPhotoTicketWithAlbumRepositery
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.ranseo.solaroid.datasource.photo.PhotoTicketListenerDataSource
+import com.ranseo.solaroid.repositery.phototicket.PhotoTicketRepositery
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class GalleryViewModel(
@@ -19,11 +25,17 @@ class GalleryViewModel(
     AndroidViewModel(application) {
 
     private val database = dataSource
-
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
+    private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
+    private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
 
     private val getPhotoTicketWithAlbumRepositery = GetPhotoTicketWithAlbumRepositery(
         database, fbAuth, _albumId
+    )
+
+    val photoTicketRepositery = PhotoTicketRepositery(
+        database, fbAuth, fbDatabase, fbStorage,
+        PhotoTicketListenerDataSource()
     )
 
     private val _photoTicketsSetting = MutableLiveData<Event<List<PhotoTicket>>>()
@@ -80,11 +92,57 @@ class GalleryViewModel(
         get() = _photoTicketState
 
 
+    private val _photoDeleteList = mutableListOf<PhotoTicket>()
+    val photoDeleteList: List<PhotoTicket>
+        get() = _photoDeleteList
+
     init {
         Log.i(TAG, "albumId: ${_albumId}")
     }
 
+    /**
+     *  DeleteList에 삭제할 photoTicket을 추가하거나 삭제.
+     * */
+    fun addOrRemoveDeleteList(photoTicket: PhotoTicket) {
+        val idx = photoDeleteList.indexOf(photoTicket)
+        if (idx > -1) _photoDeleteList.removeAt(idx)
+        else _photoDeleteList.add(photoTicket)
+    }
 
+    private fun clearDeleteList() {
+        _photoDeleteList.clear()
+    }
+
+
+    /**
+     * 포토티켓을 삭제.
+     * */
+    fun deletePhotoTickets() {
+        viewModelScope.launch(Dispatchers.Default) {
+            for (photoTicket in photoDeleteList) {
+                val (albumId, albumKey) = photoTicket.albumInfo
+                val key = photoTicket.id
+                photoTicketRepositery.deletePhotoTicket(
+                    albumId, albumKey, key, getApplication()
+                )
+
+                photoTicketRepositery.deletePhotoTicketInRoom(key)
+            }
+
+            clearDeleteList()
+        }
+    }
+
+    fun changePhotoTicketState() {
+        when (photoTicketState.value) {
+            PhotoTicketState.NORMAL -> {
+                _photoTicketState.value = PhotoTicketState.LONG
+            }
+            PhotoTicketState.LONG -> {
+                _photoTicketState.value = PhotoTicketState.NORMAL
+            }
+        }
+    }
     fun setFilter(filter: String) {
         _filter.value = PhotoTicketFilter.convertStringToFilter(filter)
     }

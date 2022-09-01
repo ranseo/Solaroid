@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:text="사진첩이 존재하지 않습니다.\n하단의 '사진첩 생성'을 이용해\n사진첩을 생성해보세요"
+    android:text="사진이 존재하지 않습니다.\n하단의 '사진 촬영 또는 추가'를\n이용해 사진을 생성해보세요"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:textSize="21sp"

@@ -15,6 +15,7 @@ import com.ranseo.solaroid.room.SolaroidDatabase
 import com.ranseo.solaroid.ui.home.activity.HomeActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ranseo.solaroid.adapter.*
+import com.ranseo.solaroid.models.domain.PhotoTicket
 
 class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener {
 
@@ -51,12 +52,17 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         )
 
         viewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
+        val longListenerClick : (photoTicket: PhotoTicket) -> Unit = { photoTicket ->
+            viewModel.addOrRemoveDeleteList(photoTicket)
+        }
+
+        val longListenerLongClick : () -> Unit = {
+            viewModel.changePhotoTicketState()
+        }
 
         val adapter = SolaroidGalleryAdapter(OnGalleryClickListener { photoTicket ->
             viewModel.navigateToFrame(photoTicket)
-        }, OnGalleryLongClickListener {
-
-        }, application)
+        }, OnGalleryLongClickListener(longListenerClick, longListenerLongClick), application)
 
         binding.photoTicketRec.adapter = adapter
 

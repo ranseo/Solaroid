@@ -22,7 +22,6 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM photo_ticket_table ORDER BY photo_ticket_date DESC")
     fun getAllDatabasePhotoTicket() : LiveData<List<DatabasePhotoTicket>?>
 
-
     //제일 최근에 만든 포토티켓
     @Query("SELECT * FROM photo_ticket_table ORDER BY  photo_ticket_date DESC LIMIT 1")
     suspend fun getLatestTicket() : DatabasePhotoTicket?
@@ -33,6 +32,9 @@ interface DatabasePhotoTicketDao {
 
     @Query("DELETE FROM photo_ticket_table WHERE photo_ticket_album_id == :id")
     suspend fun deletePhotoTicketsWithAlbumId(id:String)
+
+    @Query("DELETE FROM photo_ticket_table WHERE photo_ticket_album_id IN (:list)")
+    suspend fun deletePhotoTicketsWithAlbumIdList(list:List<String>)
 
     //유저가 원하는 포토티켓
     @Query("SELECT * FROM photo_ticket_table WHERE :key == photo_ticket_key")

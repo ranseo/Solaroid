@@ -243,17 +243,13 @@ class SolaroidFrameViewModel(
      * */
     fun deletePhotoTicket(key: String) {
         viewModelScope.launch {
-            if (albumParticipants == 1) {
-                photoTicketRepositery.deletePhotoTicket(
-                    parseAlbumIdDomainToFirebase(
-                        albumId,
-                        albumKey
-                    ), albumKey, key, getApplication()
-                )
-            } else {
-                photoTicketRepositery.deletePhotoTicketInRoom(key)
-            }
-
+            photoTicketRepositery.deletePhotoTicket(
+                parseAlbumIdDomainToFirebase(
+                    albumId,
+                    albumKey
+                ), albumKey, key, getApplication()
+            )
+            photoTicketRepositery.deletePhotoTicketInRoom(key)
         }
     }
 
