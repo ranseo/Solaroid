@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ranseo.solaroid.R
 import com.ranseo.solaroid.databinding.FragmentAlbumCreateStartBinding
 import com.ranseo.solaroid.models.domain.Friend
 import com.ranseo.solaroid.room.SolaroidDatabase
 import com.ranseo.solaroid.ui.friend.adapter.FriendListAdatper
+import com.ranseo.solaroid.ui.friend.adapter.FriendListDataItem
 import com.ranseo.solaroid.ui.friend.adapter.OnDialogClickListener
 
 class AlbumCreateStart() : Fragment() {
@@ -54,7 +56,12 @@ class AlbumCreateStart() : Fragment() {
 
         viewModel.myFriendList!!.observe(viewLifecycleOwner) {
             it?.let{ list ->
-                adapter.submitList(list)
+                if(!list.isNullOrEmpty()) {
+                    adapter.submitList(list)
+                } else {
+                    adapter.submitList(listOf(FriendListDataItem.FriendEmptyHead))
+                }
+
             }
         }
 

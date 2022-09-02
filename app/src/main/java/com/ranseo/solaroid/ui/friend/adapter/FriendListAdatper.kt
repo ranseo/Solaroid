@@ -20,10 +20,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.lang.ClassCastException
 
-private val VIEW_TYPE_NORMAL_PROFILE = 0
-private val VIEW_TYPE_RECEPTION_PROFILE = 1
-private val VIEW_TYPE_DISPATCH_PROFILE = 2
-private val VIEW_TYPE_DIALOG_PROFILE = 3
+private const val VIEW_TYPE_NORMAL_PROFILE = 0
+private const val VIEW_TYPE_RECEPTION_PROFILE = 1
+private const val VIEW_TYPE_DISPATCH_PROFILE = 2
+private const val VIEW_TYPE_DIALOG_PROFILE = 3
+private const val VIEW_TYPE_FRIEND_EMPTY = 4
 
 class FriendListAdatper(
     val application: Application? = null,
@@ -41,6 +42,7 @@ class FriendListAdatper(
             is FriendListDataItem.ReceptionProfileDataItem -> VIEW_TYPE_RECEPTION_PROFILE
             is FriendListDataItem.DispatchProfileDataItem -> VIEW_TYPE_DISPATCH_PROFILE
             is FriendListDataItem.DialogProfileDataItem -> VIEW_TYPE_DIALOG_PROFILE
+            is FriendListDataItem.FriendEmptyHead -> VIEW_TYPE_FRIEND_EMPTY
         }
     }
 
@@ -50,6 +52,7 @@ class FriendListAdatper(
             VIEW_TYPE_RECEPTION_PROFILE -> FriendReceptionViewHolder.from(parent)
             VIEW_TYPE_DISPATCH_PROFILE -> FriendDispatchViewHolder.from(parent)
             VIEW_TYPE_DIALOG_PROFILE -> FriendDialogViewHolder.from(parent)
+            VIEW_TYPE_FRIEND_EMPTY -> FriendEmptyViewHolder.from(parent)
             else -> throw ClassCastException("UNKNOWN_VIEWTYPE_${viewType}")
         }
     }
@@ -191,6 +194,16 @@ class FriendListAdatper(
             }
         }
     }
+
+    class FriendEmptyViewHolder(view:View) : RecyclerView.ViewHolder(view) {
+         companion object{
+             fun from(parent:ViewGroup) : FriendEmptyViewHolder {
+                 val layoutInflater = LayoutInflater.from(parent.context)
+                 val view = layoutInflater.inflate(R.layout.list_item_friend_empty, parent, false)
+                 return FriendEmptyViewHolder(view)
+             }
+         }
+    }
 }
 
 class FriendListDataItemCallback() : DiffUtil.ItemCallback<FriendListDataItem>() {
@@ -228,6 +241,11 @@ sealed class FriendListDataItem() {
     class DialogProfileDataItem(val friend: Friend) : FriendListDataItem() {
         override val id: String
             get() = friend.id
+    }
+
+    object FriendEmptyHead: FriendListDataItem() {
+        override val id: String
+            get() = "FriendEmptyHead"
     }
 }
 

@@ -75,6 +75,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_participants"
+                android:background="@drawable/recycler_view_shadow"
                 tools:listitem="@layout/list_item_friend_party_list" />
 
             <LinearLayout
