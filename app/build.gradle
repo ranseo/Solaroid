@@ -25,7 +25,10 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         //API KEY 변수 지정
+        ///타입-키-값
 //        buildConfigField "String", "API_KEY", properties['google_api_key']
+        buildConfigField "String", "OAUTH_WEB_CLIENT_KEY", properties['web.client.key']
+
     }
 
     buildTypes {

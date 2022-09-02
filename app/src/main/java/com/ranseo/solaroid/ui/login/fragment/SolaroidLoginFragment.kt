@@ -1,6 +1,8 @@
 package com.ranseo.solaroid.ui.login.fragment
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentSender
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +17,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.ranseo.solaroid.firebase.FirebaseManager
@@ -32,6 +37,7 @@ import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
+import com.ranseo.solaroid.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,6 +61,9 @@ class SolaroidLoginFragment : Fragment() {
     private lateinit var functions: FirebaseFunctions
     private var kakaoToken: Boolean = false
     private lateinit var providerBuilder: OAuthProvider.Builder
+
+    private lateinit var oneTapClient: SignInClient
+    private lateinit var signInRequest: BeginSignInRequest
 
 
     /*
@@ -477,7 +486,7 @@ class SolaroidLoginFragment : Fragment() {
     }
 
     private fun setProgressbar(flag: Boolean) {
-        if(flag) {
+        if (flag) {
             binding.progressBar.visibility = View.VISIBLE
         } else {
             binding.progressBar.visibility = View.GONE
@@ -605,9 +614,46 @@ class SolaroidLoginFragment : Fragment() {
         }
     }
 
+
+    //Google Login
+    fun setOneTapLogin() {
+        oneTapClient = Identity.getSignInClient(requireActivity())
+        signInRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId(BuildConfig.OAUTH_WEB_CLIENT_KEY)
+                    .setFilterByAuthorizedAccounts(true)
+                    .build())
+            .build()
+    }
+
+    fun onGoogleLogin() {
+        oneTapClient.beginSignIn(signInRequest).addOnSuccessListener(requireActivity()) { result ->
+            try {
+                startIntentSenderForResult()
+            }catch (error: IntentSender.SendIntentException)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when(requestCode) {
+            REQ_ONE_TAP -> {
+                try {
+                    val credential = oneTapClient.
+                }
+            }
+        }
+    }
+
     companion object {
         const val TAG = "로그인 프래그먼트"
 
         const val SEND_CHECK = "해당 이메일로 인증 메일을 보내시겠습니까?"
+
+        private const val REQ_ONE_TAP = 2
+        private var showOneTapUI = true
     }
 }
