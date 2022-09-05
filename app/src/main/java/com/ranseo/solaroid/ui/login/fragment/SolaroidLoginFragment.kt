@@ -38,6 +38,8 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.user.UserApiClient
 import com.ranseo.solaroid.BuildConfig
+import com.ranseo.solaroid.ui.login.LoginObserver
+import com.ranseo.solaroid.ui.login.ProfileObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,6 +67,7 @@ class SolaroidLoginFragment : Fragment() {
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
 
+    private lateinit var loginObserver: LoginObserver
 
     /*
     * 해당 sharedPreferences는 "아이디 저장" 에 해당하는 변수이다.
@@ -146,6 +149,8 @@ class SolaroidLoginFragment : Fragment() {
             viewModelFactory
         )[SolaroidLoginViewModel::class.java]
 
+
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -158,6 +163,8 @@ class SolaroidLoginFragment : Fragment() {
         //providerBuilder.setScopes(scopes)
 
         coroutineScope = CoroutineScope(Dispatchers.IO)
+
+        setOneTapLogin()
 
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
@@ -204,11 +211,17 @@ class SolaroidLoginFragment : Fragment() {
                     binding.etId.text.toString(),
                     binding.etPassword.text.toString()
                 )
-                SolaroidLoginViewModel.LoginErrorType.INVALID -> showSnackbar(
-                    binding.coordinatorLayout,
-                    SEND_CHECK
-                )
-                else -> {}
+                SolaroidLoginViewModel.LoginErrorType.INVALID -> {
+                    setProgressbar(false)
+                    showSnackbar(
+                        binding.coordinatorLayout,
+                        SEND_CHECK
+                    )
+
+                }
+                else -> {
+                    setProgressbar(false)
+                }
             }
         })
 
@@ -248,21 +261,34 @@ class SolaroidLoginFragment : Fragment() {
             }
         }
 
+
+        viewModel.googleLogin.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{
+                onGoogleLogin()
+            }
+        }
+
         viewModel.customToken.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { customToken ->
-                auth.signInWithCustomToken(customToken)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Log.i(TAG, "signInWithCustomToken() success ${task.result.user?.uid}")
-                        } else {
-                            Log.e(TAG, "signInWithCustomToken() failure ${task.exception?.message}")
-                        }
-                    }
+                signInWithCustomToken(customToken)
             }
         }
 
 
+
+
         return binding.root
+    }
+
+    private fun signInWithCustomToken(customToken: String) {
+        auth.signInWithCustomToken(customToken)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.i(TAG, "signInWithCustomToken() success ${task.result.user?.uid}")
+                } else {
+                    Log.e(TAG, "signInWithCustomToken() failure ${task.exception?.message}")
+                }
+            }
     }
 
     private fun loginWithKakaoOIDC() {
@@ -400,16 +426,7 @@ class SolaroidLoginFragment : Fragment() {
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
-//                getCustomToken(token.accessToken).addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        Log.i(TAG, "getCustomToken() success : ${task.result} ")
-//                    } else {
-//                        Log.d(
-//                            TAG,
-//                            "getCustomToken() error : ${task.exception?.message} ${task.exception} "
-//                        )
-//                    }
-//                }
+
                 getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!)
                 getKakaoUserInfo()
             }
@@ -426,16 +443,7 @@ class SolaroidLoginFragment : Fragment() {
                     } else if (token != null) {
                         Log.i(TAG, "로그인 성공 ${token.accessToken}")
                         getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!)
-//                        getCustomToken(token.accessToken).addOnCompleteListener { task ->
-//                            if (task.isSuccessful) {
-//                                Log.i(TAG, "getCustomToken() success : ${task.result} ")
-//                            } else {
-//                                Log.d(
-//                                    TAG,
-//                                    "getCustomToken() error : ${task.exception?.message} ${task.exception} "
-//                                )
-//                            }
-//                        }
+
                     }
                 }
             } else {
@@ -626,27 +634,24 @@ class SolaroidLoginFragment : Fragment() {
                     .setFilterByAuthorizedAccounts(true)
                     .build())
             .build()
+
+        loginObserver = LoginObserver(this.requireActivity().activityResultRegistry, oneTapClient ,viewModel)
     }
+
 
     fun onGoogleLogin() {
         oneTapClient.beginSignIn(signInRequest).addOnSuccessListener(requireActivity()) { result ->
             try {
-                startIntentSenderForResult()
-            }catch (error: IntentSender.SendIntentException)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when(requestCode) {
-            REQ_ONE_TAP -> {
-                try {
-                    val credential = oneTapClient.
-                }
+                loginObserver.startIntentSenderResult(result)
+            }catch (error: IntentSender.SendIntentException) {
+                Log.e(TAG,"intentSender Exception : ${error.message}")
             }
         }
+            .addOnFailureListener {
+                Log.e(TAG,"onGoogleLogin() fail : ${it.message}")
+            }
     }
+
 
     companion object {
         const val TAG = "로그인 프래그먼트"

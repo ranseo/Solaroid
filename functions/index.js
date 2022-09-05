@@ -41,6 +41,8 @@ async function requestMe(kakaoAccessToken) {
 async function updateOrCreateUser(updateParams) {
 	console.log('updating or creating a firebase user');
 	console.log(updateParams);
+	updateParams['emailVerified'] = true
+	console.log(updateParams);
 	try {
 		// var userRecord = await admin.auth().getUserByEmail(updateParams['email']);
 		var userRecord = await admin.auth().updateUser(updateParams['uid'], updateParams);

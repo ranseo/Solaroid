@@ -43,6 +43,10 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     val kakaoLogin : LiveData<Event<Any?>>
         get() = _kakaoLogin
 
+    private val _googleLogin = MutableLiveData<Event<Any?>>()
+    val googleLogin : LiveData<Event<Any?>>
+        get() = _googleLogin
+
     private val _kakaoUserInfo = MutableLiveData<User>()
     val kakaoUserInfo : LiveData<User>
         get() = _kakaoUserInfo
@@ -179,8 +183,14 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
         _kakaoLogin.value = Event(Unit)
     }
 
+
+
     fun setKakaoUser(user:User) {
         _kakaoUserInfo.value = user
+    }
+
+    fun onGoogleLogin() {
+        _googleLogin.value = Event(Unit)
     }
 
     fun setCustomToken(token:String) {
