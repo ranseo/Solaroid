@@ -24,8 +24,8 @@
         android:title="추가"/>
 
     <item
-        android:id="@+id/share"
-        android:icon="@drawable/ic_baseline_share_24"
-        android:title="공유"/>
+        android:id="@+id/remove"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:title="사진 삭제"/>
 
 </menu>

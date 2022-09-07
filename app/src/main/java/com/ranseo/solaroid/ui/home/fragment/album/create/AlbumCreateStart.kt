@@ -25,10 +25,11 @@ class AlbumCreateStart() : Fragment() {
     private lateinit var viewModel : AlbumCreateViewModel
     private lateinit var viewModelFactory: AlbumCreateViewModelFactory
 
-    private val TAG = "AlbumCreateStart"
+
 
     private lateinit var adapter : FriendListAdatper
     private val participants = mutableListOf<Friend>()
+
 
 
     override fun onCreateView(
@@ -59,9 +60,10 @@ class AlbumCreateStart() : Fragment() {
                 if(!list.isNullOrEmpty()) {
                     adapter.submitList(list)
                 } else {
-                    adapter.submitList(listOf(FriendListDataItem.FriendEmptyHead))
+                    val friendEmptyHead = FriendListDataItem.FriendEmptyHead()
+                    friendEmptyHead.title = FRIEND_EMPTY_TEXT
+                    adapter.submitList(listOf(friendEmptyHead))
                 }
-
             }
         }
 
@@ -108,6 +110,9 @@ class AlbumCreateStart() : Fragment() {
     }
 
 
-
+    companion object {
+        private const val TAG = "AlbumCreateStart"
+        private const val FRIEND_EMPTY_TEXT = "추가된 친구가 존재하지 않습니다.\n'친구' - '친구 요청' 을 이용해\n친구를 만들고 사진을 공유해보세요"
+    }
 
 }

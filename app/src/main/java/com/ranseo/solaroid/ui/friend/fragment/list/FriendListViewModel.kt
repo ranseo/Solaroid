@@ -44,8 +44,14 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     //data
     val friendList = Transformations.map(friendListRepositery.friendList) {
-        it.map { friend ->
-            FriendListDataItem.NormalProfileDataItem(friend)
+        if(!it.isNullOrEmpty()) {
+            it.map { friend ->
+                FriendListDataItem.NormalProfileDataItem(friend)
+            }
+        } else {
+            val friendEmptyHead = FriendListDataItem.FriendEmptyHead()
+            friendEmptyHead.title = FRIEND_EMPTY_TEXT
+            listOf(friendEmptyHead)
         }
     }
 
@@ -126,5 +132,6 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
 
     companion object {
         const val TAG = "프렌드_리스트_뷰모델"
+        const val FRIEND_EMPTY_TEXT = "추가된 친구가 존재하지 않습니다.\n'친구' - '친구 요청' 을 이용해\n친구를 만들고 사진을 공유해보세요"
     }
 }

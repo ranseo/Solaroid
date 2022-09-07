@@ -28,7 +28,7 @@
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="180dp"
+                android:layout_marginTop="100dp"
                 android:fontFamily="@font/sarina"
                 android:text="Solaroid"
                 android:textAlignment="center"

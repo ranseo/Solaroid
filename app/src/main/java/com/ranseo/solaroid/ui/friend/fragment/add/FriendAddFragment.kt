@@ -82,13 +82,13 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
 
         viewModel.dispatchFriendSize.observe(viewLifecycleOwner) {
             it?.let { size ->
-                if (size > 0) setBadgeOnBottomNavigationView(size,0)
+                setBadgeOnBottomNavigationView(size, 0)
             }
         }
 
         viewModel.receptionFriendSize.observe(viewLifecycleOwner) {
             it?.let { size ->
-                if (size > 0) setBadgeOnBottomNavigationView(size,1)
+                setBadgeOnBottomNavigationView(size, 1)
             }
         }
 
@@ -124,24 +124,35 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
         val itemView = tab?.view
 
         val context = requireContext()
+        if (cnt > 0) {
+            BadgeDrawable.create(context).apply {
+                number = cnt
+                backgroundColor = ContextCompat.getColor(context, R.color.alert_color)
+                badgeTextColor = ContextCompat.getColor(context, R.color.white)
+                verticalOffset = 45
+                if (cnt < 10) {
+                    horizontalOffset = 45
+                } else if (cnt < 100) {
+                    horizontalOffset = 60
+                } else {
+                    horizontalOffset = 75
+                }
+            }.let { badge ->
+                itemView?.let {
 
-        BadgeDrawable.create(context).apply {
-            number = cnt
-            backgroundColor = ContextCompat.getColor(context, R.color.alert_color)
-            badgeTextColor = ContextCompat.getColor(context, R.color.white)
-            verticalOffset = 45
-            if (cnt < 10) {
-                horizontalOffset = 45
-            } else if (cnt < 100) {
-                horizontalOffset = 60
-            } else {
-                horizontalOffset = 75
+                    itemView.foreground = badge
+                    BadgeUtils.attachBadgeDrawable(badge, itemView)
+                }
             }
-        }.let { badge ->
-            itemView?.let {
-                itemView.foreground = badge
-                itemView.addOnLayoutChangeListener { view, i, i2, i3, i4, i5, i6, i7, i8 ->
-                    BadgeUtils.attachBadgeDrawable(badge, view)
+        } else {
+            BadgeDrawable.create(context).apply {
+                number = cnt
+                backgroundColor = ContextCompat.getColor(context, R.color.white)
+                badgeTextColor = ContextCompat.getColor(context, R.color.white)
+            }.let { badge ->
+                itemView?.let {
+                    itemView.foreground = badge
+                    BadgeUtils.detachBadgeDrawable(badge, itemView)
                 }
             }
         }

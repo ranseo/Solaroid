@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_friend_empty"
     android:text="추가된 친구가 존재하지 않습니다.\n'친구' - '친구 요청' 을 이용해\n친구를 만들고 사진을 공유해보세요"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:textColor="@color/grey"
     android:textSize="21sp"
     android:gravity="center"/>
 

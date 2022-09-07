@@ -29,18 +29,17 @@ import com.ranseo.solaroid.convertHexStringToLongFormat
 
 class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var binding : ActivityFriendBinding
+    private lateinit var binding: ActivityFriendBinding
 
     //navController
-    private lateinit var navHostFragment : NavHostFragment
-    private lateinit var navController : NavController
+    private lateinit var navHostFragment: NavHostFragment
+    private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     //viewModel
     private lateinit var navigationViewModelFactory: NavigationViewModelFactory
-    private lateinit var naviViewModel : NavigationViewModel
-    private lateinit var friendViewModel : FriendActivityViewModel
-
+    private lateinit var naviViewModel: NavigationViewModel
+    private lateinit var friendViewModel: FriendActivityViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +49,9 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
 
         val dataSource = SolaroidDatabase.getInstance(this).photoTicketDao
-        navigationViewModelFactory = NavigationViewModelFactory(dataSource, this.application )
-        naviViewModel = ViewModelProvider(this, navigationViewModelFactory)[NavigationViewModel::class.java]
+        navigationViewModelFactory = NavigationViewModelFactory(dataSource, this.application)
+        naviViewModel =
+            ViewModelProvider(this, navigationViewModelFactory)[NavigationViewModel::class.java]
 
         friendViewModel = ViewModelProvider(this)[FriendActivityViewModel::class.java]
 
@@ -62,20 +62,23 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
 
         navHostFragment = binding.navHostFragmentFriend.getFragment()
         navController = navHostFragment.navController
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.fragment_friend_list, R.id.fragment_friend_add), binding.drawerLayoutFriend)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.fragment_friend_list, R.id.fragment_friend_add),
+            binding.drawerLayoutFriend
+        )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navigtionViewFriend.navView.setNavigationItemSelectedListener(this)
         ///
 
         naviViewModel.myProfile.observe(this) {
-            it?.let{ profile ->
+            it?.let { profile ->
                 friendViewModel.setMyFriendCode(convertHexStringToLongFormat(profile.friendCode))
             }
         }
 
         naviViewModel.naviToHomeAct.observe(this) {
-            it.getContentIfNotHandled()?.let{
+            it.getContentIfNotHandled()?.let {
                 navController.navigate(
                     R.id.global_action_friendActivity_to_homeActivity
                 )
@@ -84,7 +87,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         naviViewModel.naviToLoginAct.observe(this) {
-            it.getContentIfNotHandled()?.let{
+            it.getContentIfNotHandled()?.let {
                 logout()
                 navController.navigate(
                     R.id.global_action_friendActivity_to_loginActivity
@@ -94,7 +97,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         naviViewModel.naviToFriendAct.observe(this) {
-            it.getContentIfNotHandled()?.let{
+            it.getContentIfNotHandled()?.let {
                 navController.navigate(
                     R.id.action_friend_self
                 )
@@ -103,16 +106,14 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
 
         friendViewModel.myFriendCode.observe(this) {
-            it?.let{ friendCode ->
+            it?.let { friendCode ->
                 friendViewModel.refreshReceptionFriendSize(friendCode)
                 friendViewModel.refreshDispatchFriendSize(friendCode)
             }
         }
         friendViewModel.totalFriendSize.observe(this) {
-            it?.let{ size ->
-                if(size>0) {
-                    setBadgeOnBottomNavigationView(size, 1)
-                }
+            it?.let { size ->
+                setBadgeOnBottomNavigationView(size, 1)
             }
         }
 
@@ -129,7 +130,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
     }
 
     override fun onBackPressed() {
-        if(binding.drawerLayoutFriend.isDrawerOpen(Gravity.LEFT))
+        if (binding.drawerLayoutFriend.isDrawerOpen(Gravity.LEFT))
             binding.drawerLayoutFriend.closeDrawer(Gravity.LEFT)
         else super.onBackPressed()
     }
@@ -138,7 +139,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         FirebaseManager.getAuthInstance().signOut()
     }
 
-    fun setActionBarTitle(str:String) {
+    fun setActionBarTitle(str: String) {
         val actionBar = supportActionBar
         actionBar?.title = str
     }
@@ -148,24 +149,39 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         val bottomNavi = binding.bottomNaviFriend.getChildAt(0) as BottomNavigationMenuView
         val itemView = bottomNavi.getChildAt(idx) as BottomNavigationItemView
 
-
-
-        BadgeDrawable.create(this).apply {
-            number = cnt
-            backgroundColor = ContextCompat.getColor(this@FriendActivity, R.color.alert_color)
-            badgeTextColor = ContextCompat.getColor(this@FriendActivity, R.color.white)
-            verticalOffset = 45
-            if (cnt < 10) {
-                horizontalOffset = 145
-            } else if (cnt < 100) {
-                horizontalOffset = 160
-            } else {
-                horizontalOffset = 175
+        if (cnt > 0) {
+            BadgeDrawable.create(this).apply {
+                number = cnt
+                backgroundColor = ContextCompat.getColor(this@FriendActivity, R.color.alert_color)
+                badgeTextColor = ContextCompat.getColor(this@FriendActivity, R.color.white)
+                verticalOffset = 45
+                if (cnt < 10) {
+                    horizontalOffset = 145
+                } else if (cnt < 100) {
+                    horizontalOffset = 160
+                } else {
+                    horizontalOffset = 175
+                }
+            }.let { badge ->
+                itemView.foreground = badge
+                BadgeUtils.attachBadgeDrawable(badge, itemView)
             }
-        }.let { badge ->
-            itemView.foreground = badge
-            itemView.addOnLayoutChangeListener { view, i, i2, i3, i4, i5, i6, i7, i8 ->
-                BadgeUtils.attachBadgeDrawable(badge, view)
+        } else {
+            BadgeDrawable.create(this).apply {
+                number = cnt
+                backgroundColor = ContextCompat.getColor(this@FriendActivity, R.color.white)
+                badgeTextColor = ContextCompat.getColor(this@FriendActivity, R.color.white)
+//                verticalOffset = 45
+//                if (cnt < 10) {
+//                    horizontalOffset = 145
+//                } else if (cnt < 100) {
+//                    horizontalOffset = 160
+//                } else {
+//                    horizontalOffset = 175
+//                }
+            }.let { badge ->
+                itemView.foreground = badge
+                BadgeUtils.attachBadgeDrawable(badge, itemView)
             }
         }
     }
@@ -175,7 +191,7 @@ class FriendActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         friendViewModel.removeListener()
     }
 
-    companion object{
+    companion object {
         const val TAG = "프렌드_액티비티"
     }
 }

@@ -9,12 +9,15 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.GoogleAuthProvider
 import com.ranseo.solaroid.ui.login.viewmodel.SolaroidLoginViewModel
 import com.ranseo.solaroid.ui.login.viewmodel.SolaroidProfileViewModel
 
 class LoginObserver(val registry: ActivityResultRegistry, val oneTapClient: SignInClient, val viewModel: SolaroidLoginViewModel) : DefaultLifecycleObserver {
     lateinit var getContent: ActivityResultLauncher<IntentSenderRequest>
+
     override fun onCreate(owner: LifecycleOwner) {
+        Log.i(TAG,"onCreate() : create")
         getContent = registry.register(REQ_ONE_TAP, ActivityResultContracts.StartIntentSenderForResult()) { result ->
             result.data?.let{ data ->
                 val credential = oneTapClient.getSignInCredentialFromIntent(data)
@@ -22,7 +25,8 @@ class LoginObserver(val registry: ActivityResultRegistry, val oneTapClient: Sign
 
                 when{
                     idToken != null -> {
-                        viewModel.setCustomToken(idToken)
+                        val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+                        viewModel.setCredential(firebaseCredential)
                         Log.i(TAG,"signInWithCredential:Success")
                     }
 

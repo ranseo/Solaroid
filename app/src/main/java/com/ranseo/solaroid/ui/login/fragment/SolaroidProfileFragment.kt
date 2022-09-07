@@ -123,6 +123,11 @@ class SolaroidProfileFragment() : Fragment() {
         viewModel.setProfileType(SolaroidProfileViewModel.ProfileErrorType.EMPTY)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycle.removeObserver(profileObserver)
+    }
+
 
     companion object {
         const val TAG = "프로필 프래그먼트"

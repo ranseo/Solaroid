@@ -15,11 +15,35 @@
       },
       "oauth_client": [
         {
+          "client_id": "668980346028-31fmhd344v9e836t93lndthk756a8t1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ranseo.solaroid",
+            "certificate_hash": "9d14fb38f85276a847989e22644bf690c5b2b5a3"
+          }
+        },
+        {
           "client_id": "668980346028-59in5krsj73uch3m2nrpmhob5bf13oms.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ranseo.solaroid",
             "certificate_hash": "f38d5a1f20567a93fe8c91d9e8f109615f464bb3"
+          }
+        },
+        {
+          "client_id": "668980346028-7fdsntgr3l81b9edh896rav3c1a2hsa1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ranseo.solaroid",
+            "certificate_hash": "5adb59a92f82e747857822300cef5531634313e6"
+          }
+        },
+        {
+          "client_id": "668980346028-pvbpnn0pjnjc207qt42cji0hs1id2a0i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ranseo.solaroid",
+            "certificate_hash": "e3ead9c79c76be6a26052cf2635e04059a015ca2"
           }
         },
         {
@@ -36,7 +60,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "668980346028-lt54l8if59v30s9notpg7el021nfp41n.apps.googleusercontent.com",
+              "client_id": "668980346028-2joq421g13bg6qs359l1e4n9276bdn76.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

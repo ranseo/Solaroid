@@ -12,6 +12,7 @@ import com.ranseo.solaroid.R
 import com.ranseo.solaroid.models.domain.Profile
 import com.ranseo.solaroid.databinding.FragmentFriendDispatchBinding
 import com.ranseo.solaroid.ui.friend.adapter.FriendListAdatper
+import com.ranseo.solaroid.ui.friend.adapter.FriendListDataItem
 import com.ranseo.solaroid.ui.friend.adapter.OnDispatchClickListener
 
 class FriendDispatchFragment() : Fragment() {
@@ -65,10 +66,13 @@ class FriendDispatchFragment() : Fragment() {
         binding.recFriendDispatch.adapter = adapter
 
         viewModel.friends.observe(viewLifecycleOwner) {
-            it?.let { dispatchFriend ->
-                adapter.submitList(dispatchFriend)
+            if(!it.isNullOrEmpty()) {
+                adapter.submitList(it)
+            } else {
+                val friendEmptyHead = FriendListDataItem.FriendEmptyHead()
+                friendEmptyHead.title = FRIEND_EMPTY_TEXT
+                adapter.submitList(listOf(friendEmptyHead))
             }
-
             Log.i(TAG, "friendDistinct.observe : ${it}")
         }
 
@@ -83,7 +87,8 @@ class FriendDispatchFragment() : Fragment() {
     companion object {
         const val TAG = "프렌드_디스패치_프래그먼트"
         const val KEY = "DispatchKey"
-
-
+        private const val FRIEND_EMPTY_TEXT = "발신이 존재하지 않습니다.\n" +
+                "상단의 검색창을 이용해\n\n" +
+                "친구 코드를 검색하고\n친구 요청을 해보세요"
     }
 }

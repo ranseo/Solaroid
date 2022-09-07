@@ -17,6 +17,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -270,7 +271,15 @@ class SolaroidLoginFragment : Fragment() {
 
         viewModel.customToken.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { customToken ->
+                Log.i(TAG,"customToken: ${customToken}")
                 signInWithCustomToken(customToken)
+            }
+        }
+
+        viewModel.credential.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{ credential ->
+                Log.i(TAG,"Credential : ${credential}")
+                signInWithCredential(credential)
             }
         }
 
@@ -288,6 +297,16 @@ class SolaroidLoginFragment : Fragment() {
                 } else {
                     Log.e(TAG, "signInWithCustomToken() failure ${task.exception?.message}")
                 }
+            }
+    }
+
+    private fun signInWithCredential(credential: AuthCredential) {
+        auth.signInWithCredential(credential)
+            .addOnSuccessListener {
+                Log.i(TAG, "SignInWithCredentail success")
+            }
+            .addOnFailureListener {
+                Log.i(TAG, "SignInWithCredentail Failure")
             }
     }
 
@@ -474,7 +493,7 @@ class SolaroidLoginFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         putEmailSharedPref(viewModel.isSaveId.value == true, viewModel.SavedLoginId.value)
-
+        lifecycle.removeObserver(loginObserver)
     }
 
     fun putEmailSharedPref(flag: Boolean, email: String?) {
@@ -633,9 +652,13 @@ class SolaroidLoginFragment : Fragment() {
                     .setServerClientId(BuildConfig.OAUTH_WEB_CLIENT_KEY)
                     .setFilterByAuthorizedAccounts(true)
                     .build())
+            .setAutoSelectEnabled(true)
             .build()
 
+        Log.i(TAG,"setOneTapLogin : ${signInRequest}")
         loginObserver = LoginObserver(this.requireActivity().activityResultRegistry, oneTapClient ,viewModel)
+        lifecycle.addObserver(loginObserver)
+        Log.i(TAG,"setOneTapLogin : ${loginObserver}")
     }
 
 
@@ -658,7 +681,5 @@ class SolaroidLoginFragment : Fragment() {
 
         const val SEND_CHECK = "해당 이메일로 인증 메일을 보내시겠습니까?"
 
-        private const val REQ_ONE_TAP = 2
-        private var showOneTapUI = true
     }
 }

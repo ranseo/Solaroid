@@ -213,6 +213,7 @@ class HomeGalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListe
 
         viewModel.naviToCreate.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
+
                 findNavController().navigate(
                     HomeGalleryFragmentDirections.actionHomeGalleryToCreate()
                 )

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import com.ranseo.solaroid.R
 import com.ranseo.solaroid.databinding.FragmentGalleryBinding
 import com.ranseo.solaroid.dialog.FilterDialogFragment
@@ -52,11 +53,11 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         )
 
         viewModel = ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
-        val longListenerClick : (photoTicket: PhotoTicket) -> Unit = { photoTicket ->
+        val longListenerClick: (photoTicket: PhotoTicket) -> Unit = { photoTicket ->
             viewModel.addOrRemoveDeleteList(photoTicket)
         }
 
-        val longListenerLongClick : () -> Unit = {
+        val longListenerLongClick: () -> Unit = {
             viewModel.changePhotoTicketState()
         }
 
@@ -73,9 +74,13 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
 
 
         viewModel.photoTickets.observe(viewLifecycleOwner) { list ->
-            list?.let {
-                Log.i(TAG, "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list} }")
-                val dataItemList = when (viewModel.photoTicketState.value) {
+
+            if (!list.isNullOrEmpty()) {
+                Log.i(
+                    TAG,
+                    "viewModel.photoTickets.observe(viewLifecycleOwner) { list -> ${list} }"
+                )
+                val dataItemList = when (viewModel.photoTicketState.value?.peekContent()) {
                     PhotoTicketState.LONG -> {
                         list.map { GalleryListDataItem.LongClickGalleryDataItem(it) }
                     }
@@ -84,6 +89,8 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
                     }
                 }
                 adapter.submitList(dataItemList)
+            } else {
+                adapter.submitList(listOf(GalleryListDataItem.GalleryEmptyDataItem))
             }
         }
 
@@ -92,13 +99,34 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
         setOnItemSelectedListener(binding.galleryBottomNavi)
         binding.galleryBottomNavi.itemIconTintList = null
         filterDialogFragment = FilterDialogFragment(this)
+
+
+        val manager = GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
+        manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                val list = adapter.currentList
+                return if (!list.isNullOrEmpty()) {
+                    when (adapter.currentList[0]) {
+                        is GalleryListDataItem.GalleryEmptyDataItem -> {
+                            3
+                        }
+                        else -> 1
+                    }
+                } else 1
+
+            }
+        }
+
+        binding.photoTicketRec.layoutManager = manager
+
+
         return binding.root
 
     }
 
     override fun onStart() {
         super.onStart()
-        Log.i(TAG,"${requireActivity().actionBar?.title }")
+        Log.i(TAG, "${requireActivity().actionBar?.title}")
 
         binding.galleryBottomNavi.menu.findItem(R.id.album).isChecked = true
     }
@@ -190,7 +218,17 @@ class GalleryFragment : Fragment(), FilterDialogFragment.OnFilterDialogListener 
                     viewModel.navigateToAdd()
                     true
                 }
-
+                R.id.remove -> {
+                    when (viewModel.photoTicketState.value?.peekContent()) {
+                        PhotoTicketState.LONG -> {
+                            viewModel.deletePhotoTickets()
+                        }
+                        else -> {
+                            viewModel.changePhotoTicketState()
+                        }
+                    }
+                    true
+                }
                 else -> false
             }
         }

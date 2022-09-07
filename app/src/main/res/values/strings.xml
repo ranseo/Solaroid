@@ -37,6 +37,8 @@
     <string name="com.ranseo.solaroid.LoginSaveKeyBool">LoginSaveBool</string>
 
     //인증 키
-
     <string name="com.ranse.solaroid.appkey">kakao71eb0d1f916dfd2a0f2786e2c9fff1d6</string>
+
+
+    <string name="none_album_message">"사진첩 생성"을 이용해\n먼저 사진첩을 만들어보세요.</string>
 </resources>

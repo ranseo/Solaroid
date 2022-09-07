@@ -43,17 +43,26 @@
                 tools:itemCount="3"
                 tools:listitem="@layout/list_item_album" />
 
-
-            <com.ranseo.solaroid.custom.view.CustomBottomNavigationView
-                android:id="@+id/album_bottom_navi"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/bot_navi_color"
-                app:labelVisibilityMode="labeled"
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:menu="@menu/album_bot_navi" />
+                >
+                <com.ranseo.solaroid.custom.view.CustomBottomNavigationView
+                    android:id="@+id/album_bottom_navi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/bot_navi_color"
+                    app:labelVisibilityMode="labeled"
+                    android:layout_gravity="bottom"
+                    app:menu="@menu/album_bot_navi" />
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -67,6 +76,7 @@
             android:elevation="3dp"
             android:focusable="true"
             android:onClick="@{()->viewModel.navigateToPhotoCreate()}"
+            app:layout_behavior=".custom.behavior.FloatingActionButtonBehavior"
             android:src="@drawable/ic_photo_create" />
 
 

@@ -87,8 +87,8 @@ class GalleryViewModel(
         }
     }
 
-    private val _photoTicketState = MutableLiveData<PhotoTicketState>()
-    val photoTicketState : LiveData<PhotoTicketState>
+    private val _photoTicketState = MutableLiveData<Event<PhotoTicketState>>()
+    val photoTicketState : LiveData<Event<PhotoTicketState>>
         get() = _photoTicketState
 
 
@@ -134,12 +134,12 @@ class GalleryViewModel(
     }
 
     fun changePhotoTicketState() {
-        when (photoTicketState.value) {
+        when (photoTicketState.value?.peekContent()) {
             PhotoTicketState.NORMAL -> {
-                _photoTicketState.value = PhotoTicketState.LONG
+                _photoTicketState.value = Event(PhotoTicketState.LONG)
             }
             PhotoTicketState.LONG -> {
-                _photoTicketState.value = PhotoTicketState.NORMAL
+                _photoTicketState.value = Event(PhotoTicketState.NORMAL)
             }
         }
     }

@@ -32,6 +32,8 @@ import com.ranseo.solaroid.ui.album.viewmodel.AlbumViewModel
 import com.ranseo.solaroid.ui.album.viewmodel.ClickTag
 import com.ranseo.solaroid.ui.home.adapter.AlbumListClickListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+import com.ranseo.solaroid.custom.snackbar.CustomSnackBar
 
 class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
     RenameDialog.RenameDialogListener {
@@ -43,6 +45,7 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
     private lateinit var viewModelFactory: AlbumViewModelFactory
 
     private lateinit var adapter: AlbumListAdapter
+    private lateinit var noneAlbumSnackbarListener : CustomSnackBar.CustomSnackBarInteface
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,6 +81,7 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
 
         binding.recAlbum.adapter = adapter
 
+        setCustomSnackbarInterface()
 
         viewModel.myProfile.observe(viewLifecycleOwner) {
             it?.let { profile ->
@@ -143,6 +147,14 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
         return binding.root
     }
 
+    fun setCustomSnackbarInterface() {
+        noneAlbumSnackbarListener = object : CustomSnackBar.CustomSnackBarInteface {
+            override fun setOnClickListener() {
+                viewModel.navigateToCreate()
+            }
+        }
+    }
+
 
     /**
      * AlbumFragment에서 다른 프래그먼트로 이동할 수 있도록
@@ -167,9 +179,14 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
 
         viewModel.naviToPhotoCreate.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
-                findNavController().navigate(
-                    AlbumFragmentDirections.actionAlbumToPhotoCreate()
-                )
+                if (viewModel.albums.value.isNullOrEmpty()) {
+                    val snackBar = CustomSnackBar.make(this.requireView(),getString(R.string.none_album_message), noneAlbumSnackbarListener )
+                    snackBar.show()
+                } else {
+                    findNavController().navigate(
+                        AlbumFragmentDirections.actionAlbumToPhotoCreate()
+                    )
+                }
             }
         }
 
@@ -183,9 +200,7 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
 
         viewModel.requestAlbumsSize.observe(viewLifecycleOwner) {
             it?.let { size ->
-                if (size > 0) {
-                    setBadgeOnBottomNavigationView(it, 4)
-                }
+                setBadgeOnBottomNavigationView(it, 4)
             }
         }
     }
@@ -216,25 +231,34 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
         val bottomNavi = binding.albumBottomNavi.getChildAt(0) as BottomNavigationMenuView
         val itemView = bottomNavi.getChildAt(idx) as BottomNavigationItemView
 
-
-        BadgeDrawable.create(requireContext()).apply {
-            number = cnt
-            backgroundColor = ContextCompat.getColor(requireContext(), R.color.alert_color)
-            badgeTextColor = ContextCompat.getColor(requireContext(), R.color.white)
-            verticalOffset = 45
-            if (cnt < 10) {
-                horizontalOffset = 45
-            } else if(cnt < 100){
-                horizontalOffset = 60
-            } else {
-                horizontalOffset = 75
+        if (cnt > 0) {
+            BadgeDrawable.create(requireContext()).apply {
+                number = cnt
+                backgroundColor = ContextCompat.getColor(requireContext(), R.color.alert_color)
+                badgeTextColor = ContextCompat.getColor(requireContext(), R.color.white)
+                verticalOffset = 45
+                if (cnt < 10) {
+                    horizontalOffset = 45
+                } else if (cnt < 100) {
+                    horizontalOffset = 60
+                } else {
+                    horizontalOffset = 75
+                }
+            }.let { badge ->
+                itemView.foreground = badge
+                BadgeUtils.attachBadgeDrawable(badge, itemView)
             }
-        }.let { badge ->
-            itemView.foreground = badge
-            itemView.addOnLayoutChangeListener { view, i, i2, i3, i4, i5, i6, i7, i8 ->
-                BadgeUtils.attachBadgeDrawable(badge, view)
+        } else {
+            BadgeDrawable.create(requireContext()).apply {
+                number = cnt
+                backgroundColor = ContextCompat.getColor(requireContext(), R.color.white)
+                badgeTextColor = ContextCompat.getColor(requireContext(), R.color.white)
+            }.let { badge ->
+                itemView.foreground = badge
+                BadgeUtils.detachBadgeDrawable(badge, itemView)
             }
         }
+
     }
 
 

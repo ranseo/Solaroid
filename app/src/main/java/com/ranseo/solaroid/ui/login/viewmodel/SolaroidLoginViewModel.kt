@@ -1,6 +1,7 @@
 package com.ranseo.solaroid.ui.login.viewmodel
 
 import androidx.lifecycle.*
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.ranseo.solaroid.Event
 import com.ranseo.solaroid.datasource.profile.MyProfileDataSource
@@ -55,6 +56,9 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     val customToken : LiveData<Event<String>>
         get() = _customToken
 
+    private val _credential = MutableLiveData<Event<AuthCredential>>()
+    val credential : LiveData<Event<AuthCredential>>
+        get() = _credential
 
     private val _isSaveId = MutableLiveData<Boolean>()
     val isSaveId: LiveData<Boolean>
@@ -196,6 +200,11 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     fun setCustomToken(token:String) {
         _customToken.value = Event(token)
     }
+
+    fun setCredential(credential:AuthCredential) {
+        _credential.value = Event(credential)
+    }
+
 
     companion object {
         const val TAG = "로그인뷰모델"

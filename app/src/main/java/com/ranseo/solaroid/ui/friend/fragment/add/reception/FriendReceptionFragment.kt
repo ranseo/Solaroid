@@ -13,8 +13,10 @@ import com.ranseo.solaroid.convertHexStringToLongFormat
 import com.ranseo.solaroid.models.domain.Profile
 import com.ranseo.solaroid.databinding.FragmentFriendReceptionBinding
 import com.ranseo.solaroid.ui.friend.adapter.FriendListAdatper
+import com.ranseo.solaroid.ui.friend.adapter.FriendListDataItem
 import com.ranseo.solaroid.ui.friend.adapter.OnReceptionClickListener
 import com.ranseo.solaroid.ui.friend.fragment.add.dispatch.DispatchStatus
+import com.ranseo.solaroid.ui.friend.fragment.add.dispatch.FriendDispatchFragment
 
 class FriendReceptionFragment() : Fragment() {
     private lateinit var binding: FragmentFriendReceptionBinding
@@ -87,6 +89,16 @@ class FriendReceptionFragment() : Fragment() {
                 }
             })
 
+        viewModel.friends.observe(viewLifecycleOwner) {
+            if(!it.isNullOrEmpty()) {
+                adapter.submitList(it)
+            } else {
+                val friendEmptyHead = FriendListDataItem.FriendEmptyHead()
+                friendEmptyHead.title = FRIEND_EMPTY_TEXT
+                adapter.submitList(listOf(friendEmptyHead))
+            }
+        }
+
         binding.recFriendReception.adapter = adapter
         return binding.root
     }
@@ -98,5 +110,8 @@ class FriendReceptionFragment() : Fragment() {
     companion object {
         const val TAG = "프렌드_리셉션_프래그먼트"
         const val KEY = "ReceptionKey"
+        private const val FRIEND_EMPTY_TEXT = "친구 요청이 존재하지 않습니다.\n" +
+                "상단의 검색창을 이용해\n\n" +
+                "친구 코드를 검색하여\n친구 요청을 해보세요"
     }
 }

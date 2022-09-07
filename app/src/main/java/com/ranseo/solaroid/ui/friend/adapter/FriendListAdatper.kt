@@ -4,6 +4,7 @@ import android.app.Application
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,7 @@ private const val VIEW_TYPE_RECEPTION_PROFILE = 1
 private const val VIEW_TYPE_DISPATCH_PROFILE = 2
 private const val VIEW_TYPE_DIALOG_PROFILE = 3
 private const val VIEW_TYPE_FRIEND_EMPTY = 4
+
 
 class FriendListAdatper(
     val application: Application? = null,
@@ -74,6 +76,10 @@ class FriendListAdatper(
             is FriendDialogViewHolder -> {
                 val item = getItem(position) as FriendListDataItem.DialogProfileDataItem
                 holder.bind(item.friend, dialogClickListener!!, application)
+            }
+            is FriendEmptyViewHolder -> {
+                val item = getItem(0) as FriendListDataItem.FriendEmptyHead
+                holder.bind(item.title)
             }
         }
     }
@@ -195,7 +201,11 @@ class FriendListAdatper(
         }
     }
 
-    class FriendEmptyViewHolder(view:View) : RecyclerView.ViewHolder(view) {
+    class FriendEmptyViewHolder(val view:View) : RecyclerView.ViewHolder(view) {
+        fun bind(text:String) {
+            val textView = view.findViewById<TextView>(R.id.tv_friend_empty)
+            textView.text = text
+        }
          companion object{
              fun from(parent:ViewGroup) : FriendEmptyViewHolder {
                  val layoutInflater = LayoutInflater.from(parent.context)
@@ -243,9 +253,11 @@ sealed class FriendListDataItem() {
             get() = friend.id
     }
 
-    object FriendEmptyHead: FriendListDataItem() {
+    class FriendEmptyHead: FriendListDataItem() {
         override val id: String
             get() = "FriendEmptyHead"
+
+        var title: String = ""
     }
 }
 
