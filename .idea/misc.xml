@@ -45,13 +45,13 @@
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/activity_friend.xml" value="0.15946985891406584" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/activity_splash.xml" value="0.17828131680205217" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/dialog_fragment_rename.xml" value="0.22" />
-        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_album.xml" value="0.33" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_album.xml" value="0.1" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create.xml" value="0.1" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create_final.xml" value="0.1" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_create_participants.xml" value="0.33" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_album_request.xml" value="0.1" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_add.xml" value="0.2" />
-        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_list.xml" value="0.3822992700729927" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_friend_list.xml" value="0.25" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/fragment_solaroid_login.xml" value="0.15946985891406584" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/list_item_album.xml" value="0.33" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/login/layout/list_item_album_request.xml" value="0.18" />
@@ -64,11 +64,11 @@
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/activity_home.xml" value="0.30055579307396324" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_gallery.xml" value="0.14" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_add.xml" value="0.18" />
-        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_edit.xml" value="0.33" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_edit.xml" value="0.16" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_frame.xml" value="0.17549457562220805" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_frame_container.xml" value="0.15391192817443353" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_gallery.xml" value="0.25" />
-        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_photo_create.xml" value="0.25" />
+        <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/fragment_solaroid_photo_create.xml" value="0.18" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/list_item_solaroid_add_choice.xml" value="0.2291577597263788" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/list_item_solaroid_frame.xml" value="0.1" />
         <entry key="..\:/Users/aa/Desktop/developMent/Solaroid/app/src/main/res/layouts/main/layout/list_item_solaroid_gallery.xml" value="0.22" />

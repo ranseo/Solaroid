@@ -1,11 +1,14 @@
 package com.ranseo.solaroid.custom.behavior
 
+import android.content.Context
+import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
-class FloatingActionButtonBehavior : CoordinatorLayout.Behavior<FloatingActionButton>() {
+class FloatingActionButtonBehavior(context: Context, attributeSet: AttributeSet)
+    : CoordinatorLayout.Behavior<View>(context,attributeSet) {
 
     /**
      * 레이아웃에 트리거가 발생하면 호출
@@ -13,7 +16,7 @@ class FloatingActionButtonBehavior : CoordinatorLayout.Behavior<FloatingActionBu
      * */
     override fun layoutDependsOn(
         parent: CoordinatorLayout,
-        child: FloatingActionButton,
+        child: View,
         dependency: View
     ): Boolean {
         return dependency is Snackbar.SnackbarLayout
@@ -24,17 +27,35 @@ class FloatingActionButtonBehavior : CoordinatorLayout.Behavior<FloatingActionBu
      * */
     override fun onDependentViewChanged(
         parent: CoordinatorLayout,
-        child: FloatingActionButton,
+        child: View,
         dependency: View
     ): Boolean {
-
-        val translationY = Math.min(0F, dependency.translationY - dependency.height)
-        val percentComplete = -translationY / dependency.height
-        val scaleFactor = 1 - percentComplete
+        if(parent==null || child ==null || dependency == null ) return false
+        val translationY = getViewOffsetForSnackbar(parent, child)
+        val fractionComplete = translationY / dependency.height
+        val scaleFactor = 1 - fractionComplete
 
         child.scaleX = scaleFactor
         child.scaleY = scaleFactor
 
-        return false
+        return true
+    }
+
+    private fun getViewOffsetForSnackbar(parent: CoordinatorLayout, view: View): Float{
+        var maxOffset = 0f
+        val dependencies = parent.getDependencies(view)
+
+        dependencies.forEach { dependency ->
+            if (dependency is Snackbar.SnackbarLayout && parent.doViewsOverlap(view, dependency)){
+                maxOffset = Math.max(maxOffset, (dependency.translationY - dependency.height) * -1)
+            }
+        }
+
+        return maxOffset
+    }
+
+    override fun onDependentViewRemoved(parent: CoordinatorLayout, child: View, dependency: View) {
+        child.scaleX = 1f
+        child.scaleY = 1f
     }
 }

@@ -42,18 +42,20 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         MyProfileDataSource()
     )
 
+
     //data
-    val friendList = Transformations.map(friendListRepositery.friendList) {
-        if(!it.isNullOrEmpty()) {
-            it.map { friend ->
-                FriendListDataItem.NormalProfileDataItem(friend)
-            }
-        } else {
-            val friendEmptyHead = FriendListDataItem.FriendEmptyHead()
-            friendEmptyHead.title = FRIEND_EMPTY_TEXT
-            listOf(friendEmptyHead)
-        }
-    }
+//    val friendList = Transformations.map(friendListRepositery.friendList) {
+//        if(!it.isNullOrEmpty()) {
+//            it.map { friend ->
+//                FriendListDataItem.NormalProfileDataItem(friend)
+//            }
+//        } else {
+//            val friendEmptyHead = FriendListDataItem.FriendEmptyHead()
+//            friendEmptyHead.title = FRIEND_EMPTY_TEXT
+//            listOf(friendEmptyHead)
+//        }
+//    }
+
 
     val myProfile: LiveData<Profile> = profileRepostiery.myProfile
 
@@ -67,8 +69,40 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         get() = _currFriend
 
     private val _tmpFriend = MutableLiveData<Event<Friend>>()
-    val tmpFriend : LiveData<Event<Friend>>
+    val tmpFriend: LiveData<Event<Friend>>
         get() = _tmpFriend
+
+
+    private val _searchCancel = MutableLiveData<Event<Any?>>()
+    val searchCancel: LiveData<Event<Any?>>
+        get() = _searchCancel
+
+    private val _isSearch = MutableLiveData<Event<Boolean>>(Event(false))
+    val isSearch: LiveData<Event<Boolean>>
+        get() = _isSearch
+
+    private val _searchInfo = MutableLiveData<String>()
+    val searchInfo: LiveData<String>
+        get() = _searchInfo
+
+
+    val friendList = Transformations.switchMap(isSearch) {
+        it.getContentIfNotHandled()?.let { search ->
+            getFriendList(search)
+        }
+    }
+
+
+    private fun getFriendList(isSearch: Boolean): LiveData<List<Friend>> {
+        return when (isSearch) {
+            true -> {
+                friendListRepositery.searchResultFriendList(searchInfo.value!!)
+            }
+            false -> {
+                friendListRepositery.friendList
+            }
+        }
+    }
 
     //
 
@@ -127,6 +161,10 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
      * */
     fun setCurrFriend(ft: FT) {
         _currFriend.value = Event(ft)
+    }
+
+    fun setSearchInfo(info:CharSequence) {
+        _searchInfo.value = info.toString()
     }
 
 

@@ -86,6 +86,8 @@ interface DatabasePhotoTicketDao {
     @Query("SELECT * FROM friend_table WHERE friend_my_email == :user ORDER BY friend_nickname DESC")
     fun getAllFriends(user:String) : LiveData<List<DatabaseFriend>>
 
+    @Query("SELECT * FROM friend_table WHERE friend_my_email == :user AND (friend_nickname LIKE '%' || :info || '%' OR friend_code LIKE '%' || :info || '%' ) ")
+    fun getSearchingFriends(user:String, info:String) : LiveData<List<DatabaseFriend>>
 
     //album
     @Insert(onConflict = OnConflictStrategy.REPLACE)

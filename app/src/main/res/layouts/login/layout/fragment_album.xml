@@ -14,60 +14,47 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/soft_grey"
         tools:context=".ui.home.fragment.album.AlbumFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/soft_grey">
 
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rec_album"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                app:spanCount="3"
-                tools:itemCount="3"
-                tools:listitem="@layout/list_item_album" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            />
 
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                >
-                <com.ranseo.solaroid.custom.view.CustomBottomNavigationView
-                    android:id="@+id/album_bottom_navi"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/bot_navi_color"
-                    app:labelVisibilityMode="labeled"
-                    android:layout_gravity="bottom"
-                    app:menu="@menu/album_bot_navi" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rec_album"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_marginBottom="?attr/actionBarSize"
+            app:spanCount="3"
+            tools:itemCount="3"
+            tools:listitem="@layout/list_item_album" />
 
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.ranseo.solaroid.custom.view.CustomBottomNavigationView
+            android:id="@+id/album_bottom_navi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:backgroundTint="@color/bot_navi_color"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/album_bot_navi" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_photo_create"
+            android:onClick="@{()->viewModel.navigateToPhotoCreate()}"
+            app:layout_behavior=".custom.behavior.FloatingActionButtonBehavior"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
@@ -75,10 +62,7 @@
             android:clickable="true"
             android:elevation="3dp"
             android:focusable="true"
-            android:onClick="@{()->viewModel.navigateToPhotoCreate()}"
-            app:layout_behavior=".custom.behavior.FloatingActionButtonBehavior"
             android:src="@drawable/ic_photo_create" />
-
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -31,6 +31,7 @@
             android:background="@drawable/edit_text_shadow"
             android:hint="별명 또는 친구 코드를 입력해주세요"
             android:textAlignment="center"
+            android:onTextChanged="@{(s,a,b,c)->viewModel.setSearchInfo(s)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -66,7 +67,6 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rec_friend_list"
-                submitList="@{viewModel.friendList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

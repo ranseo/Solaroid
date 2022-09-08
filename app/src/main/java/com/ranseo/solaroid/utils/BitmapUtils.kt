@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.util.Base64
@@ -13,6 +15,7 @@ import kotlinx.coroutines.*
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
@@ -63,6 +66,7 @@ object BitmapUtils {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.N)
     suspend fun loadImage(imageUrl: String): Bitmap? {
         return withContext(Dispatchers.IO) {
 
@@ -71,9 +75,13 @@ object BitmapUtils {
             try {
                 val url = URL(imageUrl)
                 Log.i(TAG, "URL : ${url}")
-                val stream = url.openStream()
-                Log.i(TAG, "stream : ${stream}")
-                bmp = BitmapFactory.decodeStream(stream)
+                val stream1 = url.openStream()
+                val stream2 = url.openStream()
+                Log.i(TAG, "stream : ${stream1}")
+                bmp = resizeBitmap(stream1, BitmapFactory.decodeStream(stream2))
+                stream1.close()
+                stream2.close()
+
             } catch (e: MalformedURLException) {
                 e.printStackTrace()
             } catch (e: IOException) {
@@ -99,6 +107,53 @@ object BitmapUtils {
     fun stringToBitmap(encodedString: String): Bitmap {
         val encodeByte: ByteArray = Base64.decode(encodedString, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.size)
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun resizeBitmap(stream: InputStream, bitmap:Bitmap) : Bitmap? {
+        val TAG  = "resizeBitmap"
+        val exif = ExifInterface(stream)
+
+        val orientation : Int = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+        ExifInterface.ORIENTATION_UNDEFINED)
+        val matrix = Matrix()
+        val angle = when(orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> {
+                Log.i(TAG,"ORIENTATION_ROTATE_90")
+                matrix.postRotate(90f)
+            }
+            ExifInterface.ORIENTATION_ROTATE_180 -> {
+                Log.i(TAG,"ORIENTATION_ROTATE_180")
+                matrix.postRotate(180f)
+            }
+            ExifInterface.ORIENTATION_ROTATE_270 -> {
+                Log.i(TAG,"ORIENTATION_ROTATE_270")
+                matrix.postRotate(270f)
+            }
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> {
+                Log.i(TAG,"ORIENTATION_FLIP_HORIZONTAL")
+                matrix.setScale(-1f,1f)
+            }
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> {
+                Log.i(TAG,"ORIENTATION_FLIP_VERTICAL")
+                matrix.postRotate(180f)
+                matrix.postScale(-1f,1f)
+            }
+            ExifInterface.ORIENTATION_TRANSPOSE -> {
+                Log.i(TAG,"ORIENTATION_TRANSPOSE")
+                matrix.setRotate(90f)
+                matrix.postScale(-1f,1f)
+            }
+            ExifInterface.ORIENTATION_TRANSVERSE -> {
+                Log.i(TAG,"ORIENTATION_TRANSVERSE ")
+                matrix.postRotate(270f)
+            }
+            else -> 0F
+        }
+
+        return Bitmap.createBitmap(bitmap, 0,0, bitmap.width, bitmap.height, matrix, true)
+
     }
 }
 

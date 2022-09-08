@@ -228,42 +228,43 @@
 
 
 
-            <FrameLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/bottom_option"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/soft_grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-
-
-                <ImageButton
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/image_save"
                     android:onClick="@{()->viewmodel.onImageSave()}"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:layout_gravity="bottom|center"
-                    android:layout_marginBottom="24dp"
-                    android:backgroundTint="@color/image_btn_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="72dp"
+                    android:layout_marginBottom="56dp"
+                    android:backgroundTint="@color/white"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_photo_save" />
+                    android:src="@drawable/outline_file_download_black_24"
+                    android:layout_gravity="bottom|center" />
 
-                <ImageButton
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/image_spin"
                     android:onClick="@{()->viewmodel.onImageSpin()}"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:layout_gravity="bottom|right"
-                    android:layout_marginBottom="24dp"
-                    android:layout_marginEnd="36dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="72dp"
+                    android:layout_marginBottom="56dp"
+                    android:backgroundTint="@color/white"
                     android:scaleType="fitCenter"
-                    android:backgroundTint="@color/image_btn_background"
-                    android:src="@drawable/spin_photo"
-                    />
+                    android:src="@drawable/ic_baseline_autorenew_24"
+                    android:layout_gravity="bottom|center" />
 
-            </FrameLayout>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ProgressBar

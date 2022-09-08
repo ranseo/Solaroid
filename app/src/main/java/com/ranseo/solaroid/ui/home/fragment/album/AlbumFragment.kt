@@ -179,8 +179,11 @@ class AlbumFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener,
 
         viewModel.naviToPhotoCreate.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let {
+                Log.i(TAG,"naviToPhotoCreate CLICK")
                 if (viewModel.albums.value.isNullOrEmpty()) {
-                    val snackBar = CustomSnackBar.make(this.requireView(),getString(R.string.none_album_message), noneAlbumSnackbarListener )
+
+                    val snackBar = CustomSnackBar.make(this.requireView() ,getString(R.string.none_album_message), noneAlbumSnackbarListener )
+                    //val snackBar = Snackbar.make(this.requireView(), "asd", Snackbar.LENGTH_SHORT)
                     snackBar.show()
                 } else {
                     findNavController().navigate(

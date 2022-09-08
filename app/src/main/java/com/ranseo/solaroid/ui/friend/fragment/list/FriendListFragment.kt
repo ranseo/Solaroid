@@ -17,6 +17,7 @@ import com.ranseo.solaroid.dialog.ListSetDialogFragment
 import com.ranseo.solaroid.models.domain.Friend
 import com.ranseo.solaroid.ui.album.viewmodel.ClickTag
 import com.ranseo.solaroid.ui.friend.adapter.FriendListAdatper
+import com.ranseo.solaroid.ui.friend.adapter.FriendListDataItem
 import com.ranseo.solaroid.ui.friend.adapter.OnNormalClickListener
 
 class FriendListFragment : Fragment(), ListSetDialogFragment.ListSetDialogListener {
@@ -83,6 +84,17 @@ class FriendListFragment : Fragment(), ListSetDialogFragment.ListSetDialogListen
             it.getContentIfNotHandled()?.let{ friend ->
                 viewModel.deleteTmpList(friend)
             }
+        }
+
+        viewModel.friendList.observe(viewLifecycleOwner) { list ->
+            var adapterList : List<FriendListDataItem> = listOf()
+            adapterList = if(list.isNullOrEmpty()) {
+                list.map { v-> FriendListDataItem.NormalProfileDataItem(v)}
+            } else {
+                listOf(FriendListDataItem.FriendEmptyHead())
+            }
+
+            adapter.submitList(adapterList)
         }
         return binding.root
     }

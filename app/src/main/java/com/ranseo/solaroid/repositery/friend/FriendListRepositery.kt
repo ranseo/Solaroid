@@ -25,7 +25,13 @@ class FriendListRepositery(
     val user = fbAuth.currentUser!!.email ?: ""
 
     val friendList: LiveData<List<Friend>> =
-        Transformations.map(roomDatabase.getAllFriends(user)) { list ->
+        Transformations.map(roomDB.getAllFriends(user)) { list ->
+            list.asDomainModel()
+        }
+
+
+    fun searchResultFriendList(info: String) =
+        Transformations.map(roomDB.getSearchingFriends(user, info)) { list ->
             list.asDomainModel()
         }
 
@@ -40,7 +46,10 @@ class FriendListRepositery(
     }
 
 
-    suspend fun addTmpListValueEventListener(myFriendCode: Long, setValue: (friend: Friend) -> Unit) {
+    suspend fun addTmpListValueEventListener(
+        myFriendCode: Long,
+        setValue: (friend: Friend) -> Unit
+    ) {
         return withContext(Dispatchers.IO) {
             val listener = myFriendListDataSource.getTmpListener(setValue)
             fbDatabase.reference.child("tmpFriendList").child("$myFriendCode").child("list")
