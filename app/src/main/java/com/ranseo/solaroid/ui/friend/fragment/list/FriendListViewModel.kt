@@ -167,9 +167,17 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
         _searchInfo.value = info.toString()
     }
 
+    fun setIsSearch() {
+        _isSearch.value = Event(true)
+    }
+
+    fun setFalseIsSearch() {
+        _isSearch.value = Event(false)
+        _searchInfo.value = ""
+    }
 
     companion object {
         const val TAG = "프렌드_리스트_뷰모델"
-        const val FRIEND_EMPTY_TEXT = "추가된 친구가 존재하지 않습니다.\n'친구' - '친구 요청' 을 이용해\n친구를 만들고 사진을 공유해보세요"
+
     }
 }

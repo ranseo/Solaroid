@@ -31,7 +31,8 @@
             android:background="@drawable/edit_text_shadow"
             android:hint="별명 또는 친구 코드를 입력해주세요"
             android:textAlignment="center"
-            android:onTextChanged="@{(s,a,b,c)->viewModel.setSearchInfo(s)}"
+            android:onTextChanged="@{(s,t,b,c)->viewModel.setSearchInfo(s)}"
+            android:afterTextChanged="@{(e)->viewModel.setIsSearch()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,6 +40,7 @@
 
         <ImageView
             android:src="@drawable/ic_baseline_cancel_24"
+            android:onClick="@{()->viewModel.setFalseIsSearch()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@id/et_search"
