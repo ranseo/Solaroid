@@ -103,12 +103,14 @@ class FriendListFragment : Fragment(), ListSetDialogFragment.ListSetDialogListen
             adapter.submitList(adapterList)
         }
 
-        TODO("이 부분 때문에 현재 검색창 부분에 검색을 해도 제대로 작동이 안됨 (단, X 눌렀을때 작동은 잘됨) ")
-        viewModel.isSearch.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let{ search ->
-                if(!search) binding.etSearch.text.clear()
+
+        viewModel.searchClear.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{
+                 binding.etSearch.text.clear()
             }
         }
+
+
         return binding.root
     }
 

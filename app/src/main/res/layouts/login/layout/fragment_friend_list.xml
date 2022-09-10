@@ -40,7 +40,7 @@
 
         <ImageView
             android:src="@drawable/ic_baseline_cancel_24"
-            android:onClick="@{()->viewModel.setFalseIsSearch()}"
+            android:onClick="@{()->viewModel.clearSearcBar()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@id/et_search"

@@ -650,7 +650,7 @@ class SolaroidLoginFragment : Fragment() {
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
                     .setServerClientId(BuildConfig.OAUTH_WEB_CLIENT_KEY)
-                    .setFilterByAuthorizedAccounts(true)
+                    .setFilterByAuthorizedAccounts(false)
                     .build())
             .setAutoSelectEnabled(true)
             .build()

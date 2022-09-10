@@ -43,6 +43,7 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     )
 
 
+
     //data
 //    val friendList = Transformations.map(friendListRepositery.friendList) {
 //        if(!it.isNullOrEmpty()) {
@@ -85,6 +86,9 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     val searchInfo: LiveData<String>
         get() = _searchInfo
 
+    private val _searchClear = MutableLiveData<Event<Any?>>()
+    val searchClear : LiveData<Event<Any?>>
+        get() = _searchClear
 
     val friendList = Transformations.switchMap(isSearch) {
         it.getContentIfNotHandled()?.let { search ->
@@ -174,6 +178,10 @@ class FriendListViewModel(dataSource: DatabasePhotoTicketDao) : ViewModel() {
     fun setFalseIsSearch() {
         _isSearch.value = Event(false)
         _searchInfo.value = ""
+    }
+
+    fun clearSearcBar() {
+        _searchClear.value = Event(Unit)
     }
 
     companion object {

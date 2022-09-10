@@ -69,7 +69,9 @@ class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     val friendRequest: LiveData<Event<Any?>>
         get() = _friendRequest
 
-
+    private val _searchClear = MutableLiveData<Event<Any?>>()
+    val searchClear : LiveData<Event<Any?>>
+        get() = _searchClear
 
     fun refreshReceptionFriendSize(myFriendCode:Long) {
         viewModelScope.launch {
@@ -107,6 +109,8 @@ class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
                 searchFriendCode = convertHexStringToLongFormat(code)
             else
                 searchFriendCode = -1L
+        } else {
+            searchFriendCode = -1L
         }
         getSearchProfile()
     }
@@ -171,6 +175,10 @@ class FriendAddViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
             }
 
         }
+    }
+
+    fun clearSearchBar() {
+        _searchClear.value = Event(Unit)
     }
 
 

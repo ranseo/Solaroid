@@ -92,6 +92,15 @@ class FriendAddFragment : Fragment(), NormalDialogFragment.NormalDialogListener 
             }
         }
 
+
+        viewModel.searchClear.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let{
+                binding.etSearch.text.clear()
+                //viewModel.setSearchUserNull()
+            }
+        }
+
+
         return binding.root
     }
 
