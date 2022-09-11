@@ -53,7 +53,7 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
         binding.viewmodel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.saveBtn.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             showDialog()
         }
 
@@ -65,6 +65,12 @@ class SolaroidEditFragment : Fragment(), SaveDialogFragment.EditSaveDialogListen
 
         binding.todayDate.setOnClickListener {
             showDatePickerDialog()
+        }
+
+        viewModel.editCancel.observe(viewLifecycleOwner){
+            it.getContentIfNotHandled()?.let {
+                requireActivity().onBackPressed()
+            }
         }
 
         return binding.root

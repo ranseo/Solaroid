@@ -125,6 +125,10 @@ class SolaroidAddViewModel(
         _date.value = date
     }
 
+    private val _addCancel = MutableLiveData<Event<Any?>>()
+    val addCancel : LiveData<Event<Any?>>
+        get() = _addCancel
+
     private var whichAlbum: DatabaseAlbum? = null
 
     init {
@@ -297,5 +301,10 @@ class SolaroidAddViewModel(
             val album = albums.value?.get(pos) ?: return@launch
             whichAlbum = database.getAlbum(album.id)
         }
+    }
+
+
+    fun onAddCancel() {
+        _addCancel.value = Event(Unit)
     }
 }

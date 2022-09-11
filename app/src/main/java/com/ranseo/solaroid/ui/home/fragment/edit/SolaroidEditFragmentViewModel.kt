@@ -48,6 +48,10 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     val date : LiveData<String>
         get() = _date
 
+    private val _editCancel =MutableLiveData<Event<Any?>>()
+    val editCancel : LiveData<Event<Any?>>
+        get() = _editCancel
+
     fun setDate(date:String) {
         _date.value = date
     }
@@ -105,6 +109,10 @@ class SolaroidEditFragmentViewModel(photoTicketKey:String, dataSource: DatabaseP
     //네비게이션
     fun navigateToFrame() {
         _naviToFrameFrag.value = Event(true)
+    }
+
+    fun onEditCancel() {
+        _editCancel.value = Event(Unit)
     }
 
     companion object{

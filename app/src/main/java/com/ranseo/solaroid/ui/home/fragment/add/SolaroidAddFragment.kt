@@ -119,13 +119,22 @@ class SolaroidAddFragment : Fragment(),
 //            }
 //        } )
 
-        binding.saveBtn.setOnClickListener {
+
+        viewModel.addCancel.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let {
+                requireActivity().onBackPressed()
+            }
+        }
+
+        binding.btnSave.setOnClickListener {
             showDialog()
         }
 
         binding.todayDate.setOnClickListener {
             showDatePickerDialog()
         }
+
+
 
         return binding.root
     }

@@ -99,6 +99,8 @@ class SolaroidPhotoCreateViewModel(
         get() = _isProgressBar
 
 
+
+
     //이미지 캡처 성공 시, view visibility 전환. -> 카메라 촬영 preview 화면에서 이미지 저장 화면으로 전환
     val isLayoutCaptureVisible = Transformations.map(_capturedImageUri) {
         it == null
@@ -187,7 +189,7 @@ class SolaroidPhotoCreateViewModel(
     /**
      * 이미지 저장이 완료되면 다시 카메라 촬영 즉 preview 화면으로 전환하고 기존의 포토티켓을 초기화 하는 함수
      * */
-    private fun forReadyNewImage() {
+    fun forReadyNewImage() {
         _capturedImageUri.value = null
         _editTextClear.value = null
     }
@@ -219,6 +221,7 @@ class SolaroidPhotoCreateViewModel(
             whichAlbum = database.getAlbum(album.id)
         }
     }
+
 
 
     companion object {

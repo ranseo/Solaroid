@@ -215,33 +215,40 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-
-
-
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/save_btn"
+            android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="72dp"
+            android:layout_gravity="bottom|left"
+            android:layout_marginStart="110dp"
+            android:layout_marginBottom="56dp"
+            android:backgroundTint="@color/white"
+            android:onClick="@{()->viewmodel.onAddCancel()}"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_close_24" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
             android:layout_marginBottom="56dp"
             android:backgroundTint="@color/white"
             android:scaleType="fitCenter"
-            android:src="@drawable/outline_file_download_black_24"
-            android:layout_gravity="bottom|center" />
+            android:src="@drawable/outline_file_download_black_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/spin_btn"
+            android:id="@+id/image_spin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="72dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginEnd="110dp"
             android:layout_marginBottom="56dp"
             android:backgroundTint="@color/white"
             android:onClick="@{()->viewmodel.onImageSpin()}"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_autorenew_24"
-            android:layout_gravity="bottom|center" />
+            android:src="@drawable/ic_baseline_autorenew_24" />
+
 
         <FrameLayout
             android:id="@+id/add_choice_fragment_layout"
