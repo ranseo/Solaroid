@@ -1,0 +1,388 @@
+[debug] [2022-09-12T09:48:11.511Z] ----------------------------------------------------------------------
+[debug] [2022-09-12T09:48:11.513Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js emulators:start
+[debug] [2022-09-12T09:48:11.513Z] CLI Version:   10.9.2
+[debug] [2022-09-12T09:48:11.513Z] Platform:      win32
+[debug] [2022-09-12T09:48:11.513Z] Node Version:  v16.16.0
+[debug] [2022-09-12T09:48:11.523Z] Time:          Mon Sep 12 2022 18:48:11 GMT+0900 (대한민국 표준시)
+[debug] [2022-09-12T09:48:11.523Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-09-12T09:48:11.588Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-09-12T09:48:11.588Z] > authorizing via signed-in user (slcksseo@gmail.com)
+[debug] [2022-09-12T09:48:11.807Z] java version "11.0.15.1" 2022-04-22 LTS
+
+[debug] [2022-09-12T09:48:11.808Z] Java(TM) SE Runtime Environment 18.9 (build 11.0.15.1+2-LTS-10)
+Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11.0.15.1+2-LTS-10, mixed mode)
+
+[debug] [2022-09-12T09:48:11.835Z] Parsed Java major version: 11
+[info] i  emulators: Starting emulators: auth, functions, firestore, database, storage {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, database, storage"}}
+[debug] [2022-09-12T09:48:11.876Z] [hub] writing locator at C:\Users\aa\AppData\Local\Temp\hub-solaroid-45908.json
+[warn] !  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: hosting, pubsub {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mhosting, pubsub\u001b[22m"}}
+[info] +  functions: Using node@16 from host. {"metadata":{"emulator":{"name":"functions"},"message":"Using node@16 from host."}}
+[debug] [2022-09-12T09:48:11.926Z] defaultcredentials: writing to file C:\Users\aa\AppData\Roaming\firebase\slcksseo_gmail_com_application_default_credentials.json
+[debug] [2022-09-12T09:48:11.927Z] Setting GAC to C:\Users\aa\AppData\Roaming\firebase\slcksseo_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to C:\\Users\\aa\\AppData\\Roaming\\firebase\\slcksseo_gmail_com_application_default_credentials.json"}}
+[debug] [2022-09-12T09:48:11.929Z] > refreshing access token with scopes: []
+[debug] [2022-09-12T09:48:11.929Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2022-09-12T09:48:12.179Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Mon, 12 Sep 2022 09:48:11 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2022-09-12T09:48:12.187Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908/adminSdkConfig [none]
+[debug] [2022-09-12T09:48:12.629Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908/adminSdkConfig 200
+[debug] [2022-09-12T09:48:12.629Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908/adminSdkConfig {"projectId":"solaroid-45908","databaseURL":"https://solaroid-45908-default-rtdb.firebaseio.com","storageBucket":"solaroid-45908.appspot.com","locationId":"asia-northeast2"}
+[debug] [2022-09-12T09:48:12.645Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2022-09-12T09:48:12.645Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-09-12T09:48:12.645Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","C:\\Users\\aa\\.cache\\firebase\\emulators\\cloud-firestore-emulator-v1.14.3.jar","--host","localhost","--port",8080,"--rules","C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\firestore.rules","--functions_emulator","localhost:5001"],"optionalArgs":["port","webchannel_port","host","rules","functions_emulator","seed_from_export"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\aa\\\\.cache\\\\firebase\\\\emulators\\\\cloud-firestore-emulator-v1.14.3.jar\",\"--host\",\"localhost\",\"--port\",8080,\"--rules\",\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\firestore.rules\",\"--functions_emulator\",\"localhost:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"functions_emulator\",\"seed_from_export\"],\"joinArgs\":false}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[debug] [2022-09-12T09:48:14.442Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908 [none]
+[debug] [2022-09-12T09:48:14.838Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908 200
+[debug] [2022-09-12T09:48:14.839Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/solaroid-45908 {"projectId":"solaroid-45908","projectNumber":"668980346028","displayName":"SOLAROID","name":"projects/solaroid-45908","resources":{"hostingSite":"solaroid-45908","realtimeDatabaseInstance":"solaroid-45908-default-rtdb","storageBucket":"solaroid-45908.appspot.com","locationId":"asia-northeast2"},"state":"ACTIVE","etag":"1_36b68c47-b72d-4089-8ebd-c90cf867aeda"}
+[debug] [2022-09-12T09:48:14.839Z] database rules config:  [{"instance":"solaroid-45908-default-rtdb","rules":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\database.rules.json"}]
+[debug] [2022-09-12T09:48:14.845Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2022-09-12T09:48:14.845Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-09-12T09:48:14.846Z] Ignoring unsupported arg: rules {"metadata":{"emulator":{"name":"database"},"message":"Ignoring unsupported arg: rules"}}
+[debug] [2022-09-12T09:48:14.846Z] Starting Database Emulator with command {"binary":"java","args":["-Duser.language=en","-jar","C:\\Users\\aa\\.cache\\firebase\\emulators\\firebase-database-emulator-v4.7.3.jar","--host","localhost","--port",9000,"--functions_emulator_host","localhost","--functions_emulator_port",5001],"optionalArgs":["port","host","functions_emulator_port","functions_emulator_host"],"joinArgs":false} {"metadata":{"emulator":{"name":"database"},"message":"Starting Database Emulator with command {\"binary\":\"java\",\"args\":[\"-Duser.language=en\",\"-jar\",\"C:\\\\Users\\\\aa\\\\.cache\\\\firebase\\\\emulators\\\\firebase-database-emulator-v4.7.3.jar\",\"--host\",\"localhost\",\"--port\",9000,\"--functions_emulator_host\",\"localhost\",\"--functions_emulator_port\",5001],\"optionalArgs\":[\"port\",\"host\",\"functions_emulator_port\",\"functions_emulator_host\"],\"joinArgs\":false}"}}
+[info] i  database: Database Emulator logging to database-debug.log {"metadata":{"emulator":{"name":"database"},"message":"Database Emulator logging to \u001b[1mdatabase-debug.log\u001b[22m"}}
+[debug] [2022-09-12T09:48:24.291Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"storage"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2022-09-12T09:48:25.404Z] Temp file directory for storage emulator: C:\Users\aa\AppData\Local\Temp/firebase/storage/blobs {"metadata":{"emulator":{"name":"storage"},"message":"Temp file directory for storage emulator: C:\\Users\\aa\\AppData\\Local\\Temp/firebase/storage/blobs"}}
+[debug] [2022-09-12T09:48:25.689Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2022-09-12T09:48:25.689Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2022-09-12T09:48:25.689Z] Starting Emulator UI with command {"binary":"node","args":["C:\\Users\\aa\\.cache\\firebase\\emulators\\ui-v1.7.0\\server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"C:\\\\Users\\\\aa\\\\.cache\\\\firebase\\\\emulators\\\\ui-v1.7.0\\\\server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2022-09-12T09:48:25.831Z] Web / API server started at localhost:4000
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at localhost:4000\n"}}
+[info] i  functions: Watching "C:\Users\aa\Desktop\developMent\Solaroid\functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\" for Cloud Functions..."}}
+[debug] [2022-09-12T09:48:25.961Z] Validating nodejs source
+[debug] [2022-09-12T09:48:30.953Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "16"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "async": "^3.2.4",
+    "axios": "^0.27.2",
+    "firebase-admin": "^10.3.0",
+    "firebase-functions": "^3.23.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
+[debug] [2022-09-12T09:48:30.953Z] Building nodejs source
+[debug] [2022-09-12T09:48:30.953Z] Analyzing nodejs backend spec
+[debug] [2022-09-12T09:48:30.955Z] Could not find functions.yaml. Must use http discovery
+[debug] [2022-09-12T09:48:31.340Z] Serving at port 9005
+
+[debug] [2022-09-12T09:48:31.581Z] Got response from /__/functions.yaml {"endpoints":{"kakaoToken":{"platform":"gcfv1","labels":{},"region":["asia-northeast1"],"callableTrigger":{},"entryPoint":"kakaoToken"}},"specVersion":"v1alpha1","requiredAPIs":[]}
+[debug] [2022-09-12T09:48:31.586Z] shutdown requested via /__/quitquitquit
+
+[info] +  functions[asia-northeast1-kakaoToken]: http function initialized (http://localhost:5001/solaroid-45908/asia-northeast1/kakaoToken). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://localhost:5001/solaroid-45908/asia-northeast1/kakaoToken)."}}
+[debug] [2022-09-12T09:48:31.602Z] >>> HTTP REQUEST PUT http://localhost:9000/.settings/rules.json?ns=solaroid-45908-default-rtdb  
+ {
+  "rules": {
+    "profile" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        ".write" : "auth != null && auth.uid == $uid"
+      }
+    },
+
+    "log" : {
+      "login" : {
+        ".read" : false,
+        ".write" : true
+      },
+
+      "$uid" : {
+        "album" : {
+          "create" : {
+            ".read" : "false",
+            ".write" : "auth != null && auth.uid == $uid"
+          }
+        }
+      }
+    },
+
+
+    "currentUsersNum" : {
+      ".read" : "auth != null",
+      ".write" : "auth != null"
+    },
+
+
+    "allUsers" : {
+      ".read" : "auth != null && root.child('profile').child(auth.uid).exists()",
+      ".write" : "auth != null && root.child('profile').child(auth.uid).exists()"
+    },
+
+
+
+
+    "myFriendList" : {
+      "$uid" : {
+        "list" : {
+          ".read" : "auth !=null && auth.uid == $uid",
+          "$friendCode" :{
+            ".write" : "auth != null && auth.uid == $uid"
+          }
+        }
+      }
+    },
+
+
+    "tmpFriendList" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth !=null",
+          "$myFriendCode" :{
+            ".write" : "auth != null"
+          }
+        }
+      }
+    },
+
+
+    "friendReception" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth !=null",
+          "$myfriendCode" : {
+            ".write" : "auth != null"
+          }
+        }
+      }
+    },
+
+    "friendDispatch" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth != null",
+          ".write": "auth != null"
+        }
+      }
+    },
+
+    "withAlbum" : {
+      "$albumId" : {
+        "$uid" : {
+          "$albumKey" :{
+            ".read" : "auth != null",
+            ".write" : "auth != null && auth.uid == $uid"
+          }
+        }
+      }
+    },
+
+
+    "album" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        "$albumId" : {
+          ".write" : "auth != null && auth.uid == $uid"
+        }
+      }
+    },
+
+
+    "albumRequest" : {
+      "$friendCode" : {
+        ".read" : "auth != null",
+        ".write" : "auth != null"
+      }
+    },
+
+
+    "photoTicket" : {
+      ".read" : "auth != null",
+      "$albumId" : {
+        ".read" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()",
+        "$albumKey" : {
+          ".write" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).child($albumKey).exists()"
+        }
+      }
+    }
+  }
+}
+[debug] [2022-09-12T09:48:32.097Z] <<< HTTP RESPONSE 200 {"content-length":"15","content-type":"application/json; charset=utf-8","access-control-allow-origin":"*","cache-control":"no-cache","x-firebase-project-id":"solaroid-45908-default-rtdb","x-firebase-project-number":"123456789","x-firebase-uuid":"f48ec423-63c3-40f1-b856-44b4d15e05cd"}
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://localhost:4000                │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬─────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI             │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Authentication │ localhost:9099 │ http://localhost:4000/auth      │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Functions      │ localhost:5001 │ http://localhost:4000/functions │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Firestore      │ localhost:8080 │ http://localhost:4000/firestore │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Database       │ localhost:9000 │ http://localhost:4000/database  │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Storage        │ localhost:9199 │ http://localhost:4000/storage   │
+└────────────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub running at localhost:4400
+  Other reserved ports: 4500
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
+[warn] !  Error: Internal state invariant broken: no user with ID: kakao:2374227226
+    at AgentProjectState.getUserByLocalIdAssertingExists (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:208:19)
+    at AgentProjectState.validateRefreshToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:295:24)
+    at grantToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\operations.js:1212:38)
+    at Proxy.<anonymous> (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\server.js:375:20)
+    at C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\promise-breaker\index.js:265:46
+    at processTicksAndRejections (node:internal/process/task_queues:96:5) {"metadata":{"emulator":{"name":"auth"},"message":"Error: Internal state invariant broken: no user with ID: kakao:2374227226\n    at AgentProjectState.getUserByLocalIdAssertingExists (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:208:19)\n    at AgentProjectState.validateRefreshToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:295:24)\n    at grantToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\operations.js:1212:38)\n    at Proxy.<anonymous> (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\server.js:375:20)\n    at C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\node_modules\\promise-breaker\\index.js:265:46\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"}}
+[warn] !  Error: Internal state invariant broken: no user with ID: kakao:2374227226
+    at AgentProjectState.getUserByLocalIdAssertingExists (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:208:19)
+    at AgentProjectState.validateRefreshToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:295:24)
+    at grantToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\operations.js:1212:38)
+    at Proxy.<anonymous> (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\server.js:375:20)
+    at C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\promise-breaker\index.js:265:46
+    at processTicksAndRejections (node:internal/process/task_queues:96:5) {"metadata":{"emulator":{"name":"auth"},"message":"Error: Internal state invariant broken: no user with ID: kakao:2374227226\n    at AgentProjectState.getUserByLocalIdAssertingExists (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:208:19)\n    at AgentProjectState.validateRefreshToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:295:24)\n    at grantToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\operations.js:1212:38)\n    at Proxy.<anonymous> (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\server.js:375:20)\n    at C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\node_modules\\promise-breaker\\index.js:265:46\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"}}
+[warn] !  Error: Internal state invariant broken: no user with ID: kakao:2374227226
+    at AgentProjectState.getUserByLocalIdAssertingExists (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:208:19)
+    at AgentProjectState.validateRefreshToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:295:24)
+    at grantToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\operations.js:1212:38)
+    at Proxy.<anonymous> (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\server.js:375:20)
+    at C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\promise-breaker\index.js:265:46
+    at processTicksAndRejections (node:internal/process/task_queues:96:5) {"metadata":{"emulator":{"name":"auth"},"message":"Error: Internal state invariant broken: no user with ID: kakao:2374227226\n    at AgentProjectState.getUserByLocalIdAssertingExists (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:208:19)\n    at AgentProjectState.validateRefreshToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:295:24)\n    at grantToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\operations.js:1212:38)\n    at Proxy.<anonymous> (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\server.js:375:20)\n    at C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\node_modules\\promise-breaker\\index.js:265:46\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"}}
+[warn] !  Error: Internal state invariant broken: no user with ID: kakao:2374227226
+    at AgentProjectState.getUserByLocalIdAssertingExists (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:208:19)
+    at AgentProjectState.validateRefreshToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\state.js:295:24)
+    at grantToken (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\operations.js:1212:38)
+    at Proxy.<anonymous> (C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\lib\emulator\auth\server.js:375:20)
+    at C:\Users\aa\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\promise-breaker\index.js:265:46
+    at processTicksAndRejections (node:internal/process/task_queues:96:5) {"metadata":{"emulator":{"name":"auth"},"message":"Error: Internal state invariant broken: no user with ID: kakao:2374227226\n    at AgentProjectState.getUserByLocalIdAssertingExists (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:208:19)\n    at AgentProjectState.validateRefreshToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\state.js:295:24)\n    at grantToken (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\operations.js:1212:38)\n    at Proxy.<anonymous> (C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\lib\\emulator\\auth\\server.js:375:20)\n    at C:\\Users\\aa\\AppData\\Roaming\\npm\\node_modules\\firebase-tools\\node_modules\\promise-breaker\\index.js:265:46\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"}}
+[debug] [2022-09-12T09:49:35.721Z] [work-queue] {"queueLength":1,"workRunningCount":0}
+[debug] [2022-09-12T09:49:35.722Z] [work-queue] {"queueLength":0,"workRunningCount":1}
+[debug] [2022-09-12T09:49:35.722Z] Accepted request POST /solaroid-45908/asia-northeast1/kakaoToken --> asia-northeast1-kakaoToken
+[debug] [2022-09-12T09:49:35.735Z] [worker-pool] addWorker(asia-northeast1-kakaoToken) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(asia-northeast1-kakaoToken)"}}
+[debug] [2022-09-12T09:49:35.735Z] [worker-pool] Adding worker with key asia-northeast1-kakaoToken, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key asia-northeast1-kakaoToken, total=1"}}
+[debug] [2022-09-12T09:49:35.735Z] [worker-pool] submitWork(triggerId=asia-northeast1-kakaoToken) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitWork(triggerId=asia-northeast1-kakaoToken)"}}
+[debug] [2022-09-12T09:49:35.735Z] [worker-asia-northeast1-kakaoToken-6342dd9c-c1f3-4e5d-b64a-069696477ce1]: Assigning socketPath: \\?\pipe\C:\Users\aa\Desktop\developMent\Solaroid\functions\20972 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-asia-northeast1-kakaoToken-6342dd9c-c1f3-4e5d-b64a-069696477ce1]: Assigning socketPath: \\\\?\\pipe\\C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\20972"}}
+[debug] [2022-09-12T09:49:35.735Z] [worker-asia-northeast1-kakaoToken-6342dd9c-c1f3-4e5d-b64a-069696477ce1]: BUSY {"metadata":{"emulator":{"name":"functions"},"message":"[worker-asia-northeast1-kakaoToken-6342dd9c-c1f3-4e5d-b64a-069696477ce1]: BUSY"}}
+[debug] [2022-09-12T09:49:37.539Z] [runtime-status] [20972] Functions runtime initialized. {"cwd":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions","node_version":"16.16.0"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Functions runtime initialized. {\"cwd\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\",\"node_version\":\"16.16.0\"}"}}
+[debug] [2022-09-12T09:49:37.540Z] [runtime-status] [20972] Disabled runtime features: undefined {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Disabled runtime features: undefined"}}
+[debug] [2022-09-12T09:49:37.543Z] [runtime-status] [20972] Resolved module firebase-admin {"declared":true,"installed":true,"version":"10.3.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-admin\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"10.3.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}"}}
+[debug] [2022-09-12T09:49:37.546Z] [runtime-status] [20972] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.23.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.23.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2022-09-12T09:49:37.546Z] [runtime-status] [20972] Outgoing network have been stubbed. [{"name":"http","status":"mocked"},{"name":"http","status":"mocked"},{"name":"https","status":"mocked"},{"name":"https","status":"mocked"},{"name":"net","status":"mocked"}] {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Outgoing network have been stubbed. [{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"http\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"https\",\"status\":\"mocked\"},{\"name\":\"net\",\"status\":\"mocked\"}]"}}
+[debug] [2022-09-12T09:49:37.548Z] [runtime-status] [20972] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.23.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.23.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2022-09-12T09:49:37.609Z] [runtime-status] [20972] Checked functions.config() {"config":{}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Checked functions.config() {\"config\":{}}"}}
+[debug] [2022-09-12T09:49:37.609Z] [runtime-status] [20972] firebase-functions has been stubbed. {"functionsResolution":{"declared":true,"installed":true,"version":"3.23.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-functions\\lib\\index.js"}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] firebase-functions has been stubbed. {\"functionsResolution\":{\"declared\":true,\"installed\":true,\"version\":\"3.23.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}}"}}
+[debug] [2022-09-12T09:49:37.610Z] [runtime-status] [20972] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.23.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.23.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2022-09-12T09:49:37.613Z] [runtime-status] [20972] Resolved module firebase-admin {"declared":true,"installed":true,"version":"10.3.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-admin\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Resolved module firebase-admin {\"declared\":true,\"installed\":true,\"version\":\"10.3.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}"}}
+[debug] [2022-09-12T09:49:37.614Z] [runtime-status] [20972] Resolved module firebase-functions {"declared":true,"installed":true,"version":"3.23.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-functions\\lib\\index.js"} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Resolved module firebase-functions {\"declared\":true,\"installed\":true,\"version\":\"3.23.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-functions\\\\lib\\\\index.js\"}"}}
+[debug] [2022-09-12T09:49:37.614Z] [runtime-status] [20972] firebase-admin has been stubbed. {"adminResolution":{"declared":true,"installed":true,"version":"10.3.0","resolution":"C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\node_modules\\firebase-admin\\lib\\index.js"}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] firebase-admin has been stubbed. {\"adminResolution\":{\"declared\":true,\"installed\":true,\"version\":\"10.3.0\",\"resolution\":\"C:\\\\Users\\\\aa\\\\Desktop\\\\developMent\\\\Solaroid\\\\functions\\\\node_modules\\\\firebase-admin\\\\lib\\\\index.js\"}}"}}
+[debug] [2022-09-12T09:49:37.713Z] [runtime-status] [20972] initializeApp(DEFAULT) {"storageBucket":"solaroid-45908.appspot.com","databaseURL":"http://localhost:9000/?ns=solaroid-45908-default-rtdb","projectId":"solaroid-45908","credential":{"implicit":false,"projectId":"solaroid-45908","privateKey":"-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCbXSkoheHX8rgW\n94GvKRJqZSLRZrQGd5Vsju8ty3HiY9aVYYPi+5HlvwLyPfLSyqFcLr4iSztcM3bl\nqweDQJF0Vj/dYQN56jn5e2e7ugXcRrmSmSpebhWAxj6rsiTSFJFQ8JOBcOpa2fuh\nloVrN3giShnc/ZJ5saQaeKzl8bnP61UxUbBOsGYMH3ezQAyF1RMFDdEaaPNVYnat\njwbSpqW/+YFIrXqA/OydlkgPvSkqdf6/XnR1qnBKwllMl5Z3zn114Mr1vgJ2OHhT\nCZi/9tHcru/xikPO7VpPArv1SeQEBsv2gkFIaosOv7rkYNtbK4gTKeQlHw/2qMKW\n/7HocTrRAgMBAAECggEAAQ6OHa7D95fox0y3mM8/5yIBHbEr+TWJ6l0yTLKjJ5/n\n3TgmqVYOYvSEvsy7tLIAzR+LBvERsj3OIa+zN1IKj0LZMD6FQ1h73Jnpnav9N1dy\nkpgIww/PBQNMOLcnc5ek2arqSPWRfYzZLqsnRRCBeGO+R2vg6cOi5vRyUiXd3oeD\nw/cqqF+gyF2jbx3kten8jZmnqSBqVbmiC75odaHFNCG5s68pCHqnZFSpjpsAtN2z\nEsijUvvuWQLDeM0FpZtQ6BNeJp3t6gm3AIbGzuiS/pYAAJ6TUOEZn+UmRF64USJE\nroiso3Wal0sLh7cYmWo9vFb2gDPl8hAG/sGkdsRNQQKBgQDMbOl+p/hoRJgEx/tZ\nSNuc4ZaNl+OwFHyljNKuCqJQKR+bDaj71y61vqSPzwUx0TP8okVw4qlGHPBdLLIW\nK/ETUWiXOnv2K88moCOsdXrM1L3W8+nXWrMIjXvzQIMbQKJNNg5tFNE1CenJOjHO\n0kMLO+5GmGg7lBUWPrN1zVvkQQKBgQDCj4t5cXAokDJl4100Q5KVx3geavghnbn7\n1dxZ6CZO+FT9ACFVM99xjyFyCuv4bc4DINEHhhTSNhUuFOrzUfOWNIi5iVNUMjgz\nBKyF3RbCXS69sOLSDB/nBfQ5yGpeeHpizLzNDfSJy3pZBU58ruYtDDw+0FomRYWb\ndRwfu8BykQKBgEqAwxR7CUiO/0x2yf8/U3K4sNMH8V6CCO+ZBEuT6pYGdtNexiCK\nyyZHxdf3njAKy8SeK2q54PGBqIR8vqbf+uuMdu7uzLDqRIQSRw4aftfaDRojKS1o\ni+lpDyyXbXDoPH6hXd6ZgKmw5DiHchGrhe25ON0XvJ1CGfFShrs/TedBAoGBAKul\nLC1V8Nc4b94HuoCTZM0TD1v2jzZJCn2s7Ru8fZ+J4qDZ7o5Wlzh+R8lu7UNczDVi\nTEdQ+SmDYSgoeCd2E2peqojVKFjNfVs1Mmde5+dNgiED3vfkjniofhBESeNSctab\nPa3CNA0lIKlMzzOcsaDofHYGJqJBD2BY7xjn8R6hAoGBAKEHOl5U3wfm4xSwSuHX\ncAyuVXQq4nhxoVOoIGGt93iZ1ht9BzlvrdzLIhmuR9bxZozlHkQYtyeCpNlJBqWs\ntqk5r0XST32sTzNRW5o8Et2AQnEfVWlVKlvQO6UcM2aip/IHhDtac97wm7/w4Hkb\n0k7aREl93CZUhvVakQJo0TbB\n-----END PRIVATE KEY-----\n","clientEmail":"solaroid-45908@appspot.gserviceaccount.com","httpClient":{"retry":{"maxRetries":4,"statusCodes":[503],"ioErrorCodes":["ECONNRESET","ETIMEDOUT"],"backOffFactor":0.5,"maxDelayInMillis":60000}}}} {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] initializeApp(DEFAULT) {\"storageBucket\":\"solaroid-45908.appspot.com\",\"databaseURL\":\"http://localhost:9000/?ns=solaroid-45908-default-rtdb\",\"projectId\":\"solaroid-45908\",\"credential\":{\"implicit\":false,\"projectId\":\"solaroid-45908\",\"privateKey\":\"-----BEGIN PRIVATE KEY-----\\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCbXSkoheHX8rgW\\n94GvKRJqZSLRZrQGd5Vsju8ty3HiY9aVYYPi+5HlvwLyPfLSyqFcLr4iSztcM3bl\\nqweDQJF0Vj/dYQN56jn5e2e7ugXcRrmSmSpebhWAxj6rsiTSFJFQ8JOBcOpa2fuh\\nloVrN3giShnc/ZJ5saQaeKzl8bnP61UxUbBOsGYMH3ezQAyF1RMFDdEaaPNVYnat\\njwbSpqW/+YFIrXqA/OydlkgPvSkqdf6/XnR1qnBKwllMl5Z3zn114Mr1vgJ2OHhT\\nCZi/9tHcru/xikPO7VpPArv1SeQEBsv2gkFIaosOv7rkYNtbK4gTKeQlHw/2qMKW\\n/7HocTrRAgMBAAECggEAAQ6OHa7D95fox0y3mM8/5yIBHbEr+TWJ6l0yTLKjJ5/n\\n3TgmqVYOYvSEvsy7tLIAzR+LBvERsj3OIa+zN1IKj0LZMD6FQ1h73Jnpnav9N1dy\\nkpgIww/PBQNMOLcnc5ek2arqSPWRfYzZLqsnRRCBeGO+R2vg6cOi5vRyUiXd3oeD\\nw/cqqF+gyF2jbx3kten8jZmnqSBqVbmiC75odaHFNCG5s68pCHqnZFSpjpsAtN2z\\nEsijUvvuWQLDeM0FpZtQ6BNeJp3t6gm3AIbGzuiS/pYAAJ6TUOEZn+UmRF64USJE\\nroiso3Wal0sLh7cYmWo9vFb2gDPl8hAG/sGkdsRNQQKBgQDMbOl+p/hoRJgEx/tZ\\nSNuc4ZaNl+OwFHyljNKuCqJQKR+bDaj71y61vqSPzwUx0TP8okVw4qlGHPBdLLIW\\nK/ETUWiXOnv2K88moCOsdXrM1L3W8+nXWrMIjXvzQIMbQKJNNg5tFNE1CenJOjHO\\n0kMLO+5GmGg7lBUWPrN1zVvkQQKBgQDCj4t5cXAokDJl4100Q5KVx3geavghnbn7\\n1dxZ6CZO+FT9ACFVM99xjyFyCuv4bc4DINEHhhTSNhUuFOrzUfOWNIi5iVNUMjgz\\nBKyF3RbCXS69sOLSDB/nBfQ5yGpeeHpizLzNDfSJy3pZBU58ruYtDDw+0FomRYWb\\ndRwfu8BykQKBgEqAwxR7CUiO/0x2yf8/U3K4sNMH8V6CCO+ZBEuT6pYGdtNexiCK\\nyyZHxdf3njAKy8SeK2q54PGBqIR8vqbf+uuMdu7uzLDqRIQSRw4aftfaDRojKS1o\\ni+lpDyyXbXDoPH6hXd6ZgKmw5DiHchGrhe25ON0XvJ1CGfFShrs/TedBAoGBAKul\\nLC1V8Nc4b94HuoCTZM0TD1v2jzZJCn2s7Ru8fZ+J4qDZ7o5Wlzh+R8lu7UNczDVi\\nTEdQ+SmDYSgoeCd2E2peqojVKFjNfVs1Mmde5+dNgiED3vfkjniofhBESeNSctab\\nPa3CNA0lIKlMzzOcsaDofHYGJqJBD2BY7xjn8R6hAoGBAKEHOl5U3wfm4xSwSuHX\\ncAyuVXQq4nhxoVOoIGGt93iZ1ht9BzlvrdzLIhmuR9bxZozlHkQYtyeCpNlJBqWs\\ntqk5r0XST32sTzNRW5o8Et2AQnEfVWlVKlvQO6UcM2aip/IHhDtac97wm7/w4Hkb\\n0k7aREl93CZUhvVakQJo0TbB\\n-----END PRIVATE KEY-----\\n\",\"clientEmail\":\"solaroid-45908@appspot.gserviceaccount.com\",\"httpClient\":{\"retry\":{\"maxRetries\":4,\"statusCodes\":[503],\"ioErrorCodes\":[\"ECONNRESET\",\"ETIMEDOUT\"],\"backOffFactor\":0.5,\"maxDelayInMillis\":60000}}}}"}}
+[debug] [2022-09-12T09:49:37.714Z] [runtime-status] [20972] Beginning invocation function kakaoToken! {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Beginning invocation function kakaoToken!"}}
+[info] i  functions: Beginning execution of "kakaoToken" {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"Beginning execution of \"kakaoToken\""}}
+[debug] [2022-09-12T09:49:37.715Z] [runtime-status] [20972] Running kakaoToken in signature http {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Running kakaoToken in signature http"}}
+[debug] [2022-09-12T09:49:37.719Z] [runtime-status] [20972] Attempting to listen to socketPath: \\?\pipe\C:\Users\aa\Desktop\developMent\Solaroid\functions\20972 {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Attempting to listen to socketPath: \\\\?\\pipe\\C:\\Users\\aa\\Desktop\\developMent\\Solaroid\\functions\\20972"}}
+[debug] [2022-09-12T09:49:37.723Z] [functions] Runtime ready! Sending request! {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Runtime ready! Sending request!"}}
+[debug] [2022-09-12T09:49:37.723Z] [functions] Got req.url=/solaroid-45908/asia-northeast1/kakaoToken, mapping to path=/ {"metadata":{"emulator":{"name":"functions"},"message":"[functions] Got req.url=/solaroid-45908/asia-northeast1/kakaoToken, mapping to path=/"}}
+[debug] [2022-09-12T09:49:37.743Z] [runtime-status] [20972] Ephemeral server handling POST request {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Ephemeral server handling POST request"}}
+[info] >  {"verifications":{"app":"MISSING","auth":"MISSING"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"INFO","message":"Callable request verification passed"} {"user":{"verifications":{"app":"MISSING","auth":"MISSING"},"logging.googleapis.com/labels":{"firebase-log-type":"callable-request-verification"},"severity":"INFO","message":"Callable request verification passed"},"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m {\"verifications\":{\"app\":\"MISSING\",\"auth\":\"MISSING\"},\"logging.googleapis.com/labels\":{\"firebase-log-type\":\"callable-request-verification\"},\"severity\":\"INFO\",\"message\":\"Callable request verification passed\"}"}}
+[debug] [2022-09-12T09:49:37.749Z] [runtime-status] [20972] No callable functions auth found {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] No callable functions auth found"}}
+[info] >  KaKaoToken {"user":"KaKaoToken","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m KaKaoToken"}}
+[info] >  wkdHo7P8-VEYwpmi1nOKVDxu7qG0UzWTHKzlNOtgCj102gAAAYMwfZO3 {"user":"wkdHo7P8-VEYwpmi1nOKVDxu7qG0UzWTHKzlNOtgCj102gAAAYMwfZO3","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m wkdHo7P8-VEYwpmi1nOKVDxu7qG0UzWTHKzlNOtgCj102gAAAYMwfZO3"}}
+[info] >  createFirebaseToken {"user":"createFirebaseToken","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m createFirebaseToken"}}
+[info] >  Requesting user profile from Kakao API server. wkdHo7P8-VEYwpmi1nOKVDxu7qG0UzWTHKzlNOtgCj102gAAAYMwfZO3 {"user":"Requesting user profile from Kakao API server. wkdHo7P8-VEYwpmi1nOKVDxu7qG0UzWTHKzlNOtgCj102gAAAYMwfZO3","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m Requesting user profile from Kakao API server. wkdHo7P8-VEYwpmi1nOKVDxu7qG0UzWTHKzlNOtgCj102gAAAYMwfZO3"}}
+[info] >  Promise { <pending> } {"user":"Promise { <pending> }","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m Promise { <pending> }"}}
+[info] >  { {"user":"{","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m {"}}
+[info] >    id: 2374227226, {"user":"  id: 2374227226,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   id: 2374227226,"}}
+[info] >    connected_at: '2022-08-17T14:27:20Z', {"user":"  connected_at: '2022-08-17T14:27:20Z',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   connected_at: '2022-08-17T14:27:20Z',"}}
+[info] >    properties: { {"user":"  properties: {","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   properties: {"}}
+[info] >      nickname: '이찬서', {"user":"    nickname: '이찬서',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     nickname: '이찬서',"}}
+[info] >      profile_image: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg', {"user":"    profile_image: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     profile_image: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg',"}}
+[info] >      thumbnail_image: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_110x110.jpg' {"user":"    thumbnail_image: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_110x110.jpg'","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     thumbnail_image: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_110x110.jpg'"}}
+[info] >    }, {"user":"  },","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   },"}}
+[info] >    kakao_account: { {"user":"  kakao_account: {","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   kakao_account: {"}}
+[info] >      profile_nickname_needs_agreement: false, {"user":"    profile_nickname_needs_agreement: false,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     profile_nickname_needs_agreement: false,"}}
+[info] >      profile_image_needs_agreement: false, {"user":"    profile_image_needs_agreement: false,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     profile_image_needs_agreement: false,"}}
+[info] >      profile: { {"user":"    profile: {","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     profile: {"}}
+[info] >        nickname: '이찬서', {"user":"      nickname: '이찬서',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m       nickname: '이찬서',"}}
+[info] >        thumbnail_image_url: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_110x110.jpg', {"user":"      thumbnail_image_url: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_110x110.jpg',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m       thumbnail_image_url: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_110x110.jpg',"}}
+[info] >        profile_image_url: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg', {"user":"      profile_image_url: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m       profile_image_url: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg',"}}
+[info] >        is_default_image: false {"user":"      is_default_image: false","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m       is_default_image: false"}}
+[info] >      }, {"user":"    },","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     },"}}
+[info] >      has_email: true, {"user":"    has_email: true,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     has_email: true,"}}
+[info] >      email_needs_agreement: false, {"user":"    email_needs_agreement: false,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     email_needs_agreement: false,"}}
+[info] >      is_email_valid: true, {"user":"    is_email_valid: true,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     is_email_valid: true,"}}
+[info] >      is_email_verified: true, {"user":"    is_email_verified: true,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     is_email_verified: true,"}}
+[info] >      email: 'slckscool@naver.com' {"user":"    email: 'slckscool@naver.com'","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m     email: 'slckscool@naver.com'"}}
+[info] >    } {"user":"  }","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   }"}}
+[info] >  } {"user":"}","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m }"}}
+[info] >  { {"user":"{","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m {"}}
+[info] >    uid: 'kakao:2374227226', {"user":"  uid: 'kakao:2374227226',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   uid: 'kakao:2374227226',"}}
+[info] >    provider: 'KAKAO', {"user":"  provider: 'KAKAO',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   provider: 'KAKAO',"}}
+[info] >    displayName: '이찬서', {"user":"  displayName: '이찬서',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   displayName: '이찬서',"}}
+[info] >    email: 'slckscool@naver.com', {"user":"  email: 'slckscool@naver.com',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   email: 'slckscool@naver.com',"}}
+[info] >    emailVerified: true, {"user":"  emailVerified: true,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   emailVerified: true,"}}
+[info] >    photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg' {"user":"  photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'"}}
+[info] >  } {"user":"}","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m }"}}
+[info] >  updating or creating a firebase user {"user":"updating or creating a firebase user","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m updating or creating a firebase user"}}
+[info] >  { {"user":"{","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m {"}}
+[info] >    uid: 'kakao:2374227226', {"user":"  uid: 'kakao:2374227226',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   uid: 'kakao:2374227226',"}}
+[info] >    provider: 'KAKAO', {"user":"  provider: 'KAKAO',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   provider: 'KAKAO',"}}
+[info] >    displayName: '이찬서', {"user":"  displayName: '이찬서',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   displayName: '이찬서',"}}
+[info] >    email: 'slckscool@naver.com', {"user":"  email: 'slckscool@naver.com',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   email: 'slckscool@naver.com',"}}
+[info] >    emailVerified: true, {"user":"  emailVerified: true,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   emailVerified: true,"}}
+[info] >    photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg' {"user":"  photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'"}}
+[info] >  } {"user":"}","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m }"}}
+[info] >  { {"user":"{","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m {"}}
+[info] >    uid: 'kakao:2374227226', {"user":"  uid: 'kakao:2374227226',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   uid: 'kakao:2374227226',"}}
+[info] >    provider: 'KAKAO', {"user":"  provider: 'KAKAO',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   provider: 'KAKAO',"}}
+[info] >    displayName: '이찬서', {"user":"  displayName: '이찬서',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   displayName: '이찬서',"}}
+[info] >    email: 'slckscool@naver.com', {"user":"  email: 'slckscool@naver.com',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   email: 'slckscool@naver.com',"}}
+[info] >    emailVerified: true, {"user":"  emailVerified: true,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   emailVerified: true,"}}
+[info] >    photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg' {"user":"  photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'"}}
+[info] >  } {"user":"}","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m }"}}
+[info] >  { {"user":"{","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m {"}}
+[info] >    uid: 'kakao:2374227226', {"user":"  uid: 'kakao:2374227226',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   uid: 'kakao:2374227226',"}}
+[info] >    provider: 'KAKAO', {"user":"  provider: 'KAKAO',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   provider: 'KAKAO',"}}
+[info] >    displayName: '이찬서', {"user":"  displayName: '이찬서',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   displayName: '이찬서',"}}
+[info] >    email: 'slckscool@naver.com', {"user":"  email: 'slckscool@naver.com',","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   email: 'slckscool@naver.com',"}}
+[info] >    emailVerified: true, {"user":"  emailVerified: true,","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   emailVerified: true,"}}
+[info] >    photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg' {"user":"  photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m   photoURL: 'https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg'"}}
+[info] >  } {"user":"}","metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"\u001b[90m> \u001b[39m }"}}
+[debug] [2022-09-12T09:49:38.188Z] >>> [apiv2][query] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast [none]
+[debug] [2022-09-12T09:49:38.188Z] >>> [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"eventId":"f054a1c5-024d-4f80-bad2-cb0c207d25c7","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/solaroid-45908","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2022-09-12T09:49:38.187Z","data":{"uid":"kakao:2374227226","email":"slckscool@naver.com","emailVerified":true,"displayName":"이찬서","photoURL":"https://k.kakaocdn.net/dn/i3CFb/btrLgklWkxZ/M3EYGOV6epekSGC4XgtQEK/img_640x640.jpg","metadata":{"creationTime":"2022-09-12T09:49:38.186Z","lastSignInTime":"2022-09-12T09:49:38.186Z"},"customClaims":{}}}
+[debug] [2022-09-12T09:49:38.194Z] <<< [apiv2][status] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast 200
+[debug] [2022-09-12T09:49:38.194Z] <<< [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2022-09-12T09:49:38.202Z] [runtime-status] [20972] Ephemeral server survived. {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"[runtime-status] [20972] Ephemeral server survived."}}
+[info] i  functions: Finished "kakaoToken" in ~1s {"metadata":{"emulator":{"name":"functions"},"function":{"name":"asia-northeast1-kakaoToken"},"extension":{},"message":"Finished \"kakaoToken\" in ~1s"}}
+[debug] [2022-09-12T09:49:38.203Z] [worker-asia-northeast1-kakaoToken-6342dd9c-c1f3-4e5d-b64a-069696477ce1]: IDLE {"metadata":{"emulator":{"name":"functions"},"message":"[worker-asia-northeast1-kakaoToken-6342dd9c-c1f3-4e5d-b64a-069696477ce1]: IDLE"}}
+[debug] [2022-09-12T09:49:38.203Z] [work-queue] {"queueLength":0,"workRunningCount":0}
+[debug] [2022-09-12T09:49:47.911Z] >>> [apiv2][query] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast [none]
+[debug] [2022-09-12T09:49:47.911Z] >>> [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"eventId":"1662976187911","timestamp":"2022-09-12T18:49:47.911Z","eventType":"google.storage.object.finalize","resource":{"service":"storage.googleapis.com","name":"projects/_/buckets/solaroid-45908.appspot.com/objects/profile/kakao:2374227226/image/jpeg/image:101","type":"storage#object"},"data":{"kind":"#storage#object","name":"profile/kakao:2374227226/image/jpeg/image:101","bucket":"solaroid-45908.appspot.com","generation":"1662976187894","metageneration":"1","contentType":"image/jpeg","contentDisposition":"inline","timeCreated":"2022-09-12T18:49:47.893Z","updated":"2022-09-12T18:49:47.898Z","storageClass":"STANDARD","size":"615841","md5Hash":"ucDuhmhdyWx1Jw1glJK/3g==","etag":"g9bj2E6X/dFfhtLLxgNcFRsomvw","cacheControl":"public, max-age=3600","contentEncoding":"identity","crc32c":"----zw==","timeStorageClassUpdated":"2022-09-12T18:49:47.893Z","id":"solaroid-45908.appspot.com/profile/kakao:2374227226/image/jpeg/image:101/1662976187894","selfLink":"http://localhost:9199/storage/v1/b/solaroid-45908.appspot.com/o/profile%2Fkakao%3A2374227226%2Fimage%2Fjpeg%2Fimage%3A101","mediaLink":"http://localhost:9199/download/storage/v1/b/solaroid-45908.appspot.com/o/profile%2Fkakao%3A2374227226%2Fimage%2Fjpeg%2Fimage%3A101?generation=1662976187894&alt=media"}}
+[debug] [2022-09-12T09:49:47.915Z] <<< [apiv2][status] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast 200
+[debug] [2022-09-12T09:49:47.915Z] <<< [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2022-09-12T09:49:47.916Z] >>> [apiv2][query] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast [none]
+[debug] [2022-09-12T09:49:47.916Z] >>> [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"specversion":"1","id":"93a84496-ff1d-43ff-9c1f-3944ccb50ad1","type":"google.cloud.storage.object.v1.finalized","source":"//storage.googleapis.com/projects/_/buckets/solaroid-45908.appspot.com/objects/profile/kakao:2374227226/image/jpeg/image:101","time":"2022-09-12T18:49:47.898Z","data":{"kind":"#storage#object","name":"profile/kakao:2374227226/image/jpeg/image:101","bucket":"solaroid-45908.appspot.com","generation":"1662976187894","metageneration":"1","contentType":"image/jpeg","contentDisposition":"inline","timeCreated":"2022-09-12T18:49:47.893Z","updated":"2022-09-12T18:49:47.898Z","storageClass":"STANDARD","size":"615841","md5Hash":"ucDuhmhdyWx1Jw1glJK/3g==","etag":"g9bj2E6X/dFfhtLLxgNcFRsomvw","cacheControl":"public, max-age=3600","contentEncoding":"identity","crc32c":"----zw==","timeStorageClassUpdated":"2022-09-12T18:49:47.893Z","id":"solaroid-45908.appspot.com/profile/kakao:2374227226/image/jpeg/image:101/1662976187894","selfLink":"http://localhost:9199/storage/v1/b/solaroid-45908.appspot.com/o/profile%2Fkakao%3A2374227226%2Fimage%2Fjpeg%2Fimage%3A101","mediaLink":"http://localhost:9199/download/storage/v1/b/solaroid-45908.appspot.com/o/profile%2Fkakao%3A2374227226%2Fimage%2Fjpeg%2Fimage%3A101?generation=1662976187894&alt=media"}}
+[debug] [2022-09-12T09:49:47.918Z] <<< [apiv2][status] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast 200
+[debug] [2022-09-12T09:49:47.919Z] <<< [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2022-09-12T10:00:00.459Z] >>> [apiv2][query] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast [none]
+[debug] [2022-09-12T10:00:00.459Z] >>> [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"eventId":"a54bf7c0-5727-4fcb-98b6-c014e52f981d","eventType":"providers/firebase.auth/eventTypes/user.create","resource":{"name":"projects/solaroid-45908","service":"firebaseauth.googleapis.com"},"params":{},"timestamp":"2022-09-12T10:00:00.458Z","data":{"uid":"idMhXqGCBLymphQ0C996I5jbvJHz","email":"slcksseo@gmail.com","emailVerified":true,"displayName":"이찬서","photoURL":"https://lh3.googleusercontent.com/a/AItbvmm1kqoAQ2GY8UcIGPcJP-jODkNW4JjUiLabcWXs=s96-c","metadata":{"creationTime":"2022-09-12T10:00:00.458Z","lastSignInTime":"2022-09-12T10:00:00.458Z"},"customClaims":{},"providerData":[{"providerId":"google.com","rawId":"114050322013879348267","federatedId":"114050322013879348267","displayName":"이찬서","photoUrl":"https://lh3.googleusercontent.com/a/AItbvmm1kqoAQ2GY8UcIGPcJP-jODkNW4JjUiLabcWXs=s96-c","email":"slcksseo@gmail.com"}]}}
+[debug] [2022-09-12T10:00:00.466Z] <<< [apiv2][status] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast 200
+[debug] [2022-09-12T10:00:00.466Z] <<< [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2022-09-12T10:07:44.649Z] >>> [apiv2][query] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast [none]
+[debug] [2022-09-12T10:07:44.650Z] >>> [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"eventId":"1662977264649","timestamp":"2022-09-12T19:07:44.649Z","eventType":"google.storage.object.finalize","resource":{"service":"storage.googleapis.com","name":"projects/_/buckets/solaroid-45908.appspot.com/objects/profile/idMhXqGCBLymphQ0C996I5jbvJHz/image/jpeg/image:103","type":"storage#object"},"data":{"kind":"#storage#object","name":"profile/idMhXqGCBLymphQ0C996I5jbvJHz/image/jpeg/image:103","bucket":"solaroid-45908.appspot.com","generation":"1662977264633","metageneration":"1","contentType":"image/jpeg","contentDisposition":"inline","timeCreated":"2022-09-12T19:07:44.632Z","updated":"2022-09-12T19:07:44.641Z","storageClass":"STANDARD","size":"2328893","md5Hash":"+9QWjzOU8o7X3huX60R2iA==","etag":"W++gsBhc3dEfpcIqofR0WxbrPA0","cacheControl":"public, max-age=3600","contentEncoding":"identity","crc32c":"----Pw==","timeStorageClassUpdated":"2022-09-12T19:07:44.632Z","id":"solaroid-45908.appspot.com/profile/idMhXqGCBLymphQ0C996I5jbvJHz/image/jpeg/image:103/1662977264633","selfLink":"http://localhost:9199/storage/v1/b/solaroid-45908.appspot.com/o/profile%2FidMhXqGCBLymphQ0C996I5jbvJHz%2Fimage%2Fjpeg%2Fimage%3A103","mediaLink":"http://localhost:9199/download/storage/v1/b/solaroid-45908.appspot.com/o/profile%2FidMhXqGCBLymphQ0C996I5jbvJHz%2Fimage%2Fjpeg%2Fimage%3A103?generation=1662977264633&alt=media"}}
+[debug] [2022-09-12T10:07:44.653Z] <<< [apiv2][status] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast 200
+[debug] [2022-09-12T10:07:44.653Z] <<< [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"status":"multicast_acknowledged"}
+[debug] [2022-09-12T10:07:44.653Z] >>> [apiv2][query] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast [none]
+[debug] [2022-09-12T10:07:44.653Z] >>> [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"specversion":"1","id":"76ddaa98-6ccd-4020-ace8-6582fbbf0315","type":"google.cloud.storage.object.v1.finalized","source":"//storage.googleapis.com/projects/_/buckets/solaroid-45908.appspot.com/objects/profile/idMhXqGCBLymphQ0C996I5jbvJHz/image/jpeg/image:103","time":"2022-09-12T19:07:44.641Z","data":{"kind":"#storage#object","name":"profile/idMhXqGCBLymphQ0C996I5jbvJHz/image/jpeg/image:103","bucket":"solaroid-45908.appspot.com","generation":"1662977264633","metageneration":"1","contentType":"image/jpeg","contentDisposition":"inline","timeCreated":"2022-09-12T19:07:44.632Z","updated":"2022-09-12T19:07:44.641Z","storageClass":"STANDARD","size":"2328893","md5Hash":"+9QWjzOU8o7X3huX60R2iA==","etag":"W++gsBhc3dEfpcIqofR0WxbrPA0","cacheControl":"public, max-age=3600","contentEncoding":"identity","crc32c":"----Pw==","timeStorageClassUpdated":"2022-09-12T19:07:44.632Z","id":"solaroid-45908.appspot.com/profile/idMhXqGCBLymphQ0C996I5jbvJHz/image/jpeg/image:103/1662977264633","selfLink":"http://localhost:9199/storage/v1/b/solaroid-45908.appspot.com/o/profile%2FidMhXqGCBLymphQ0C996I5jbvJHz%2Fimage%2Fjpeg%2Fimage%3A103","mediaLink":"http://localhost:9199/download/storage/v1/b/solaroid-45908.appspot.com/o/profile%2FidMhXqGCBLymphQ0C996I5jbvJHz%2Fimage%2Fjpeg%2Fimage%3A103?generation=1662977264633&alt=media"}}
+[debug] [2022-09-12T10:07:44.656Z] <<< [apiv2][status] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast 200
+[debug] [2022-09-12T10:07:44.656Z] <<< [apiv2][body] POST http://localhost:5001/functions/projects/solaroid-45908/trigger_multicast {"status":"multicast_acknowledged"}

@@ -2,17 +2,22 @@ package com.ranseo.solaroid.custom.view
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.ranseo.solaroid.parseProfileImgStringToList
 import com.ranseo.solaroid.utils.BitmapUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.URL
 
 //Coordinator Compute
 typealias CC = Pair<Float, Float>
@@ -84,6 +89,7 @@ class AlbumThumbnailView @JvmOverloads constructor(
                 for (str in parseProfileImgStringToList(thumbnailString)) {
                     launch(Dispatchers.IO) {
                         thumbnailList.add(BitmapUtils.loadImage(str)!!)
+
                     }.join()
                 }
 

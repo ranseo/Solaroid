@@ -1,87 +1,123 @@
 {
   "rules": {
-    "profile": {
-      "$uid": {
-        ".read": "auth != null && auth.uid == $uid",
-        ".write": "auth != null && auth.uid == $uid"
+    "profile" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        ".write" : "auth != null && auth.uid == $uid"
       }
     },
-    "currentUsersNum": {
-      ".read": "auth != null",
-      ".write": "auth != null"
-    },
-    "allUsers": {
-      ".read": "auth != null && root.child('profile').child(auth.uid).exists()",
-      ".write": "auth != null && root.child('profile').child(auth.uid).exists()"
-    },
-    "myFriendList": {
-      "$uid": {
-        "list": {
-          ".read": "auth !=null && auth.uid == $uid",
-          "$friendCode": {
-            ".write": "auth != null && auth.uid == $uid"
+
+    "log" : {
+      "login" : {
+        ".read" : false,
+        ".write" : true
+      },
+
+      "$uid" : {
+        "album" : {
+          "create" : {
+            ".read" : "false",
+            ".write" : "auth != null && auth.uid == $uid"
           }
         }
       }
     },
-    "tmpFriendList": {
-      "$friendCode": {
-        "list": {
-          ".read": "auth !=null",
-          "$myFriendCode": {
-            ".write": "auth != null"
+
+
+    "currentUsersNum" : {
+      ".read" : "auth != null",
+      ".write" : "auth != null"
+    },
+
+
+    "allUsers" : {
+      ".read" : "auth != null && root.child('profile').child(auth.uid).exists()",
+      ".write" : "auth != null && root.child('profile').child(auth.uid).exists()"
+    },
+
+
+
+
+    "myFriendList" : {
+      "$uid" : {
+        "list" : {
+          ".read" : "auth !=null && auth.uid == $uid",
+          "$friendCode" :{
+            ".write" : "auth != null && auth.uid == $uid"
           }
         }
       }
     },
-    "friendReception": {
-      "$friendCode": {
-        "list": {
-          ".read": "auth !=null",
-          "$myfriendCode": {
-            ".write": "auth != null"
+
+
+    "tmpFriendList" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth !=null",
+          "$myFriendCode" :{
+            ".write" : "auth != null"
           }
         }
       }
     },
-    "friendDispatch": {
-      "$friendCode": {
-        "list": {
-          ".read": "auth != null",
+
+
+    "friendReception" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth !=null",
+          "$myfriendCode" : {
+            ".write" : "auth != null"
+          }
+        }
+      }
+    },
+
+    "friendDispatch" : {
+      "$friendCode" : {
+        "list" : {
+          ".read" : "auth != null",
           ".write": "auth != null"
         }
       }
     },
-    "withAlbum": {
-      "$albumId": {
-        "$uid": {
-          "$albumKey": {
-            ".read": "auth != null",
-            ".write": "auth != null && auth.uid == $uid"
+
+    "withAlbum" : {
+      "$albumId" : {
+        "$uid" : {
+          "$albumKey" :{
+            ".read" : "auth != null",
+            ".write" : "auth != null && auth.uid == $uid"
           }
         }
       }
     },
-    "album": {
-      "$uid": {
-        ".read": "auth != null && auth.uid == $uid",
-        "$albumId": {
-          ".write": "auth != null && auth.uid == $uid"
+
+
+    "album" : {
+      "$uid" : {
+        ".read" : "auth != null && auth.uid == $uid",
+        "$albumId" : {
+          ".write" : "auth != null && auth.uid == $uid"
         }
       }
     },
-    "albumRequest": {
-      "$friendCode": {
-        ".read": "auth != null",
-        ".write": "auth != null"
+
+
+    "albumRequest" : {
+      "$friendCode" : {
+        ".read" : "auth != null",
+        ".write" : "auth != null"
       }
     },
-    "photoTicket": {
-      ".read": "auth != null",
-      "$albumId": {
-        ".read": "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()",
-        "$albumKey": {
-          ".write": "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).child($albumKey).exists()"
+
+
+    "photoTicket" : {
+      ".read" : "auth != null",
+      "$albumId" : {
+        ".read" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).exists()",
+        "$albumKey" : {
+          ".write" : "auth != null && root.child('withAlbum').child($albumId).child(auth.uid).child($albumKey).exists()"
         }
       }
     }

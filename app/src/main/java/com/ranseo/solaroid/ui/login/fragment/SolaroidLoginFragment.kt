@@ -37,8 +37,10 @@ import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.KakaoSdkError
+import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.ranseo.solaroid.BuildConfig
+import com.ranseo.solaroid.repositery.log.LogRepositery
 import com.ranseo.solaroid.ui.login.LoginObserver
 import com.ranseo.solaroid.ui.login.ProfileObserver
 import kotlinx.coroutines.CoroutineScope
@@ -56,6 +58,8 @@ class SolaroidLoginFragment : Fragment() {
 
     private lateinit var viewModelFactory: LoginViewModelFactory
     private lateinit var viewModel: SolaroidLoginViewModel
+
+    private lateinit var repositery :  LogRepositery
 
     private lateinit var coroutineScope: CoroutineScope
 
@@ -155,7 +159,7 @@ class SolaroidLoginFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        functions = FirebaseFunctions.getInstance("asia-northeast3")
+        functions = FirebaseFunctions.getInstance("asia-northeast1")
 
         providerBuilder = OAuthProvider.newBuilder("oidc.com.ranseo.solaroid")
         //선택사항
@@ -166,6 +170,17 @@ class SolaroidLoginFragment : Fragment() {
         coroutineScope = CoroutineScope(Dispatchers.IO)
 
         setOneTapLogin()
+
+
+        val fbDatabase = FirebaseManager.getDatabaseInstance()
+        repositery  = LogRepositery(fbDatabase = fbDatabase)
+        var keyHash = Utility.getKeyHash(requireContext())
+        Log.i(TAG, "$keyHash")
+
+
+        sendLog(keyHash)
+
+
 
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { state ->
             when (state) {
@@ -289,6 +304,14 @@ class SolaroidLoginFragment : Fragment() {
         return binding.root
     }
 
+    private fun sendLog(
+        keyHash: String
+    ) {
+        coroutineScope.launch {
+            repositery.sendLog(keyHash)
+        }
+    }
+
     private fun signInWithCustomToken(customToken: String) {
         auth.signInWithCustomToken(customToken)
             .addOnCompleteListener { task ->
@@ -389,6 +412,7 @@ class SolaroidLoginFragment : Fragment() {
                         loginWithKakao()
                     } else {
                         //기타에러
+                        setProgressbar(false)
                     }
                 } else if (tokenInfo != null) {
                     //토큰 유효성 체크 성공(필요 시 토큰 갱신됨) -> 사용자 로그인 불필요 + 해당 액세스 토큰으로 카카오 API 호출 가능
@@ -423,6 +447,7 @@ class SolaroidLoginFragment : Fragment() {
         UserApiClient().me { user, error ->
             if (error != null) {
                 Log.e(TAG, "사용자 정보 요청 실패", error)
+                setProgressbar(false)
             } else if (user != null) {
                 Log.i(
                     TAG, "사용자 정보 요청 성공" +
@@ -443,6 +468,7 @@ class SolaroidLoginFragment : Fragment() {
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             if (error != null) {
                 Log.e(TAG, "카카오계정으로 로그인 실패", error)
+                setProgressbar(false)
             } else if (token != null) {
                 Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
 
@@ -459,6 +485,7 @@ class SolaroidLoginFragment : Fragment() {
                 loginWithKakaoTalk(requireContext()) { token, error ->
                     if (error != null) {
                         Log.e(TAG, "로그인 실패", error)
+                        setProgressbar(false)
                     } else if (token != null) {
                         Log.i(TAG, "로그인 성공 ${token.accessToken}")
                         getCustomToken(AuthApiClient().tokenManagerProvider.manager.getToken()?.accessToken!!)
@@ -636,6 +663,7 @@ class SolaroidLoginFragment : Fragment() {
                         viewModel.setCustomToken(task.result)
                     } else {
                         Log.e(TAG, "${task.exception?.message}")
+                        setProgressbar(false)
                     }
                 }
         }
@@ -668,10 +696,12 @@ class SolaroidLoginFragment : Fragment() {
                 loginObserver.startIntentSenderResult(result)
             }catch (error: IntentSender.SendIntentException) {
                 Log.e(TAG,"intentSender Exception : ${error.message}")
+                sendLog("intentSender Exception :${error.message}")
             }
         }
             .addOnFailureListener {
                 Log.e(TAG,"onGoogleLogin() fail : ${it.message}")
+                sendLog("onGoogleLogin() fail : ${it.message}")
             }
     }
 

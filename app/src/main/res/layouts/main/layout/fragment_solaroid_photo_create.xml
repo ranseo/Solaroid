@@ -233,21 +233,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/soft_grey"
-                app:layout_constraintBottom_toBottomOf="parent"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/image_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|left"
-                    android:layout_marginStart="110dp"
-                    android:layout_marginBottom="56dp"
+                    android:layout_gravity="bottom|center"
                     android:onClick="@{()->viewmodel.forReadyNewImage()}"
                     android:backgroundTint="@color/white"
                     android:scaleType="fitCenter"
+                    android:elevation="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginEnd="150dp"
                     android:src="@drawable/ic_baseline_close_24" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -255,22 +257,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
-                    android:layout_marginBottom="56dp"
                     android:backgroundTint="@color/white"
                     android:onClick="@{()->viewmodel.onImageSave()}"
                     android:scaleType="fitCenter"
+                    android:elevation="12dp"
+                    android:layout_marginBottom="12dp"
                     android:src="@drawable/outline_file_download_black_24" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/image_spin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|right"
-                    android:layout_marginEnd="110dp"
-                    android:layout_marginBottom="56dp"
+                    android:layout_gravity="bottom|center"
                     android:backgroundTint="@color/white"
                     android:onClick="@{()->viewmodel.onImageSpin()}"
                     android:scaleType="fitCenter"
+                    android:elevation="12dp"
+                    android:layout_marginStart="150dp"
+                    android:layout_marginBottom="12dp"
                     android:src="@drawable/ic_baseline_autorenew_24" />
 
 

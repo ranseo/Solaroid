@@ -3,18 +3,15 @@ const axios = require('axios').default;
 const async = require('async');
 const admin = require("firebase-admin");
 
-const serviceAccount = require("C:/Users/aa/Desktop/develop/Solaroid/key/service-account.json")
+const serviceAccount = require("./service-account.json")
 const adminConfig = JSON.parse(process.env.FIREBASE_CONFIG);
-
-console.log(process.env.FIREBASE_CONFIG)
-console.log(serviceAccount)
 adminConfig.credential = admin.credential.cert(serviceAccount)
 
 admin.initializeApp(adminConfig);
 
 const kakaoRequestMeUrl = 'https://kapi.kakao.com/v2/user/me?secure_resource=true';
 
-exports.kakaoToken = functions.region('asia-northeast3').https.onCall((data) => {
+exports.kakaoToken = functions.region('asia-northeast1').https.onCall((data) => {
 	console.log("KaKaoToken")
 	console.log(data['access_token'])
 	var access_token = data['access_token'];

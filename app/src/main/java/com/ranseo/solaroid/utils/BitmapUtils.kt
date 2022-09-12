@@ -11,6 +11,11 @@ import android.os.Build
 import android.util.Base64
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.bumptech.glide.Glide
+import com.bumptech.glide.GlideBuilder
+import com.ranseo.solaroid.firebase.FirebaseManager
+import com.ranseo.solaroid.repositery.log.LogRepositery
+import com.ranseo.solaroid.ui.login.activity.LoginActivity
 import kotlinx.coroutines.*
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
@@ -73,11 +78,11 @@ object BitmapUtils {
             var bmp: Bitmap? = null
             val TAG = "loadImage"
             try {
-                val url = URL(imageUrl)
-                Log.i(TAG, "URL : ${url}")
-                val stream1 = url.openStream()
-                val stream2 = url.openStream()
-                Log.i(TAG, "stream : ${stream1}")
+                val url1 = URL(imageUrl)
+                val url2 = URL(imageUrl)
+                Log.i(TAG, "URL : ${url1}")
+                val stream1 = url1.openStream()
+                val stream2 = url2.openStream()
                 bmp = resizeBitmap(stream1, BitmapFactory.decodeStream(stream2))
                 stream1.close()
                 stream2.close()
@@ -90,6 +95,10 @@ object BitmapUtils {
 
             bmp
         }
+    }
+
+    suspend fun loadImage2(imageUrl: String) {
+
     }
 
     // Bitmap -> String
@@ -147,7 +156,7 @@ object BitmapUtils {
             }
             ExifInterface.ORIENTATION_TRANSVERSE -> {
                 Log.i(TAG,"ORIENTATION_TRANSVERSE ")
-                matrix.postRotate(270f)
+                matrix.postRotate(90f)
             }
             else -> 0F
         }

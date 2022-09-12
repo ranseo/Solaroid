@@ -5,16 +5,20 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 apply plugin: 'kotlin-android'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
+
+
 android {
     compileSdk 32
-
     defaultConfig {
+
+
         applicationId "com.ranseo.solaroid"
         minSdk 21
         targetSdk 32
@@ -24,11 +28,18 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
+
+
         //API KEY 변수 지정
         ///타입-키-값
+
 //        buildConfigField "String", "API_KEY", properties['google_api_key']
         buildConfigField "String", "OAUTH_WEB_CLIENT_KEY", properties['web.client.key']
+        buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties['kakao.api.key']
 
+
+
+        manifestPlaceholders = ['kakaoNativeAppKey' : properties['kakao.native.key']]
     }
 
     buildTypes {
