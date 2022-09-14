@@ -1,6 +1,7 @@
 package com.ranseo.solaroid.repositery.profile
 
 import android.app.Application
+import android.media.ExifInterface
 import android.net.Uri
 import android.util.Log
 import androidx.core.net.toUri
@@ -24,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 class ProfileRepostiery(
@@ -102,7 +104,11 @@ class ProfileRepostiery(
         suspendCancellableCoroutine<Unit> { continuation ->
             val metadata = storageMetadata {
                 contentType = "image/jpeg"
+
             }
+
+
+
 
             storageRef.putFile(file, metadata).addOnSuccessListener { taskSnapShot ->
                 taskSnapShot.metadata!!.reference!!.downloadUrl

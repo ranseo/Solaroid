@@ -16,6 +16,7 @@ import com.ranseo.solaroid.room.DatabasePhotoTicketDao
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.ranseo.solaroid.utils.FileUtils
 import kotlinx.coroutines.*
 
 class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Application) :
@@ -24,6 +25,8 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
     private val fbAuth: FirebaseAuth = FirebaseManager.getAuthInstance()
     private val fbDatabase: FirebaseDatabase = FirebaseManager.getDatabaseInstance()
     private val fbStorage: FirebaseStorage = FirebaseManager.getStorageInstance()
+
+
 
     private val dataSource = database
 
@@ -235,6 +238,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
     }
 
     fun setProfileUrl(uri: Uri) {
+        FileUtils.
         _profileUrl.value = uri.toString()
     }
     fun onSetProfile() {

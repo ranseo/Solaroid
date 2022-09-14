@@ -39,6 +39,14 @@
           }
         },
         {
+          "client_id": "668980346028-nlp5hr8scs6tm253f5htkjehhhtu212d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ranseo.solaroid",
+            "certificate_hash": "84b948d90dbfb3d868ca40d2426dfcc6bd1a7e8a"
+          }
+        },
+        {
           "client_id": "668980346028-pvbpnn0pjnjc207qt42cji0hs1id2a0i.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

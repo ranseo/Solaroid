@@ -78,15 +78,32 @@ object BitmapUtils {
             var bmp: Bitmap? = null
             val TAG = "loadImage"
             try {
-                val url1 = URL(imageUrl)
-                val url2 = URL(imageUrl)
-                Log.i(TAG, "URL : ${url1}")
-                val stream1 = url1.openStream()
-                val stream2 = url2.openStream()
-                bmp = resizeBitmap(stream1, BitmapFactory.decodeStream(stream2))
-                stream1.close()
-                stream2.close()
+                val url = URL(imageUrl)
+                Log.i(TAG, "URL : ${url}")
 
+
+                val connection = url.openConnection() as HttpURLConnection
+                connection.connectTimeout = 30000
+                connection.readTimeout = 30000
+
+
+                var inputStream = connection.inputStream
+                val bufferedInputStream = BufferedInputStream(inputStream)
+                bufferedInputStream.mark(100)
+
+                val exif = ExifInterface(bufferedInputStream)
+
+
+
+                bufferedInputStream.reset()
+                val bitmap = BitmapFactory.decodeStream(bufferedInputStream)
+
+
+
+                bmp = resizeBitmap(exif, bitmap)
+
+                inputStream.close()
+                bufferedInputStream.close()
             } catch (e: MalformedURLException) {
                 e.printStackTrace()
             } catch (e: IOException) {
@@ -120,14 +137,13 @@ object BitmapUtils {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun resizeBitmap(stream: InputStream, bitmap:Bitmap) : Bitmap? {
+    fun resizeBitmap(exif: ExifInterface, bitmap:Bitmap) : Bitmap? {
         val TAG  = "resizeBitmap"
-        val exif = ExifInterface(stream)
 
         val orientation : Int = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
         ExifInterface.ORIENTATION_UNDEFINED)
         val matrix = Matrix()
-        val angle = when(orientation) {
+        when(orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> {
                 Log.i(TAG,"ORIENTATION_ROTATE_90")
                 matrix.postRotate(90f)
@@ -157,8 +173,20 @@ object BitmapUtils {
             ExifInterface.ORIENTATION_TRANSVERSE -> {
                 Log.i(TAG,"ORIENTATION_TRANSVERSE ")
                 matrix.postRotate(90f)
+                matrix.postScale(-1f,1f)
             }
-            else -> 0F
+            ExifInterface.ORIENTATION_NORMAL -> {
+                Log.i(TAG,"ORIENTATION_NORMAL")
+                matrix.postRotate(90f)
+            }
+            ExifInterface.ORIENTATION_UNDEFINED -> {
+                Log.i(TAG,"ORIENTATION_UNDEFINED")
+                matrix.postRotate(0f)
+            }
+            else -> {
+                Log.i(TAG,"ORIENTATION_ELSE")
+                matrix.postRotate(90f)
+            }
         }
 
         return Bitmap.createBitmap(bitmap, 0,0, bitmap.width, bitmap.height, matrix, true)
