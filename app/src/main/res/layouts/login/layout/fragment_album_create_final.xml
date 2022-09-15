@@ -18,12 +18,13 @@
         android:background="@color/soft_grey">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="350dp"
             android:layout_height="500dp"
             android:layout_gravity="center"
-            android:padding="12dp"
+            android:background="@color/white"
             android:elevation="12dp"
-            android:background="@color/white">
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/tv_text"
@@ -42,22 +43,38 @@
 
             <com.ranseo.solaroid.custom.view.AlbumThumbnailView
                 android:id="@+id/album_thumbnail"
+                thumbnail="@{viewModel.createBitmap}"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="32dp"
+                android:elevation="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_text"
+                app:participants="@{viewModel.createSize}"
+                tools:participants="1" />
+
+            <FrameLayout
+                android:id="@+id/progress_bar"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_text"
-                thumbnail="@{viewModel.createBitmap}"
-                app:participants="@{viewModel.createSize}"
-                android:elevation="12dp"
-                android:layout_marginTop="32dp"
-                tools:participants="1" />
+                android:background="@color/fui_transparent"
+                android:elevation="12dp">
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?attr/lottie_progress"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/tv_album_name"
-                android:text="@{viewModel.createName}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{viewModel.createName}"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toTopOf="@+id/layout_group_btn"
                 app:layout_constraintEnd_toEndOf="parent"

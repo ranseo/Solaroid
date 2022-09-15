@@ -28,7 +28,7 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
     }
 
     enum class LoginErrorType {
-        EMAILTYPEERROR, PASSWORDERROR, ACCOUNTERROR, ISRIGHT, INVALID, EMPTY
+        EMAILTYPEERROR, PASSWORDERROR, ACCOUNTERROR, CREDENTIALERROR,ISRIGHT, INVALID, EMPTY
     }
 
     val profileRepositery =
@@ -95,6 +95,7 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
         when (type) {
             LoginErrorType.ISRIGHT, LoginErrorType.EMPTY -> false
             else -> true
+
         }
     }
 
@@ -106,6 +107,7 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
             LoginErrorType.PASSWORDERROR -> "올바른 비밀번호를 입력하세요."
             LoginErrorType.ACCOUNTERROR -> "이메일 혹은 비밀번호가 틀렸습니다."
             LoginErrorType.INVALID -> "본인 인증이 되지 않았습니다."
+            LoginErrorType.CREDENTIALERROR -> "해당 계정의 인증 정보가 수신되지 못했습니다."
             else -> ""
         }
     }

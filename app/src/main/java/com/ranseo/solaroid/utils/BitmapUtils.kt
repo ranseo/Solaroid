@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.ranseo.solaroid.firebase.FirebaseManager
 import com.ranseo.solaroid.repositery.log.LogRepositery
+import com.ranseo.solaroid.repositery.profile.ProfileImageRepositery
 import com.ranseo.solaroid.ui.login.activity.LoginActivity
 import kotlinx.coroutines.*
 import java.io.BufferedInputStream
@@ -26,6 +27,11 @@ import java.net.MalformedURLException
 import java.net.URL
 
 object BitmapUtils {
+
+    val fbStorage = FirebaseManager.getStorageInstance()
+    val fbAuth = FirebaseManager.getAuthInstance()
+
+    val profileImageRepositery = ProfileImageRepositery(fbAuth, fbStorage)
 
     @Synchronized
     suspend fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
@@ -82,6 +88,16 @@ object BitmapUtils {
                 Log.i(TAG, "URL : ${url}")
 
 
+                var ori = -1
+                val orienLambda : (value:Int)->Unit = { value ->
+                    ori = value
+                }
+
+                launch {
+                    profileImageRepositery.getMetaDataFromProfileStorage(orienLambda)
+                }.join()
+
+
                 val connection = url.openConnection() as HttpURLConnection
                 connection.connectTimeout = 30000
                 connection.readTimeout = 30000
@@ -89,19 +105,12 @@ object BitmapUtils {
 
                 var inputStream = connection.inputStream
                 val bufferedInputStream = BufferedInputStream(inputStream)
-                bufferedInputStream.mark(100)
-
-                val exif = ExifInterface(bufferedInputStream)
-
-
-
-                bufferedInputStream.reset()
                 val bitmap = BitmapFactory.decodeStream(bufferedInputStream)
 
 
+                bmp = resizeBitmap(ori, bitmap)
 
-                bmp = resizeBitmap(exif, bitmap)
-
+                Log.i(TAG, "bmp complete")
                 inputStream.close()
                 bufferedInputStream.close()
             } catch (e: MalformedURLException) {
@@ -112,10 +121,6 @@ object BitmapUtils {
 
             bmp
         }
-    }
-
-    suspend fun loadImage2(imageUrl: String) {
-
     }
 
     // Bitmap -> String
@@ -137,13 +142,12 @@ object BitmapUtils {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun resizeBitmap(exif: ExifInterface, bitmap:Bitmap) : Bitmap? {
+    fun resizeBitmap(ori:Int, bitmap:Bitmap) : Bitmap? {
         val TAG  = "resizeBitmap"
 
-        val orientation : Int = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-        ExifInterface.ORIENTATION_UNDEFINED)
+        Log.i(TAG,"orientation : ${ori}")
         val matrix = Matrix()
-        when(orientation) {
+        when(ori) {
             ExifInterface.ORIENTATION_ROTATE_90 -> {
                 Log.i(TAG,"ORIENTATION_ROTATE_90")
                 matrix.postRotate(90f)
@@ -177,7 +181,7 @@ object BitmapUtils {
             }
             ExifInterface.ORIENTATION_NORMAL -> {
                 Log.i(TAG,"ORIENTATION_NORMAL")
-                matrix.postRotate(90f)
+                matrix.postRotate(0f)
             }
             ExifInterface.ORIENTATION_UNDEFINED -> {
                 Log.i(TAG,"ORIENTATION_UNDEFINED")
@@ -185,7 +189,7 @@ object BitmapUtils {
             }
             else -> {
                 Log.i(TAG,"ORIENTATION_ELSE")
-                matrix.postRotate(90f)
+                matrix.postRotate(0f)
             }
         }
 

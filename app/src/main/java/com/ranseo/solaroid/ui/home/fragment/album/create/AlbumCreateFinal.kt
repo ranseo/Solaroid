@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +30,8 @@ class AlbumCreateFinal() : Fragment() {
     private lateinit var albumId: String
     private lateinit var albumName: String
 
+
+    private lateinit var albumThumbnailListener : View.OnLayoutChangeListener
     private val TAG = "AlbumCreateFinal"
 
 
@@ -56,13 +59,31 @@ class AlbumCreateFinal() : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.albumThumbnail.addOnLayoutChangeListener { p0, _, _, _, _, _, _, _, _ ->
-            if (p0 != null) {
-                val thumbnailBitmap = (p0 as AlbumThumbnailView).getBitmapFromView()
-                Log.i(TAG,"addOnLayoutChangeListener : ${thumbnailBitmap}")
-                viewModel.setThumbnail(thumbnailBitmap)
+
+        albumThumbnailListener = object : View.OnLayoutChangeListener{
+            override fun onLayoutChange(
+                p0: View?,
+                p1: Int,
+                p2: Int,
+                p3: Int,
+                p4: Int,
+                p5: Int,
+                p6: Int,
+                p7: Int,
+                p8: Int
+            ) {
+                if (p0 != null) {
+                    val thumbnailBitmap = (p0 as AlbumThumbnailView).getBitmapFromView()
+
+                    viewModel.setThumbnail(thumbnailBitmap)
+                    thumbnailBitmap.recycle()
+                }
             }
+
         }
+
+        binding.albumThumbnail.addOnLayoutChangeListener(albumThumbnailListener)
+
 
 
         viewModel.naviToAlbum.observe(viewLifecycleOwner) {
@@ -136,5 +157,14 @@ class AlbumCreateFinal() : Fragment() {
         }
 
         return binding.root
+    }
+
+    fun setProgressbar(on:Boolean) {
+        binding.progressBar.isVisible = on
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.albumThumbnail.removeOnLayoutChangeListener(albumThumbnailListener)
     }
 }

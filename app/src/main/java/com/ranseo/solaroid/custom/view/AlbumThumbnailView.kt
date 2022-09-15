@@ -88,8 +88,11 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
                 for (str in parseProfileImgStringToList(thumbnailString)) {
                     launch(Dispatchers.IO) {
-                        thumbnailList.add(BitmapUtils.loadImage(str)!!)
-
+                        try {
+                            thumbnailList.add(BitmapUtils.loadImage(str)!!)
+                        } catch (error: Exception) {
+                            Log.e(TAG, "error: ${error.message}")
+                        }
                     }.join()
                 }
 
@@ -97,7 +100,12 @@ class AlbumThumbnailView @JvmOverloads constructor(
 
                 for (i in 0..participants) {
                     launch {
-                        thumbnailList[i] = Bitmap.createScaledBitmap(thumbnailList[i], w, h, true)
+                        try {
+                            thumbnailList[i] =
+                                Bitmap.createScaledBitmap(thumbnailList[i], w, h, true)
+                        } catch (error: Exception) {
+                            Log.e(TAG, "Error : ${error.message}")
+                        }
                     }.join()
 
                 }

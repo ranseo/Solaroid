@@ -331,6 +331,7 @@ class SolaroidLoginFragment : Fragment() {
             .addOnFailureListener {
                 Log.i(TAG, "SignInWithCredentail Failure")
             }
+        setProgressbar(false)
     }
 
     private fun loginWithKakaoOIDC() {
@@ -691,6 +692,7 @@ class SolaroidLoginFragment : Fragment() {
 
 
     fun onGoogleLogin() {
+        setProgressbar(true)
         oneTapClient.beginSignIn(signInRequest).addOnSuccessListener(requireActivity()) { result ->
             try {
                 loginObserver.startIntentSenderResult(result)

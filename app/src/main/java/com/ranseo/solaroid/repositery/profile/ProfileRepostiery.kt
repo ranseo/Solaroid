@@ -49,7 +49,7 @@ class ProfileRepostiery(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun insertProfileInfo(profile: FirebaseProfile, application: Application) {
+    suspend fun insertProfileInfo(profile: FirebaseProfile, application: Application, exif:Int) {
 
         withContext(Dispatchers.IO) {
             val user = fbAuth.currentUser ?: return@withContext
@@ -77,7 +77,6 @@ class ProfileRepostiery(
 
                         storageRef = fbStorage.getReference("profile")
                             .child(user.uid)
-                            .child("${mimeType}/${file!!.lastPathSegment}")
 
                         continuation.resume(Unit, null)
 
@@ -86,7 +85,7 @@ class ProfileRepostiery(
             }
 
             try {
-                insertProfileInStorage(storageRef!!, profile, file!!, user)
+                insertProfileInStorage(storageRef!!, profile, file!!, user, exif)
             } catch (error: Exception) {
                 Log.i(TAG, "error : ${error.message}")
             }
@@ -99,12 +98,13 @@ class ProfileRepostiery(
         storageRef: StorageReference,
         profile: FirebaseProfile,
         file: Uri,
-        user: FirebaseUser
+        user: FirebaseUser,
+        exif:Int
     ) {
         suspendCancellableCoroutine<Unit> { continuation ->
             val metadata = storageMetadata {
                 contentType = "image/jpeg"
-
+                setCustomMetadata("orientation", "${exif}")
             }
 
 
@@ -113,6 +113,7 @@ class ProfileRepostiery(
             storageRef.putFile(file, metadata).addOnSuccessListener { taskSnapShot ->
                 taskSnapShot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { url ->
+
                         val new = FirebaseProfile(
                             id = profile.id,
                             nickname = profile.nickname,
@@ -120,11 +121,13 @@ class ProfileRepostiery(
                             friendCode = profile.friendCode
                         )
 
+
+
                         fbDatabase.reference.child("profile")
                             .child(user.uid)
                             .setValue(new)
 
-                        Log.i(TAG, "profileListener.insertRoomDatabase(new.asDatabaseModel())")
+                        Log.i(TAG, "profileListener.insertRoomDatabase(new.asDatabaseModel()),  storageRef.path ${storageRef.path}")
 
                         continuation.resume(Unit, null)
                     }

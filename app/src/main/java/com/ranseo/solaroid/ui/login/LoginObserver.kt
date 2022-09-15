@@ -32,6 +32,7 @@ class LoginObserver(val registry: ActivityResultRegistry, val oneTapClient: Sign
 
                     else -> {
                         Log.d(TAG, "No ID Token!")
+                        viewModel.setLoginErrorType(SolaroidLoginViewModel.LoginErrorType.CREDENTIALERROR)
                     }
                 }
             }

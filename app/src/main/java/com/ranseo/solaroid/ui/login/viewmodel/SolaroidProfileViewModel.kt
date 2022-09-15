@@ -52,6 +52,8 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
     val profileUrl: LiveData<String?>
         get() = _profileUrl
 
+    var profileImgExif : Int = 0
+
     val isSetProfile = Transformations.map(profileUrl) {
         it != null
     }
@@ -189,7 +191,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
                 friendCode = (allUserNum + 1)
             )
 
-            profileRepositery.insertProfileInfo(profile, getApplication())
+            profileRepositery.insertProfileInfo(profile, getApplication(), profileImgExif)
         }
     }
 
@@ -238,7 +240,7 @@ class SolaroidProfileViewModel(database: DatabasePhotoTicketDao, application: Ap
     }
 
     fun setProfileUrl(uri: Uri) {
-        FileUtils.
+        profileImgExif = FileUtils.getExifAttributeOrientation(uri, getApplication())
         _profileUrl.value = uri.toString()
     }
     fun onSetProfile() {

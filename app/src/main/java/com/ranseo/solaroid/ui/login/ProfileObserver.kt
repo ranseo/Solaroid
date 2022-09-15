@@ -13,7 +13,6 @@ class ProfileObserver(val registry: ActivityResultRegistry, val viewModel: Solar
     override fun onCreate(owner: LifecycleOwner) {
         getContent = registry.register("key", owner, ActivityResultContracts.GetContent()) { uri ->
             uri?.let{
-                FileUtils.makeCacheDir()
                 viewModel.setProfileUrl(it)
             }
         }
