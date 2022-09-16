@@ -85,7 +85,7 @@ class ProfileRepostiery(
             }
 
             try {
-                insertProfileInStorage(storageRef!!, profile, file!!, user, exif)
+                insertProfileInStorage(storageRef!!, profile, file!!, user, mimeType!!, exif)
             } catch (error: Exception) {
                 Log.i(TAG, "error : ${error.message}")
             }
@@ -99,12 +99,13 @@ class ProfileRepostiery(
         profile: FirebaseProfile,
         file: Uri,
         user: FirebaseUser,
-        exif:Int
+        mimeType:String,
+        orientation:Int
     ) {
         suspendCancellableCoroutine<Unit> { continuation ->
             val metadata = storageMetadata {
-                contentType = "image/jpeg"
-                setCustomMetadata("orientation", "${exif}")
+                contentType = "${mimeType}"
+                setCustomMetadata("orientation", "${orientation}")
             }
 
 

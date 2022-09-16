@@ -73,7 +73,7 @@ object FileUtils {
 //        context.revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 //        return uri
 //    }
-
+//
 
     fun getExifAttributeOrientation(uri:Uri, context:Context) : Int {
         val input = BufferedInputStream(context.contentResolver.openInputStream(uri))
