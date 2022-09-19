@@ -104,7 +104,7 @@ class SolaroidLoginViewModel(database: DatabasePhotoTicketDao) : ViewModel() {
         val prefix = "※"
         prefix + when (type) {
             LoginErrorType.EMAILTYPEERROR -> "올바른 이메일 주소 형식을 입력하세요."
-            LoginErrorType.PASSWORDERROR -> "올바른 비밀번호를 입력하세요."
+            LoginErrorType.PASSWORDERROR -> "8자리 이상의 올바른 비밀번호를 입력하세요."
             LoginErrorType.ACCOUNTERROR -> "이메일 혹은 비밀번호가 틀렸습니다."
             LoginErrorType.INVALID -> "본인 인증이 되지 않았습니다."
             LoginErrorType.CREDENTIALERROR -> "해당 계정의 인증 정보가 수신되지 못했습니다."
