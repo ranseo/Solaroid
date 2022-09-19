@@ -24,7 +24,6 @@
         android:usesCleartextTraffic="true">
 
 
-
         <provider
             android:authorities="com.ranseo.solaroid.fileprovider"
             android:name="com.ranseo.solaroid.MyFileProvider"
@@ -32,7 +31,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity
@@ -50,11 +49,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
-                <data android:host="oauth"
+                <data
+                    android:host="oauth"
                     android:scheme="kakao${kakaoNativeAppKey}" />
             </intent-filter>
         </activity>
@@ -65,8 +66,46 @@
             android:theme="@style/Theme.FriendActivity" />
         <activity
             android:name="com.ranseo.solaroid.ui.login.activity.LoginActivity"
-            android:exported="true"
-            android:label="@string/Solaroid" >
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="solaroid"
+                    android:host="invite" />
+
+            </intent-filter>
+
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="solaroid.page.link"
+                    android:pathPrefix="/invite" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="solaroid.page.link"
+                    android:pathPrefix="/invite" />
+            </intent-filter>
+
+
         </activity>
 
         <activity

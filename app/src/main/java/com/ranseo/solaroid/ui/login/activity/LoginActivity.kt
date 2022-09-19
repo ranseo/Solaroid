@@ -1,5 +1,7 @@
 package com.ranseo.solaroid.ui.login.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ranseo.solaroid.databinding.ActivityLoginBinding
@@ -10,11 +12,19 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        if (BuildConfig.DEBUG) {
-//            Firebase.auth.useEmulator("10.0.2.2", 9099)
-//            Firebase.database.useEmulator("10.0.2.2", 9000)
-//            Firebase.storage.useEmulator("10.0.2.2", 9199)
-//        }
+
+
+
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val appLinkAction = intent.action
+        val appLinkData : Uri? = intent.data
+        if(Intent.ACTION_VIEW == appLinkAction) {
+            appLinkData?.lastPathSegment?.also { invite ->
+
+            }
+        }
 
     }
 

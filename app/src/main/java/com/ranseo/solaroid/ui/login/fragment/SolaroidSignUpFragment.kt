@@ -1,5 +1,6 @@
 package com.ranseo.solaroid.ui.login.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -20,6 +21,8 @@ import com.ranseo.solaroid.ui.login.viewmodel.SolaroidSignUpViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.ktx.Firebase
 
 class SolaroidSignUpFragment : Fragment() {
     private lateinit var viewModel: SolaroidSignUpViewModel
@@ -123,6 +126,8 @@ class SolaroidSignUpFragment : Fragment() {
                 if (task.isSuccessful) {
                     Log.i(TAG, "회원가입 성공")
                     sendEmailVerifyAccount(layout, FirebaseManager.getAuthInstance().currentUser!!)
+                    showSnackbar(layout, SIGNUP_SUCCESS)
+
                 } else {
                     Log.w(TAG, "회원가입 실패", task.exception)
                     showSnackbar(layout, SIGNUP_FAIL)
@@ -135,7 +140,8 @@ class SolaroidSignUpFragment : Fragment() {
      * 회원가입 성공 시, 이메일로 인증 메일 전송하는 함수
      * */
     private fun sendEmailVerifyAccount(layout: CoordinatorLayout, user: FirebaseUser) {
-        val url = "https://ssolaroid.page.link/rniX?mode=verifyEmail&uid=" + user.uid
+
+        val url = DEEPLINK
         val actionCodeSetting = ActionCodeSettings.newBuilder()
             .setUrl(url)
             .setAndroidPackageName(
@@ -150,17 +156,20 @@ class SolaroidSignUpFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.i(TAG, "이메일 인증 메시지 전송")
-                    showSnackbar(layout, SIGNUP_SUCCESS)
+                    showSnackbar(layout, SEND_SUCCESS)
                 } else {
-                    Log.w(TAG, "이메일 인증 메시지 전송 실패")
-
+                    Log.w(TAG, "이메일 인증 메시지 전송 실패 : ${task.exception?.message}")
+                    showSnackbar(layout, SEND_FAIL)
                 }
             }
     }
 
     companion object {
-        const val TAG = "회원가입 프래그먼트"
-        const val SIGNUP_FAIL = "회원가입에 실패하셨습니다.\n이미 회원가입된 이메일 주소 입니다."
-        const val SIGNUP_SUCCESS = "회원가입에 성공했습니다.\n해당 주소로 본인 확인 인증 메일을 보냈습니다."
+        const private val TAG = "회원가입 프래그먼트"
+        const private val SIGNUP_FAIL = "회원가입에 실패하셨습니다.\n이미 회원가입된 이메일 주소 입니다."
+        const private val SEND_FAIL = "이메일 전송에 실패하셨습니다."
+        const private  val SEND_SUCCESS = "해당 주소로 본인 확인 인증 메일을 보냈습니다."
+        const private val SIGNUP_SUCCESS = "회원가입에 성공했습니다"
+        const private val DEEPLINK="https://solaroid.page.link/egZf"
     }
 }

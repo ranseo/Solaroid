@@ -174,11 +174,11 @@ class SolaroidLoginFragment : Fragment() {
 
         val fbDatabase = FirebaseManager.getDatabaseInstance()
         repositery  = LogRepositery(fbDatabase = fbDatabase)
-        var keyHash = Utility.getKeyHash(requireContext())
-        Log.i(TAG, "$keyHash")
-
-
-        sendLog(keyHash)
+//        var keyHash = Utility.getKeyHash(requireContext())
+//        Log.i(TAG, "$keyHash")
+//
+//
+//        sendLog(keyHash)
 
 
 
