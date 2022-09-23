@@ -266,10 +266,27 @@
                 tools:layout="@layout/fragment_solaroid_add_choice"
                 android:elevation="50dp"
                 />
+        </FrameLayout>
 
+        <FrameLayout
 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_transper"
+            android:visibility="@{viewmodel.isProgressBar ? View.VISIBLE : View.GONE}"
+            android:elevation="12dp">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/lottie_progress"
+                android:layout_gravity="center"/>
 
         </FrameLayout>
+
+
+
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -10,11 +10,10 @@
             name="viewmodel"
             type="com.ranseo.solaroid.ui.home.fragment.create.SolaroidPhotoCreateViewModel" />
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
 
     </data>
-
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,19 +48,18 @@
                 android:backgroundTint="@color/image_btn_background"
                 android:onClick="@{()->viewmodel.onImageCapture()}"
                 android:scaleType="fitCenter"
-                android:src="@drawable/image_capture"
-                />
+                android:src="@drawable/image_capture" />
 
             <ImageButton
                 android:id="@+id/camera_converter"
-                android:onClick="@{()->viewmodel.convertCameraSelector()}"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:layout_gravity="bottom|right"
-                android:layout_marginBottom="24dp"
                 android:layout_marginEnd="36dp"
-                android:scaleType="fitCenter"
+                android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/image_btn_background"
+                android:onClick="@{()->viewmodel.convertCameraSelector()}"
+                android:scaleType="fitCenter"
                 android:src="@drawable/baseline_change_circle_black_24" />
 
         </FrameLayout>
@@ -73,22 +71,21 @@
             android:id="@+id/layout_create"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{viewmodel.isLayoutCreateVisible ? View.VISIBLE : View.GONE}"
-            >
+            android:visibility="@{viewmodel.isLayoutCreateVisible ? View.VISIBLE : View.GONE}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_front"
                 android:layout_width="@dimen/polaroid_film_larger_width"
                 android:layout_height="@dimen/polaroid_film_larger_height"
-                android:elevation="12dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="120dp"
+                android:background="@color/white"
+                android:elevation="12dp"
                 android:visibility="@{viewmodel.imageSpin ? View.GONE : View.VISIBLE}"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:background="@color/white">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/captured_image"
@@ -121,68 +118,65 @@
 
                 <EditText
                     android:id="@+id/front_text"
-                    android:textSize="@dimen/phototicket_front_text_size"
-                    android:textColor="@color/black"
-                    android:inputType="text"
-                    android:imeOptions="actionDone"
-                    android:text="@{viewmodel.editTextClear}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="@string/photo_create_front_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLength="20"
                     android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedFront(s)}"
+                    android:text="@{viewmodel.editTextClear}"
                     android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/phototicket_front_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/today_date"
-                    app:layout_constraintVertical_bias="0.104"
-                    android:maxLength="20"
-                    android:hint="@string/photo_create_front_hint" />
+                    app:layout_constraintVertical_bias="0.104" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_back"
-                tools:visibility="gone"
-                android:visibility="@{viewmodel.imageSpin ? View.VISIBLE : View.GONE }"
                 android:layout_width="@dimen/polaroid_film_larger_width"
                 android:layout_height="@dimen/polaroid_film_larger_height"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="120dp"
+                android:background="@color/white"
                 android:elevation="12dp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="@{viewmodel.imageSpin ? View.VISIBLE : View.GONE }"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:background="@color/white">
-
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
 
 
                 <EditText
                     android:id="@+id/back_text"
-                    android:text="@{viewmodel.editTextClear}"
                     android:layout_width="@dimen/polaroid_image_larger_width"
                     android:layout_height="@dimen/polaroid_image_larger_height"
-                    android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedBack(s)}"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/phototicket_back_text_size"
-                    android:textColor="@color/black"
                     android:hint="@string/photo_create_back_hint"
+                    android:onTextChanged="@{(s,start,before,count)->viewmodel.onTextChangedBack(s)}"
+                    android:text="@{viewmodel.editTextClear}"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/phototicket_back_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:text="@{viewmodel.currBackTextLen}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/back_text"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="24dp"
-                    tools:text="0/200"
-                    />
+                    android:text="@{viewmodel.currBackTextLen}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/back_text"
+                    tools:text="0/200" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -190,42 +184,38 @@
                 android:id="@+id/layout_album_spinner"
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@color/white"
                 android:layout_marginTop="520dp"
+                android:background="@color/white"
                 android:elevation="12dp"
                 android:padding="12dp"
-                >
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:text="사진첩 :"
-                    android:textSize="24dp"
-                    android:textColor="@color/black"
                     android:id="@+id/tv_spinner_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="사진첩 :"
+                    android:textColor="@color/black"
+                    android:textSize="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
                     android:id="@+id/spinner_album"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="24dp"
-                    app:layout_constraintStart_toEndOf="@+id/tv_spinner_title"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintStart_toEndOf="@+id/tv_spinner_title"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -234,22 +224,21 @@
                 android:layout_height="match_parent"
                 android:background="@color/soft_grey"
 
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                >
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/image_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
-                    android:onClick="@{()->viewmodel.forReadyNewImage()}"
-                    android:backgroundTint="@color/white"
-                    android:scaleType="fitCenter"
-                    android:elevation="12dp"
-                    android:layout_marginBottom="12dp"
                     android:layout_marginEnd="150dp"
+                    android:layout_marginBottom="12dp"
+                    android:backgroundTint="@color/white"
+                    android:elevation="12dp"
+                    android:onClick="@{()->viewmodel.forReadyNewImage()}"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_baseline_close_24" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -257,11 +246,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
+                    android:layout_marginBottom="12dp"
                     android:backgroundTint="@color/white"
+                    android:elevation="12dp"
                     android:onClick="@{()->viewmodel.onImageSave()}"
                     android:scaleType="fitCenter"
-                    android:elevation="12dp"
-                    android:layout_marginBottom="12dp"
                     android:src="@drawable/outline_file_download_black_24" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -269,14 +258,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
-                    android:backgroundTint="@color/white"
-                    android:onClick="@{()->viewmodel.onImageSpin()}"
-                    android:scaleType="fitCenter"
-                    android:elevation="12dp"
                     android:layout_marginStart="150dp"
                     android:layout_marginBottom="12dp"
+                    android:backgroundTint="@color/white"
+                    android:elevation="12dp"
+                    android:onClick="@{()->viewmodel.onImageSpin()}"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/ic_baseline_autorenew_24" />
-
 
 
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -284,17 +272,19 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ProgressBar
+        <FrameLayout
             android:visibility="@{viewmodel.isProgressBar ? View.VISIBLE : View.GONE}"
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?attr/lottie_progress"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_transper">
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?attr/lottie_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

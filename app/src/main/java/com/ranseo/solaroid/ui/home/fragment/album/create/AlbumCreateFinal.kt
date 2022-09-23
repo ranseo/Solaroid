@@ -159,9 +159,9 @@ class AlbumCreateFinal() : Fragment() {
         return binding.root
     }
 
-    fun setProgressbar(on:Boolean) {
-        binding.progressBar.isVisible = on
-    }
+//    fun setProgressbar(on:Boolean) {
+//        binding.progressBar.isVisible = on
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

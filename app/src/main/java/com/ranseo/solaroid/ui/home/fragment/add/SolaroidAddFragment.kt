@@ -100,7 +100,7 @@ class SolaroidAddFragment : Fragment(),
         })
 
         viewModel.image.observe(viewLifecycleOwner, Observer {
-            it?.let{
+            if(it!=null) {
                 val addChoiceFragment = childFragmentManager.findFragmentByTag(TAG_ADD_CHOICE)
                 childFragmentManager.commit {
                     if (addChoiceFragment != null) {
@@ -108,7 +108,10 @@ class SolaroidAddFragment : Fragment(),
                     }
                 }
                 binding.addChoiceFragmentLayout.visibility = INVISIBLE
+            } else {
+                viewModel.setProgressBar(false)
             }
+
         })
 
 //        viewModel.naviToFrameFrag.observe(viewLifecycleOwner, Observer{
@@ -141,8 +144,6 @@ class SolaroidAddFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
     }
 
     private fun showDialog() {
@@ -151,6 +152,7 @@ class SolaroidAddFragment : Fragment(),
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
+        viewModel.setProgressBar(true)
         viewModel.insertPhotoTicket()
     }
 

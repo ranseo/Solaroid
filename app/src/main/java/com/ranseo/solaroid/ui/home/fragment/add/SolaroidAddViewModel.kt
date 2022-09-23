@@ -131,6 +131,15 @@ class SolaroidAddViewModel(
 
     private var whichAlbum: DatabaseAlbum? = null
 
+
+    private val _isProgressBar = MutableLiveData<Boolean>(false)
+    val isProgressBar : LiveData<Boolean>
+        get() = _isProgressBar
+
+    fun setProgressBar(isProgress: Boolean) {
+        _isProgressBar.value = isProgress
+    }
+
     init {
         loadImage()
     }

@@ -68,42 +68,42 @@
             android:name="com.ranseo.solaroid.ui.login.activity.LoginActivity"
             android:exported="true">
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data
-                    android:scheme="solaroid"
-                    android:host="invite" />
+<!--                <data-->
+<!--                    android:scheme="solaroid"-->
+<!--                    android:host="invite" />-->
 
-            </intent-filter>
+<!--            </intent-filter>-->
 
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data
-                    android:scheme="https"
-                    android:host="solaroid.page.link"
-                    android:pathPrefix="/invite" />
-            </intent-filter>
+<!--                <data-->
+<!--                    android:scheme="https"-->
+<!--                    android:host="solaroid.page.link"-->
+<!--                    android:pathPrefix="/invite" />-->
+<!--            </intent-filter>-->
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data
-                    android:scheme="http"
-                    android:host="solaroid.page.link"
-                    android:pathPrefix="/invite" />
-            </intent-filter>
+<!--                <data-->
+<!--                    android:scheme="http"-->
+<!--                    android:host="solaroid.page.link"-->
+<!--                    android:pathPrefix="/invite" />-->
+<!--            </intent-filter>-->
 
 
         </activity>
